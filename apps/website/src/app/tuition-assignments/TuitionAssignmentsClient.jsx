@@ -7,7 +7,7 @@ import {
   memo,
   useCallback,
 } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Head from 'next/head';
 import { AnimatePresence, motion } from 'framer-motion';
 
@@ -145,17 +145,12 @@ const VerificationModal = ({ isOpen, onClose, onSubmit, selectedAssignments }) =
                   </div>
                   <div className="space-y-3 max-h-48 overflow-y-auto pr-2">
                      {appliedAssignments.map((assignment) => (
-                      <div key={assignment._id} className="bg-slate-50 rounded-lg p-3 border border-slate-200">
-                         <div className="flex items-center justify-between">
-                          <div className="flex-1 min-w-0">
-                            <h4 className="font-semibold text-slate-800 text-sm truncate">{assignment.title}</h4>
-                            <p className="text-xs text-slate-500">{assignment.level} • {assignment.subject}</p>
-                          </div>
-                          <div className="text-right ml-3">
-                            <span className="text-sm font-bold text-emerald-600">{assignment.rate && assignment.rate !== 'Tutor to propose' ? `${assignment.rate}/hr` : 'Propose'}</span>
-                           </div>
-                         </div>
-                       </div>
+                      <div key={assignment._id} className="bg-slate-50 rounded-lg p-4 border border-slate-200">
+                        <div className="text-center">
+                          <h4 className="font-semibold text-slate-800 text-base">{assignment.title}</h4>
+                          <p className="text-sm text-slate-500 mt-1">{assignment.level} • {assignment.subject}</p>
+                        </div>
+                      </div>
                      ))}
                    </div>
                    <div className="pt-4 border-t border-slate-200">
@@ -196,58 +191,144 @@ const VerificationModal = ({ isOpen, onClose, onSubmit, selectedAssignments }) =
 // --- Assignment Card Component ---
 const AssignmentCard = memo(({ assignment, isSelected, isExpanded, onSelect, onToggleExpand }) => {
     const isNew = new Date() - new Date(assignment.createdAt) < 7 * 24 * 60 * 60 * 1000;
+    const hasLongDescription = assignment.description && assignment.description.length > 150;
 
     return (
         <article
           role="listitem"
-          className={`relative bg-white/80 backdrop-blur-sm rounded-2xl shadow-md border transition-all duration-300 cursor-pointer overflow-hidden mb-4 ${
+          data-assignment-id={assignment._id}
+          className={`group relative bg-white rounded-2xl border transition-all duration-300 cursor-pointer overflow-hidden mb-6 hover:shadow-xl hover:shadow-slate-200/50 ${
             isSelected
-              ? 'border-teal-400 ring-2 ring-teal-300 ring-offset-2 shadow-teal-100'
-              : 'border-slate-200 hover:border-teal-300 hover:shadow-lg'
+              ? 'border-teal-500 ring-2 ring-teal-200 shadow-lg shadow-teal-100/50'
+              : 'border-slate-200 hover:border-slate-300'
           }`}
           onClick={() => onSelect(assignment._id)}
         >
-          <div className={`absolute left-0 top-0 bottom-0 w-1.5 transition-all duration-300 ${isSelected ? 'bg-gradient-to-b from-teal-500 to-emerald-500' : 'bg-transparent'}`} />
-          <div className="p-5">
-            <div className="flex items-start gap-4">
+          {/* Selection indicator */}
+          <div className={`absolute left-0 top-0 bottom-0 w-1 transition-all duration-300 ${
+            isSelected ? 'bg-gradient-to-b from-teal-500 to-emerald-500' : 'bg-transparent'
+          }`} />
+          
+          <div className="p-4 sm:p-6">
+            {/* Mobile-first header layout */}
+            <div className="flex items-start gap-3 mb-4">
+              {/* Checkbox */}
               <div className="relative mt-1 flex-shrink-0">
                 <input type="checkbox" className="sr-only" checked={isSelected} readOnly />
-                <div className={`h-6 w-6 border-2 rounded-lg transition-all duration-200 flex items-center justify-center ${isSelected ? 'bg-teal-600 border-teal-600 scale-105' : 'border-slate-300 group-hover:border-teal-500'}`}>
-                  {isSelected && <CheckCircle className="h-4 w-4 text-white" />}
+                <div className={`h-5 w-5 border-2 rounded-md transition-all duration-200 flex items-center justify-center ${
+                  isSelected 
+                    ? 'bg-teal-600 border-teal-600 scale-110' 
+                    : 'border-slate-300 group-hover:border-teal-400'
+                }`}>
+                  {isSelected && (
+                    <svg className="h-3 w-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                    </svg>
+                  )}
                 </div>
               </div>
+
+              {/* Title and content - mobile stacked layout */}
               <div className="flex-1 min-w-0">
-                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between">
-                  <div className="min-w-0 mb-3 sm:mb-0">
-                    <div className="flex items-center gap-3">
-                      <h3 className="text-lg font-bold text-slate-800">{assignment.title}</h3>
-                      {isNew && (<span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-gradient-to-r from-emerald-400 to-green-500 text-white shadow-md">NEW</span>)}
-                    </div>
-                    <div className="flex flex-wrap gap-2 mt-2">
-                      <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 border border-blue-200">{assignment.level}</span>
-                      <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800 border border-purple-200">{assignment.subject}</span>
-                    </div>
+                {/* Title row with NEW badge */}
+                <div className="flex items-center gap-2 mb-2">
+                  <h3 className="text-lg sm:text-xl font-bold text-slate-900 leading-tight flex-1 min-w-0">
+                    {assignment.title}
+                  </h3>
+                  {isNew && (
+                    <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800 border border-emerald-200 flex-shrink-0">
+                      NEW
+                    </span>
+                  )}
+                </div>
+
+                {/* Rate row - smaller and less prominent */}
+                <div className="mb-3">
+                  <div className="text-sm sm:text-base font-semibold text-emerald-600">
+                    {assignment.rate && assignment.rate !== 'Tutor to propose' ? `${assignment.rate}` : 'Negotiate'}
                   </div>
-                  <div className="text-left sm:text-right flex-shrink-0 sm:ml-4">
-                    <div className="text-xl font-extrabold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">{assignment.rate && assignment.rate !== 'Tutor to propose' ? `${assignment.rate}/hr` : 'Propose Rate'}</div>
-                    <span className="text-xs text-slate-400">ID: #{assignment._id.slice(-6)}</span>
+                  <span className="text-xs text-slate-400 font-mono">
+                    #{assignment._id.slice(-6)}
+                  </span>
+                </div>
+                
+                {/* Level and subject badges */}
+                <div className="flex flex-wrap gap-1.5 sm:gap-2 mb-3">
+                  <span className="inline-flex items-center px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-lg text-xs font-medium bg-blue-50 text-blue-700 border border-blue-100">
+                    {assignment.level}
+                  </span>
+                  <span className="inline-flex items-center px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-lg text-xs font-medium bg-purple-50 text-purple-700 border border-purple-100">
+                    {assignment.subject}
+                  </span>
+                </div>
+
+                {/* Location and frequency - mobile stacked, desktop grid */}
+                <div className="space-y-2 sm:grid sm:grid-cols-2 sm:gap-3 sm:space-y-0">
+                  <div className="flex items-center gap-2 text-sm text-slate-600">
+                    <div className="w-4 h-4 rounded-full bg-emerald-100 flex items-center justify-center flex-shrink-0">
+                      <svg className="w-2.5 h-2.5 text-emerald-600" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
+                      </svg>
+                    </div>
+                    <span className="truncate">{assignment.location}</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-sm text-slate-600">
+                    <div className="w-4 h-4 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
+                      <svg className="w-2.5 h-2.5 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
+                      </svg>
+                    </div>
+                    <span className="truncate">{assignment.frequency}</span>
                   </div>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-3 mt-4 text-sm">
-                  <div className="flex items-center gap-2 text-slate-600"><MapPin className="h-4 w-4 text-emerald-500 flex-shrink-0" /><span>{assignment.location}</span></div>
-                  <div className="flex items-center gap-2 text-slate-600"><Calendar className="h-4 w-4 text-blue-500 flex-shrink-0" /><span>{assignment.frequency}</span></div>
-                </div>
-                {assignment.description && (
-                  <div className="mt-4">
-                    <motion.div initial={false} animate={{ height: isExpanded ? 'auto' : '40px' }} transition={{ duration: 0.4, ease: "easeInOut" }} className="overflow-hidden relative">
-                      <p className="text-sm text-slate-600 leading-relaxed pr-4">{assignment.description}</p>
-                      {!isExpanded && <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-white to-transparent" />}
-                    </motion.div>
-                    {assignment.description.length > 100 && (<button onClick={(e) => { e.stopPropagation(); onToggleExpand(assignment._id); }} className="text-teal-600 hover:text-teal-700 font-semibold text-sm mt-2 flex items-center">{isExpanded ? 'Show Less' : 'Show More'}{isExpanded ? <ChevronUp className="h-4 w-4 ml-1" /> : <ChevronDown className="h-4 w-4 ml-1" />}</button>)}
-                  </div>
-                )}
               </div>
             </div>
+
+            {/* Description */}
+            {assignment.description && (
+              <div className="border-t border-slate-100 pt-3 sm:pt-4">
+                <div className="relative">
+                  <motion.div
+                    initial={false}
+                    animate={{ 
+                      height: isExpanded ? 'auto' : hasLongDescription ? '60px' : 'auto'
+                    }}
+                    transition={{ duration: 0.3, ease: [0.4, 0.0, 0.2, 1] }}
+                    className="overflow-hidden"
+                  >
+                    <p className="text-sm text-slate-600 leading-relaxed">
+                      {assignment.description}
+                    </p>
+                  </motion.div>
+                  
+                  {/* Subtle fade only for long descriptions when collapsed */}
+                  {hasLongDescription && !isExpanded && (
+                    <div className="absolute bottom-0 left-0 right-0 h-4 bg-gradient-to-t from-white to-transparent pointer-events-none" />
+                  )}
+                </div>
+                
+                {/* Show more/less button */}
+                {hasLongDescription && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onToggleExpand(assignment._id);
+                    }}
+                    className="mt-2 sm:mt-3 text-teal-600 hover:text-teal-700 font-medium text-sm flex items-center gap-1 transition-colors duration-200"
+                  >
+                    {isExpanded ? 'Show less' : 'Read more'}
+                    <svg 
+                      className={`w-4 h-4 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`} 
+                      fill="none" 
+                      stroke="currentColor" 
+                      viewBox="0 0 24 24"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+                )}
+              </div>
+            )}
           </div>
         </article>
     );
@@ -332,6 +413,7 @@ const PaginationControls = ({ currentPage, totalPages, onPageChange }) => {
 // --- Main Client Component ---
 export default function TuitionAssignmentsClient({ initialAssignments }) {
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   // --- State Management ---
   const [allAssignments, setAllAssignments] = useState(initialAssignments || []);
@@ -345,6 +427,61 @@ export default function TuitionAssignmentsClient({ initialAssignments }) {
   const ASSIGNMENTS_PER_PAGE = 12;
 
   const debouncedSearchKeyword = useDebounce(searchKeyword, 300);
+
+  // --- Handle URL parameters for direct assignment selection ---
+  useEffect(() => {
+    // Fallback approach that works in all environments
+    let applyAssignmentId = null;
+    
+    try {
+      // Try Next.js approach first
+      applyAssignmentId = searchParams.get('apply');
+    } catch (error) {
+      // Fallback to vanilla JS approach
+      if (typeof window !== 'undefined') {
+        const urlParams = new URLSearchParams(window.location.search);
+        applyAssignmentId = urlParams.get('apply');
+      }
+    }
+    
+    console.log('URL parameter check:', { applyAssignmentId, assignmentsCount: allAssignments.length });
+    
+    if (applyAssignmentId && allAssignments.length > 0) {
+      // Check if the assignment exists
+      const assignmentExists = allAssignments.some(a => a._id === applyAssignmentId);
+      console.log('Assignment exists:', assignmentExists);
+      
+      if (assignmentExists) {
+        console.log('Selecting assignment:', applyAssignmentId);
+        // Select the assignment
+        setSelectedAssignments([applyAssignmentId]);
+        
+        // Scroll to the assignment after a delay to ensure rendering
+        setTimeout(() => {
+          const assignmentElement = document.querySelector(`[data-assignment-id="${applyAssignmentId}"]`);
+          console.log('Assignment element found:', !!assignmentElement);
+          
+          if (assignmentElement) {
+            assignmentElement.scrollIntoView({ 
+              behavior: 'smooth', 
+              block: 'center' 
+            });
+            // Add a highlight effect
+            assignmentElement.classList.add('ring-4', 'ring-teal-400', 'ring-opacity-75');
+            setTimeout(() => {
+              assignmentElement.classList.remove('ring-4', 'ring-teal-400', 'ring-opacity-75');
+            }, 3000);
+          }
+        }, 1000); // Increased delay to ensure rendering
+        
+        // Clean up the URL parameter
+        if (typeof window !== 'undefined') {
+          const newUrl = window.location.pathname;
+          window.history.replaceState({}, '', newUrl);
+        }
+      }
+    }
+  }, [searchParams, allAssignments]);
 
   // --- Filtering Logic ---
   const filteredAssignments = useMemo(() => {
@@ -377,6 +514,23 @@ export default function TuitionAssignmentsClient({ initialAssignments }) {
       setSubjectFilter('');
     }
   }, [levelFilter, availableSubjects, subjectFilter]);
+
+  // --- Handle pagination for selected assignment ---
+  useEffect(() => {
+    if (selectedAssignments.length === 1 && filteredAssignments.length > 0) {
+      const selectedId = selectedAssignments[0];
+      const assignmentIndex = filteredAssignments.findIndex(a => a._id === selectedId);
+      
+      if (assignmentIndex !== -1) {
+        const targetPage = Math.ceil((assignmentIndex + 1) / ASSIGNMENTS_PER_PAGE);
+        console.log('Setting page for assignment:', { assignmentIndex, targetPage, currentPage });
+        
+        if (targetPage !== currentPage) {
+          setCurrentPage(targetPage);
+        }
+      }
+    }
+  }, [selectedAssignments, filteredAssignments, currentPage]);
 
   // --- Event Handlers ---
   const handleAssignmentSelect = useCallback((assignmentId) => {

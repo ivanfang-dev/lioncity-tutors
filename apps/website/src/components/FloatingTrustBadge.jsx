@@ -3,17 +3,17 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Star, X } from 'lucide-react';
 
-export default function FloatingTrustBadge() {
+export default function FloatingTrustBadge({ onGetStarted }) {
   const [isVisible, setIsVisible] = useState(false);
   const [isDismissed, setIsDismissed] = useState(false);
 
   useEffect(() => {
-    // Show badge after 8 seconds (after TutorPopup has had time to show)
+    // Show badge after 10 seconds (after TutorPopup has had time to show)
     const timer = setTimeout(() => {
       if (!isDismissed) {
         setIsVisible(true);
       }
-    }, 8000);
+    }, 10000);
 
     return () => clearTimeout(timer);
   }, [isDismissed]);
@@ -63,11 +63,11 @@ export default function FloatingTrustBadge() {
               </p>
 
               {/* CTA */}
-              <a
-                href="#form"
-                onClick={(e) => {
-                  e.preventDefault();
-                  document.querySelector('[ref="formRef"]')?.scrollIntoView({ behavior: 'smooth' });
+              <button
+                onClick={() => {
+                  if (onGetStarted) {
+                    onGetStarted();
+                  }
                   handleDismiss();
                 }}
                 className="inline-flex items-center gap-2 bg-accent hover:bg-accent/90 text-white font-medium px-5 py-2.5 rounded-full text-sm transition-all duration-300 hover:scale-105"
@@ -76,7 +76,7 @@ export default function FloatingTrustBadge() {
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                 </svg>
-              </a>
+              </button>
             </div>
 
             {/* Decorative element */}

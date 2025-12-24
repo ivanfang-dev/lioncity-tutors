@@ -274,50 +274,112 @@ export default function Blog() {
 
   return (
     <>
-    <main className="px-4 sm:px-6 py-8 sm:py-12 max-w-5xl mx-auto">
-      <h1 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8 text-blue-800">LionCity Tutors Blog</h1>
-
-      {/* Filter Bar */}
-      <div className="mb-6 sm:mb-8 overflow-x-auto">
-        <div className="flex space-x-2 min-w-max pb-2">
-          {categories.map((category) => (
-            <button
-              key={category}
-              onClick={() => setSelectedCategory(category)}
-              className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-medium transition-colors
-                ${selectedCategory === category 
-                  ? 'bg-blue-600 text-white' 
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
-            >
-              {category}
-            </button>
-          ))}
+    <main className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50/30">
+      {/* Hero Section */}
+      <div className="bg-white border-b border-slate-200">
+        <div className="px-4 sm:px-6 py-12 sm:py-16 max-w-6xl mx-auto text-center">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent mb-4">
+            LionCity Tutors Blog
+          </h1>
+          <p className="text-lg sm:text-xl text-slate-600 max-w-2xl mx-auto leading-relaxed">
+            Expert insights, study guides, and educational resources to help students excel in Singapore's education system
+          </p>
         </div>
       </div>
 
-      {/* Blog Posts Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-        {filteredPosts.map((post) => (
-          <Link 
-            key={post.slug} 
-            href={post.directUrl}
-            className="block bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200"
-          >
-            <div className="p-4 sm:p-6">
-              <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2 sm:mb-3 line-clamp-2">
-                {post.title}
-              </h2>
-              <p className="text-sm sm:text-base text-gray-600 mb-3 sm:mb-4 line-clamp-3">
-                {post.description}
-              </p>
-              <div className="flex items-center justify-between text-xs sm:text-sm text-gray-500">
-                <span>{post.date}</span>
-                <span>{post.categories.join(', ')}</span>
-              </div>
+      <div className="px-4 sm:px-6 py-8 sm:py-12 max-w-6xl mx-auto">
+        {/* Filter Bar */}
+        <div className="mb-8 sm:mb-12">
+          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 sm:p-6">
+            <h3 className="text-sm font-semibold text-slate-700 mb-4">Filter by Category</h3>
+            <div className="flex flex-wrap gap-2">
+              {categories.map((category) => (
+                <button
+                  key={category}
+                  onClick={() => setSelectedCategory(category)}
+                  className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
+                    selectedCategory === category 
+                      ? 'bg-blue-600 text-white shadow-md shadow-blue-200 scale-105' 
+                      : 'bg-slate-100 text-slate-700 hover:bg-slate-200 hover:scale-105'
+                  }`}
+                >
+                  {category}
+                </button>
+              ))}
             </div>
-          </Link>
-        ))}
+          </div>
+        </div>
+
+        {/* Results Count */}
+        <div className="mb-6">
+          <p className="text-slate-600 text-sm">
+            Showing <span className="font-semibold text-slate-900">{filteredPosts.length}</span> articles
+            {selectedCategory !== 'All' && (
+              <span> in <span className="font-semibold text-blue-600">{selectedCategory}</span></span>
+            )}
+          </p>
+        </div>
+
+        {/* Blog Posts Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+          {filteredPosts.map((post) => (
+            <Link 
+              key={post.slug} 
+              href={post.directUrl}
+              className="group block bg-white rounded-2xl shadow-sm border border-slate-200 hover:shadow-xl hover:shadow-slate-200/50 transition-all duration-300 hover:-translate-y-1 overflow-hidden"
+            >
+              {/* Category Badge */}
+              <div className="p-4 sm:p-6 pb-0">
+                <div className="flex items-center gap-2 mb-3">
+                  {post.categories.slice(0, 2).map((category, index) => (
+                    <span 
+                      key={index}
+                      className="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-medium bg-blue-50 text-blue-700 border border-blue-100"
+                    >
+                      {category}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              <div className="p-4 sm:p-6 pt-0">
+                {/* Title - Much smaller and more readable */}
+                <h2 className="text-base sm:text-lg font-semibold text-slate-900 mb-3 line-clamp-2 group-hover:text-blue-600 transition-colors leading-snug">
+                  {post.title}
+                </h2>
+                
+                {/* Description */}
+                <p className="text-sm text-slate-600 mb-4 line-clamp-3 leading-relaxed">
+                  {post.description}
+                </p>
+                
+                {/* Footer */}
+                <div className="flex items-center justify-between pt-3 border-t border-slate-100">
+                  <span className="text-xs text-slate-500 font-medium">{post.date}</span>
+                  <div className="flex items-center text-blue-600 text-sm font-medium group-hover:text-blue-700 transition-colors">
+                    Read more
+                    <svg className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </Link>
+          ))}
+        </div>
+
+        {/* Empty State */}
+        {filteredPosts.length === 0 && (
+          <div className="text-center py-12">
+            <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg className="w-8 h-8 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+            </div>
+            <h3 className="text-lg font-semibold text-slate-900 mb-2">No articles found</h3>
+            <p className="text-slate-600">Try selecting a different category to see more content.</p>
+          </div>
+        )}
       </div>
     </main>
     </>

@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import TuitionAssignmentsClient from './TuitionAssignmentsClient';
 
 // Helper function to fetch data on the server
@@ -64,5 +65,9 @@ export async function generateMetadata({ searchParams }) {
 export default async function TuitionAssignmentsPage() {
   const initialAssignments = await getAssignments();
 
-  return <TuitionAssignmentsClient initialAssignments={initialAssignments} />;
+  return (
+    <Suspense fallback={<div>Loading assignments...</div>}>
+      <TuitionAssignmentsClient initialAssignments={initialAssignments} />
+    </Suspense>
+  );
 }

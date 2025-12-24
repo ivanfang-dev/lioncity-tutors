@@ -111,7 +111,7 @@ export default function HomePageClient() {
       <BackToTop />
       <main ref={main} className="bg-background-default text-text-default">
         <TutorPopup />
-        <FloatingTrustBadge />
+        <FloatingTrustBadge onGetStarted={scrollToForm} />
         {/* Hero Section */}
         {/* Hero Section - Enhanced Mobile */}
         <section className="relative min-h-[85vh] sm:min-h-[90vh] flex items-center justify-center bg-background-default px-4 sm:px-6 overflow-hidden">

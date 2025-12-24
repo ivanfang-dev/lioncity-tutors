@@ -7,6 +7,8 @@ import rateLimit from 'express-rate-limit';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { Assignment } from '../../packages/shared/server-exports.js';
+import EmailService from './services/emailService.js';
+import SenderEmailService from './services/senderEmailService.js';
 
 // ES modules don't have __dirname, so we need to create it
 const __filename = fileURLToPath(import.meta.url);
@@ -16,6 +18,15 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 4000;
+
+// Initialize email services
+const emailService = new EmailService();
+const senderEmailService = new SenderEmailService();
+
+// Choose which service to use based on environment
+const getEmailService = () => {
+  return process.env.USE_SENDER === 'true' ? senderEmailService : emailService;
+};
 
 app.use(helmet());
 
@@ -45,6 +56,9 @@ app.use(cors({
 }));
 
 app.use(express.json());
+
+// Serve static files from public directory
+app.use('/public', express.static(path.join(__dirname, 'public')));
 
 mongoose.connect(process.env.MONGODB_URI)
 .then(() => console.log('Connected to MongoDB Atlas'))
@@ -423,6 +437,11 @@ app.get('/', (req, res) => {
   res.send('Contact form API is running');
 });
 
+// Email tester route
+app.get('/email-tester', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'email-tester.html'));
+});
+
 app.get("/keep-alive", (req, res) => {
   res.status(200).send("Backend is awake");
 });
@@ -672,6 +691,200 @@ app.get('/api/analytics/popular-papers', async (req, res) => {
   } catch (err) {
     console.error('Error getting analytics:', err);
     res.status(500).json({ error: 'Failed to get analytics.' });
+  }
+});
+
+/**
+ * @route   GET /api/email/latest-assignments
+ * @desc    Generates HTML email content with top 10 latest tuition assignments
+ * @access  Public (but should be secured in production)
+ */
+app.get('/api/email/latest-assignments', async (req, res) => {
+  try {
+    // Fetch top 10 latest assignments
+    const assignments = await Assignment
+      .find({ status: 'Open' })
+      .sort({ createdAt: -1 })
+      .limit(10)
+      .select('title level subject location frequency rate description createdAt _id')
+      .lean();
+
+    if (assignments.length === 0) {
+      return res.status(404).json({ error: 'No assignments found.' });
+    }
+
+    // Generate assignment HTML blocks
+    const assignmentBlocks = assignments.map(assignment => {
+      const assignmentTitle = `${assignment.level} ${assignment.subject}${assignment.location ? ` (${assignment.location})` : ''}`;
+      const rateDisplay = assignment.rate && assignment.rate !== 'Tutor to propose' ? `${assignment.rate}/hr` : 'Rate to be discussed';
+      const frequencyDisplay = assignment.frequency || 'Frequency to be discussed';
+      
+      return `
+        <!-- Assignment Item START -->
+        <tr>
+          <td style="padding:15px 20px; border-top:1px solid #eeeeee;">
+            <h3 style="margin:0 0 5px; font-size:16px; color:#111827;">${assignmentTitle}</h3>
+            <p style="margin:0 0 10px; font-size:14px; color:#555555;">${rateDisplay} · ${frequencyDisplay} · In-person</p>
+            <a href="https://www.lioncitytutors.com/tuition-assignments?apply=${assignment._id}" 
+               style="display:inline-block;padding:10px 16px;background-color:#2563eb;color:#ffffff;text-decoration:none;border-radius:6px;font-size:14px;font-weight:bold;">
+              Apply for this Assignment
+            </a>
+          </td>
+        </tr>
+        <!-- Assignment Item END -->`;
+    }).join('');
+
+    // Complete HTML email template
+    const htmlContent = `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Latest Tuition Assignments</title>
+</head>
+<body style="margin:0; padding:0; background-color:#f4f6f8; font-family: Arial, Helvetica, sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f4f6f8; padding:20px;">
+    <tr>
+      <td align="center">
+        <!-- Container -->
+        <table width="600" cellpadding="0" cellspacing="0" style="background-color:#ffffff; border-radius:8px; overflow:hidden;">
+          <!-- Header -->
+          <tr>
+            <td style="background-color:#0f172a; color:#ffffff; padding:20px;">
+              <h1 style="margin:0; font-size:20px;">LionCity Tutors</h1>
+              <p style="margin:5px 0 0; font-size:14px;">Latest Tuition Assignments</p>
+            </td>
+          </tr>
+          
+          <!-- Intro -->
+          <tr>
+            <td style="padding:20px; color:#333333;">
+              <p style="margin:0 0 10px;">Hi tutors! 👋</p>
+              <p style="margin:0;">These are the <strong>${assignments.length} latest tuition assignments</strong> available for application:</p>
+            </td>
+          </tr>
+          
+          ${assignmentBlocks}
+          
+          <!-- Footer -->
+          <tr>
+            <td style="padding:20px; background-color:#f9fafb; color:#6b7280; font-size:12px;">
+              <p style="margin:0 0 5px;">You are receiving this email because you are a registered tutor with LionCity Tutors.</p>
+              <p style="margin:0;">
+                <a href="*|UNSUB|*" style="color:#6b7280;">Unsubscribe</a>
+              </p>
+            </td>
+          </tr>
+        </table>
+        <!-- End Container -->
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`;
+
+    // Return both HTML and assignment data
+    res.status(200).json({
+      success: true,
+      html: htmlContent,
+      assignmentCount: assignments.length,
+      assignments: assignments.map(a => ({
+        id: a._id,
+        title: `${a.level} ${a.subject}`,
+        location: a.location,
+        rate: a.rate,
+        frequency: a.frequency,
+        createdAt: a.createdAt
+      }))
+    });
+
+  } catch (err) {
+    console.error('Error generating email content:', err);
+    res.status(500).json({ error: 'Failed to generate email content.' });
+  }
+});
+
+/**
+ * @route   POST /api/email/send-newsletter
+ * @desc    Sends assignment newsletter to specified recipients
+ * @access  Private (should be secured with API key in production)
+ */
+app.post('/api/email/send-newsletter', async (req, res) => {
+  try {
+    const { recipients, subject, assignmentLimit = 10 } = req.body;
+
+    if (!recipients || !Array.isArray(recipients) || recipients.length === 0) {
+      return res.status(400).json({ error: 'Recipients array is required.' });
+    }
+
+    // Validate email addresses
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const invalidEmails = recipients.filter(email => !emailRegex.test(email));
+    
+    if (invalidEmails.length > 0) {
+      return res.status(400).json({ 
+        error: 'Invalid email addresses found.', 
+        invalidEmails 
+      });
+    }
+
+    const currentEmailService = getEmailService();
+    let result;
+
+    if (process.env.USE_SENDER === 'true') {
+      result = await currentEmailService.sendNewsletterViaSender(recipients, subject);
+    } else {
+      result = await currentEmailService.sendAssignmentNewsletter(recipients, subject, assignmentLimit);
+    }
+    
+    res.status(200).json({
+      success: true,
+      message: `Newsletter sent successfully to ${result.recipientCount} recipients via ${result.service || 'SMTP'}.`,
+      ...result
+    });
+
+  } catch (err) {
+    console.error('Error sending newsletter:', err);
+    res.status(500).json({ error: 'Failed to send newsletter.' });
+  }
+});
+
+/**
+ * @route   POST /api/email/send-test
+ * @desc    Sends a test email with latest assignments
+ * @access  Private (should be secured with API key in production)
+ */
+app.post('/api/email/send-test', async (req, res) => {
+  try {
+    const { testEmail } = req.body;
+
+    if (!testEmail) {
+      return res.status(400).json({ error: 'Test email address is required.' });
+    }
+
+    // Validate email address
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(testEmail)) {
+      return res.status(400).json({ error: 'Invalid email address.' });
+    }
+
+    const currentEmailService = getEmailService();
+    let result;
+
+    if (process.env.USE_SENDER === 'true') {
+      result = await currentEmailService.sendTestEmailViaSender(testEmail);
+    } else {
+      result = await currentEmailService.sendTestEmail(testEmail);
+    }
+    
+    res.status(200).json({
+      success: true,
+      message: `Test email sent successfully to ${testEmail} via ${result.service || 'SMTP'}.`,
+      ...result
+    });
+
+  } catch (err) {
+    console.error('Error sending test email:', err);
+    res.status(500).json({ error: 'Failed to send test email.' });
   }
 });
 

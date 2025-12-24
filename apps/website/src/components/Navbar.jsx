@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
 import Image from "next/image";
 import Dropdown from "./Dropdown";
+import AnimatedBadge from "./AnimatedBadge";
 import { subjects, levels, resources, forParents, forTutors } from "../data/navigation";
 
 export default function Navbar() {
@@ -14,6 +15,11 @@ export default function Navbar() {
 
   const navLinkStyle = (path) =>
     `text-sm font-medium px-4 py-2 rounded hover:bg-gray-100 transition whitespace-nowrap ${
+      pathname === path ? "bg-gray-200 font-semibold" : ""
+    }`;
+
+  const mobileNavLinkStyle = (path) =>
+    `text-sm font-medium px-4 py-2 rounded hover:bg-gray-100 transition whitespace-nowrap text-center w-full ${
       pathname === path ? "bg-gray-200 font-semibold" : ""
     }`;
 
@@ -83,12 +89,17 @@ export default function Navbar() {
             onToggle={() => toggleDropdown("subjects")}
           />
           {/* Use the new resources data */}
-          <Dropdown
-            label="Free Resources"
-            items={resources}
-            open={openDropdown === "resources"}
-            onToggle={() => toggleDropdown("resources")}
-          />
+          <div className="relative">
+            <Dropdown
+              label="Free Resources"
+              items={resources}
+              open={openDropdown === "resources"}
+              onToggle={() => toggleDropdown("resources")}
+            />
+            <div className="absolute -top-2 -right-2">
+              <AnimatedBadge text="Free" color="success" size="xs" icon="sparkles" />
+            </div>
+          </div>
           <Dropdown
             label="For Parents"
             items={forParents}
@@ -121,18 +132,20 @@ export default function Navbar() {
         {/* MODIFIED: FULL Mobile Nav Code with new structure */}
         {menuOpen && (
           <div 
-            className="mobile-menu absolute top-full left-0 w-full bg-white shadow-md flex flex-col items-center py-4 space-y-2 z-50"
+            className="mobile-menu absolute top-full left-0 w-full bg-white shadow-md flex flex-col items-stretch py-4 z-50"
             onClick={(e) => e.stopPropagation()} 
           >
-            <Link
-              href="/request-tutor"
-              onClick={() => setMenuOpen(false)}
-              className="bg-red-500 text-white px-4 py-2 rounded-full hover:bg-red-600 shadow-md font-semibold"
-            >
-              📚 Get Free Tutor Matching
-            </Link>
+            <div className="px-4 pb-2">
+              <Link
+                href="/request-tutor"
+                onClick={() => setMenuOpen(false)}
+                className="bg-red-500 text-white text-sm px-4 py-2 rounded-full hover:bg-red-600 shadow-md font-semibold block text-center"
+              >
+                📚 Get Free Tutor Matching
+              </Link>
+            </div>
 
-            <Link href="/" onClick={() => setMenuOpen(false)} className={navLinkStyle("/")}>
+            <Link href="/" onClick={() => setMenuOpen(false)} className={mobileNavLinkStyle("/")}>
               Home
             </Link>
 
@@ -172,7 +185,7 @@ export default function Navbar() {
               isMobile
             />
 
-            <Link href="/tuition-rates" onClick={() => setMenuOpen(false)} className={navLinkStyle("/tuition-rates")}>
+            <Link href="/tuition-rates" onClick={() => setMenuOpen(false)} className={mobileNavLinkStyle("/tuition-rates")}>
               Tuition Rates
             </Link>
           </div>

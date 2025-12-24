@@ -25,7 +25,7 @@ export default function Dropdown({ label, items, open, onToggle, isMobile = fals
         aria-haspopup="true"
         aria-expanded={open}
         aria-controls={`dropdown-${label}`}
-        className={`text-sm font-medium px-2 py-2 rounded hover:bg-gray-100 transition flex items-center gap-1 whitespace-nowrap ${isMobile ? 'w-full justify-center' : ''}`}
+        className={`text-sm font-medium px-4 py-2 rounded hover:bg-gray-100 transition flex items-center gap-1 whitespace-nowrap ${isMobile ? 'w-full justify-center' : ''}`}
       >
         {label}
         <ChevronDown size={16} className={`transition-transform ${open ? "rotate-180" : ""}`} />
@@ -47,7 +47,7 @@ export default function Dropdown({ label, items, open, onToggle, isMobile = fals
                     <div className="flex">
                       <Link
                         href={item.path}
-                        className="flex-1 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 text-left"
+                        className={`flex-1 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 ${isMobile ? 'text-center' : 'text-left'}`}
                       >
                         {item.name}
                       </Link>
@@ -67,7 +67,7 @@ export default function Dropdown({ label, items, open, onToggle, isMobile = fals
                           <Link
                             key={subItem.path}
                             href={subItem.path}
-                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                            className={`block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 ${isMobile ? 'text-center' : ''}`}
                           >
                             {subItem.name}
                           </Link>
@@ -82,7 +82,7 @@ export default function Dropdown({ label, items, open, onToggle, isMobile = fals
                 <Link
                   key={item.path}
                   href={item.path}
-                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  className={`block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 ${isMobile ? 'text-center' : ''}`}
                 >
                   {item.name}
                 </Link>
