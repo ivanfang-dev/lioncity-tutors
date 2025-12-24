@@ -750,7 +750,7 @@ app.get('/api/email/latest-assignments', async (req, res) => {
           <!-- Intro -->
           <tr>
             <td style="padding:20px; color:#333333;">
-              <p style="margin:0 0 10px;">Hi tutors! 👋</p>
+              <p style="margin:0 0 10px;">Hi {{ full_name }}! 👋</p>
               <p style="margin:0;">These are the <strong>${assignments.length} latest tuition assignments</strong> available for application:</p>
             </td>
           </tr>
@@ -762,7 +762,7 @@ app.get('/api/email/latest-assignments', async (req, res) => {
             <td style="padding:20px; background-color:#f9fafb; color:#6b7280; font-size:12px;">
               <p style="margin:0 0 5px;">You are receiving this email because you are a registered tutor with LionCity Tutors.</p>
               <p style="margin:0;">
-                <a href="*|UNSUB|*" style="color:#6b7280;">Unsubscribe</a>
+                <a href="{$unsubscribe_link}">{$unsubscribe_text}</a>
               </p>
             </td>
           </tr>
