@@ -7,8 +7,7 @@ import rateLimit from 'express-rate-limit';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { Assignment } from '../../packages/shared/server-exports.js';
-import EmailService from './services/emailService.js';
-import SenderEmailService from './services/senderEmailService.js';
+
 
 // ES modules don't have __dirname, so we need to create it
 const __filename = fileURLToPath(import.meta.url);
@@ -19,14 +18,7 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 4000;
 
-// Initialize email services
-const emailService = new EmailService();
-const senderEmailService = new SenderEmailService();
 
-// Choose which service to use based on environment
-const getEmailService = () => {
-  return process.env.USE_SENDER === 'true' ? senderEmailService : emailService;
-};
 
 app.use(helmet());
 
@@ -803,90 +795,7 @@ app.get('/api/email/latest-assignments', async (req, res) => {
   }
 });
 
-/**
- * @route   POST /api/email/send-newsletter
- * @desc    Sends assignment newsletter to specified recipients
- * @access  Private (should be secured with API key in production)
- */
-app.post('/api/email/send-newsletter', async (req, res) => {
-  try {
-    const { recipients, subject, assignmentLimit = 10 } = req.body;
 
-    if (!recipients || !Array.isArray(recipients) || recipients.length === 0) {
-      return res.status(400).json({ error: 'Recipients array is required.' });
-    }
-
-    // Validate email addresses
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const invalidEmails = recipients.filter(email => !emailRegex.test(email));
-    
-    if (invalidEmails.length > 0) {
-      return res.status(400).json({ 
-        error: 'Invalid email addresses found.', 
-        invalidEmails 
-      });
-    }
-
-    const currentEmailService = getEmailService();
-    let result;
-
-    if (process.env.USE_SENDER === 'true') {
-      result = await currentEmailService.sendNewsletterViaSender(recipients, subject);
-    } else {
-      result = await currentEmailService.sendAssignmentNewsletter(recipients, subject, assignmentLimit);
-    }
-    
-    res.status(200).json({
-      success: true,
-      message: `Newsletter sent successfully to ${result.recipientCount} recipients via ${result.service || 'SMTP'}.`,
-      ...result
-    });
-
-  } catch (err) {
-    console.error('Error sending newsletter:', err);
-    res.status(500).json({ error: 'Failed to send newsletter.' });
-  }
-});
-
-/**
- * @route   POST /api/email/send-test
- * @desc    Sends a test email with latest assignments
- * @access  Private (should be secured with API key in production)
- */
-app.post('/api/email/send-test', async (req, res) => {
-  try {
-    const { testEmail } = req.body;
-
-    if (!testEmail) {
-      return res.status(400).json({ error: 'Test email address is required.' });
-    }
-
-    // Validate email address
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(testEmail)) {
-      return res.status(400).json({ error: 'Invalid email address.' });
-    }
-
-    const currentEmailService = getEmailService();
-    let result;
-
-    if (process.env.USE_SENDER === 'true') {
-      result = await currentEmailService.sendTestEmailViaSender(testEmail);
-    } else {
-      result = await currentEmailService.sendTestEmail(testEmail);
-    }
-    
-    res.status(200).json({
-      success: true,
-      message: `Test email sent successfully to ${testEmail} via ${result.service || 'SMTP'}.`,
-      ...result
-    });
-
-  } catch (err) {
-    console.error('Error sending test email:', err);
-    res.status(500).json({ error: 'Failed to send test email.' });
-  }
-});
 
 if (process.env.NODE_ENV === 'production') {
   // Serve any static files
