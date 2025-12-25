@@ -253,7 +253,7 @@ export default function HomePageClient() {
             >
               {[
                 { icon: TrendingUp, end: 100, suffix: "+", label: "Successful Matches", sub: "Last 3 months", color: "from-blue-500/10 to-primary/10" },
-                { icon: Users, end: 150, suffix: "+", label: "Qualified Tutors", sub: "Vetted professionals", color: "from-purple-500/10 to-accent/10" },
+                { icon: Users, end: 300, suffix: "+", label: "Qualified Tutors", sub: "Vetted professionals", color: "from-purple-500/10 to-accent/10" },
                 { icon: Clock, end: 24, suffix: "h", label: "Response Time", sub: "Average match time", color: "from-green-500/10 to-primary/10" },
                 { icon: Star, end: 4.8, suffix: "/5", label: "Client Rating", sub: "From happy parents", decimals: 1, color: "from-yellow-500/10 to-accent/10" }
               ].map((stat, i) => {

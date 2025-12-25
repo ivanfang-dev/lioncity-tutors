@@ -30,12 +30,11 @@ export const resources = [
 ];
 
 export const forParents = [
-  { name: "Exam Guides Hub", path: "/guides" },
-  { name: "Our Blog", path: "/blog" },
   { name: "Request a Tutor", path: "/request-tutor" },
+  { name: "Exam Guides Hub", path: "/guides" },
+  { name: "Our Blog", path: "/blog" }
 ]
 
-// NEW: A dedicated array for tutor-related links
 export const forTutors = [
     { name: "Become a Tutor", path: "/register-tutor" },
     { name: "Tuition Assignments", path: "/tuition-assignments" },

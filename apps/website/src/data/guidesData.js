@@ -1,26 +1,25 @@
-// This file will store the data for your main exam guides.
-// It helps to keep your pillar content organized.
+// This file stores the data for main exam guides.
 
 export const guidesData = [
     {
     level: "Parenting & Strategy",
     title: "Pinpointing Learning Gaps: A Parent's Guide",
     description: "Learn a 3-step diagnostic process to understand the real reason why your child is struggling in school.",
-    href: "/blog/pinpointing-learning-gaps", // Assuming this is the correct URL
+    href: "/blog/pinpointing-learning-gaps",
     icon: "🔍",
   },
   {
     level: "Parenting & Strategy",
     title: "Focus and Concentration Issues in Students",
     description: "Actionable, psychology-backed strategies for parents to help smart but easily distracted children build focus.",
-    href: "/blog/focus-and-concentration-issues", // Assuming this is the correct URL
+    href: "/blog/focus-and-concentration-issues", 
     icon: "🧠",
   },
   {
     level: "Parenting & Strategy",
     title: "Navigating PSLE Anxiety",
     description: "How to support your child's mental well-being and academic performance during high-stakes exams.",
-    href: "/blog/navigating-psle-anxiety", // Assuming this is the correct URL
+    href: "/blog/navigating-psle-anxiety",
     icon: "❤️",
   },
   // --- PSLE GUIDES ---
@@ -28,7 +27,7 @@ export const guidesData = [
     level: "PSLE",
     title: "The Ultimate PSLE Preparation Hub",
     description: "Your complete roadmap to PSLE success. This central guide covers scoring, timelines, and links to all our subject-specific strategies.",
-    href: "/blog/psle-preparation-guide", // This is the main pillar page we created
+    href: "/blog/psle-preparation-guide", 
     icon: "🎯",
   },
   {

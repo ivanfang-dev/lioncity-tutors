@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Phone, Mail } from "lucide-react";
 import Image from "next/image";
 import Dropdown from "./Dropdown";
 import AnimatedBadge from "./AnimatedBadge";
@@ -15,11 +15,6 @@ export default function Navbar() {
 
   const navLinkStyle = (path) =>
     `text-sm font-medium px-4 py-2 rounded hover:bg-gray-100 transition whitespace-nowrap ${
-      pathname === path ? "bg-gray-200 font-semibold" : ""
-    }`;
-
-  const mobileNavLinkStyle = (path) =>
-    `text-sm font-medium px-4 py-2 rounded hover:bg-gray-100 transition whitespace-nowrap text-center w-full ${
       pathname === path ? "bg-gray-200 font-semibold" : ""
     }`;
 
@@ -50,17 +45,33 @@ export default function Navbar() {
   return (
     <>
       {/* Contact Banner */}
-      <div className="w-full bg-gradient-to-r from-red-50 to-red-100 border-b border-red-200 text-red-700 text-sm py-3 px-6 flex justify-center sm:justify-between items-center">
-          <div className="hidden sm:flex items-center gap-2">
-          <span className="text-red-500">✉️</span>
-          <a href="mailto:admin@lioncitytutors.com" className="font-medium hover:text-red-600">
-          admin@lioncitytutors.com
+      <div className="w-full bg-gradient-to-r from-red-50 to-red-100 border-b border-red-200 text-red-700">
+        {/* Desktop Layout */}
+        <div className="hidden sm:flex justify-between items-center py-2 px-6 text-xs">
+          <a 
+            href="mailto:admin@lioncitytutors.com" 
+            className="flex items-center gap-1.5 font-medium hover:text-red-600 transition-colors"
+          >
+            <Mail size={12} className="text-red-500" />
+            <span>admin@lioncitytutors.com</span>
+          </a>
+          <a 
+            href="tel:+6588701152" 
+            className="flex items-center gap-1.5 font-medium hover:text-red-600 transition-colors"
+          >
+            <Phone size={12} className="text-red-500" />
+            <span>+65 8870 1152</span>
           </a>
         </div>
-        <div className="flex items-center gap-2">
-          <span className="text-red-500">📞</span>
-          <a href="tel:+6588701152" className="font-medium hover:text-red-600">
-            +65 8870 1152
+        
+        {/* Mobile Layout - Single Line */}
+        <div className="sm:hidden flex justify-center items-center px-4 text-sm">
+          <a 
+            href="tel:+6588701152" 
+            className="flex items-center gap-1.5 font-medium hover:text-red-600 transition-colors"
+          >
+            <Phone size={12} className="text-red-500" />
+            <span>+65 8870 1152</span>
           </a>
         </div>
       </div>
@@ -129,65 +140,106 @@ export default function Navbar() {
           {menuOpen ? <X size={28} /> : <Menu size={28} />}
         </button>
 
-        {/* MODIFIED: FULL Mobile Nav Code with new structure */}
         {menuOpen && (
           <div 
-            className="mobile-menu absolute top-full left-0 w-full bg-white shadow-md flex flex-col items-stretch py-4 z-50"
+            className="mobile-menu absolute top-full left-0 w-full bg-white/95 backdrop-blur-md shadow-xl border-t border-gray-100 flex flex-col z-50 animate-slideDown"
             onClick={(e) => e.stopPropagation()} 
           >
-            <div className="px-4 pb-2">
+            {/* CTA Button Section */}
+            <div className="px-6 py-4 border-b border-gray-100">
               <Link
                 href="/request-tutor"
                 onClick={() => setMenuOpen(false)}
-                className="bg-red-500 text-white text-sm px-4 py-2 rounded-full hover:bg-red-600 shadow-md font-semibold block text-center"
+                className="bg-gradient-to-r from-red-500 to-red-600 text-white text-sm px-6 py-3 rounded-full hover:from-red-600 hover:to-red-700 shadow-lg font-semibold block text-center transition-all duration-200 transform hover:scale-[1.02]"
               >
                 📚 Get Free Tutor Matching
               </Link>
             </div>
 
-            <Link href="/" onClick={() => setMenuOpen(false)} className={mobileNavLinkStyle("/")}>
-              Home
-            </Link>
+            {/* Navigation Items */}
+            <div className="py-2">
+              <Link 
+                href="/" 
+                onClick={() => setMenuOpen(false)} 
+                className={`block px-6 py-4 text-base font-medium transition-colors duration-200 ${
+                  pathname === "/" 
+                    ? "bg-red-50 text-red-600 border-r-4 border-red-500" 
+                    : "text-gray-800 hover:bg-gray-50 active:bg-gray-100"
+                }`}
+              >
+                Home
+              </Link>
 
-            <Dropdown
-              label="Levels & Exams"
-              items={levels}
-              open={openDropdown === "levels"}
-              onToggle={() => toggleDropdown("levels")}
-              isMobile
-            />
-            <Dropdown
-              label="Subjects"
-              items={subjects}
-              open={openDropdown === "subjects"}
-              onToggle={() => toggleDropdown("subjects")}
-              isMobile
-            />
-            <Dropdown
-              label="Resources"
-              items={resources}
-              open={openDropdown === "resources"}
-              onToggle={() => toggleDropdown("resources")}
-              isMobile
-            />
-             <Dropdown
-              label="For Parents"
-              items={forParents}
-              open={openDropdown === "parents"}
-              onToggle={() => toggleDropdown("parents")}
-              isMobile
-            />
-             <Dropdown
-              label="For Tutors"
-              items={forTutors}
-              open={openDropdown === "tutors"}
-              onToggle={() => toggleDropdown("tutors")}
-              isMobile
-            />
+              <Dropdown
+                label="Levels & Exams"
+                items={levels}
+                open={openDropdown === "levels"}
+                onToggle={() => toggleDropdown("levels")}
+                isMobile
+              />
+              
+              <Dropdown
+                label="Subjects"
+                items={subjects}
+                open={openDropdown === "subjects"}
+                onToggle={() => toggleDropdown("subjects")}
+                isMobile
+              />
+            
+              <Dropdown
+                label="Free Resources"
+                items={resources}
+                open={openDropdown === "resources"}
+                onToggle={() => toggleDropdown("resources")}
+                isMobile
+              />
+              
+              <Dropdown
+                label="For Parents"
+                items={forParents}
+                open={openDropdown === "parents"}
+                onToggle={() => toggleDropdown("parents")}
+                isMobile
+              />
+              
+              <Dropdown
+                label="For Tutors"
+                items={forTutors}
+                open={openDropdown === "tutors"}
+                onToggle={() => toggleDropdown("tutors")}
+                isMobile
+              />
 
-            <Link href="/tuition-rates" onClick={() => setMenuOpen(false)} className={mobileNavLinkStyle("/tuition-rates")}>
-              Tuition Rates
-            </Link>
+              <Link 
+                href="/tuition-rates" 
+                onClick={() => setMenuOpen(false)} 
+                className={`block px-6 py-4 text-base font-medium transition-colors duration-200 ${
+                  pathname === "/tuition-rates" 
+                    ? "bg-red-50 text-red-600 border-r-4 border-red-500" 
+                    : "text-gray-800 hover:bg-gray-50 active:bg-gray-100"
+                }`}
+              >
+                Tuition Rates
+              </Link>
+            </div>
+
+            {/* Contact Info Footer */}
+            <div className="px-6 py-4 bg-gray-50 border-t border-gray-100 space-y-3">
+              <a 
+                href="tel:+6588701152" 
+                className="flex items-center justify-center gap-3 text-sm text-gray-600 hover:text-red-600 transition-colors font-medium"
+              >
+                <Phone size={16} className="text-red-500" />
+                <span>+65 8870 1152</span>
+              </a>
+              <a 
+                href="mailto:admin@lioncitytutors.com" 
+                className="flex items-center justify-center gap-3 text-sm text-gray-600 hover:text-red-600 transition-colors font-medium"
+              >
+                <Mail size={16} className="text-red-500" />
+                <span>admin@lioncitytutors.com</span>
+              </a>
+            </div>
           </div>
         )}
       </nav>
