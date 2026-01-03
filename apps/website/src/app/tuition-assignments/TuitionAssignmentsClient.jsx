@@ -18,6 +18,9 @@ import {
   LEVEL_SUBJECT_MAPPINGS
 } from '@lioncity/shared/client-exports.js';
 
+// Import components
+import RateInputModal from '../../components/RateInputModal.jsx';
+
 // --- Custom Hooks ---
 const useDebounce = (value, delay) => {
   const [debouncedValue, setDebouncedValue] = useState(value);
@@ -56,16 +59,12 @@ const VerificationModal = ({ isOpen, onClose, onSubmit, selectedAssignments }) =
   const [identifier, setIdentifier] = useState('');
   const [isVerifying, setIsVerifying] = useState(false);
   const [error, setError] = useState('');
-  const [isSuccess, setIsSuccess] = useState(false);
-  const [appliedAssignments, setAppliedAssignments] = useState([]);
 
   useEffect(() => {
     if (isOpen) {
       setIdentifier('');
       setIsVerifying(false);
       setError('');
-      setIsSuccess(false);
-      setAppliedAssignments([]);
     }
   }, [isOpen]);
 
@@ -83,9 +82,6 @@ const VerificationModal = ({ isOpen, onClose, onSubmit, selectedAssignments }) =
       const result = await onSubmit(identifier);
       if (result === 'redirect') {
         onClose();
-      } else if (Array.isArray(result)) {
-        setAppliedAssignments(result);
-        setIsSuccess(true);
       }
     } catch (err) {
       setError(err.message || 'An unexpected error occurred. Please try again.');
@@ -114,71 +110,132 @@ const VerificationModal = ({ isOpen, onClose, onSubmit, selectedAssignments }) =
             aria-modal="true"
             aria-labelledby="modal-title"
           >
-            <div className="relative bg-gradient-to-br from-slate-800 to-slate-900 text-white p-6 rounded-t-2xl">
-              <button onClick={onClose} className="absolute top-4 right-4 text-slate-400 hover:text-white transition-colors p-1 rounded-full hover:bg-white/10" aria-label="Close modal">
+            <div className="relative bg-gradient-to-br from-white to-slate-50 p-6 rounded-t-2xl border-b border-slate-100">
+              <button onClick={onClose} className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 transition-colors p-1 rounded-full hover:bg-slate-100" aria-label="Close modal">
                 <X className="h-5 w-5" />
               </button>
               <div className="text-center">
-                {isSuccess ? (
-                  <>
-                    <div className="mx-auto w-16 h-16 bg-emerald-500/20 rounded-full flex items-center justify-center mb-4 border-2 border-emerald-500">
-                      <CheckCircle className="h-8 w-8 text-emerald-400" />
-                    </div>
-                    <h2 id="modal-title" className="text-2xl font-bold tracking-tight">Application Sent!</h2>
-                  </>
-                ) : (
-                  <>
-                    <div className="mx-auto w-16 h-16 bg-slate-500/20 rounded-full flex items-center justify-center mb-4 border-2 border-slate-500">
-                      <ArrowRight className="h-8 w-8 text-slate-400" />
-                    </div>
-                    <h2 id="modal-title" className="text-2xl font-bold tracking-tight">Final Step: Verify & Apply</h2>
-                  </>
-                )}
+                <div className="mx-auto w-16 h-16 bg-gradient-to-br from-teal-100 to-emerald-100 rounded-full flex items-center justify-center mb-4 border-2 border-teal-200 shadow-sm">
+                  <ArrowRight className="h-8 w-8 text-teal-600" />
+                </div>
+                <h2 id="modal-title" className="text-2xl font-bold tracking-tight text-slate-800">Verify Your Profile</h2>
+                <p className="text-slate-600 mt-2">Quick verification to ensure secure application submission</p>
               </div>
             </div>
-            <div className="px-8 py-6 flex-grow">
-              {isSuccess ? (
-                <div className="space-y-6">
-                  <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-4 text-center">
-                    <p className="text-emerald-800 font-medium">You've successfully applied for {appliedAssignments.length} assignment{appliedAssignments.length !== 1 ? 's' : ''}.</p>
-                    <p className="text-emerald-700 text-sm mt-1">We will notify you via WhatsApp or email shortly.</p>
-                  </div>
-                  <div className="space-y-3 max-h-48 overflow-y-auto pr-2">
-                     {appliedAssignments.map((assignment) => (
-                      <div key={assignment._id} className="bg-slate-50 rounded-lg p-4 border border-slate-200">
-                        <div className="text-center">
-                          <h4 className="font-semibold text-slate-800 text-base">{assignment.title}</h4>
-                          <p className="text-sm text-slate-500 mt-1">{assignment.level} • {assignment.subject}</p>
-                        </div>
-                      </div>
-                     ))}
-                   </div>
-                   <div className="pt-4 border-t border-slate-200">
-                     <button onClick={onClose} className="w-full bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-bold py-3 px-4 rounded-xl transition-all duration-300 transform hover:shadow-lg hover:-translate-y-0.5">
-                       Continue Browsing
-                     </button>
-                   </div>
-                </div>
-              ) : (
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 text-sm text-yellow-800">
-                    <div className="flex items-start">
-                      <Info className="h-5 w-5 text-yellow-600 mr-3 mt-0.5 flex-shrink-0" />
-                      <div>You are applying for <span className="font-bold">{selectedAssignments.length}</span> assignment{selectedAssignments.length !== 1 ? 's' : ''}. We require a quick verification of your tutor profile.</div>
+            <div className="px-8 py-6 flex-grow bg-white">
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="bg-gradient-to-r from-teal-50 to-emerald-50 border border-teal-200 rounded-xl p-4 text-sm">
+                  <div className="flex items-start">
+                    <div className="w-5 h-5 bg-teal-500 rounded-full flex items-center justify-center mr-3 mt-0.5 flex-shrink-0">
+                      <Info className="h-3 w-3 text-white" />
+                    </div>
+                    <div className="text-teal-800">
+                      <p className="font-medium mb-1">Applying for {selectedAssignments.length} assignment{selectedAssignments.length !== 1 ? 's' : ''}</p>
+                      <p className="text-teal-700 text-xs">We'll verify your tutor profile to ensure secure application processing.</p>
                     </div>
                   </div>
-                  <div>
-                    <label htmlFor="identifier" className="block text-sm font-semibold text-slate-700 mb-2">Registered Contact Number or Email</label>
-                    <input id="identifier" type="text" required value={identifier} onChange={(e) => setIdentifier(e.target.value)} placeholder="e.g., 81234567 or tutor@email.com" className="w-full px-4 py-3 border border-slate-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all"/>
+                </div>
+                <div>
+                  <label htmlFor="identifier" className="block text-sm font-semibold text-slate-700 mb-2">
+                    Registered Contact Number or Email
+                  </label>
+                  <input 
+                    id="identifier" 
+                    type="text" 
+                    required 
+                    value={identifier} 
+                    onChange={(e) => setIdentifier(e.target.value)} 
+                    placeholder="e.g., 81234567 or tutor@email.com" 
+                    className="w-full px-4 py-3 border border-slate-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all bg-white"
+                  />
+                </div>
+                {error && (
+                  <div className="bg-red-50 border border-red-200 rounded-xl p-3 flex items-center text-sm" role="alert">
+                    <div className="w-5 h-5 bg-red-500 rounded-full flex items-center justify-center mr-2 flex-shrink-0">
+                      <AlertCircle className="h-3 w-3 text-white" />
+                    </div>
+                    <p className="text-red-700 font-medium">{error}</p>
                   </div>
-                  {error && (<div className="bg-red-50 border border-red-200 rounded-xl p-3 flex items-center text-sm" role="alert"><AlertCircle className="h-5 w-5 text-red-600 mr-2 flex-shrink-0" /><p className="text-red-700 font-medium">{error}</p></div>)}
-                  <button type="submit" disabled={isVerifying} className="w-full bg-gradient-to-r from-teal-600 to-emerald-600 text-white font-bold py-3 px-4 rounded-xl transition-all duration-300 transform hover:shadow-lg hover:-translate-y-0.5 disabled:from-slate-400 disabled:to-slate-500 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center">
-                    {isVerifying && <Loader2 className="animate-spin h-5 w-5 mr-3" />}
-                    {isVerifying ? 'Verifying Profile...' : `Verify & Submit Application (${selectedAssignments.length})`}
-                  </button>
-                  <div className="text-center text-sm text-slate-500 pt-4 border-t border-slate-200">Don't have a tutor profile yet? <a href="/register-tutor" className="font-semibold text-teal-600 hover:text-teal-700 hover:underline ml-1">Register Now</a></div>
-                </form>
-              )}
+                )}
+                <button 
+                  type="submit" 
+                  disabled={isVerifying} 
+                  className="w-full bg-gradient-to-r from-teal-500 to-emerald-500 hover:from-teal-600 hover:to-emerald-600 text-white font-bold py-3 px-4 rounded-xl transition-all duration-300 transform hover:shadow-lg hover:-translate-y-0.5 disabled:from-slate-400 disabled:to-slate-500 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center shadow-md"
+                >
+                  {isVerifying && <Loader2 className="animate-spin h-5 w-5 mr-3" />}
+                  {isVerifying ? 'Verifying Profile...' : `Verify & Continue (${selectedAssignments.length})`}
+                </button>
+                <div className="text-center text-sm text-slate-500 pt-4 border-t border-slate-100">
+                  Don't have a tutor profile yet? 
+                  <a href="/register-tutor" className="font-semibold text-teal-600 hover:text-teal-700 hover:underline ml-1 transition-colors">
+                    Register Now
+                  </a>
+                </div>
+              </form>
+            </div>
+          </motion.div>
+        </div>
+      )}
+    </AnimatePresence>
+  );
+};
+
+// --- Success Modal Component ---
+const SuccessModal = ({ isOpen, onClose, appliedAssignments }) => {
+  const modalVariants = {
+    hidden: { opacity: 0, scale: 0.95, y: 20 },
+    visible: { opacity: 1, scale: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 30 } },
+    exit: { opacity: 0, scale: 0.9, y: -20, transition: { duration: 0.2 } }
+  };
+
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center z-[100] p-4">
+          <motion.div
+            variants={modalVariants}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+            className="bg-white rounded-2xl max-w-lg w-full shadow-2xl transform transition-all max-h-[90vh] overflow-y-auto flex flex-col"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="success-modal-title"
+          >
+            <div className="relative bg-gradient-to-br from-emerald-50 to-teal-50 p-6 rounded-t-2xl border-b border-emerald-100">
+              <button onClick={onClose} className="absolute top-4 right-4 text-emerald-400 hover:text-emerald-600 transition-colors p-1 rounded-full hover:bg-emerald-100" aria-label="Close modal">
+                <X className="h-5 w-5" />
+              </button>
+              <div className="text-center">
+                <div className="mx-auto w-16 h-16 bg-gradient-to-br from-emerald-100 to-teal-100 rounded-full flex items-center justify-center mb-4 border-2 border-emerald-300 shadow-sm">
+                  <CheckCircle className="h-8 w-8 text-emerald-600" />
+                </div>
+                <h2 id="success-modal-title" className="text-2xl font-bold tracking-tight text-emerald-800">Applications Submitted!</h2>
+                <p className="text-emerald-700 mt-2">Your applications have been sent successfully</p>
+              </div>
+            </div>
+            <div className="px-8 py-6 flex-grow bg-white">
+              <div className="space-y-6">
+                <div className="bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200 rounded-xl p-4 text-center">
+                  <p className="text-emerald-800 font-medium">You've successfully applied for {appliedAssignments.length} assignment{appliedAssignments.length !== 1 ? 's' : ''}.</p>
+                  <p className="text-emerald-700 text-sm mt-1">We will notify you via WhatsApp or email shortly.</p>
+                </div>
+                <div className="space-y-3 max-h-48 overflow-y-auto pr-2">
+                   {appliedAssignments.map((assignment) => (
+                    <div key={assignment._id} className="bg-slate-50 rounded-lg p-4 border border-slate-200">
+                      <div className="text-center">
+                        <h4 className="font-semibold text-slate-800 text-base">{assignment.title}</h4>
+                        <p className="text-sm text-slate-500 mt-1">{assignment.level} • {assignment.subject}</p>
+                      </div>
+                    </div>
+                   ))}
+                 </div>
+                 <div className="pt-4 border-t border-slate-100">
+                   <button onClick={onClose} className="w-full bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-bold py-3 px-4 rounded-xl transition-all duration-300 transform hover:shadow-lg hover:-translate-y-0.5 shadow-md">
+                     Continue Browsing
+                   </button>
+                 </div>
+              </div>
             </div>
           </motion.div>
         </div>
@@ -260,18 +317,13 @@ const AssignmentCard = memo(({ assignment, isSelected, isExpanded, onSelect, onT
                   <span className="inline-flex items-center px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-lg text-xs font-medium bg-purple-50 text-purple-700 border border-purple-100">
                     {assignment.subject}
                   </span>
+                  <span className="inline-flex items-center px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-lg text-xs font-medium bg-orange-50 text-orange-700 border border-orange-100">
+                    📍 {assignment.location}
+                  </span>
                 </div>
 
-                {/* Location and frequency - mobile stacked, desktop grid */}
-                <div className="space-y-2 sm:grid sm:grid-cols-2 sm:gap-3 sm:space-y-0">
-                  <div className="flex items-center gap-2 text-sm text-slate-600">
-                    <div className="w-4 h-4 rounded-full bg-emerald-100 flex items-center justify-center flex-shrink-0">
-                      <svg className="w-2.5 h-2.5 text-emerald-600" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
-                      </svg>
-                    </div>
-                    <span className="truncate">{assignment.location}</span>
-                  </div>
+                {/* Frequency - mobile stacked, desktop single column */}
+                <div className="space-y-2">
                   <div className="flex items-center gap-2 text-sm text-slate-600">
                     <div className="w-4 h-4 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
                       <svg className="w-2.5 h-2.5 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
@@ -421,9 +473,14 @@ export default function TuitionAssignmentsClient({ initialAssignments }) {
   const [searchKeyword, setSearchKeyword] = useState('');
   const [levelFilter, setLevelFilter] = useState('');
   const [subjectFilter, setSubjectFilter] = useState('');
-  const [showModal, setShowModal] = useState(false);
+  const [showVerificationModal, setShowVerificationModal] = useState(false);
+  const [showRateModal, setShowRateModal] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [expandedAssignments, setExpandedAssignments] = useState(new Set());
   const [currentPage, setCurrentPage] = useState(1);
+  const [verifiedTutorData, setVerifiedTutorData] = useState(null);
+  const [appliedAssignments, setAppliedAssignments] = useState([]);
+  const [isSubmittingApplication, setIsSubmittingApplication] = useState(false);
   const ASSIGNMENTS_PER_PAGE = 12;
 
   const debouncedSearchKeyword = useDebounce(searchKeyword, 300);
@@ -555,7 +612,7 @@ export default function TuitionAssignmentsClient({ initialAssignments }) {
     }
   };
 
-  const handleApplyClick = () => selectedAssignments.length > 0 && setShowModal(true);
+  const handleApplyClick = () => selectedAssignments.length > 0 && setShowVerificationModal(true);
 
   const handleVerifyAndSubmit = async (identifier) => {
     const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:4000';
@@ -568,27 +625,58 @@ export default function TuitionAssignmentsClient({ initialAssignments }) {
       if (!verifyResponse.ok) throw new Error('Verification failed. Check your details.');
       const verificationData = await verifyResponse.json();
       if (verificationData.exists) {
-        const applyResponse = await fetch(`${backendUrl}/api/assignments/apply`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ assignmentIds: selectedAssignments, tutorId: verificationData.tutor.id }),
-        });
-        if (!applyResponse.ok) throw new Error('Application submission failed.');
-        const appliedAssignmentsData = allAssignments.filter(a => selectedAssignments.includes(a._id));
-        setSelectedAssignments([]);
-        return appliedAssignmentsData;
+        setVerifiedTutorData(verificationData.tutor);
+        setShowVerificationModal(false);
+        setShowRateModal(true);
       } else {
         alert('Tutor profile not found. Redirecting to registration...');
         router.push('/register-tutor');
         return 'redirect';
       }
     } catch (error) {
-      console.error('Application error:', error);
+      console.error('Verification error:', error);
       throw error;
     }
   };
 
-  const closeModal = () => setShowModal(false);
+  const handleRateSubmission = async (rates) => {
+    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:4000';
+    setIsSubmittingApplication(true);
+    
+    try {
+      const applyResponse = await fetch(`${backendUrl}/api/assignments/apply`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          assignmentIds: selectedAssignments, 
+          tutorId: verifiedTutorData.id,
+          rates: rates
+        }),
+      });
+      
+      if (!applyResponse.ok) throw new Error('Application submission failed.');
+      
+      const appliedAssignmentsData = allAssignments.filter(a => selectedAssignments.includes(a._id));
+      setAppliedAssignments(appliedAssignmentsData);
+      setSelectedAssignments([]);
+      setShowRateModal(false);
+      setShowSuccessModal(true);
+      setVerifiedTutorData(null);
+    } catch (error) {
+      console.error('Application error:', error);
+      throw error;
+    } finally {
+      setIsSubmittingApplication(false);
+    }
+  };
+
+  const closeAllModals = () => {
+    setShowVerificationModal(false);
+    setShowRateModal(false);
+    setShowSuccessModal(false);
+    setVerifiedTutorData(null);
+    setAppliedAssignments([]);
+  };
   const resetFilters = () => {
     setLevelFilter('');
     setSubjectFilter('');
@@ -672,16 +760,34 @@ export default function TuitionAssignmentsClient({ initialAssignments }) {
               </div>
             )}
           </section>
-          <VerificationModal isOpen={showModal} onClose={closeModal} onSubmit={handleVerifyAndSubmit} selectedAssignments={selectedAssignments}/>
+          <VerificationModal 
+            isOpen={showVerificationModal} 
+            onClose={closeAllModals} 
+            onSubmit={handleVerifyAndSubmit} 
+            selectedAssignments={selectedAssignments}
+          />
+          <RateInputModal
+            isOpen={showRateModal}
+            onClose={closeAllModals}
+            onSubmit={handleRateSubmission}
+            selectedAssignments={allAssignments.filter(a => selectedAssignments.includes(a._id))}
+            tutorData={verifiedTutorData}
+            isSubmitting={isSubmittingApplication}
+          />
+          <SuccessModal
+            isOpen={showSuccessModal}
+            onClose={closeAllModals}
+            appliedAssignments={appliedAssignments}
+          />
           <AnimatePresence>
-            {!showModal && selectedAssignments.length > 0 && (
-                <motion.div initial={{ y: 100, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 100, opacity: 0 }} transition={{ type: "spring", stiffness: 200, damping: 25 }} className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-slate-800/90 backdrop-blur-lg border border-slate-700 shadow-2xl z-50 rounded-2xl overflow-hidden w-[95%] max-w-2xl">
-                    <div className="flex items-center justify-between p-4">
+            {!showVerificationModal && !showRateModal && !showSuccessModal && selectedAssignments.length > 0 && (
+                <motion.div initial={{ y: 100, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 100, opacity: 0 }} transition={{ type: "spring", stiffness: 200, damping: 25 }} className="fixed bottom-6 left-4 right-4 sm:left-1/2 sm:right-auto sm:-translate-x-1/2 bg-slate-800/90 backdrop-blur-lg border border-slate-700 shadow-2xl z-50 rounded-2xl overflow-hidden sm:w-[95%] sm:max-w-2xl">
+                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between p-4 gap-3 sm:gap-0">
                         <div className="flex items-center space-x-4">
                             <span className="text-lg font-bold text-white">{selectedAssignments.length} Assignment{selectedAssignments.length !== 1 ? 's' : ''} Selected</span>
                             <button onClick={() => setSelectedAssignments([])} className="text-sm text-slate-400 hover:text-white transition">Clear</button>
                         </div>
-                        <button onClick={handleApplyClick} className="font-bold py-3 px-6 rounded-xl transition-all duration-300 transform bg-gradient-to-r from-teal-500 to-emerald-500 hover:shadow-xl hover:scale-105 text-white flex items-center gap-2">
+                        <button onClick={handleApplyClick} className="font-bold py-3 px-6 rounded-xl transition-all duration-300 transform bg-gradient-to-r from-teal-500 to-emerald-500 hover:shadow-xl hover:scale-105 text-white flex items-center justify-center gap-2 w-full sm:w-auto">
                             Apply Now <ArrowRight className="h-5 w-5"/>
                         </button>
                     </div>

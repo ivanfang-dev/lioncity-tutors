@@ -565,48 +565,87 @@ app.post('/api/tutors/verify', async (req, res) => {
  * @access  Public (Relies on verified tutorId)
  */
 app.post('/api/assignments/apply', async (req, res) => {
-  const { assignmentIds, tutorId } = req.body;
+  const { assignmentIds, tutorId, rates } = req.body;
 
   if (!Array.isArray(assignmentIds) || assignmentIds.length === 0 || !tutorId) {
     return res.status(400).json({ error: 'Missing assignment IDs or tutor ID.' });
   }
 
+  // Validate rates if provided
+  if (rates && typeof rates !== 'object') {
+    return res.status(400).json({ error: 'Rates must be an object mapping assignment IDs to rate values.' });
+  }
+
   try {
     // STEP 1: Fetch the full tutor profile to get their details
-    // RENAMED from tutorExists to tutor for clarity
     const tutor = await Tutor.findById(tutorId).lean(); // .lean() for performance
     if (!tutor) {
       return res.status(404).json({ error: 'Tutor profile not found.' });
     }
 
-    // STEP 2: Construct the detailed applicant object, just like your bot does
-    // NEW applicant object
-    const newApplicant = {
-      tutorId: tutor._id,
-      status: 'Pending',
-      appliedAt: new Date(),
-      contactDetails: tutor.contactNumber || 'N/A', // Add a fallback
-      notes: `Applied via API by ${tutor.fullName}`
-    };
+    // STEP 2: Process each assignment individually to handle different rates
+    let successCount = 0;
+    const errors = [];
 
-    // STEP 3: Update the query to prevent duplicate applications
-    // The filter now checks that the tutorId is NOT already in the applicants array
-    // The update operation now pushes the full 'newApplicant' object
-    const result = await Assignment.updateMany(
-      { 
-        _id: { $in: assignmentIds },
-        'applicants.tutorId': { $ne: tutor._id } // IMPORTANT: Prevents duplicates
-      },
-      { 
-        $push: { applicants: newApplicant } // Use $push as the filter handles uniqueness
+    for (const assignmentId of assignmentIds) {
+      try {
+        // Check if tutor already applied to this assignment
+        const existingApplication = await Assignment.findOne({
+          _id: assignmentId,
+          'applicants.tutorId': tutor._id
+        });
+
+        if (existingApplication) {
+          continue; // Skip if already applied
+        }
+
+        // Construct the applicant object with rate if provided
+        const newApplicant = {
+          tutorId: tutor._id,
+          status: 'Pending',
+          appliedAt: new Date(),
+          contactDetails: tutor.contactNumber || 'N/A',
+          notes: `Applied via website by ${tutor.fullName}`
+        };
+
+        // Add rate if provided for this assignment
+        if (rates && rates[assignmentId]) {
+          newApplicant.rate = rates[assignmentId];
+        }
+
+        // Update the assignment
+        const result = await Assignment.updateOne(
+          { 
+            _id: assignmentId,
+            'applicants.tutorId': { $ne: tutor._id } // Double-check to prevent duplicates
+          },
+          { 
+            $push: { applicants: newApplicant }
+          }
+        );
+
+        if (result.modifiedCount > 0) {
+          successCount++;
+        }
+      } catch (assignmentError) {
+        console.error(`Error applying to assignment ${assignmentId}:`, assignmentError);
+        errors.push(`Failed to apply to assignment ${assignmentId}`);
       }
-    );
+    }
 
-    if (result.modifiedCount > 0) {
-      res.status(200).json({ success: true, message: `Successfully applied to ${result.modifiedCount} new assignment(s).` });
+    if (successCount > 0) {
+      res.status(200).json({ 
+        success: true, 
+        message: `Successfully applied to ${successCount} new assignment(s).`,
+        appliedCount: successCount,
+        errors: errors.length > 0 ? errors : undefined
+      });
     } else {
-      // This now correctly means the user has already applied to all selected assignments
-      res.status(200).json({ success: true, message: 'You have already applied for the selected assignment(s).' });
+      res.status(200).json({ 
+        success: true, 
+        message: 'You have already applied for the selected assignment(s).',
+        appliedCount: 0
+      });
     }
 
   } catch (err) {
