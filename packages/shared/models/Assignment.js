@@ -89,6 +89,11 @@ const assignmentSchema = new mongoose.Schema({
     notes: {
       type: String,
       trim: true
+    },
+    rate: {
+      type: String,
+      required: false,
+      trim: true
     }
   }],
   

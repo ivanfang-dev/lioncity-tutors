@@ -1,6 +1,20 @@
 import { EDUCATION_LEVELS, getSubjectsForLevel, RATE_MAPPINGS } from '../../../packages/shared/index.js';
+import RateValidator from '../utils/RateValidator.js';
+import ErrorHandler from '../utils/ErrorHandler.js';
 
 /* global process */
+
+// Application states for session management
+const ApplicationStates = {
+  IDLE: 'idle',
+  AWAITING_CONTACT: 'awaiting_contact',
+  AWAITING_RATE: 'awaiting_rate',
+  VERIFIED: 'verified',
+  CREATING_ASSIGNMENT: 'creating_assignment',
+  EDITING_BIO: 'editing_bio',
+  EDITING_EXPERIENCE: 'editing_experience',
+  EDITING_QUALIFICATIONS: 'editing_qualifications'
+};
 
 function normalizePhone(phone) {
   console.log('normalizePhone - Input:', phone);
@@ -248,7 +262,7 @@ async function handleBioEdit(bot, chatId, text, userSessions, Tutor) {
     tutor.bio = text;
     await tutor.save();
     
-    session.state = 'idle';
+    session.state = ApplicationStates.IDLE;
     await safeSend(bot, chatId, '✅ Bio updated successfully!');
     return await showProfileEditMenu();
   } catch (error) {
@@ -265,7 +279,7 @@ async function handleExperienceEdit(bot, chatId, text, userSessions, Tutor) {
     tutor.teachingExperience = text;
     await tutor.save();
     
-    session.state = 'idle';
+    session.state = ApplicationStates.IDLE;
     await safeSend(bot, chatId, '✅ Experience updated successfully!');
     return await showProfileEditMenu();
   } catch (error) {
@@ -282,7 +296,7 @@ async function handleQualificationsEdit(bot, chatId, text, userSessions, Tutor) 
     tutor.qualifications = text;
     await tutor.save();
     
-    session.state = 'idle';
+    session.state = ApplicationStates.IDLE;
     await safeSend(bot, chatId, '✅ Qualifications updated successfully!');
     return await showProfileEditMenu();
   } catch (error) {
@@ -291,6 +305,153 @@ async function handleQualificationsEdit(bot, chatId, text, userSessions, Tutor) 
   }
 }
 
+// Handle rate input during application process
+async function handleRateInput(bot, chatId, text, userSessions, Assignment, Tutor) {
+  try {
+    const session = userSessions[chatId];
+    
+    // Enhanced session validation
+    if (!ErrorHandler.isSessionValid(session)) {
+      await ErrorHandler.handleSessionTimeout(bot, chatId, userSessions);
+      return;
+    }
+
+    // Update session activity
+    ErrorHandler.updateSessionActivity(session);
+
+    // Validate that we have the necessary session data
+    if (!session.tutorId || !session.pendingAssignmentId) {
+      await ErrorHandler.handleSessionTimeout(bot, chatId, userSessions);
+      return;
+    }
+
+    // Handle cancellation during rate input
+    if (text.toLowerCase().trim() === 'cancel' || text.toLowerCase().trim() === '/cancel') {
+      try {
+        // Return to assignment details view as per requirement 5.3
+        const assignment = await Assignment.findById(session.pendingAssignmentId);
+        
+        if (assignment) {
+          // Clear rate input state and return to assignment details
+          session.state = ApplicationStates.IDLE;
+          delete session.pendingRate;
+          
+          // Show assignment details with apply button
+          const assignmentMsg = formatAssignment(assignment);
+          await safeSend(bot, chatId, 
+            `🎯 *Assignment Details*\n\n${assignmentMsg}`, 
+            {
+              parse_mode: 'Markdown',
+              reply_markup: {
+                inline_keyboard: [
+                  [{ text: '📝 Apply for Assignment', callback_data: `apply_assignment_${assignment._id}` }],
+                  [{ text: '🔙 Back to Assignments', callback_data: 'view_assignments' }],
+                  [{ text: '🏠 Main Menu', callback_data: 'main_menu' }]
+                ]
+              }
+            }
+          );
+          return;
+        } else {
+          await ErrorHandler.handleAssignmentNotFound(bot, chatId, userSessions, session.pendingAssignmentId);
+          return;
+        }
+      } catch (dbError) {
+        const errorType = await ErrorHandler.handleDatabaseError(dbError, bot, chatId, 'assignment lookup during cancellation');
+        if (errorType === 'network_error') {
+          // For network errors, clear session and return to main menu
+          session.state = ApplicationStates.IDLE;
+          delete session.pendingAssignmentId;
+          delete session.pendingRate;
+        }
+        return;
+      }
+    }
+
+    // Validate the rate input using RateValidator
+    const validation = RateValidator.validate(text);
+    
+    if (!validation.valid) {
+      // Re-prompt with error message using the dedicated prompt function
+      await safeSend(bot, chatId, `❌ ${validation.error}`);
+      await sendRateInputPrompt(bot, chatId);
+      return;
+    }
+
+    // Store the validated rate in session
+    session.pendingRate = validation.rate;
+
+    // Show warning if rate is outside typical range
+    if (validation.warning) {
+      await safeSend(bot, chatId, `⚠️ ${validation.warning}`);
+    }
+
+    // Get assignment and tutor details for confirmation screen with error handling
+    let assignment, tutor;
+    
+    try {
+      assignment = await Assignment.findById(session.pendingAssignmentId);
+    } catch (dbError) {
+      await ErrorHandler.handleDatabaseError(dbError, bot, chatId, 'assignment retrieval');
+      return;
+    }
+
+    try {
+      tutor = await Tutor.findById(session.tutorId);
+    } catch (dbError) {
+      await ErrorHandler.handleDatabaseError(dbError, bot, chatId, 'tutor profile retrieval');
+      return;
+    }
+
+    // Handle assignment not found
+    if (!assignment) {
+      await ErrorHandler.handleAssignmentNotFound(bot, chatId, userSessions, session.pendingAssignmentId);
+      return;
+    }
+
+    // Handle tutor not found
+    if (!tutor) {
+      await ErrorHandler.handleTutorNotFound(bot, chatId, userSessions);
+      return;
+    }
+
+    // Transition to confirmation screen
+    session.state = ApplicationStates.VERIFIED;
+
+    // Format confirmation message with rate included
+    const profileMsg = formatTutorProfileSummary(tutor);
+    const assignmentMsg = formatAssignment(assignment);
+    
+    await safeSend(bot, chatId, 
+      `📋 ${profileMsg}\n\n` +
+      `ℹ️ Your *Introduction* and *Teaching Experience* is not shown here to avoid long messages. If you want to review or edit them, please click *Update Profile* in the menu.\n\n` +
+      `🎯 *Assignment Details*\n\n${assignmentMsg}\n\n` +
+      `💰 *Your Rate*\n${validation.formatted}\n\n` +
+      `Please review your profile, the assignment details, and your rate above. Would you like to update your profile or proceed with the application?`, 
+      {
+        parse_mode: 'Markdown',
+        reply_markup: {
+          inline_keyboard: [
+            [{ text: '📝 Update Profile', callback_data: 'profile_edit' }],
+            [{ text: '✅ Confirm Application', callback_data: `confirm_apply_${assignment._id}` }],
+            [{ text: '🏠 Main Menu', callback_data: 'main_menu' }]
+          ]
+        }
+      }
+    );
+
+  } catch (error) {
+    console.error('Unexpected error in handleRateInput:', error);
+    await safeSend(bot, chatId, '❌ An unexpected error occurred. Please try again or contact support.');
+    
+    // Reset session state on unexpected error
+    if (userSessions[chatId]) {
+      userSessions[chatId].state = ApplicationStates.IDLE;
+      delete userSessions[chatId].pendingRate;
+      delete userSessions[chatId].pendingAssignmentId;
+    }
+  }
+}
 // Menu functions
 function showProfileEditMenu() {
   // This should return a keyboard object, NOT call safeSend
@@ -854,6 +1015,30 @@ function getHourlyRatesMenu(tutor) {
 
 const ITEMS_PER_PAGE = 5;
 
+// Send rate input prompt message
+async function sendRateInputPrompt(bot, chatId) {
+  await safeSend(bot, chatId, 
+    `💰 *Please enter your tuition rate for this assignment*\n\n` +
+    `📝 *Format Examples:*\n` +
+    `• 30 (will be formatted as $30/hr)\n` +
+    `• $30 (will be formatted as $30/hr)\n` +
+    `• 30/hr (will be formatted as $30/hr)\n` +
+    `• $30/hr (will be formatted as $30/hr)\n` +
+    `• 30.50 (will be formatted as $30.50/hr)\n\n` +
+    `⚠️ *Note:* Rates below $10/hr or above $200/hr will show a warning but are still accepted.\n\n` +
+    `Please enter your rate:`, 
+    {
+      parse_mode: 'Markdown',
+      reply_markup: {
+        inline_keyboard: [
+          [{ text: '🔙 Back to Assignment Details', callback_data: 'back_to_assignment' }],
+          [{ text: '❌ Cancel', callback_data: 'main_menu' }]
+        ]
+      }
+    }
+  );
+}
+
 // Safe send function with enhanced logging
 function safeSend(bot, chatId, text, options = {}) {
   // Convert text to string if it's not already
@@ -888,9 +1073,10 @@ async function handleStart(bot, chatId, userId, Tutor, userSessions, startParam 
     // Prepare updated session without overwriting everything
     const updatedSession = {
       ...existingSession,
-      state: 'awaiting_contact',
+      state: ApplicationStates.AWAITING_CONTACT,
       userId,
-      startParam
+      startParam,
+      pendingRate: null  // Initialize pendingRate field
     };
 
     // If it's an application, extract assignment ID
@@ -954,8 +1140,9 @@ async function handleContact(bot, chatId, userId, contact, Tutor, userSessions, 
     userSessions[chatId] = {
       ...currentSession,
       tutorId: tutor._id,
-      state: 'verified',
-      fullName: tutor.fullName
+      state: ApplicationStates.VERIFIED,
+      fullName: tutor.fullName,
+      pendingRate: currentSession.pendingRate || null  // Preserve or initialize pendingRate
     };
     
     // Check for pending applications
@@ -989,6 +1176,7 @@ async function handleContact(bot, chatId, userId, contact, Tutor, userSessions, 
         `📋 ${profileMsg}\n\n` +
         `ℹ️ Your *Introduction* and *Teaching Experience* is not shown here to avoid long messages. If you want to review or edit them, please click *Update Profile* in the menu.\n\n` +
         `🎯 *Assignment Details*\n\n${assignmentMsg}\n\n` +
+        (currentSession.pendingRate ? `💰 *Your Rate*\n$${currentSession.pendingRate}/hr\n\n` : '') +
         `Please review your profile and the assignment details above. Would you like to update your profile or proceed with the application?`, 
         {
           parse_mode: 'Markdown',
@@ -1081,9 +1269,10 @@ async function showAdminPanel(chatId, bot) {
 async function startAssignmentCreation(bot, chatId, userSessions) {
   userSessions[chatId] = {
     ...userSessions[chatId],
-    state: 'creating_assignment',
+    state: ApplicationStates.CREATING_ASSIGNMENT,
     assignmentData: {},
-    currentStep: 'title'
+    currentStep: 'title',
+    pendingRate: userSessions[chatId]?.pendingRate || null  // Preserve pendingRate
   };
   
   await safeSend(bot, chatId, '🎯 *Creating New Assignment*\n\nStep 1 of 7: Enter the assignment title:', {
@@ -1417,22 +1606,42 @@ async function postAssignmentToChannel(bot, assignment, channelId, botUsername) 
   }
 }
 
-// Handle assignment applications
-async function handleApplication(bot, chatId, userId, assignmentId, Assignment, Tutor, userSessions) {
+// Handle assignment application start - prompts for rate first with comprehensive error handling
+async function handleApplicationStart(bot, chatId, userId, assignmentId, Assignment, Tutor, userSessions) {
   try {
-    if (!userSessions[chatId]?.tutorId) {
+    const session = userSessions[chatId];
+    
+    // Enhanced session validation
+    if (!ErrorHandler.isSessionValid(session)) {
+      await ErrorHandler.handleSessionTimeout(bot, chatId, userSessions);
+      return;
+    }
+
+    // Update session activity
+    ErrorHandler.updateSessionActivity(session);
+
+    if (!session.tutorId) {
       console.warn(`🚫 tutorId missing in session for chatId ${chatId}`);
-      return await safeSend(bot, chatId, '❌ Please start with /start and share your contact before applying.');
+      await ErrorHandler.handleTutorNotFound(bot, chatId, userSessions);
+      return;
     }
     
-    const assignment = await Assignment.findById(assignmentId);
+    // Get assignment with error handling
+    let assignment;
+    try {
+      assignment = await Assignment.findById(assignmentId);
+    } catch (dbError) {
+      await ErrorHandler.handleDatabaseError(dbError, bot, chatId, 'assignment retrieval for application start');
+      return;
+    }
+    
     if (!assignment) {
-      await safeSend(bot, chatId, '❌ Assignment not found or may have been removed.');
+      await ErrorHandler.handleAssignmentNotFound(bot, chatId, userSessions, assignmentId);
       return;
     }
     
     if (assignment.status !== 'Open') {
-      await safeSend(bot, chatId, '❌ This assignment is no longer available.');
+      await safeSend(bot, chatId, '❌ This assignment is no longer accepting applications.');
       return;
     }
     
@@ -1441,42 +1650,161 @@ async function handleApplication(bot, chatId, userId, assignmentId, Assignment, 
       assignment.applicants = [];
     }
     
-    // Check if user already applied (using 'applicants' not 'applications')
-    const existingApplication = assignment.applicants.find(app => app.tutorId.toString() === userSessions[chatId].tutorId);
+    // Check if user already applied
+    const existingApplication = assignment.applicants.find(app => 
+      app.tutorId.toString() === session.tutorId.toString()
+    );
     if (existingApplication) {
       await safeSend(bot, chatId, '⚠️ You have already applied for this assignment.');
       return;
     }
     
-    // Get tutor details
-    const tutor = await Tutor.findById(userSessions[chatId].tutorId);
-    if (!tutor) {
-      await safeSend(bot, chatId, '❌ Please complete your profile before applying.');
+    // Get tutor details with error handling
+    let tutor;
+    try {
+      tutor = await Tutor.findById(session.tutorId);
+    } catch (dbError) {
+      await ErrorHandler.handleDatabaseError(dbError, bot, chatId, 'tutor profile retrieval for application start');
       return;
     }
     
-    // Add application to applicants array
-    assignment.applicants.push({
+    if (!tutor) {
+      await ErrorHandler.handleTutorNotFound(bot, chatId, userSessions);
+      return;
+    }
+    
+    // Set up session for rate collection
+    session.pendingAssignmentId = assignmentId;
+    session.state = ApplicationStates.AWAITING_RATE;
+    
+    // Prompt for tuition rate using dedicated function
+    await sendRateInputPrompt(bot, chatId);
+    
+  } catch (error) {
+    console.error('Unexpected error in handleApplicationStart:', error);
+    await safeSend(bot, chatId, '❌ An unexpected error occurred while starting your application. Please try again or contact support.');
+    
+    // Reset session state on unexpected error
+    if (userSessions[chatId]) {
+      userSessions[chatId].state = ApplicationStates.IDLE;
+      delete userSessions[chatId].pendingRate;
+      delete userSessions[chatId].pendingAssignmentId;
+    }
+  }
+}
+
+// Handle assignment applications
+// Handle assignment applications with comprehensive error handling
+async function handleApplication(bot, chatId, userId, assignmentId, Assignment, Tutor, userSessions) {
+  try {
+    const session = userSessions[chatId];
+    
+    // Enhanced session validation
+    if (!ErrorHandler.isSessionValid(session)) {
+      await ErrorHandler.handleSessionTimeout(bot, chatId, userSessions);
+      return;
+    }
+
+    // Update session activity
+    ErrorHandler.updateSessionActivity(session);
+
+    if (!session.tutorId) {
+      console.warn(`🚫 tutorId missing in session for chatId ${chatId}`);
+      await ErrorHandler.handleTutorNotFound(bot, chatId, userSessions);
+      return;
+    }
+    
+    // Get assignment with error handling
+    let assignment;
+    try {
+      assignment = await Assignment.findById(assignmentId);
+    } catch (dbError) {
+      await ErrorHandler.handleDatabaseError(dbError, bot, chatId, 'assignment retrieval for application');
+      return;
+    }
+    
+    if (!assignment) {
+      await ErrorHandler.handleAssignmentNotFound(bot, chatId, userSessions, assignmentId);
+      return;
+    }
+    
+    if (assignment.status !== 'Open') {
+      await safeSend(bot, chatId, '❌ This assignment is no longer accepting applications.');
+      return;
+    }
+    
+    // Initialize applicants array if it doesn't exist (safety check)
+    if (!assignment.applicants) {
+      assignment.applicants = [];
+    }
+    
+    // Check if user already applied
+    const existingApplication = assignment.applicants.find(app => 
+      app.tutorId.toString() === session.tutorId.toString()
+    );
+    if (existingApplication) {
+      await safeSend(bot, chatId, '⚠️ You have already applied for this assignment.');
+      return;
+    }
+    
+    // Get tutor details with error handling
+    let tutor;
+    try {
+      tutor = await Tutor.findById(session.tutorId);
+    } catch (dbError) {
+      await ErrorHandler.handleDatabaseError(dbError, bot, chatId, 'tutor profile retrieval for application');
+      return;
+    }
+    
+    if (!tutor) {
+      await ErrorHandler.handleTutorNotFound(bot, chatId, userSessions);
+      return;
+    }
+    
+    // Prepare application data
+    const applicationData = {
       tutorId: tutor._id,
-      status: 'Pending', // This matches your schema enum
+      status: 'Pending',
       appliedAt: new Date(),
-      contactDetails: tutor.contactNumber, // Store contact info as per schema
-      notes: `Applied via bot by ${tutor.fullName}`
-    });
+      contactDetails: tutor.contactNumber,
+      notes: `Applied via bot by ${tutor.fullName}`,
+      rate: session.pendingRate || null
+    };
     
-    await assignment.save();
+    // Use enhanced application submission with retry logic
+    const success = await ErrorHandler.handleApplicationSubmissionWithRetry(
+      bot, chatId, userSessions, Assignment, assignmentId, applicationData
+    );
     
+    if (!success) {
+      return; // Error already handled by the retry function
+    }
+    
+    // Clear session data after successful submission
+    delete session.pendingRate;
+    delete session.pendingAssignmentId;
+    session.state = ApplicationStates.IDLE;
+    
+    // Show success message
     const assignmentMsg = formatAssignment(assignment);
-    await safeSend(bot, chatId, `✅ *Application Submitted Successfully!*\n\n${assignmentMsg}\n\n📝 *Application Status:* Pending\n⏰ *Applied At:* ${new Date().toLocaleString('en-SG')}`, {
-      parse_mode: 'Markdown'
-    });
+    await safeSend(bot, chatId, 
+      `✅ *Application Submitted Successfully!*\n\n${assignmentMsg}\n\n📝 *Application Status:* Pending\n⏰ *Applied At:* ${new Date().toLocaleString('en-SG')}`, 
+      { parse_mode: 'Markdown' }
+    );
     
     // Show main menu
     await showMainMenu(chatId, bot, userId, process.env.ADMIN_USERS?.split(',') || []);
     
   } catch (error) {
-    console.error('Error handling application:', error);
-    await safeSend(bot, chatId, '❌ An error occurred while submitting your application. Please try again.');
+    console.error('Unexpected error in handleApplication:', error);
+    await safeSend(bot, chatId, '❌ An unexpected error occurred while submitting your application. Please try again or contact support.');
+    
+    // Reset session state on unexpected error
+    if (userSessions[chatId]) {
+      userSessions[chatId].state = ApplicationStates.IDLE;
+      delete userSessions[chatId].pendingRate;
+      delete userSessions[chatId].pendingAssignmentId;
+    }
   }
 }
 
@@ -1698,7 +2026,7 @@ async function handleAgeEdit(bot, chatId, text, userSessions, Tutor) {
     tutor.age = age;
     await tutor.save();
     
-    session.state = 'idle';
+    session.state = ApplicationStates.IDLE;
     return await safeSend(bot, chatId, `✅ Age updated to *${age}*`, {
       parse_mode: 'Markdown',
       reply_markup: getPersonalInfoMenu(tutor)
@@ -1725,7 +2053,7 @@ async function handleFullNameEdit(bot, chatId, text, userSessions, Tutor) {
     tutor.fullName = text.trim();
     await tutor.save();
     
-    session.state = 'idle';
+    session.state = ApplicationStates.IDLE;
     return await safeSend(bot, chatId, `✅ Full name updated to *${tutor.fullName}*`, {
       parse_mode: 'Markdown',
       reply_markup: getPersonalInfoMenu(tutor)
@@ -1754,7 +2082,7 @@ async function handleContactNumberEdit(bot, chatId, text, userSessions, Tutor) {
     tutor.contactNumber = text.trim();
     await tutor.save();
     
-    session.state = 'idle';
+    session.state = ApplicationStates.IDLE;
     return await safeSend(bot, chatId, `✅ Contact number updated to *${tutor.contactNumber}*`, {
       parse_mode: 'Markdown',
       reply_markup: getPersonalInfoMenu(tutor)
@@ -1782,7 +2110,7 @@ async function handleNRICEdit(bot, chatId, text, userSessions, Tutor) {
     tutor.nricLast4 = text.trim().toUpperCase();
     await tutor.save();
     
-    session.state = 'idle';
+    session.state = ApplicationStates.IDLE;
     return await safeSend(bot, chatId, `✅ NRIC updated to *****${tutor.nricLast4}*`, {
       parse_mode: 'Markdown',
       reply_markup: getPersonalInfoMenu(tutor)
@@ -1811,7 +2139,7 @@ async function handleEmailEdit(bot, chatId, text, userSessions, Tutor) {
     tutor.email = text.trim().toLowerCase();
     await tutor.save();
     
-    session.state = 'idle';
+    session.state = ApplicationStates.IDLE;
     return await safeSend(bot, chatId, `✅ Email updated to *${tutor.email}*`, {
       parse_mode: 'Markdown',
       reply_markup: getPersonalInfoMenu(tutor)
@@ -1834,7 +2162,7 @@ async function handleIntroductionEdit(bot, chatId, text, userSessions, Tutor) {
     tutor.introduction = text.trim();
     await tutor.save();
     
-    session.state = 'idle';
+    session.state = ApplicationStates.IDLE;
     return await safeSend(bot, chatId, '✅ Introduction updated successfully!', {
       reply_markup: getPersonalInfoMenu(tutor)
     });
@@ -1856,7 +2184,7 @@ async function handleTeachingExperienceEdit(bot, chatId, text, userSessions, Tut
     tutor.teachingExperience = text.trim();
     await tutor.save();
     
-    session.state = 'idle';
+    session.state = ApplicationStates.IDLE;
     return await safeSend(bot, chatId, '✅ Teaching experience updated successfully!', {
       reply_markup: getPersonalInfoMenu(tutor)
     });
@@ -1878,7 +2206,7 @@ async function handleTrackRecordEdit(bot, chatId, text, userSessions, Tutor) {
     tutor.trackRecord = text.trim();
     await tutor.save();
     
-    session.state = 'idle';
+    session.state = ApplicationStates.IDLE;
     return await safeSend(bot, chatId, '✅ Track record updated successfully!', {
       reply_markup: getPersonalInfoMenu(tutor)
     });
@@ -1905,7 +2233,7 @@ async function handleYearsExperienceEdit(bot, chatId, text, userSessions, Tutor)
     tutor.yearsOfExperience = years;
     await tutor.save();
     
-    session.state = 'idle';
+    session.state = ApplicationStates.IDLE;
     return await safeSend(bot, chatId, `✅ Years of experience updated to *${years}*`, {
       parse_mode: 'Markdown',
       reply_markup: getPersonalInfoMenu(tutor)
@@ -1928,7 +2256,7 @@ async function handleCurrentSchoolEdit(bot, chatId, text, userSessions, Tutor) {
     tutor.currentSchool = text.trim();
     await tutor.save();
     
-    session.state = 'idle';
+    session.state = ApplicationStates.IDLE;
     return await safeSend(bot, chatId, `✅ Current school updated to *${tutor.currentSchool}*`, {
       parse_mode: 'Markdown',
       reply_markup: getPersonalInfoMenu(tutor)
@@ -1951,7 +2279,7 @@ async function handlePreviousSchoolsEdit(bot, chatId, text, userSessions, Tutor)
     tutor.previousSchools = text.trim();
     await tutor.save();
     
-    session.state = 'idle';
+    session.state = ApplicationStates.IDLE;
     return await safeSend(bot, chatId, '✅ Previous schools updated successfully!', {
       reply_markup: getPersonalInfoMenu(tutor)
     });
@@ -1974,7 +2302,7 @@ async function handleNationalityOtherEdit(bot, chatId, text, userSessions, Tutor
     tutor.nationalityOther = text.trim();
     await tutor.save();
     
-    session.state = 'idle';
+    session.state = ApplicationStates.IDLE;
     return await safeSend(bot, chatId, `✅ Nationality updated to *${tutor.nationalityOther}*`, {
       parse_mode: 'Markdown',
       reply_markup: getPersonalInfoMenu(tutor)
@@ -2006,7 +2334,7 @@ async function handleDOBDayEdit(bot, chatId, text, userSessions, Tutor) {
     tutor.dateOfBirth.day = day;
     await tutor.save();
     
-    session.state = 'idle';
+    session.state = ApplicationStates.IDLE;
     return await safeSend(bot, chatId, `✅ Birth day updated to *${day}*`, {
       parse_mode: 'Markdown',
       reply_markup: getDOBMenu(tutor)
@@ -2038,7 +2366,7 @@ async function handleDOBMonthEdit(bot, chatId, text, userSessions, Tutor) {
     tutor.dateOfBirth.month = month;
     await tutor.save();
     
-    session.state = 'idle';
+    session.state = ApplicationStates.IDLE;
     return await safeSend(bot, chatId, `✅ Birth month updated to *${month}*`, {
       parse_mode: 'Markdown',
       reply_markup: getDOBMenu(tutor)
@@ -2071,7 +2399,7 @@ async function handleDOBYearEdit(bot, chatId, text, userSessions, Tutor) {
     tutor.dateOfBirth.year = year;
     await tutor.save();
     
-    session.state = 'idle';
+    session.state = ApplicationStates.IDLE;
     return await safeSend(bot, chatId, `✅ Birth year updated to *${year}*`, {
       parse_mode: 'Markdown',
       reply_markup: getDOBMenu(tutor)
@@ -2118,7 +2446,7 @@ async function handleSpecificRateEdit(bot, chatId, text, level, userSessions, Tu
     tutor.hourlyRate[level] = rate.toString();
     await tutor.save();
     
-    session.state = 'idle';
+    session.state = ApplicationStates.IDLE;
     return await safeSend(bot, chatId, `✅ ${level.charAt(0).toUpperCase() + level.slice(1)} rate updated to *$${rate}/hour*`, {
       parse_mode: 'Markdown',
       reply_markup: getHourlyRatesMenu(tutor)
@@ -2152,16 +2480,54 @@ async function handleCallbackQuery(
       return await showMainMenu(chatId, bot, userId, ADMIN_USERS);
     }
 
+    // Handle back to assignment details from rate input
+    if (data === 'back_to_assignment') {
+      const session = userSessions[chatId];
+      if (!session || !session.pendingAssignmentId) {
+        await safeSend(bot, chatId, '❌ Session expired. Please start the application process again.');
+        return await showMainMenu(chatId, bot, userId, ADMIN_USERS);
+      }
+
+      const assignment = await Assignment.findById(session.pendingAssignmentId);
+      if (!assignment) {
+        await safeSend(bot, chatId, '❌ Assignment not found. Returning to main menu.');
+        session.state = ApplicationStates.IDLE;
+        delete session.pendingAssignmentId;
+        delete session.pendingRate;
+        return await showMainMenu(chatId, bot, userId, ADMIN_USERS);
+      }
+
+      // Clear rate input state and return to assignment details
+      session.state = ApplicationStates.IDLE;
+      delete session.pendingRate;
+
+      // Show assignment details with apply button
+      const assignmentMsg = formatAssignment(assignment);
+      return await safeSend(bot, chatId, 
+        `🎯 *Assignment Details*\n\n${assignmentMsg}`, 
+        {
+          parse_mode: 'Markdown',
+          reply_markup: {
+            inline_keyboard: [
+              [{ text: '📝 Apply for Assignment', callback_data: `apply_assignment_${assignment._id}` }],
+              [{ text: '🔙 Back to Assignments', callback_data: 'view_assignments' }],
+              [{ text: '🏠 Main Menu', callback_data: 'main_menu' }]
+            ]
+          }
+        }
+      );
+    }
+
     // Handle application confirmation
     if (data.startsWith('confirm_apply_')) {
       const assignmentId = data.replace('confirm_apply_', '');
       return await handleApplication(bot, chatId, userId, assignmentId, Assignment, Tutor, userSessions);
     }
 
-    // Handle direct assignment application
+    // Handle direct assignment application - now prompts for rate first
     if (data.startsWith('apply_assignment_')) {
       const assignmentId = data.replace('apply_assignment_', '');
-      return await handleApplication(bot, chatId, userId, assignmentId, Assignment, Tutor, userSessions);
+      return await handleApplicationStart(bot, chatId, userId, assignmentId, Assignment, Tutor, userSessions);
     }
 
     if (data === 'admin_panel') {
@@ -2856,7 +3222,7 @@ async function handleMessage(bot, chatId, userId, text, message, Tutor, Assignme
     }
     
     // For other non-text messages, show main menu or prompt for contact if needed
-    if (session.state === 'awaiting_contact') {
+    if (session.state === ApplicationStates.AWAITING_CONTACT) {
       return await safeSend(bot, chatId, '👋 Please share your contact number using the button below to continue.', {
         reply_markup: {
           keyboard: [[{
@@ -2886,7 +3252,7 @@ async function handleMessage(bot, chatId, userId, text, message, Tutor, Assignme
   }
 
   // Check if user is in awaiting_contact state
-  if (session.state === 'awaiting_contact') {
+  if (session.state === ApplicationStates.AWAITING_CONTACT) {
     return await safeSend(bot, chatId, '👋 Please share your contact number using the button below to continue.', {
       reply_markup: {
         keyboard: [[{
@@ -2905,20 +3271,25 @@ async function handleMessage(bot, chatId, userId, text, message, Tutor, Assignme
   }
 
   // Handle assignment creation flow
-  if (session.state === 'creating_assignment') {
+  if (session.state === ApplicationStates.CREATING_ASSIGNMENT) {
     return await handleAssignmentStep(bot, chatId, text, userSessions);
   }
 
-  if (session.state === 'editing_bio') {
+  if (session.state === ApplicationStates.EDITING_BIO) {
     return await handleBioEdit(bot, chatId, text, userSessions, Tutor);
   }
 
-  if (session.state === 'editing_experience') {
+  if (session.state === ApplicationStates.EDITING_EXPERIENCE) {
     return await handleExperienceEdit(bot, chatId, text, userSessions, Tutor);
   }
 
-  if (session.state === 'editing_qualifications') {
+  if (session.state === ApplicationStates.EDITING_QUALIFICATIONS) {
     return await handleQualificationsEdit(bot, chatId, text, userSessions, Tutor);
+  }
+
+  // Add handler for rate input state
+  if (session.state === ApplicationStates.AWAITING_RATE) {
+    return await handleRateInput(bot, chatId, text, userSessions, Assignment, Tutor);
   }
 
   if (session.state === 'awaiting_age') {
@@ -3183,6 +3554,9 @@ async function viewAssignmentApplications(bot, chatId, assignmentId, Assignment)
 
 // Export all functions (ES modules)
 export {
+  // Constants
+  ApplicationStates,
+  
   // Utility functions
   handleCallbackQuery,
   handleMessage,
@@ -3243,6 +3617,7 @@ export {
   adminViewAllApplications,
   adminManageAssignments,
   confirmPostAssignment,
+  handleRateInput,
   
   // Constants
   ITEMS_PER_PAGE
