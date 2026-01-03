@@ -3149,7 +3149,7 @@ async function handleCallbackQuery(
     
     if (data.startsWith('toggle_status_')) {
       const assignmentId = data.replace('toggle_status_', '');
-      return await toggleAssignmentStatus(bot, chatId, assignmentId, Assignment);
+      return await toggleAssignmentStatus(bot, chatId, assignmentId, Assignment, CHANNEL_ID, BOT_USERNAME);
     }
     
     if (data.startsWith('delete_assignment_')) {
@@ -3464,7 +3464,7 @@ async function editAssignment(bot, chatId, assignmentId, Assignment) {
 }
 
 // Function to toggle assignment status
-async function toggleAssignmentStatus(bot, chatId, assignmentId, Assignment) {
+async function toggleAssignmentStatus(bot, chatId, assignmentId, Assignment, channelId, botUsername) {
   try {
     const assignment = await Assignment.findById(assignmentId);
     
@@ -3474,10 +3474,46 @@ async function toggleAssignmentStatus(bot, chatId, assignmentId, Assignment) {
     }
     
     const newStatus = assignment.status === 'Open' ? 'Closed' : 'Open';
-    await Assignment.findByIdAndUpdate(assignmentId, { status: newStatus });
+    
+    // Update database with the new status
+    const updatedAssignment = await Assignment.findByIdAndUpdate(
+      assignmentId, 
+      { status: newStatus }, 
+      { new: true }
+    );
+    
+    // Update channel message if channelMessageId exists
+    let channelUpdateSuccess = false;
+    if (assignment.channelMessageId && channelId) {
+      try {
+        const updatedMessage = formatAssignmentForChannel(updatedAssignment);
+        
+        await bot.editMessageText(updatedMessage, {
+          chat_id: channelId,
+          message_id: assignment.channelMessageId,
+          parse_mode: 'Markdown',
+          reply_markup: {
+            inline_keyboard: newStatus === 'Open' ? [[
+              { text: '📝 Apply for this Assignment', url: `https://t.me/${botUsername}?start=apply_${assignment._id}` }
+            ]] : [[
+              { text: '🔒 Assignment Closed', callback_data: 'assignment_closed' }
+            ]]
+          }
+        });
+        
+        channelUpdateSuccess = true;
+        console.log(`✅ Updated channel message for assignment ${assignmentId}`);
+      } catch (editError) {
+        console.error('❌ Failed to update channel message:', editError);
+        // Continue even if channel update fails (message might be >48hrs old or bot lacks permissions)
+      }
+    }
     
     const statusEmoji = newStatus === 'Open' ? '🔓' : '🔒';
-    await safeSend(bot, chatId, `${statusEmoji} Assignment status changed to *${newStatus}*`, {
+    const channelUpdateMsg = channelUpdateSuccess ? '\n📢 Channel message updated' : 
+                            (assignment.channelMessageId ? '\n⚠️ Channel message update failed (may be too old)' : '');
+    
+    await safeSend(bot, chatId, `${statusEmoji} Assignment status changed to *${newStatus}*${channelUpdateMsg}`, {
       parse_mode: 'Markdown',
       reply_markup: {
         inline_keyboard: [

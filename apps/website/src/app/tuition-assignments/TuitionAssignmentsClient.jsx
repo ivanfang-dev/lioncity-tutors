@@ -487,6 +487,7 @@ export default function TuitionAssignmentsClient({ initialAssignments }) {
   const filteredAssignments = useMemo(() => {
     const keyword = debouncedSearchKeyword.toLowerCase();
     return allAssignments
+      .filter(assignment => assignment.status === 'Open') // Only show open assignments
       .filter(assignment => levelFilter ? assignment.level === levelFilter : true)
       .filter(assignment => subjectFilter ? assignment.subject === subjectFilter : true)
       .filter(assignment => keyword ? (assignment.title.toLowerCase().includes(keyword) || assignment.location.toLowerCase().includes(keyword)) : true);
