@@ -423,9 +423,9 @@ async function handleRateInput(bot, chatId, text, userSessions, Assignment, Tuto
     const assignmentMsg = formatAssignment(assignment);
     
     await safeSend(bot, chatId, 
-      `📋 ${profileMsg}\n\n` +
+      `${profileMsg}\n\n` +
       `ℹ️ Your *Introduction* and *Teaching Experience* is not shown here to avoid long messages. If you want to review or edit them, please click *Update Profile* in the menu.\n\n` +
-      `🎯 *Assignment Details*\n\n${assignmentMsg}\n\n` +
+      `*Assignment Details*\n\n${assignmentMsg}\n\n` +
       `💰 *Your Rate*\n${validation.formatted}\n\n` +
       `Please review your profile, the assignment details, and your rate above. Would you like to update your profile or proceed with the application?`, 
       {
@@ -1024,8 +1024,6 @@ async function sendRateInputPrompt(bot, chatId) {
     `• $30 (will be formatted as $30/hr)\n` +
     `• 30/hr (will be formatted as $30/hr)\n` +
     `• $30/hr (will be formatted as $30/hr)\n` +
-    `• 30.50 (will be formatted as $30.50/hr)\n\n` +
-    `⚠️ *Note:* Rates below $10/hr or above $200/hr will show a warning but are still accepted.\n\n` +
     `Please enter your rate:`, 
     {
       parse_mode: 'Markdown',
@@ -1758,6 +1756,17 @@ async function handleApplication(bot, chatId, userId, assignmentId, Assignment, 
     
     if (!tutor) {
       await ErrorHandler.handleTutorNotFound(bot, chatId, userSessions);
+      return;
+    }
+
+    // Check if rate is missing - if so, prompt for it first
+    if (!session.pendingRate) {
+      // Set up session for rate collection
+      session.pendingAssignmentId = assignmentId;
+      session.state = ApplicationStates.AWAITING_RATE;
+      
+      // Prompt for tuition rate using dedicated function
+      await sendRateInputPrompt(bot, chatId);
       return;
     }
     
