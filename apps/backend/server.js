@@ -599,19 +599,15 @@ app.post('/api/assignments/apply', async (req, res) => {
           continue; // Skip if already applied
         }
 
-        // Construct the applicant object with rate if provided
+        // Construct the applicant object with rate
         const newApplicant = {
           tutorId: tutor._id,
           status: 'Pending',
           appliedAt: new Date(),
           contactDetails: tutor.contactNumber || 'N/A',
-          notes: `Applied via website by ${tutor.fullName}`
+          notes: `Applied via website by ${tutor.fullName}`,
+          rate: rates && rates[assignmentId] ? rates[assignmentId] : null
         };
-
-        // Add rate if provided for this assignment
-        if (rates && rates[assignmentId]) {
-          newApplicant.rate = rates[assignmentId];
-        }
 
         // Update the assignment
         const result = await Assignment.updateOne(
@@ -626,6 +622,9 @@ app.post('/api/assignments/apply', async (req, res) => {
 
         if (result.modifiedCount > 0) {
           successCount++;
+          console.log(`✅ Successfully applied to assignment ${assignmentId} with rate: ${newApplicant.rate}`);
+        } else {
+          console.log(`⚠️ No modification for assignment ${assignmentId} - may already be applied`);
         }
       } catch (assignmentError) {
         console.error(`Error applying to assignment ${assignmentId}:`, assignmentError);

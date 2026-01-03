@@ -656,6 +656,8 @@ export default function TuitionAssignmentsClient({ initialAssignments }) {
       
       if (!applyResponse.ok) throw new Error('Application submission failed.');
       
+      const responseData = await applyResponse.json();
+      
       const appliedAssignmentsData = allAssignments.filter(a => selectedAssignments.includes(a._id));
       setAppliedAssignments(appliedAssignmentsData);
       setSelectedAssignments([]);
