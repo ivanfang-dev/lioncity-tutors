@@ -650,7 +650,7 @@ app.get('/api/assignments', async (req, res) => {
     const assignments = await Assignment
       .find({ status: 'Open' }) // Only fetch open assignments
       .sort({ createdAt: -1 }) // Sort by newest first
-      .select('title level subject location frequency rate description createdAt _id') // Only select fields needed for the webpage
+      .select('title level subject location frequency rate description status createdAt _id') // Include status field
       .lean(); // Use lean() for better performance
     
     res.status(200).json(assignments);
