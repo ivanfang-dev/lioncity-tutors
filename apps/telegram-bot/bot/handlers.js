@@ -2477,7 +2477,9 @@ async function handleCallbackQuery(
   CHANNEL_ID,
   BOT_USERNAME
 ) {
-  const chatId = callbackQuery.message.chat.id;
+  // Use userId for responses to avoid sending messages to channels
+  // when callback comes from channel messages
+  const chatId = callbackQuery.from.id;
   const userId = callbackQuery.from.id;
   const data = callbackQuery.data;
   
