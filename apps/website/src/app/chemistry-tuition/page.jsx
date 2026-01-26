@@ -3,6 +3,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import FinalCTA from "@/components/FinalCTA";
 
 export const metadata = {
   title: 'Best Chemistry Tuition Singapore | Secondary, JC H1/H2, IGCSE, IB Chemistry Tutors | Lion City Tutors',
@@ -75,6 +76,241 @@ export default function ChemistryTuition() {
         </section>
 
         {/* Section 2: Comprehensive Chemistry Guides */}
+        <section className="space-y-8">
+          <h2 className="text-3xl font-semibold mb-6 text-emerald-700">Complete Chemistry Guides for Every Level</h2>
+          <p className="text-lg text-gray-700 mb-8">
+            Access our comprehensive guides for each chemistry subject and level, designed to help students excel in their examinations. Each guide includes detailed exam formats, problem-solving strategies, and expert tips.
+          </p>
+          
+          {/* O Level Chemistry Guide */}
+          <Card className="border-t-4 border-t-emerald-500 shadow-lg hover:shadow-xl transition-shadow duration-200">
+            <CardContent className="p-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                  <h3 className="text-2xl font-bold text-emerald-700 mb-4">O Level Chemistry Guide</h3>
+                  <p className="text-gray-700 mb-4">
+                    Master O Level Chemistry with our comprehensive guide covering atomic structure, chemical bonding, acids and bases, and organic chemistry. Perfect for Secondary 3 and 4 students.
+                  </p>
+                  <ul className="text-gray-600 space-y-3 mb-6">
+                    <li className="flex items-start space-x-2">
+                      <span className="text-emerald-500 mt-1">•</span>
+                      <span>Complete syllabus coverage</span>
+                    </li>
+                    <li className="flex items-start space-x-2">
+                      <span className="text-emerald-500 mt-1">•</span>
+                      <span>Chemical calculations mastery</span>
+                    </li>
+                    <li className="flex items-start space-x-2">
+                      <span className="text-emerald-500 mt-1">•</span>
+                      <span>Practical skills and experiments</span>
+                    </li>
+                  </ul>
+                  <div className="space-y-4 mb-6">
+                    <Link href="/o-level-chemistry" className="block">
+                      <div className="flex items-center justify-between p-4 bg-white rounded-lg border border-emerald-200 hover:border-emerald-400 hover:bg-emerald-50 transition-all duration-200 group">
+                        <div className="flex items-center space-x-3">
+                          <span className="w-2 h-2 bg-emerald-500 rounded-full"></span>
+                          <span className="text-emerald-700 group-hover:text-emerald-900 font-medium">O Level Chemistry Guide</span>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <span className="text-xs text-emerald-600 bg-emerald-100 px-2 py-1 rounded-full">New</span>
+                          <svg className="w-5 h-5 text-emerald-500 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                          </svg>
+                        </div>
+                      </div>
+                    </Link>
+                  </div>
+                </div>
+                <div className="bg-emerald-50 p-6 rounded-lg">
+                  <h4 className="font-semibold text-emerald-700 mb-3">What You'll Learn:</h4>
+                  <ul className="space-y-2">
+                    <li className="flex items-center space-x-2">
+                      <span className="w-2 h-2 bg-emerald-500 rounded-full"></span>
+                      <span>Atomic structure and bonding</span>
+                    </li>
+                    <li className="flex items-center space-x-2">
+                      <span className="w-2 h-2 bg-emerald-500 rounded-full"></span>
+                      <span>Chemical reactions and equations</span>
+                    </li>
+                    <li className="flex items-center space-x-2">
+                      <span className="w-2 h-2 bg-emerald-500 rounded-full"></span>
+                      <span>Acids, bases, and salts</span>
+                    </li>
+                    <li className="flex items-center space-x-2">
+                      <span className="w-2 h-2 bg-emerald-500 rounded-full"></span>
+                      <span>Exam preparation strategies</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* IGCSE Chemistry Guide */}
+          <Card className="border-t-4 border-t-blue-500 shadow-lg hover:shadow-xl transition-shadow duration-200">
+            <CardContent className="p-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                  <h3 className="text-2xl font-bold text-blue-700 mb-4">IGCSE Chemistry Guide</h3>
+                  <p className="text-gray-700 mb-4">
+                    Comprehensive guide for IGCSE Chemistry covering all core and extended topics. Master international curriculum requirements with detailed explanations and exam techniques.
+                  </p>
+                  <div className="space-y-4 mb-6">
+                    <Link href="/igcse-chemistry" className="block">
+                      <div className="flex items-center justify-between p-4 bg-white rounded-lg border border-blue-200 hover:border-blue-400 hover:bg-blue-50 transition-all duration-200 group">
+                        <div className="flex items-center space-x-3">
+                          <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
+                          <span className="text-blue-700 group-hover:text-blue-900 font-medium">IGCSE Chemistry Guide</span>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <span className="text-xs text-blue-600 bg-blue-100 px-2 py-1 rounded-full">New</span>
+                          <svg className="w-5 h-5 text-blue-500 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                          </svg>
+                        </div>
+                      </div>
+                    </Link>
+                  </div>
+                  <p className="text-gray-600 text-sm">
+                    Detailed coverage of all IGCSE Chemistry topics including practical skills and data analysis techniques.
+                  </p>
+                </div>
+                <div className="bg-blue-50 p-6 rounded-lg">
+                  <h4 className="font-semibold text-blue-700 mb-3">Key Features:</h4>
+                  <ul className="space-y-2">
+                    <li className="flex items-center space-x-2">
+                      <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
+                      <span>International curriculum focus</span>
+                    </li>
+                    <li className="flex items-center space-x-2">
+                      <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
+                      <span>Practical skills development</span>
+                    </li>
+                    <li className="flex items-center space-x-2">
+                      <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
+                      <span>Data analysis techniques</span>
+                    </li>
+                    <li className="flex items-center space-x-2">
+                      <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
+                      <span>Exam technique workshops</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* A Level Chemistry Guide */}
+          <Card className="border-t-4 border-t-purple-500 shadow-lg hover:shadow-xl transition-shadow duration-200">
+            <CardContent className="p-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                  <h3 className="text-2xl font-bold text-purple-700 mb-4">A Level Chemistry Guide</h3>
+                  <p className="text-gray-700 mb-4">
+                    Advanced guide for A Level H1 and H2 Chemistry covering organic chemistry, physical chemistry, and inorganic chemistry with detailed mechanisms and calculations.
+                  </p>
+                  <div className="space-y-4 mb-6">
+                    <Link href="/a-level-chemistry" className="block">
+                      <div className="flex items-center justify-between p-4 bg-white rounded-lg border border-purple-200 hover:border-purple-400 hover:bg-purple-50 transition-all duration-200 group">
+                        <div className="flex items-center space-x-3">
+                          <span className="w-2 h-2 bg-purple-500 rounded-full"></span>
+                          <span className="text-purple-700 group-hover:text-purple-900 font-medium">A Level Chemistry Guide</span>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <span className="text-xs text-purple-600 bg-purple-100 px-2 py-1 rounded-full">New</span>
+                          <svg className="w-5 h-5 text-purple-500 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                          </svg>
+                        </div>
+                      </div>
+                    </Link>
+                  </div>
+                  <p className="text-gray-600 text-sm">
+                    Comprehensive coverage of H1 and H2 Chemistry with advanced organic mechanisms and physical chemistry calculations.
+                  </p>
+                </div>
+                <div className="bg-purple-50 p-6 rounded-lg">
+                  <h4 className="font-semibold text-purple-700 mb-3">Advanced Features:</h4>
+                  <ul className="space-y-2">
+                    <li className="flex items-center space-x-2">
+                      <span className="w-2 h-2 bg-purple-500 rounded-full"></span>
+                      <span>Organic chemistry mechanisms</span>
+                    </li>
+                    <li className="flex items-center space-x-2">
+                      <span className="w-2 h-2 bg-purple-500 rounded-full"></span>
+                      <span>Physical chemistry calculations</span>
+                    </li>
+                    <li className="flex items-center space-x-2">
+                      <span className="w-2 h-2 bg-purple-500 rounded-full"></span>
+                      <span>Inorganic chemistry patterns</span>
+                    </li>
+                    <li className="flex items-center space-x-2">
+                      <span className="w-2 h-2 bg-purple-500 rounded-full"></span>
+                      <span>University preparation guidance</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* IB Chemistry Guide */}
+          <Card className="border-t-4 border-t-indigo-500 shadow-lg hover:shadow-xl transition-shadow duration-200">
+            <CardContent className="p-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                  <h3 className="text-2xl font-bold text-indigo-700 mb-4">IB Chemistry Guide</h3>
+                  <p className="text-gray-700 mb-4">
+                    Complete guide for IB Diploma Programme Chemistry (HL/SL) with inquiry-based learning approach. Includes Internal Assessment support and extended essay guidance.
+                  </p>
+                  <div className="space-y-4 mb-6">
+                    <Link href="/ibdp-chemistry" className="block">
+                      <div className="flex items-center justify-between p-4 bg-white rounded-lg border border-indigo-200 hover:border-indigo-400 hover:bg-indigo-50 transition-all duration-200 group">
+                        <div className="flex items-center space-x-3">
+                          <span className="w-2 h-2 bg-indigo-500 rounded-full"></span>
+                          <span className="text-indigo-700 group-hover:text-indigo-900 font-medium">IB Chemistry Guide</span>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <span className="text-xs text-indigo-600 bg-indigo-100 px-2 py-1 rounded-full">New</span>
+                          <svg className="w-5 h-5 text-indigo-500 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                          </svg>
+                        </div>
+                      </div>
+                    </Link>
+                  </div>
+                  <p className="text-gray-600 text-sm">
+                    Comprehensive IB Chemistry coverage with Internal Assessment support and inquiry-based learning techniques.
+                  </p>
+                </div>
+                <div className="bg-indigo-50 p-6 rounded-lg">
+                  <h4 className="font-semibold text-indigo-700 mb-3">IB Features:</h4>
+                  <ul className="space-y-2">
+                    <li className="flex items-center space-x-2">
+                      <span className="w-2 h-2 bg-indigo-500 rounded-full"></span>
+                      <span>Inquiry-based learning</span>
+                    </li>
+                    <li className="flex items-center space-x-2">
+                      <span className="w-2 h-2 bg-indigo-500 rounded-full"></span>
+                      <span>Internal Assessment support</span>
+                    </li>
+                    <li className="flex items-center space-x-2">
+                      <span className="w-2 h-2 bg-indigo-500 rounded-full"></span>
+                      <span>Extended essay guidance</span>
+                    </li>
+                    <li className="flex items-center space-x-2">
+                      <span className="w-2 h-2 bg-indigo-500 rounded-full"></span>
+                      <span>Option topics coverage</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </section>
+
+        {/* Section 3: Proven Chemistry Tuition Results */}
         <section className="bg-gradient-to-r from-blue-50 to-emerald-50 p-4 sm:p-6 rounded-xl">
           <h2 className="text-2xl sm:text-3xl font-semibold mb-3 sm:mb-4 text-emerald-700 text-center">Proven Chemistry Tuition Results in Singapore</h2>
           <p className="text-sm sm:text-base text-gray-700 mb-4 sm:mb-6 text-center max-w-3xl mx-auto">
@@ -166,12 +402,6 @@ export default function ChemistryTuition() {
                     </ul>
                   </div>
                 </div>
-                
-                <Link href="/o-level-chemistry" className="inline-block">
-                  <Button className="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-6 py-2 rounded-lg text-sm sm:text-base">
-                    View O-Level Chemistry Guide
-                  </Button>
-                </Link>
               </CardContent>
             </Card>
           </div>
@@ -221,12 +451,6 @@ export default function ChemistryTuition() {
                     </ul>
                   </div>
                 </div>
-                
-                <Link href="/igcse-chemistry" className="inline-block">
-                  <Button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded-lg text-sm sm:text-base">
-                    View IGCSE Chemistry Guide
-                  </Button>
-                </Link>
               </CardContent>
             </Card>
           </div>
@@ -282,12 +506,6 @@ export default function ChemistryTuition() {
                     <strong>Additional H2 Topics:</strong> Hydrocarbons, Halogen Derivatives, Hydroxy Compounds, Carbonyl Compounds, Carboxylic Acids and Derivatives, Nitrogen Compounds, Advanced Equilibria, and many more specialized areas.
                   </p>
                 </div>
-                
-                <Link href="/a-level-chemistry" className="inline-block">
-                  <Button className="bg-purple-600 hover:bg-purple-700 text-white font-semibold px-6 py-2 rounded-lg text-sm sm:text-base">
-                    View A-Level Chemistry Guide
-                  </Button>
-                </Link>
               </CardContent>
             </Card>
           </div>
@@ -337,12 +555,6 @@ export default function ChemistryTuition() {
                     </ul>
                   </div>
                 </div>
-                
-                <Link href="/ibdp-chemistry" className="inline-block">
-                  <Button className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-6 py-2 rounded-lg text-sm sm:text-base">
-                    View IBDP Chemistry Guide
-                  </Button>
-                </Link>
               </CardContent>
             </Card>
           </div>
@@ -534,19 +746,12 @@ export default function ChemistryTuition() {
         </section>
 
         {/* Section 10: Final CTA */}
-        <section className="bg-gradient-to-br from-emerald-600 to-blue-600 text-white p-6 sm:p-8 rounded-xl text-center space-y-4">
-          <h2 className="text-2xl sm:text-3xl font-bold">Ready to Excel in Chemistry?</h2>
-          <p className="text-base sm:text-lg max-w-2xl mx-auto">
-            Connect with our specialized chemistry tutors who make complex concepts clear and help you achieve your academic goals.
-          </p>
-          <Link 
-            href="/request-tutor" 
-            className="inline-block bg-white text-emerald-600 hover:bg-gray-100 px-4 sm:px-6 py-2 sm:py-3 rounded-lg text-sm sm:text-base font-semibold transition duration-300"
-          >
-            Request a Chemistry Tutor
-          </Link>
-          <p className="text-xs sm:text-sm text-emerald-100 mt-2">Free matching service • Chemistry specialists • Proven grade improvements</p>
-        </section>
+        <FinalCTA 
+          title="Ready to Excel in Chemistry?"
+          description="Connect with our specialized chemistry tutors who make complex concepts clear and help you achieve your academic goals."
+          buttonText="Request a Chemistry Tutor"
+          subject="Chemistry"
+        />
       </div>
     </>
   );

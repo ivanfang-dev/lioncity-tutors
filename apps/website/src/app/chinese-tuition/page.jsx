@@ -3,6 +3,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import FinalCTA from "@/components/FinalCTA";
 
 export const metadata = {
   title: 'Best Chinese Tuition Singapore | PSLE, O Level, A Level Chinese Tutors | Lion City Tutors',
@@ -70,7 +71,80 @@ export default function ChineseTuition() {
           </Link>
         </section>
 
-        {/* Section 2: Who We Help */}
+        {/* Section 2: Comprehensive Chinese Guides */}
+        <section className="space-y-8">
+          <h2 className="text-3xl font-semibold mb-6 text-blue-700">Complete Chinese Guides for Every Level</h2>
+          <p className="text-lg text-gray-700 mb-8">
+            Access our comprehensive guides for each Chinese subject and level, designed to help students excel in their examinations. Each guide includes detailed exam formats, writing strategies, and expert tips.
+          </p>
+          
+          {/* PSLE Chinese Guide */}
+          <Card className="border-t-4 border-t-blue-500 shadow-lg hover:shadow-xl transition-shadow duration-200">
+            <CardContent className="p-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                  <h3 className="text-2xl font-bold text-blue-700 mb-4">PSLE Chinese Guide</h3>
+                  <p className="text-gray-700 mb-4">
+                    Master PSLE Chinese with our comprehensive guide covering composition writing, comprehension, and oral communication. Perfect for Primary 5 and 6 students preparing for their PSLE.
+                  </p>
+                  <ul className="text-gray-600 space-y-3 mb-6">
+                    <li className="flex items-start space-x-2">
+                      <span className="text-blue-500 mt-1">•</span>
+                      <span>Complete exam format breakdown</span>
+                    </li>
+                    <li className="flex items-start space-x-2">
+                      <span className="text-blue-500 mt-1">•</span>
+                      <span>Composition writing techniques</span>
+                    </li>
+                    <li className="flex items-start space-x-2">
+                      <span className="text-blue-500 mt-1">•</span>
+                      <span>Oral communication strategies</span>
+                    </li>
+                  </ul>
+                  <div className="space-y-4 mb-6">
+                    <Link href="/psle-chinese" className="block">
+                      <div className="flex items-center justify-between p-4 bg-white rounded-lg border border-blue-200 hover:border-blue-400 hover:bg-blue-50 transition-all duration-200 group">
+                        <div className="flex items-center space-x-3">
+                          <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
+                          <span className="text-blue-700 group-hover:text-blue-900 font-medium">PSLE Chinese Guide</span>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <span className="text-xs text-blue-600 bg-blue-100 px-2 py-1 rounded-full">New</span>
+                          <svg className="w-5 h-5 text-blue-500 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                          </svg>
+                        </div>
+                      </div>
+                    </Link>
+                  </div>
+                </div>
+                <div className="bg-blue-50 p-6 rounded-lg">
+                  <h4 className="font-semibold text-blue-700 mb-3">What You'll Learn:</h4>
+                  <ul className="space-y-2">
+                    <li className="flex items-center space-x-2">
+                      <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
+                      <span>Chinese composition writing</span>
+                    </li>
+                    <li className="flex items-center space-x-2">
+                      <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
+                      <span>Reading comprehension skills</span>
+                    </li>
+                    <li className="flex items-center space-x-2">
+                      <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
+                      <span>Oral communication techniques</span>
+                    </li>
+                    <li className="flex items-center space-x-2">
+                      <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
+                      <span>Exam preparation strategies</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </section>
+
+        {/* Section 3: Who We Help */}
         <section>
           <h2 className="text-2xl font-semibold mb-4 text-blue-700">Comprehensive Chinese Tuition for Every Level</h2>
           <p className="text-gray-700 mb-4">
@@ -237,16 +311,12 @@ export default function ChineseTuition() {
         </section>
 
         {/* Section 9: Call to Action */}
-        <section className="text-center space-y-6 bg-gradient-to-r from-blue-600 to-emerald-600 text-white p-8 rounded-xl shadow-xl">
-          <h2 className="text-3xl font-bold">Help Your Child Excel in Chinese with Singapore's Best Tutors</h2>
-          <p className="text-blue-100 text-lg max-w-2xl mx-auto">Tell us about your child's Chinese learning needs, and we'll match you with a qualified, caring tutor who can make a real difference.</p>
-          <Link href="/request-tutor" className="block w-full md:w-auto">
-            <Button className="w-full md:w-auto text-lg px-4 md:px-8 py-4 bg-white text-blue-700 hover:bg-gray-100 font-semibold rounded-lg shadow-lg transform hover:scale-105 transition-all duration-200">
-              Request a Chinese Tutor Today
-            </Button>
-          </Link>
-          <p className="text-sm text-blue-100 mt-3">Free service • No obligations • Results within 24 hours</p>
-        </section>
+        <FinalCTA 
+          title="Help Your Child Excel in Chinese with Singapore's Best Tutors"
+          description="Tell us about your child's Chinese learning needs, and we'll match you with a qualified, caring tutor who can make a real difference."
+          buttonText="Request a Chinese Tutor Today"
+          subject="Chinese"
+        />
       </div>
     </>
   );

@@ -3,6 +3,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import FinalCTA from "@/components/FinalCTA";
 
 
 export const metadata = {
@@ -101,11 +102,22 @@ export default function ScienceTuition() {
                       <span>Common misconceptions and how to avoid them</span>
                     </li>
                   </ul>
-                  <Link href="/psle-science" className="inline-block">
-                    <Button className="bg-blue-600 hover:bg-blue-700 text-white">
-                      Read PSLE Science Guide
-                    </Button>
-                  </Link>
+                  <div className="space-y-4 mb-6">
+                    <Link href="/psle-science" className="block">
+                      <div className="flex items-center justify-between p-4 bg-white rounded-lg border border-blue-200 hover:border-blue-400 hover:bg-blue-50 transition-all duration-200 group">
+                        <div className="flex items-center space-x-3">
+                          <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
+                          <span className="text-blue-700 group-hover:text-blue-900 font-medium">PSLE Science Guide</span>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <span className="text-xs text-blue-600 bg-blue-100 px-2 py-1 rounded-full">New</span>
+                          <svg className="w-5 h-5 text-blue-500 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                          </svg>
+                        </div>
+                      </div>
+                    </Link>
+                  </div>
                 </div>
                 <div className="bg-blue-50 p-6 rounded-lg">
                   <h4 className="font-semibold text-blue-700 mb-3">What You'll Learn:</h4>
@@ -474,18 +486,12 @@ export default function ScienceTuition() {
         </section>
 
         {/* Section 9: Final CTA */}
-        <section className="text-center space-y-6 bg-gradient-to-r from-blue-600 to-purple-600 text-white p-8 rounded-xl shadow-xl">
-          <h2 className="text-3xl font-bold">Ready to Transform Your Child's Science Grades?</h2>
-          <p className="text-blue-100 text-lg max-w-2xl mx-auto">
-            Connect with our expert science tutors who make learning engaging, understandable, and results-driven.
-          </p>
-          <Link href="/request-tutor" className="block w-full md:w-auto">
-            <Button className="text-lg px-8 py-4 bg-white text-blue-700 hover:bg-gray-100 font-semibold rounded-lg shadow-lg transform hover:scale-105 transition-all duration-200">
-              Request a Science Tutor Today
-            </Button>
-          </Link>
-          <p className="text-sm text-blue-100 mt-3">Free matching service • Expert tutors • Proven results</p>
-        </section>
+        <FinalCTA 
+          title="Ready to Transform Your Child's Science Grades?"
+          description="Connect with our expert science tutors who make learning engaging, understandable, and results-driven."
+          buttonText="Request a Science Tutor Today"
+          subject="Science"
+        />
       </div>
     </>
   );

@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import FinalCTA from "@/components/FinalCTA";
 
 // --- SEO & CONTENT DATA ---
 
@@ -139,35 +140,185 @@ export default function EnglishTuitionPage() {
           </Link>
         </section>
 
-        {/* Section 2: Comprehensive Guides (High-Value Content) */}
+        {/* Section 2: Comprehensive English Guides */}
         <section className="space-y-8">
-          <h2 className="text-3xl font-semibold text-center text-blue-800">Your Complete Guides to Acing English Exams</h2>
-          <p className="text-lg text-gray-700 text-center max-w-3xl mx-auto">
-            We don't just find tutors; we empower students. Dive into our expert-written guides covering syllabus breakdowns, scoring techniques, and common pitfalls for each major English examination in Singapore.
+          <h2 className="text-3xl font-semibold mb-6 text-blue-700">Complete English Guides for Every Level</h2>
+          <p className="text-lg text-gray-700 mb-8">
+            Access our comprehensive guides for each English subject and level, designed to help students excel in their examinations. Each guide includes detailed exam formats, scoring strategies, and expert tips.
           </p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <GuideCard
-              level="PSLE English"
-              description="Navigate the PSLE English exam with confidence. Master continuous writing, comprehension, and oral components."
-              link="/psle-english"
-              borderColor="border-t-blue-500"
-              buttonColor="bg-blue-600 hover:bg-blue-700"
-            />
-            <GuideCard
-              level="O-Level English"
-              description="From summary writing to situational writing, our guide covers every paper to help you secure that A1."
-              link="/o-level-english"
-              borderColor="border-t-emerald-500"
-              buttonColor="bg-emerald-600 hover:bg-emerald-700"
-            />
-            <GuideCard
-              level="A-Level GP"
-              description="Tackle complex essay questions and comprehension passages for the General Paper with our advanced strategies."
-              link="/a-level-general-paper"
-              borderColor="border-t-purple-500"
-              buttonColor="bg-purple-600 hover:bg-purple-700"
-            />
-          </div>
+          
+          {/* PSLE English Guide */}
+          <Card className="border-t-4 border-t-blue-500 shadow-lg hover:shadow-xl transition-shadow duration-200">
+            <CardContent className="p-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                  <h3 className="text-2xl font-bold text-blue-700 mb-4">PSLE English Guide</h3>
+                  <p className="text-gray-700 mb-4">
+                    Master PSLE English with our comprehensive guide covering essential skills, exam strategies, and proven techniques for success. Perfect for Primary 5 and 6 students preparing for their PSLE.
+                  </p>
+                  <ul className="text-gray-600 space-y-3 mb-6">
+                    <li className="flex items-start space-x-2">
+                      <span className="text-blue-500 mt-1">•</span>
+                      <span>Complete exam format breakdown</span>
+                    </li>
+                    <li className="flex items-start space-x-2">
+                      <span className="text-blue-500 mt-1">•</span>
+                      <span>Composition writing techniques</span>
+                    </li>
+                    <li className="flex items-start space-x-2">
+                      <span className="text-blue-500 mt-1">•</span>
+                      <span>Comprehension and oral strategies</span>
+                    </li>
+                  </ul>
+                  <div className="space-y-4 mb-6">
+                    <Link href="/psle-english" className="block">
+                      <div className="flex items-center justify-between p-4 bg-white rounded-lg border border-blue-200 hover:border-blue-400 hover:bg-blue-50 transition-all duration-200 group">
+                        <div className="flex items-center space-x-3">
+                          <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
+                          <span className="text-blue-700 group-hover:text-blue-900 font-medium">PSLE English Guide</span>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <span className="text-xs text-blue-600 bg-blue-100 px-2 py-1 rounded-full">New</span>
+                          <svg className="w-5 h-5 text-blue-500 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                          </svg>
+                        </div>
+                      </div>
+                    </Link>
+                  </div>
+                </div>
+                <div className="bg-blue-50 p-6 rounded-lg">
+                  <h4 className="font-semibold text-blue-700 mb-3">What You'll Learn:</h4>
+                  <ul className="space-y-2">
+                    <li className="flex items-center space-x-2">
+                      <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
+                      <span>Continuous writing skills</span>
+                    </li>
+                    <li className="flex items-center space-x-2">
+                      <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
+                      <span>Comprehension techniques</span>
+                    </li>
+                    <li className="flex items-center space-x-2">
+                      <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
+                      <span>Oral communication skills</span>
+                    </li>
+                    <li className="flex items-center space-x-2">
+                      <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
+                      <span>Exam preparation strategies</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* O Level English Guide */}
+          <Card className="border-t-4 border-t-emerald-500 shadow-lg hover:shadow-xl transition-shadow duration-200">
+            <CardContent className="p-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                  <h3 className="text-2xl font-bold text-emerald-700 mb-4">O Level English Guide</h3>
+                  <p className="text-gray-700 mb-4">
+                    Comprehensive guide for O Level English Language covering all papers and components. Master essay writing, summary skills, and comprehension techniques to achieve excellent results.
+                  </p>
+                  <div className="space-y-4 mb-6">
+                    <Link href="/o-level-english" className="block">
+                      <div className="flex items-center justify-between p-4 bg-white rounded-lg border border-emerald-200 hover:border-emerald-400 hover:bg-emerald-50 transition-all duration-200 group">
+                        <div className="flex items-center space-x-3">
+                          <span className="w-2 h-2 bg-emerald-500 rounded-full"></span>
+                          <span className="text-emerald-700 group-hover:text-emerald-900 font-medium">O Level English Guide</span>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <span className="text-xs text-emerald-600 bg-emerald-100 px-2 py-1 rounded-full">New</span>
+                          <svg className="w-5 h-5 text-emerald-500 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                          </svg>
+                        </div>
+                      </div>
+                    </Link>
+                  </div>
+                  <p className="text-gray-600 text-sm">
+                    Detailed coverage of all papers including essay writing, summary writing, and comprehension techniques for O Level success.
+                  </p>
+                </div>
+                <div className="bg-emerald-50 p-6 rounded-lg">
+                  <h4 className="font-semibold text-emerald-700 mb-3">Key Features:</h4>
+                  <ul className="space-y-2">
+                    <li className="flex items-center space-x-2">
+                      <span className="w-2 h-2 bg-emerald-500 rounded-full"></span>
+                      <span>Essay writing mastery</span>
+                    </li>
+                    <li className="flex items-center space-x-2">
+                      <span className="w-2 h-2 bg-emerald-500 rounded-full"></span>
+                      <span>Summary writing techniques</span>
+                    </li>
+                    <li className="flex items-center space-x-2">
+                      <span className="w-2 h-2 bg-emerald-500 rounded-full"></span>
+                      <span>Comprehension strategies</span>
+                    </li>
+                    <li className="flex items-center space-x-2">
+                      <span className="w-2 h-2 bg-emerald-500 rounded-full"></span>
+                      <span>Exam technique workshops</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* A Level GP Guide */}
+          <Card className="border-t-4 border-t-purple-500 shadow-lg hover:shadow-xl transition-shadow duration-200">
+            <CardContent className="p-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                  <h3 className="text-2xl font-bold text-purple-700 mb-4">A Level General Paper Guide</h3>
+                  <p className="text-gray-700 mb-4">
+                    Advanced guide for A Level General Paper covering essay writing, comprehension, and application questions. Master complex arguments and critical analysis for H1 GP success.
+                  </p>
+                  <div className="space-y-4 mb-6">
+                    <Link href="/a-level-general-paper" className="block">
+                      <div className="flex items-center justify-between p-4 bg-white rounded-lg border border-purple-200 hover:border-purple-400 hover:bg-purple-50 transition-all duration-200 group">
+                        <div className="flex items-center space-x-3">
+                          <span className="w-2 h-2 bg-purple-500 rounded-full"></span>
+                          <span className="text-purple-700 group-hover:text-purple-900 font-medium">A Level GP Guide</span>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <span className="text-xs text-purple-600 bg-purple-100 px-2 py-1 rounded-full">New</span>
+                          <svg className="w-5 h-5 text-purple-500 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                          </svg>
+                        </div>
+                      </div>
+                    </Link>
+                  </div>
+                  <p className="text-gray-600 text-sm">
+                    Comprehensive coverage of essay writing, comprehension, and application questions with advanced analytical techniques.
+                  </p>
+                </div>
+                <div className="bg-purple-50 p-6 rounded-lg">
+                  <h4 className="font-semibold text-purple-700 mb-3">Advanced Features:</h4>
+                  <ul className="space-y-2">
+                    <li className="flex items-center space-x-2">
+                      <span className="w-2 h-2 bg-purple-500 rounded-full"></span>
+                      <span>Advanced essay techniques</span>
+                    </li>
+                    <li className="flex items-center space-x-2">
+                      <span className="w-2 h-2 bg-purple-500 rounded-full"></span>
+                      <span>Critical analysis skills</span>
+                    </li>
+                    <li className="flex items-center space-x-2">
+                      <span className="w-2 h-2 bg-purple-500 rounded-full"></span>
+                      <span>Comprehension mastery</span>
+                    </li>
+                    <li className="flex items-center space-x-2">
+                      <span className="w-2 h-2 bg-purple-500 rounded-full"></span>
+                      <span>University preparation guidance</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </section>
 
         {/* Section 3: Tackling Common English Challenges */}
@@ -271,16 +422,12 @@ export default function EnglishTuitionPage() {
         </section>
 
         {/* Section 7: Final CTA */}
-        <section className="text-center space-y-6 bg-gradient-to-r from-blue-700 to-emerald-600 text-white p-8 md:p-12 rounded-xl shadow-2xl">
-          <h2 className="text-3xl font-bold">Ready to Boost Your Child's English Grades?</h2>
-          <p className="text-blue-100 text-lg max-w-2xl mx-auto">Let's find the perfect English tutor to build confidence and achieve academic excellence. The process is simple, fast, and completely free.</p>
-          <Link href="/request-tutor">
-            <Button size="lg" className="w-full md:w-auto text-lg px-8 py-6 bg-white text-blue-700 hover:bg-gray-100 font-bold rounded-lg shadow-lg transform hover:scale-105 transition-transform">
-              Get a Free Tutor Match
-            </Button>
-          </Link>
-          <p className="text-sm text-blue-200 mt-3">No obligations • Verified tutors • Match within 24 hours</p>
-        </section>
+        <FinalCTA 
+          title="Ready to Boost Your Child's English Grades?"
+          description="Let's find the perfect English tutor to build confidence and achieve academic excellence. The process is simple, fast, and completely free."
+          buttonText="Get a Free Tutor Match"
+          subject="English"
+        />
       </div>
     </>
   );
@@ -288,18 +435,6 @@ export default function EnglishTuitionPage() {
 
 
 // --- HELPER COMPONENTS (Place these in your components folder) ---
-
-const GuideCard = ({ level, description, link, borderColor, buttonColor }) => (
-  <Card className={`border-t-4 ${borderColor} shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col`}>
-    <CardContent className="p-6 flex flex-col flex-grow">
-      <h3 className="text-xl font-bold text-gray-800 mb-2">{level}</h3>
-      <p className="text-gray-600 mb-4 flex-grow">{description}</p>
-      <Link href={link} className="mt-auto">
-        <Button className={`${buttonColor} text-white w-full`}>Read The Guide</Button>
-      </Link>
-    </CardContent>
-  </Card>
-);
 
 const ChallengeCard = ({ title, points, icon }) => (
   <Card className="shadow-lg">
