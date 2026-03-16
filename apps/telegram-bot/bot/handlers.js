@@ -114,7 +114,7 @@ async function getTutorFromSession(chatId, userSessions, Tutor) {
       if (tutorByPhone) return tutorByPhone;
     }
 
-    return null; // Not found
+    return null; 
   } catch (error) {
     console.error(`❌ Error in getTutorFromSession for chatId ${chatId}:`, error);
     return null;
