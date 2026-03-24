@@ -2599,7 +2599,7 @@ async function handleCallbackQuery(
       return await startAssignmentCreation(bot, chatId, userSessions);
     }
 
-    if (data.startsWith('select_level_') || data.startsWith('select_subject_') || data.startsWith('select_rate_')) {
+    if (data.startsWith('select_level_') || data.startsWith('select_subject_') || data.startsWith('select_location_') || data.startsWith('select_rate_')) {
       return await handleAssignmentCallbackQuery(bot, callbackQuery, userSessions);
     }
 
