@@ -128,8 +128,27 @@ const tutorSchema = new mongoose.Schema({
       h3Art: Boolean
     },
     
+    // Millennia Institute (3-year A-Level program)
+    millenniaInstitute: {
+      generalPaper: Boolean,
+      projectWork: Boolean,
+      h1Mathematics: Boolean,
+      h1Physics: Boolean,
+      h1Chemistry: Boolean,
+      h1Biology: Boolean,
+      h1Economics: Boolean,
+      h2Mathematics: Boolean,
+      h2Physics: Boolean,
+      h2Chemistry: Boolean,
+      h2Biology: Boolean,
+      h2Economics: Boolean,
+      h2Geography: Boolean,
+      h2History: Boolean,
+      h2LiteratureInEnglish: Boolean
+    },
+
     // IB Programme
-    ib: { 
+    ib: {
       ibEnglishLanguageAndLiterature: Boolean,
       ibChinese: Boolean,
       ibMalay: Boolean,

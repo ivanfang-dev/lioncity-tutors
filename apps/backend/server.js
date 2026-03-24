@@ -453,11 +453,9 @@ app.post('/api/requestfortutor', async (req, res) => {
 
 app.post('/api/registerfortutor', async (req, res) => {
   try {
-    // --- NEW: Sanitize contact number before saving ---
     if (req.body.contactNumber) {
       req.body.contactNumber = req.body.contactNumber.replace(/[\s\-\+]/g, '').replace(/^65/, '');
     }
-    // --- NEW: Sanitize email before saving ---
     if (req.body.email) {
       req.body.email = req.body.email.toLowerCase().trim();
     }
@@ -467,7 +465,6 @@ app.post('/api/registerfortutor', async (req, res) => {
     res.status(200).json({ message: 'Tutor registration saved successfully!' });
   } catch (err) {
     console.error('Failed to save tutor registration:', err);
-    // Check for duplicate key error
     if (err.code === 11000) {
       return res.status(409).json({ error: 'A tutor with this email or contact number already exists.' });
     }
@@ -577,29 +574,25 @@ app.post('/api/assignments/apply', async (req, res) => {
   }
 
   try {
-    // STEP 1: Fetch the full tutor profile to get their details
-    const tutor = await Tutor.findById(tutorId).lean(); // .lean() for performance
+    const tutor = await Tutor.findById(tutorId).lean();
     if (!tutor) {
       return res.status(404).json({ error: 'Tutor profile not found.' });
     }
 
-    // STEP 2: Process each assignment individually to handle different rates
     let successCount = 0;
     const errors = [];
 
     for (const assignmentId of assignmentIds) {
       try {
-        // Check if tutor already applied to this assignment
         const existingApplication = await Assignment.findOne({
           _id: assignmentId,
           'applicants.tutorId': tutor._id
         });
 
         if (existingApplication) {
-          continue; // Skip if already applied
+          continue; 
         }
 
-        // Construct the applicant object with rate
         const newApplicant = {
           tutorId: tutor._id,
           status: 'Pending',

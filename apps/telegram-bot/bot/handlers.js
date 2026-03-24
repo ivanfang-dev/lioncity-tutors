@@ -1,8 +1,28 @@
 import { EDUCATION_LEVELS, getSubjectsForLevel, RATE_MAPPINGS } from '../../../packages/shared/index.js';
 import RateValidator from '../utils/RateValidator.js';
 import ErrorHandler from '../utils/ErrorHandler.js';
+import { notifyMatchedTutors } from '../utils/tutorNotifier.js';
 
 /* global process */
+
+const SINGAPORE_LOCATIONS = [
+  // Northeast
+  'Sengkang', 'Punggol', 'Hougang', 'Serangoon', 'Kovan', 'Buangkok',
+  // East
+  'Tampines', 'Pasir Ris', 'Bedok', 'Simei', 'East Coast', 'Katong', 'Marine Parade',
+  // West
+  'Jurong East', 'Jurong West', 'Clementi', 'Boon Lay', 'Pioneer', 'Buona Vista', 'Dover', 'Tengah',
+  // North
+  'Woodlands', 'Sembawang', 'Yishun', 'Admiralty',
+  // Northwest
+  'Bukit Batok', 'Bukit Panjang', 'Choa Chu Kang',
+  // Central
+  'Bishan', 'Toa Payoh', 'Ang Mo Kio', 'Novena', 'Bukit Timah', 'Orchard', 'Thomson',
+  // South
+  'Tiong Bahru', 'Queenstown', 'Redhill', 'Harbourfront',
+  // Other
+  'Online'
+];
 
 // Application states for session management
 const ApplicationStates = {
@@ -53,6 +73,7 @@ function normalizePhone(phone) {
 function initializeTeachingLevels(tutor) {
   if (!tutor.teachingLevels) {
     tutor.teachingLevels = {
+      preschool: {},
       primary: {},
       secondary: {},
       jc: {},
@@ -60,6 +81,7 @@ function initializeTeachingLevels(tutor) {
       polytechnic: {},
       university: {},
       music: {},
+      professional: {},
     };
   }
 }
@@ -1359,15 +1381,7 @@ async function handleAssignmentStep(bot, chatId, text, userSessions) {
         break;
       
       case 'location':
-        assignmentData.location = text.trim();
-        session.currentStep = 'frequency';
-        
-        await safeSend(bot, chatId, '🎯 *Creating New Assignment*\n\nStep 5 of 7: Enter the frequency\n\n*Examples:* Once a week, Twice a week, 3 times a week, Daily, Flexible, etc.', {
-          parse_mode: 'Markdown',
-          reply_markup: {
-            inline_keyboard: [[{ text: '❌ Cancel', callback_data: 'admin_panel' }]]
-          }
-        });
+        // Location is now handled by callback query (inline keyboard)
         break;
       
       case 'frequency':
@@ -1467,8 +1481,22 @@ async function handleAssignmentCallbackQuery(bot, callbackQuery, userSessions) {
       const subject = decodeURIComponent(data.replace('select_subject_', ''));
       session.assignmentData.subject = subject;
       session.currentStep = 'location';
-      
-      await bot.editMessageText('🎯 *Creating New Assignment*\n\nStep 4 of 7: Enter the location\n\n*Examples:* Tampines, Online, Tutor\'s place (Jurong), etc.\n\n*Please type your response:*', {
+
+      await bot.editMessageText('🎯 *Creating New Assignment*\n\nStep 4 of 7: Select the location:', {
+        chat_id: chatId,
+        message_id: callbackQuery.message.message_id,
+        parse_mode: 'Markdown',
+        reply_markup: {
+          inline_keyboard: createInlineKeyboard(SINGAPORE_LOCATIONS, 'select_location', 2)
+        }
+      });
+
+    } else if (data.startsWith('select_location_')) {
+      const location = decodeURIComponent(data.replace('select_location_', ''));
+      session.assignmentData.location = location;
+      session.currentStep = 'frequency';
+
+      await bot.editMessageText('🎯 *Creating New Assignment*\n\nStep 5 of 7: Enter the frequency\n\n*Examples:* Once a week, Twice a week, 3 times a week, Daily, Flexible, etc.\n\n*Please type your response:*', {
         chat_id: chatId,
         message_id: callbackQuery.message.message_id,
         parse_mode: 'Markdown',
@@ -1476,6 +1504,7 @@ async function handleAssignmentCallbackQuery(bot, callbackQuery, userSessions) {
           inline_keyboard: [[{ text: '❌ Cancel', callback_data: 'admin_panel' }]]
         }
       });
+
     } else if (data.startsWith('select_rate_')) {
 
         // User clicked "📈 Market Rate"
@@ -1563,14 +1592,25 @@ async function confirmPostAssignment(bot, chatId, userSessions, Assignment, chan
       await savedAssignment.save();
     }
     
+    // Notify matched tutors via WhatsApp
+    let notifyResult = { sent: 0, failed: 0 };
+    try {
+      notifyResult = await notifyMatchedTutors(savedAssignment, botUsername);
+    } catch (err) {
+      console.error('Tutor notification error:', err);
+    }
+
     // Clear session
     delete userSessions[chatId].state;
     delete userSessions[chatId].assignmentData;
     delete userSessions[chatId].currentStep;
     delete userSessions[chatId].waitingForCustomRate;
 
-    
-    await safeSend(bot, chatId, `✅ *Assignment Posted Successfully!*\n\n📋 Assignment ID: ${savedAssignment._id}\n📢 Posted to channel\n📊 Status: Open for applications`, {
+    const notifyMsg = notifyResult.sent > 0
+      ? `📨 Notified ${notifyResult.sent} matching tutor(s) via WhatsApp`
+      : '📨 No matching tutors found';
+
+    await safeSend(bot, chatId, `✅ *Assignment Posted Successfully!*\n\n📋 Assignment ID: ${savedAssignment._id}\n📢 Posted to channel\n${notifyMsg}\n📊 Status: Open for applications`, {
       parse_mode: 'Markdown',
       reply_markup: {
         inline_keyboard: [[{ text: '🔙 Back to Admin Panel', callback_data: 'admin_panel' }]]
