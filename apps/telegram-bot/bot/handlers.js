@@ -1295,7 +1295,7 @@ async function startAssignmentCreation(bot, chatId, userSessions) {
     pendingRate: userSessions[chatId]?.pendingRate || null  // Preserve pendingRate
   };
   
-  await safeSend(bot, chatId, '🎯 *Creating New Assignment*\n\nStep 1 of 7: Enter the assignment title:', {
+  await safeSend(bot, chatId, '🎯 *Creating New Assignment*\n\nStep 1 of 8: Enter the assignment title:', {
     parse_mode: 'Markdown',
     reply_markup: {
       inline_keyboard: [[{ text: '❌ Cancel', callback_data: 'admin_panel' }]]
@@ -1331,6 +1331,23 @@ function parseNaturalDate(text) {
   }
 }
 
+function buildTutorTypeKeyboard(selectedTypes) {
+  const check = (type) => selectedTypes.includes(type) ? '✅' : '⬜';
+  return [
+    [
+      { text: `${check('Part-time')} Part-time`, callback_data: 'toggle_tutor_pref_parttime' },
+      { text: `${check('Full-time')} Full-time`, callback_data: 'toggle_tutor_pref_fulltime' }
+    ],
+    [
+      { text: `${check('MOE/Ex-MOE')} MOE/Ex-MOE`, callback_data: 'toggle_tutor_pref_moe' }
+    ],
+    [
+      { text: selectedTypes.length > 0 ? '✅ Done' : '✅ Done - Any type is fine', callback_data: 'confirm_tutor_types' }
+    ],
+    [{ text: '❌ Cancel', callback_data: 'admin_panel' }]
+  ];
+}
+
 function createInlineKeyboard(options, callbackPrefix, columns = 2) {
   const keyboard = [];
   
@@ -1364,7 +1381,7 @@ async function handleAssignmentStep(bot, chatId, text, userSessions) {
         session.currentStep = 'level';
         
         // Show level selection with inline keyboard
-        await safeSend(bot, chatId, '🎯 *Creating New Assignment*\n\nStep 2 of 7: Select the education level:', {
+        await safeSend(bot, chatId, '🎯 *Creating New Assignment*\n\nStep 2 of 8: Select the education level:', {
           parse_mode: 'Markdown',
           reply_markup: {
             inline_keyboard: createInlineKeyboard(EDUCATION_LEVELS, 'select_level', 1)
@@ -1388,7 +1405,7 @@ async function handleAssignmentStep(bot, chatId, text, userSessions) {
         assignmentData.frequency = text.trim();
         session.currentStep = 'rate';
 
-        await safeSend(bot, chatId, '🎯 *Creating New Assignment*\n\nStep 6 of 7: Select the rate type:', {
+        await safeSend(bot, chatId, '🎯 *Creating New Assignment*\n\nStep 7 of 8: Select the rate type:', {
           parse_mode: 'Markdown',
           reply_markup: {
             inline_keyboard: [
@@ -1406,7 +1423,7 @@ async function handleAssignmentStep(bot, chatId, text, userSessions) {
           session.waitingForCustomRate = false;
           session.currentStep = 'description';
           
-          await safeSend(bot, chatId, '🎯 *Creating New Assignment*\n\nStep 7 of 7: Enter additional description or requirements\n\n*Type "skip" to leave empty*\n\n*Examples:* Looking for MOE/Ex-MOE tutor, Student needs help with exam prep, etc.', {
+          await safeSend(bot, chatId, '🎯 *Creating New Assignment*\n\nStep 8 of 8: Enter additional description or requirements\n\n*Type "skip" to leave empty*\n\n*Examples:* Looking for MOE/Ex-MOE tutor, Student needs help with exam prep, etc.', {
             parse_mode: 'Markdown',
             reply_markup: {
               inline_keyboard: [[{ text: '❌ Cancel', callback_data: 'admin_panel' }]]
@@ -1468,7 +1485,7 @@ async function handleAssignmentCallbackQuery(bot, callbackQuery, userSessions) {
       // Get subjects specific to the selected level using the mapping
       const availableSubjects = getSubjectsForLevel(level);
       
-      await bot.editMessageText('🎯 *Creating New Assignment*\n\nStep 3 of 7: Select the subject:', {
+      await bot.editMessageText('🎯 *Creating New Assignment*\n\nStep 3 of 8: Select the subject:', {
         chat_id: chatId,
         message_id: callbackQuery.message.message_id,
         parse_mode: 'Markdown',
@@ -1482,7 +1499,7 @@ async function handleAssignmentCallbackQuery(bot, callbackQuery, userSessions) {
       session.assignmentData.subject = subject;
       session.currentStep = 'location';
 
-      await bot.editMessageText('🎯 *Creating New Assignment*\n\nStep 4 of 7: Select the location:', {
+      await bot.editMessageText('🎯 *Creating New Assignment*\n\nStep 4 of 8: Select the location:', {
         chat_id: chatId,
         message_id: callbackQuery.message.message_id,
         parse_mode: 'Markdown',
@@ -1494,9 +1511,46 @@ async function handleAssignmentCallbackQuery(bot, callbackQuery, userSessions) {
     } else if (data.startsWith('select_location_')) {
       const location = decodeURIComponent(data.replace('select_location_', ''));
       session.assignmentData.location = location;
+      session.assignmentData.preferredTutorTypes = session.assignmentData.preferredTutorTypes || [];
+      session.currentStep = 'tutorType';
+
+      await bot.editMessageText('🎯 *Creating New Assignment*\n\nStep 5 of 8: What type of tutor is the parent looking for?\n\n_Tap to toggle, then press Done_', {
+        chat_id: chatId,
+        message_id: callbackQuery.message.message_id,
+        parse_mode: 'Markdown',
+        reply_markup: {
+          inline_keyboard: buildTutorTypeKeyboard([])
+        }
+      });
+
+    } else if (data.startsWith('toggle_tutor_pref_')) {
+      const type = data.replace('toggle_tutor_pref_', '');
+      const typeMap = { parttime: 'Part-time', fulltime: 'Full-time', moe: 'MOE/Ex-MOE' };
+      const typeName = typeMap[type];
+      if (!typeName) return;
+
+      const prefs = session.assignmentData.preferredTutorTypes || [];
+      const idx = prefs.indexOf(typeName);
+      if (idx >= 0) {
+        prefs.splice(idx, 1);
+      } else {
+        prefs.push(typeName);
+      }
+      session.assignmentData.preferredTutorTypes = prefs;
+
+      await bot.editMessageText('🎯 *Creating New Assignment*\n\nStep 5 of 8: What type of tutor is the parent looking for?\n\n_Tap to toggle, then press Done_', {
+        chat_id: chatId,
+        message_id: callbackQuery.message.message_id,
+        parse_mode: 'Markdown',
+        reply_markup: {
+          inline_keyboard: buildTutorTypeKeyboard(prefs)
+        }
+      });
+
+    } else if (data === 'confirm_tutor_types') {
       session.currentStep = 'frequency';
 
-      await bot.editMessageText('🎯 *Creating New Assignment*\n\nStep 5 of 7: Enter the frequency\n\n*Examples:* Once a week, Twice a week, 3 times a week, Daily, Flexible, etc.\n\n*Please type your response:*', {
+      await bot.editMessageText('🎯 *Creating New Assignment*\n\nStep 6 of 8: Enter the frequency\n\n*Examples:* Once a week, Twice a week, 3 times a week, Daily, Flexible, etc.\n\n*Please type your response:*', {
         chat_id: chatId,
         message_id: callbackQuery.message.message_id,
         parse_mode: 'Markdown',
@@ -1524,7 +1578,7 @@ async function handleAssignmentCallbackQuery(bot, callbackQuery, userSessions) {
           session.assignmentData.rate = finalRateString;
           session.currentStep = 'description'; // Correctly move to description step
           
-          await bot.editMessageText('🎯 *Creating New Assignment*\n\nStep 7 of 7: Enter additional description or requirements\n\n*Type "skip" to leave empty*', {
+          await bot.editMessageText('🎯 *Creating New Assignment*\n\nStep 8 of 8: Enter additional description or requirements\n\n*Type "skip" to leave empty*', {
             chat_id: chatId,
             message_id: callbackQuery.message.message_id,
             parse_mode: 'Markdown',
@@ -1538,7 +1592,7 @@ async function handleAssignmentCallbackQuery(bot, callbackQuery, userSessions) {
           session.waitingForCustomRate = true;
           session.currentStep = 'rate';
           
-          await bot.editMessageText('🎯 *Creating New Assignment*\n\nStep 6 of 7: Enter your custom rate\n\n*Examples:* 55-75/hr, Negotiable\n\n*Please type your response:*', {
+          await bot.editMessageText('🎯 *Creating New Assignment*\n\nStep 7 of 8: Enter your custom rate\n\n*Examples:* 55-75/hr, Negotiable\n\n*Please type your response:*', {
             chat_id: chatId,
             message_id: callbackQuery.message.message_id,
             parse_mode: 'Markdown',
@@ -1565,6 +1619,7 @@ function formatAssignmentPreview(assignment) {
   msg += `*📍 Location:* ${assignment.location}\n`;
   msg += `*📅 Frequency:* ${assignment.frequency}\n`;
   msg += `*💰 Rate:* ${assignment.rate}\n`;
+  msg += `*👨‍🏫 Tutor Type:* ${assignment.preferredTutorTypes?.length > 0 ? assignment.preferredTutorTypes.join(', ') : 'Any'}\n`;
 
   if (assignment.description) {
     msg += `\n*📝 Description:* ${assignment.description}\n`;
@@ -2599,7 +2654,7 @@ async function handleCallbackQuery(
       return await startAssignmentCreation(bot, chatId, userSessions);
     }
 
-    if (data.startsWith('select_level_') || data.startsWith('select_subject_') || data.startsWith('select_location_') || data.startsWith('select_rate_')) {
+    if (data.startsWith('select_level_') || data.startsWith('select_subject_') || data.startsWith('select_location_') || data.startsWith('toggle_tutor_pref_') || data === 'confirm_tutor_types' || data.startsWith('select_rate_')) {
       return await handleAssignmentCallbackQuery(bot, callbackQuery, userSessions);
     }
 

@@ -57,7 +57,14 @@ function subjectToFieldName(subject) {
   ).join('');
 }
 
-// Find up to `limit` tutors matching the assignment's level+subject and location
+// Maps assignment tutor type preference to possible DB values (mixed formats from website + telegram)
+const TUTOR_TYPE_MAP = {
+  'Part-time': ['Part-time Tutor', 'Parttime', 'Undergraduate'],
+  'Full-time': ['Full-time Tutor', 'Fulltime'],
+  'MOE/Ex-MOE': ['MOE Teacher', 'Ex-MOE Teacher', 'Moe', 'Exmoe', 'Nie'],
+};
+
+// Find up to `limit` tutors matching the assignment's level+subject, location, and tutor type
 async function findMatchingTutors(assignment, limit = 5) {
   const levelCategory = getLevelCategory(assignment.level);
   const subjectField = subjectToFieldName(assignment.subject);
@@ -77,6 +84,12 @@ async function findMatchingTutors(assignment, limit = 5) {
     [`teachingLevels.${levelCategory}.${subjectField}`]: true,
     [`locations.${region}`]: true,
   };
+
+  // Filter by tutor type if preference is specified
+  if (assignment.preferredTutorTypes?.length > 0) {
+    const allowedTypes = assignment.preferredTutorTypes.flatMap(t => TUTOR_TYPE_MAP[t] || []);
+    query.tutorType = { $in: allowedTypes };
+  }
 
   const tutors = await Tutor.find(query)
     .select('fullName contactNumber')

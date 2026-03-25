@@ -59,7 +59,13 @@ const assignmentSchema = new mongoose.Schema({
     type: String,
     trim: true
   },
-  
+
+  // Preferred Tutor Types
+  preferredTutorTypes: [{
+    type: String,
+    enum: ['Part-time', 'Full-time', 'MOE/Ex-MOE']
+  }],
+
   // Status
   status: {
     type: String,
