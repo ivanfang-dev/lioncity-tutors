@@ -1,11 +1,15 @@
 import { findMatchingTutors } from './tutorMatcher.js';
 
 const WHATSAPP_SERVICE_URL = process.env.WHATSAPP_SERVICE_URL || 'http://localhost:3001';
+const WHATSAPP_API_KEY = process.env.WHATSAPP_API_KEY || '';
 
 async function sendWhatsAppMessage(phoneNumber, message, assignmentId, assignmentTitle, tutorName) {
+  const headers = { 'Content-Type': 'application/json' };
+  if (WHATSAPP_API_KEY) headers['x-api-key'] = WHATSAPP_API_KEY;
+
   const res = await fetch(`${WHATSAPP_SERVICE_URL}/send`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers,
     body: JSON.stringify({ phoneNumber, message, assignmentId, assignmentTitle, tutorName })
   });
   if (!res.ok) {

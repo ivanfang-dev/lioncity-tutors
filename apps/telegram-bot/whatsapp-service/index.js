@@ -85,15 +85,27 @@ client.on('message', async (message) => {
   }
 });
 
+// --- API Key Auth ---
+const API_KEY = process.env.WHATSAPP_API_KEY;
+
+function requireAuth(req, res, next) {
+  if (!API_KEY) return next(); // skip auth if no key configured (local dev)
+  const provided = req.headers['x-api-key'];
+  if (provided !== API_KEY) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+  next();
+}
+
 // --- HTTP API ---
 
-// Health check
+// Health check (no auth needed)
 app.get('/health', (req, res) => {
   res.json({ status: isReady ? 'ready' : 'not_ready' });
 });
 
 // Configure Telegram notifier
-app.post('/config', (req, res) => {
+app.post('/config', requireAuth, (req, res) => {
   const { botToken, adminChatId } = req.body;
   if (botToken && adminChatId) {
     telegramNotifier = { botToken, adminChatId };
@@ -105,7 +117,7 @@ app.post('/config', (req, res) => {
 });
 
 // Send WhatsApp message
-app.post('/send', async (req, res) => {
+app.post('/send', requireAuth, async (req, res) => {
   if (!isReady) {
     return res.status(503).json({ error: 'WhatsApp client not ready' });
   }
