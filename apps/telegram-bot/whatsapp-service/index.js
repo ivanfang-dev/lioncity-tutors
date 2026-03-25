@@ -89,7 +89,7 @@ client.on('message', async (message) => {
 const API_KEY = process.env.WHATSAPP_API_KEY;
 
 function requireAuth(req, res, next) {
-  if (!API_KEY) return next(); // skip auth if no key configured (local dev)
+  if (!API_KEY) return next(); 
   const provided = req.headers['x-api-key'];
   if (provided !== API_KEY) {
     return res.status(401).json({ error: 'Unauthorized' });
