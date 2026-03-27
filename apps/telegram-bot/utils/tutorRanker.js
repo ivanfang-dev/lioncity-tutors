@@ -2,6 +2,20 @@ import { GoogleGenAI } from '@google/genai';
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 
+// Character limits keep the prompt under Gemini's context window
+// while preserving the most signal-rich parts of each free-text field
+const INTRO_CHAR_LIMIT = 300;
+const EXPERIENCE_CHAR_LIMIT = 300;
+const TRACK_RECORD_CHAR_LIMIT = 200;
+
+let _aiClient = null;
+function getAiClient() {
+  if (!_aiClient) {
+    _aiClient = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
+  }
+  return _aiClient;
+}
+
 async function rankTutorsWithAI(assignment, tutors, maxResults = 8) {
   if (!GEMINI_API_KEY) {
     console.log('GEMINI_API_KEY not set, skipping AI ranking');
@@ -13,13 +27,23 @@ async function rankTutorsWithAI(assignment, tutors, maxResults = 8) {
   }
 
   try {
-    const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
+    const ai = getAiClient();
 
     const levelCategory = assignment.level?.split(' ')[0]?.toLowerCase() || 'secondary';
     const tutorList = tutors.map((t, i) => {
-      const rate = t.hourlyRate?.[levelCategory] || t.hourlyRate?.secondary || 'Not specified';
-      return `${i + 1}. Name: ${t.fullName || 'Unknown'} | Type: ${t.tutorType || 'Unknown'} | Experience: ${t.yearsOfExperience || 'Unknown'} years | Education: ${t.highestEducation || 'Unknown'}\n   Rate: ${rate} | Introduction: "${(t.introduction || 'None').substring(0, 300)}" | Teaching Experience: "${(t.teachingExperience || 'None').substring(0, 300)}" | Track Record: "${(t.trackRecord || 'None').substring(0, 200)}"`;
-    }).join('\n');
+      const rate = t.hourlyRate?.[levelCategory] ?? t.hourlyRate?.secondary ?? 'Not specified';
+      const intro = (t.introduction || 'None').substring(0, INTRO_CHAR_LIMIT);
+      const experience = (t.teachingExperience || 'None').substring(0, EXPERIENCE_CHAR_LIMIT);
+      const trackRecord = (t.trackRecord || 'None').substring(0, TRACK_RECORD_CHAR_LIMIT);
+      return [
+        `${i + 1}. Name: ${t.fullName || 'Unknown'} | Type: ${t.tutorType || 'Unknown'}`,
+        `   Experience: ${t.yearsOfExperience || 'Unknown'} years | Education: ${t.highestEducation || 'Unknown'}`,
+        `   Rate: ${rate}`,
+        `   Introduction: "${intro}"`,
+        `   Teaching Experience: "${experience}"`,
+        `   Track Record: "${trackRecord}"`,
+      ].join('\n');
+    }).join('\n\n');
 
     const tutorTypePref = assignment.preferredTutorTypes?.length > 0
       ? assignment.preferredTutorTypes.join(', ')
@@ -60,7 +84,7 @@ Example: [3, 1, 7, 2, 5, 8, 4, 6]`;
     // Extract JSON array from response (handle markdown code blocks)
     const jsonMatch = text.match(/\[[\d,\s]+\]/);
     if (!jsonMatch) {
-      console.log('Could not parse Gemini response:', text);
+      console.warn('tutorRanker: could not parse Gemini response, falling back to unranked', { responseText: text });
       return tutors.slice(0, maxResults);
     }
 
@@ -71,7 +95,7 @@ Example: [3, 1, 7, 2, 5, 8, 4, 6]`;
       .slice(0, maxResults);
 
     if (ranked.length === 0) {
-      console.log('Gemini returned no valid indices, falling back');
+      console.warn('tutorRanker: Gemini returned no valid indices, falling back to unranked');
       return tutors.slice(0, maxResults);
     }
 

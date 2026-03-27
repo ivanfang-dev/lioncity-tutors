@@ -1,4 +1,4 @@
-import Tutor from '../models/Tutor.js';
+import Tutor from '../../../packages/shared/models/Tutor.js';
 
 // Maps assignment location (from inline keyboard) to tutor region boolean key
 const LOCATION_TO_REGION = {

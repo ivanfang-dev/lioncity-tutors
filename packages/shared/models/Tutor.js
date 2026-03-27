@@ -21,18 +21,18 @@ const tutorSchema = new mongoose.Schema({
   // Tutoring Preferences
   teachingLevels: {
   // Pre-School
-    preschool: { 
-      englishLanguage: Boolean, 
-      chinese: Boolean, 
-      malay: Boolean, 
-      tamil: Boolean, 
+    preschool: {
+      englishLanguage: Boolean,
+      chinese: Boolean,
+      malay: Boolean,
+      tamil: Boolean,
       mathematics: Boolean,
       phonics: Boolean,
       art: Boolean,
       music: Boolean,
       physicalEducation: Boolean
     },
-    
+
     // Primary (Simplified - same subjects across P1-P6 with some variations)
     primary: {
       englishLanguage: Boolean,
@@ -47,7 +47,7 @@ const tutorSchema = new mongoose.Schema({
       socialStudies: Boolean, // From P3 onwards
       characterAndCitizenshipEducation: Boolean
     },
-    
+
     // Secondary (Updated for Full SBB system - no more streaming)
     secondary: {
       englishLanguage: Boolean,
@@ -77,7 +77,7 @@ const tutorSchema = new mongoose.Schema({
       physicalEducation: Boolean,
       characterAndCitizenshipEducation: Boolean
     },
-    
+
     // Junior College (A-Level)
     jc: {
       generalPaper: Boolean,
@@ -86,7 +86,7 @@ const tutorSchema = new mongoose.Schema({
       malayLanguage: Boolean,
       tamilLanguage: Boolean,
       knowledgeAndInquiry: Boolean,
-      
+
       // H1 Subjects
       h1Mathematics: Boolean,
       h1Physics: Boolean,
@@ -99,7 +99,7 @@ const tutorSchema = new mongoose.Schema({
       h1ChineseLanguageAndLiterature: Boolean,
       h1MalayLanguageAndLiterature: Boolean,
       h1TamilLanguageAndLiterature: Boolean,
-      
+
       // H2 Subjects
       h2Mathematics: Boolean,
       h2Physics: Boolean,
@@ -115,7 +115,7 @@ const tutorSchema = new mongoose.Schema({
       h2ChineseLanguageAndLiterature: Boolean,
       h2MalayLanguageAndLiterature: Boolean,
       h2TamilLanguageAndLiterature: Boolean,
-      
+
       // H3 Subjects
       h3Mathematics: Boolean,
       h3Physics: Boolean,
@@ -127,7 +127,7 @@ const tutorSchema = new mongoose.Schema({
       h3LiteratureInEnglish: Boolean,
       h3Art: Boolean
     },
-    
+
     // Millennia Institute (3-year A-Level program)
     millenniaInstitute: {
       generalPaper: Boolean,
@@ -167,7 +167,7 @@ const tutorSchema = new mongoose.Schema({
       ibTheoryOfKnowledge: Boolean,
       ibExtendedEssay: Boolean
     },
-    
+
     // Polytechnic
     polytechnic: {
       english: Boolean,
@@ -182,7 +182,7 @@ const tutorSchema = new mongoose.Schema({
       projectManagement: Boolean,
       majorSubjects: Boolean // Specialized subjects based on course
     },
-    
+
     // University
     university: {
       engineeringMathematics: Boolean,
@@ -203,15 +203,15 @@ const tutorSchema = new mongoose.Schema({
       researchMethods: Boolean,
       majorSpecificSubjects: Boolean
     },
-    
+
     // Music Academy
-    music: { 
-      musicTheory: Boolean, 
-      piano: Boolean, 
-      violin: Boolean, 
-      guitar: Boolean, 
-      drums: Boolean, 
-      clarinet: Boolean, 
+    music: {
+      musicTheory: Boolean,
+      piano: Boolean,
+      violin: Boolean,
+      guitar: Boolean,
+      drums: Boolean,
+      clarinet: Boolean,
       flute: Boolean,
       saxophone: Boolean,
       trumpet: Boolean,
@@ -221,42 +221,42 @@ const tutorSchema = new mongoose.Schema({
       musicComposition: Boolean,
       ensemblePlaying: Boolean
     },
-    
+
     // Professional Development & Skills
-    professional: { 
+    professional: {
       // Test Preparation
       ielts: Boolean,
       toefl: Boolean,
       sat: Boolean,
       gmat: Boolean,
       gre: Boolean,
-      
+
       // Programming & Technology (Not formal MOE subjects but popular for private tuition)
-      pythonProgramming: Boolean, 
-      javaProgramming: Boolean, 
+      pythonProgramming: Boolean,
+      javaProgramming: Boolean,
       cppProgramming: Boolean,
-      cSharpProgramming: Boolean, 
-      webDevelopment: Boolean, 
-      dataScience: Boolean, 
-      aiAndMachineLearning: Boolean, 
-      mobileAppDevelopment: Boolean, 
-      photoshop: Boolean, 
+      cSharpProgramming: Boolean,
+      webDevelopment: Boolean,
+      dataScience: Boolean,
+      aiAndMachineLearning: Boolean,
+      mobileAppDevelopment: Boolean,
+      photoshop: Boolean,
       videoEditing: Boolean,
-      
+
       // Soft Skills
       publicSpeaking: Boolean,
       creativeWriting: Boolean,
       essayWriting: Boolean,
       criticalThinking: Boolean,
       studySkills: Boolean,
-      
+
       // Languages
       french: Boolean,
       german: Boolean,
       spanish: Boolean,
       japanese: Boolean,
       korean: Boolean,
-      
+
       // Business & Professional
       leadership: Boolean,
       projectManagement: Boolean,
@@ -264,7 +264,7 @@ const tutorSchema = new mongoose.Schema({
       businessWriting: Boolean
     }
   },
-  
+
   // Locations
   locations: {
     north: Boolean,
@@ -274,16 +274,16 @@ const tutorSchema = new mongoose.Schema({
     central: Boolean,
     northeast: Boolean,
     northwest: Boolean,
-    online: Boolean 
+    online: Boolean
   },
-  
+
   // Qualifications & Experience
   tutorType: String,
   yearsOfExperience: String,
   highestEducation: String,
   currentSchool: String,
   previousSchools: String,
-  
+
   // Fee Structure
   hourlyRate: {
     preschool: String,
@@ -296,12 +296,12 @@ const tutorSchema = new mongoose.Schema({
     university: String,
     professional: String,
   },
-  
+
   // Tutor Profile
   introduction: String,
   teachingExperience: String,
   trackRecord: String,
-  
+
   // Availability
   availableTimeSlots: {
     weekdayMorning: Boolean,
@@ -311,7 +311,7 @@ const tutorSchema = new mongoose.Schema({
     weekendAfternoon: Boolean,
     weekendEvening: Boolean
   },
-  
+
   // Form metadata
   formType: String
 }, { timestamps: true });

@@ -11,7 +11,7 @@
 import { describe, test, expect, beforeAll, afterAll, beforeEach, afterEach } from '@jest/globals';
 import mongoose from 'mongoose';
 import Assignment from '../../../packages/shared/models/Assignment.js';
-import Tutor from '../models/Tutor.js';
+import Tutor from '../../../packages/shared/models/Tutor.js';
 import RateValidator from '../utils/RateValidator.js';
 import ErrorHandler from '../utils/ErrorHandler.js';
 

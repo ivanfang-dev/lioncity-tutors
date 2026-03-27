@@ -1,4 +1,5 @@
 import { EDUCATION_LEVELS, getSubjectsForLevel, RATE_MAPPINGS } from '../../../packages/shared/index.js';
+import { generatePhoneVariations } from '../../../packages/shared/utils/phoneUtils.js';
 import RateValidator from '../utils/RateValidator.js';
 import ErrorHandler from '../utils/ErrorHandler.js';
 import { notifyMatchedTutors } from '../utils/tutorNotifier.js';
@@ -35,40 +36,6 @@ const ApplicationStates = {
   EDITING_EXPERIENCE: 'editing_experience',
   EDITING_QUALIFICATIONS: 'editing_qualifications'
 };
-
-function normalizePhone(phone) {
-  console.log('normalizePhone - Input:', phone);
-  
-  if (!phone || typeof phone !== 'string') {
-    return [];
-  }
-  
-  // Remove all non-digits, then remove leading 65 if present
-  const normalized = phone.replace(/\D/g, '').replace(/^65/, '');
-  
-  if (!normalized) return [];
-  
-  // Generate all possible variations that might exist in your DB
-  const variations = [
-    normalized,                                      // 96571013
-    `65${normalized}`,                              // 6596571013
-    `+65${normalized}`,                             // +6596571013
-    `+65 ${normalized}`,                            // +65 96571013
-    normalized.replace(/(\d{4})(\d{4})/, '$1 $2'), // 9657 1013
-    normalized.replace(/(\d{4})(\d{4})/, '$1-$2'), // 9657-1013
-    `65${normalized.replace(/(\d{4})(\d{4})/, '$1 $2')}`, // 659657 1013
-    `65 ${normalized}`,                             // 65 96571013
-    `65 ${normalized.replace(/(\d{4})(\d{4})/, '$1 $2')}`, // 65 9657 1013
-    `+65${normalized.replace(/(\d{4})(\d{4})/, '$1 $2')}`, // +659657 1013
-    `+65 ${normalized.replace(/(\d{4})(\d{4})/, '$1 $2')}`, // +65 9657 1013
-    phone // Include original input as well
-  ];
-  
-  // Remove duplicates and empty strings
-  const uniqueVariations = [...new Set(variations)].filter(v => v.length > 0);
-  console.log('normalizePhone - Variations:', uniqueVariations);
-  return uniqueVariations;
-}
 
 function initializeTeachingLevels(tutor) {
   if (!tutor.teachingLevels) {
@@ -131,7 +98,7 @@ async function getTutorFromSession(chatId, userSessions, Tutor) {
 
     // Fallback: Try matching by contactNumber
     if (session.contactNumber) {
-      const phoneVariations = normalizePhone(session.contactNumber);
+      const phoneVariations = generatePhoneVariations(session.contactNumber);
       const tutorByPhone = await Tutor.findOne({ contactNumber: { $in: phoneVariations } });
       if (tutorByPhone) return tutorByPhone;
     }
@@ -276,54 +243,20 @@ function formatAssignmentForChannel(assignment) {
   return msg;
 }
 
-async function handleBioEdit(bot, chatId, text, userSessions, Tutor) {
+async function handleProfileFieldEdit(bot, chatId, text, userSessions, Tutor, fieldName, successMessage) {
   try {
     const session = userSessions[chatId];
     const tutor = await Tutor.findById(session.tutorId);
-    
-    tutor.bio = text;
-    await tutor.save();
-    
-    session.state = ApplicationStates.IDLE;
-    await safeSend(bot, chatId, '✅ Bio updated successfully!');
-    return await showProfileEditMenu();
-  } catch (error) {
-    console.error('Error updating bio:', error);
-    await safeSend(bot, chatId, '❌ Error updating bio. Please try again.');
-  }
-}
 
-async function handleExperienceEdit(bot, chatId, text, userSessions, Tutor) {
-  try {
-    const session = userSessions[chatId];
-    const tutor = await Tutor.findById(session.tutorId);
-    
-    tutor.teachingExperience = text;
+    tutor[fieldName] = text;
     await tutor.save();
-    
-    session.state = ApplicationStates.IDLE;
-    await safeSend(bot, chatId, '✅ Experience updated successfully!');
-    return await showProfileEditMenu();
-  } catch (error) {
-    console.error('Error updating experience:', error);
-    await safeSend(bot, chatId, '❌ Error updating experience. Please try again.');
-  }
-}
 
-async function handleQualificationsEdit(bot, chatId, text, userSessions, Tutor) {
-  try {
-    const session = userSessions[chatId];
-    const tutor = await Tutor.findById(session.tutorId);
-    
-    tutor.qualifications = text;
-    await tutor.save();
-    
     session.state = ApplicationStates.IDLE;
-    await safeSend(bot, chatId, '✅ Qualifications updated successfully!');
-    return await showProfileEditMenu();
+    await safeSend(bot, chatId, successMessage);
+    return showProfileEditMenu();
   } catch (error) {
-    console.error('Error updating qualifications:', error);
-    await safeSend(bot, chatId, '❌ Error updating qualifications. Please try again.');
+    console.error(`Error updating ${fieldName}:`, error);
+    await safeSend(bot, chatId, `❌ Error updating ${fieldName}. Please try again.`);
   }
 }
 
@@ -1129,7 +1062,7 @@ async function handleStart(bot, chatId, userId, Tutor, userSessions, startParam 
 async function handleContact(bot, chatId, userId, contact, Tutor, userSessions, ADMIN_USERS, Assignment) {
   try {
     // Normalize phone number
-    const phoneVariations = normalizePhone(contact.phone_number);
+    const phoneVariations = generatePhoneVariations(contact.phone_number);
     
     const tutors = await Tutor.find({ contactNumber: { $in: phoneVariations } });
     if (tutors.length > 1) {
@@ -3397,15 +3330,15 @@ async function handleMessage(bot, chatId, userId, text, message, Tutor, Assignme
   }
 
   if (session.state === ApplicationStates.EDITING_BIO) {
-    return await handleBioEdit(bot, chatId, text, userSessions, Tutor);
+    return await handleProfileFieldEdit(bot, chatId, text, userSessions, Tutor, 'bio', '✅ Bio updated successfully!');
   }
 
   if (session.state === ApplicationStates.EDITING_EXPERIENCE) {
-    return await handleExperienceEdit(bot, chatId, text, userSessions, Tutor);
+    return await handleProfileFieldEdit(bot, chatId, text, userSessions, Tutor, 'teachingExperience', '✅ Experience updated successfully!');
   }
 
   if (session.state === ApplicationStates.EDITING_QUALIFICATIONS) {
-    return await handleQualificationsEdit(bot, chatId, text, userSessions, Tutor);
+    return await handleProfileFieldEdit(bot, chatId, text, userSessions, Tutor, 'qualifications', '✅ Qualifications updated successfully!');
   }
 
   // Add handler for rate input state
@@ -3717,7 +3650,6 @@ export {
   // Utility functions
   handleCallbackQuery,
   handleMessage,
-  normalizePhone,
   parseNaturalDate,
   initializeTeachingLevels,
   initializeAvailability,
