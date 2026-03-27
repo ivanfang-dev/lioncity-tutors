@@ -1370,7 +1370,7 @@ function createInlineKeyboard(options, callbackPrefix, columns = 2) {
 }
 
 // Handle assignment creation steps
-async function handleAssignmentStep(bot, chatId, text, userSessions) {
+async function handleAssignmentStep(bot, chatId, text, userSessions, Assignment) {
   const session = userSessions[chatId];
   const { currentStep, assignmentData } = session;
   
@@ -1437,20 +1437,22 @@ async function handleAssignmentStep(bot, chatId, text, userSessions) {
         if (text.toLowerCase().trim() !== 'skip') {
           assignmentData.description = text.trim();
         }
-        
-        // Set default values
-        assignmentData.status = 'Open';
+
+        // Save as Draft to survive serverless cold starts between preview and confirm
+        assignmentData.status = 'Draft';
         assignmentData.createdAt = new Date();
         assignmentData.updatedAt = new Date();
-        
-        // Show confirmation
+
+        const draft = new Assignment(assignmentData);
+        const savedDraft = await draft.save();
+
         const confirmationMsg = formatAssignmentPreview(assignmentData);
         await safeSend(bot, chatId, `📋 *Assignment Preview*\n\n${confirmationMsg}\n\n✅ *Ready to post this assignment?*`, {
           parse_mode: 'Markdown',
           reply_markup: {
             inline_keyboard: [
-              [{ text: '✅ Confirm & Post Assignment', callback_data: 'confirm_post_assignment' }],
-              [{ text: '❌ Cancel', callback_data: 'admin_panel' }]
+              [{ text: '✅ Confirm & Post Assignment', callback_data: `confirm_post_assignment_${savedDraft._id}` }],
+              [{ text: '❌ Cancel', callback_data: `cancel_draft_${savedDraft._id}` }]
             ]
           }
         });
@@ -1629,14 +1631,20 @@ function formatAssignmentPreview(assignment) {
   return msg;
 }
 
-async function confirmPostAssignment(bot, chatId, userSessions, Assignment, channelId, botUsername) {
+async function confirmPostAssignment(bot, chatId, userSessions, Assignment, channelId, botUsername, draftId) {
   try {
     console.log('Channel ID being used:', channelId);
-    const assignmentData = userSessions[chatId].assignmentData;
-    
-    // Create assignment in database
-    const assignment = new Assignment(assignmentData);
-    const savedAssignment = await assignment.save();
+
+    // Retrieve the draft saved during preview (survives serverless cold starts)
+    const savedAssignment = await Assignment.findById(draftId);
+    if (!savedAssignment) {
+      return await safeSend(bot, chatId, '❌ Assignment draft not found or expired. Please create the assignment again.');
+    }
+
+    // Activate the draft
+    savedAssignment.status = 'Open';
+    savedAssignment.updatedAt = new Date();
+    await savedAssignment.save();
     
     // Post to channel
     const channelMessage = await postAssignmentToChannel(bot, savedAssignment, channelId, botUsername);
@@ -2643,11 +2651,18 @@ async function handleCallbackQuery(
       return await showAdminPanel(chatId, bot);
     }
 
-    if (data === 'confirm_post_assignment') {
+    if (data.startsWith('confirm_post_assignment_')) {
       if (!isAdmin(userId, ADMIN_USERS)) {
         return await safeSend(bot, chatId, 'You are not authorized to post assignments.');
       }
-      return await confirmPostAssignment(bot, chatId, userSessions, Assignment, CHANNEL_ID, BOT_USERNAME);
+      const draftId = data.replace('confirm_post_assignment_', '');
+      return await confirmPostAssignment(bot, chatId, userSessions, Assignment, CHANNEL_ID, BOT_USERNAME, draftId);
+    }
+
+    if (data.startsWith('cancel_draft_')) {
+      const draftId = data.replace('cancel_draft_', '');
+      await Assignment.findByIdAndDelete(draftId).catch(() => {});
+      return await showAdminPanel(chatId, bot);
     }
 
     if (data.trim() === 'admin_post_assignment') {
@@ -3378,7 +3393,7 @@ async function handleMessage(bot, chatId, userId, text, message, Tutor, Assignme
 
   // Handle assignment creation flow
   if (session.state === ApplicationStates.CREATING_ASSIGNMENT) {
-    return await handleAssignmentStep(bot, chatId, text, userSessions);
+    return await handleAssignmentStep(bot, chatId, text, userSessions, Assignment);
   }
 
   if (session.state === ApplicationStates.EDITING_BIO) {

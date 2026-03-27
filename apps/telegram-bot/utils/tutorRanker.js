@@ -1,4 +1,4 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { GoogleGenAI } from '@google/genai';
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 
@@ -13,8 +13,7 @@ async function rankTutorsWithAI(assignment, tutors, maxResults = 8) {
   }
 
   try {
-    const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
+    const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
 
     const levelCategory = assignment.level?.split(' ')[0]?.toLowerCase() || 'secondary';
     const tutorList = tutors.map((t, i) => {
@@ -52,8 +51,11 @@ Rank the top ${maxResults} most suitable tutors for this assignment. Consider:
 Return ONLY a valid JSON array of tutor numbers (1-based) in ranked order, best first. Maximum ${maxResults} entries.
 Example: [3, 1, 7, 2, 5, 8, 4, 6]`;
 
-    const result = await model.generateContent(prompt);
-    const text = result.response.text().trim();
+    const response = await ai.models.generateContent({
+      model: 'gemini-2.5-flash',
+      contents: prompt
+    });
+    const text = response.text.trim();
 
     // Extract JSON array from response (handle markdown code blocks)
     const jsonMatch = text.match(/\[[\d,\s]+\]/);

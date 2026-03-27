@@ -69,7 +69,7 @@ const assignmentSchema = new mongoose.Schema({
   // Status
   status: {
     type: String,
-    enum: ['Open', 'In Progress', 'Filled', 'Closed'],
+    enum: ['Draft', 'Open', 'In Progress', 'Filled', 'Closed'],
     default: 'Open'
   },
   
