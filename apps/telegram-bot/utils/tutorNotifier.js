@@ -1,4 +1,5 @@
 import { findMatchingTutors } from './tutorMatcher.js';
+import { rankTutorsWithAI } from './tutorRanker.js';
 
 const WHATSAPP_SERVICE_URL = process.env.WHATSAPP_SERVICE_URL || 'http://localhost:3001';
 const WHATSAPP_API_KEY = process.env.WHATSAPP_API_KEY || '';
@@ -20,14 +21,16 @@ async function sendWhatsAppMessage(phoneNumber, message, assignmentId, assignmen
 
 async function notifyMatchedTutors(assignment, botUsername) {
   try {
-    const tutors = await findMatchingTutors(assignment, 5);
+    const candidates = await findMatchingTutors(assignment, 25);
 
-    if (tutors.length === 0) {
+    if (candidates.length === 0) {
       console.log(`No matching tutors found for assignment ${assignment._id}`);
       return { sent: 0, failed: 0 };
     }
 
-    console.log(`Notifying ${tutors.length} matched tutors for assignment ${assignment._id}`);
+    console.log(`Found ${candidates.length} candidates for assignment ${assignment._id}, ranking with AI...`);
+    const tutors = await rankTutorsWithAI(assignment, candidates, 8);
+    console.log(`Notifying ${tutors.length} top-ranked tutors`);
 
     const applyUrl = `https://t.me/${botUsername}?start=apply_${assignment._id}`;
 

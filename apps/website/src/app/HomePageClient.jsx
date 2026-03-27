@@ -14,7 +14,7 @@ import { Star, CheckCircle, Award, Users, Clock, Shield, Quote, TrendingUp, MapP
 // Lazy-loaded sections
 import dynamic from 'next/dynamic';
 import ReviewStrip from "@/components/ReviewStrip";
-import TestimonialAutoScroller from "@/components/TestimonialAutoScroller";
+import { TestimonialsColumn } from "@/components/ui/testimonials-columns";
 import SubjectSpotlightSection from "@/components/SubjectSpotlightSection";
 import FloatingTrustBadge from "@/components/FloatingTrustBadge";
 import ScrollProgress from "@/components/ScrollProgress";
@@ -96,12 +96,13 @@ export default function HomePageClient() {
   const scrollToFAQ = () => faqRef.current?.scrollIntoView({ behavior: 'smooth' });
   const testimonials = [
     { initials: 'M.T', name: 'Molly Tan', relation: 'Parent of Primary 3 and Primary 5 Student', text: "Suggestion of tutor is good. Able to match my requirement and tutor is very responsible in meeting my children's needs.", subject: 'Primary Chinese', location: 'Pasir Panjang Road' },
-    { initials: 'D.L', name: 'David L.', relation: 'Parent of P6 Student', text: 'No fees for parents. Tutor helped my son move up 3 grades in 2 months.', subject: 'PSLE Math', location: 'Jurong West' },
+    { initials: 'A', name: 'Mrs Amanda', relation: 'Parent of Primary 2 Student', text: "Found this agency from carousel! Met our amazing tutor Mr Junaith. It’s been an amazing month, and we’re so happy with the sessions that he conducted, very professional, very supportive teacher towards his students!", subject: 'Primary Maths', location: 'Tiong Bahru' },
+    { initials: 'D.L', name: 'David L.', relation: 'Parent of Primary 6 Student', text: 'No fees for parents. Tutor helped my son move up 3 grades in 2 months.', subject: 'PSLE Math', location: 'Jurong West' },
     { initials: 'M', name: 'Mrs Madushani', relation: 'Parent of Secondary 3 Student', text: "Fast and fuss-free. Just filled in the form and someone got back within the hour. Helped me find a Sec 3 E Math and Chem tutor for my son. So far the tutor is very patient and reliable. Fee also reasonable.", subject: 'Secondary 3 Math & Chemistry', location: 'Woodlands' },
+    { initials: 'J', name: 'Mrs Juanita ', relation: 'Parent of Primary 5 Student', text: 'Mr. Jin YT is a dedicated tutor who has the patience to guide my special needs son. My son understands and enjoys his teachings.', subject: 'Primary 1 Maths and Science', location: 'Yuan Ching Road' },
     { initials: 'K.A', name: 'Kaveesha Archana', relation: 'Parent of JC1 Student', text: 'Really glad I found LionCity Tutors. I’ve already recommended them to a few friends. As a working parent, I appreciated how easy and stress-free the entire process was — they listened to our needs and quickly found us a tutor who was a great fit for my daughter. The tutor was not only well-versed in the subject matter but also very encouraging and engaging.', subject: 'H2 Chemistry', location: 'Woodlands' },
     { initials: 'A', name: 'Mrs Athikashri ', relation: 'Parent of Secondary 1 Student', text: 'The agency was very efficient in helping me find a tutor quickly. Communication and arrangements were smooth, and the overall experience was pleasant and hassle-free.', subject: 'Secondary 1 Maths', location: 'Sengkang Central' },
-
-
+    { initials: 'M.M', name: 'Mrs Mardiana ', relation: 'Parent of Primary 3 Student', text: 'The agency made alot of effort to ensure my expectations and preferred choice of tutoring style aligned to whom they chose for my daughter to do a trial lesson. Happy to say they made a right selection and my daughter learns while enjoying the lesson with the tutor.', subject: 'Primary 3 Maths', location: 'Serangoon Ave 2' },
     { initials: 'R.R', name: 'Mrs Rahman', relation: 'Parent of JC1', text: 'Great follow-up and tutor matched to learning style. Highly recommended.', subject: 'H2 Chemistry', location: 'Woodlands' }
   ];
 
@@ -113,7 +114,6 @@ export default function HomePageClient() {
         <TutorPopup />
         <FloatingTrustBadge onGetStarted={scrollToForm} />
         {/* Hero Section */}
-        {/* Hero Section - Enhanced Mobile */}
         <section className="relative min-h-[85vh] sm:min-h-[90vh] flex items-center justify-center bg-background-default px-4 sm:px-6 overflow-hidden">
           {/* Subtle gradient background */}
           <div className="absolute inset-0 bg-gradient-to-b from-background-subtle/30 to-background-default pointer-events-none" />
@@ -294,16 +294,32 @@ export default function HomePageClient() {
         <HowitWorksSection formRef={formRef} />
         
         {/* Social Proof */}
-        <section className="section-padding bg-background-subtle">
-          <div className="max-w-6xl mx-auto px-6">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold text-primary">Trusted by Parents Across Singapore</h2>
-              <p className="text-text-default mt-3 text-lg">Verified reviews from families who found success with our tutors.</p>
+        <section className="section-padding bg-background-subtle relative">
+          <div className="container z-10 mx-auto">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+              viewport={{ once: true }}
+              className="flex flex-col items-center justify-center max-w-[540px] mx-auto"
+            >
+              <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tighter -mt-10 text-center lg:whitespace-nowrap">
+                Trusted by Parents Across Singapore
+              </h2>
+              <p className="text-center mt-5 opacity-75">
+                Verified reviews from families who found success with our tutors.
+              </p>
+            </motion.div>
+
+            <div className="flex justify-center gap-6 mt-10 [mask-image:linear-gradient(to_bottom,transparent,black_25%,black_75%,transparent)] max-h-[740px] overflow-hidden">
+              <TestimonialsColumn testimonials={testimonials.slice(0, 3)} duration={30} />
+              <TestimonialsColumn testimonials={testimonials.slice(3, 6)} className="hidden md:block" duration={31} />
+              <TestimonialsColumn testimonials={testimonials.slice(6, 9)} className="hidden lg:block" duration={33} />
             </div>
-            <TestimonialAutoScroller testimonials={testimonials} />
+
             <div className="mt-12 text-center">
-              <Button 
-                onClick={() => window.open('https://search.google.com/local/reviews?placeid=ChIJz5sczNYR2jERc_4Ka3tDwyY','_blank')} 
+              <Button
+                onClick={() => window.open('https://search.google.com/local/reviews?placeid=ChIJz5sczNYR2jERc_4Ka3tDwyY','_blank')}
                 className="bg-transparent text-primary border-2 border-primary hover:bg-primary hover:text-text-inverse font-semibold px-8 py-3 rounded-xl shadow-md text-base"
               >
                 Read More Google Reviews
@@ -345,7 +361,7 @@ export default function HomePageClient() {
           transition={{ duration: 0.7, ease: "easeOut" }}
           viewport={{ once: true, amount: 0.3 }}
       >
-        <h2 className="text-4xl font-bold text-center text-primary mb-4">
+        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center text-primary mb-4">
             Ready to Find The Perfect Tutor?
         </h2>
         <p className="text-center text-text-default/80 mb-10 text-lg">
@@ -353,7 +369,7 @@ export default function HomePageClient() {
         </p>
         
         {/* The existing benefits icons */}
-        <div className="flex justify-center space-x-8 mb-8">
+        <div className="flex flex-col sm:flex-row justify-center items-center gap-3 sm:gap-8 mb-8">
             <div className="flex items-center text-emerald-600">
                 <span className="text-2xl mr-2">✅</span>
                 <span className="font-medium">Matched within 24 hours</span>

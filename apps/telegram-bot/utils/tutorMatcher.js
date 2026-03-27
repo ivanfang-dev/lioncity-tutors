@@ -92,7 +92,8 @@ async function findMatchingTutors(assignment, limit = 5) {
   }
 
   const tutors = await Tutor.find(query)
-    .select('fullName contactNumber')
+    .select('fullName contactNumber tutorType yearsOfExperience highestEducation introduction teachingExperience trackRecord hourlyRate createdAt')
+    .sort({ createdAt: -1 })
     .limit(limit)
     .lean();
 

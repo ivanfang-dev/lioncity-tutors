@@ -84,7 +84,7 @@ export default function Navbar() {
         </Link>
         
         {/* Desktop Menu */}
-        <div className="hidden sm:flex space-x-3 items-center ml-auto">
+        <div className="hidden lg:flex space-x-3 items-center ml-auto">
           <Link href="/" className={navLinkStyle("/")}>Home</Link>
           
           <Dropdown
@@ -136,7 +136,7 @@ export default function Navbar() {
         </div>
 
         {/* Mobile Menu Button (No changes) */}
-        <button className="sm:hidden text-gray-600" onClick={() => setMenuOpen(!menuOpen)}>
+        <button className="lg:hidden text-gray-600" onClick={() => setMenuOpen(!menuOpen)}>
           {menuOpen ? <X size={28} /> : <Menu size={28} />}
         </button>
 

@@ -163,7 +163,7 @@ export default function TuitionRatesPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
           >
-            <h1 className="text-5xl sm:text-6xl md:text-8xl font-bold tracking-tighter mb-6 text-primary">
+            <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-8xl font-bold tracking-tighter mb-6 text-primary">
               Invest in Excellence.
             </h1>
             <p className="text-lg md:text-xl text-text-default/80 max-w-3xl mx-auto mb-10">
@@ -275,10 +275,13 @@ export default function TuitionRatesPage() {
                     ) : (
                       <form onSubmit={handleSubmit}>
                         <div className="mb-8">
-                          <div className="flex justify-between mb-1">
+                          <div className="hidden sm:flex justify-between mb-1">
                               {["Your Details", "Lesson Details", "Tutor Preferences"].map((step, i) => (
                                   <span key={i} className={`text-sm font-medium ${currentStep >= i + 1 ? 'text-primary' : 'text-gray-400'}`}>{step}</span>
                               ))}
+                          </div>
+                          <div className="flex sm:hidden justify-center mb-1">
+                              <span className="text-sm font-medium text-primary">Step {currentStep} of 3</span>
                           </div>
                           <div className="w-full bg-gray-200 rounded-full h-2">
                               <div className="bg-primary h-2 rounded-full transition-all duration-500" style={{ width: `${((currentStep - 1) / 2) * 100}%` }} />
