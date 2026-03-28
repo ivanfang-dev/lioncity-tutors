@@ -1606,7 +1606,18 @@ async function confirmPostAssignment(bot, chatId, userSessions, Assignment, chan
       ? `📨 Notified ${notifyResult.sent} matching tutor(s) via WhatsApp`
       : '📨 No matching tutors found';
 
-    await safeSend(bot, chatId, `✅ *Assignment Posted Successfully!*\n\n📋 Assignment ID: ${savedAssignment._id}\n📢 Posted to channel\n${notifyMsg}\n📊 Status: Open for applications`, {
+    let aiMsg = '';
+    if (notifyResult.sent > 0) {
+      if (notifyResult.aiUsed) {
+        aiMsg = '\n🤖 AI ranked tutors';
+      } else if (notifyResult.aiError === 'rate_limit') {
+        aiMsg = '\n⚠️ AI ranking unavailable (rate limit), used unranked order';
+      } else if (notifyResult.aiError === 'other') {
+        aiMsg = '\n⚠️ AI ranking failed, used unranked order';
+      }
+    }
+
+    await safeSend(bot, chatId, `✅ *Assignment Posted Successfully!*\n\n📋 Assignment ID: ${savedAssignment._id}\n📢 Posted to channel\n${notifyMsg}${aiMsg}\n📊 Status: Open for applications`, {
       parse_mode: 'Markdown',
       reply_markup: {
         inline_keyboard: [[{ text: '🔙 Back to Admin Panel', callback_data: 'admin_panel' }]]

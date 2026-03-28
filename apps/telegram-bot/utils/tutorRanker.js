@@ -19,11 +19,11 @@ function getAiClient() {
 async function rankTutorsWithAI(assignment, tutors, maxResults = 8) {
   if (!GEMINI_API_KEY) {
     console.log('GEMINI_API_KEY not set, skipping AI ranking');
-    return tutors.slice(0, maxResults);
+    return { tutors: tutors.slice(0, maxResults), aiUsed: false, aiError: null };
   }
 
   if (tutors.length <= maxResults) {
-    return tutors;
+    return { tutors, aiUsed: false, aiError: null };
   }
 
   try {
@@ -96,15 +96,20 @@ Example: [3, 1, 7, 2, 5, 8, 4, 6]`;
 
     if (ranked.length === 0) {
       console.warn('tutorRanker: Gemini returned no valid indices, falling back to unranked');
-      return tutors.slice(0, maxResults);
+      return { tutors: tutors.slice(0, maxResults), aiUsed: false, aiError: 'other' };
     }
 
     console.log(`AI ranked top ${ranked.length} tutors:`, ranked.map(t => t.fullName).join(', '));
-    return ranked;
+    return { tutors: ranked, aiUsed: true, aiError: null };
 
   } catch (error) {
-    console.error('Gemini ranking failed, falling back to unranked:', error.message);
-    return tutors.slice(0, maxResults);
+    const is429 = error.message?.includes('429') || error.status === 429;
+    if (is429) {
+      console.error('Gemini rate limited (429), falling back to unranked');
+    } else {
+      console.error('Gemini ranking failed, falling back to unranked:', error.message);
+    }
+    return { tutors: tutors.slice(0, maxResults), aiUsed: false, aiError: is429 ? 'rate_limit' : 'other' };
   }
 }
 

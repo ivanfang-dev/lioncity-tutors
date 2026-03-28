@@ -25,12 +25,12 @@ async function notifyMatchedTutors(assignment, botUsername) {
 
     if (candidates.length === 0) {
       console.log(`No matching tutors found for assignment ${assignment._id}`);
-      return { sent: 0, failed: 0 };
+      return { sent: 0, failed: 0, aiUsed: false, aiError: null };
     }
 
     console.log(`Found ${candidates.length} candidates for assignment ${assignment._id}, ranking with AI...`);
-    const tutors = await rankTutorsWithAI(assignment, candidates, 8);
-    console.log(`Notifying ${tutors.length} top-ranked tutors`);
+    const { tutors, aiUsed, aiError } = await rankTutorsWithAI(assignment, candidates, 8);
+    console.log(`Notifying ${tutors.length} top-ranked tutors (AI used: ${aiUsed})`);
 
     const applyUrl = `https://t.me/${botUsername}?start=apply_${assignment._id}`;
 
@@ -67,10 +67,10 @@ async function notifyMatchedTutors(assignment, botUsername) {
       console.log(`WhatsApp notifications: ${sent} sent, ${failed} failed:`, errors);
     }
 
-    return { sent, failed };
+    return { sent, failed, aiUsed, aiError };
   } catch (error) {
     console.error('Error notifying matched tutors:', error);
-    return { sent: 0, failed: 0 };
+    return { sent: 0, failed: 0, aiUsed: false, aiError: null };
   }
 }
 
