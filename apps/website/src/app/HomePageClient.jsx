@@ -9,7 +9,7 @@ import UniqueFeaturesSection from "@/components/UniqueFeaturesSection";
 import { Step1, Step2, Step3 } from "@/components/FormSteps";
 import TutorPopup from "@/components/TutorPopup";
 import useTuitionRequestForm from "@/components/useTuitionRequestForm";
-import { Star, CheckCircle, Award, Users, Clock, Shield, Quote, TrendingUp, MapPin, Phone, Mail } from "lucide-react";
+import { Star, CheckCircle, Award, Users, Clock, Shield, Quote, TrendingUp, MapPin, Phone, Mail, FileText, BookOpen, ArrowRight } from "lucide-react";
 
 // Lazy-loaded sections
 import dynamic from 'next/dynamic';
@@ -114,11 +114,10 @@ export default function HomePageClient() {
         <TutorPopup />
         <FloatingTrustBadge onGetStarted={scrollToForm} />
         {/* Hero Section */}
-        <section className="relative min-h-[85vh] sm:min-h-[90vh] flex items-center justify-center bg-background-default px-4 sm:px-6 overflow-hidden">
-          {/* Subtle gradient background */}
-          <div className="absolute inset-0 bg-gradient-to-b from-background-subtle/30 to-background-default pointer-events-none" />
-          
-          <div className="relative max-w-7xl mx-auto w-full py-12 sm:py-16 md:py-20">
+        <section className="relative flex items-center bg-background-default px-4 sm:px-6 overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-b from-background-subtle/40 to-background-default pointer-events-none" />
+
+          <div className="relative max-w-7xl mx-auto w-full py-16 sm:py-20 md:py-24">
             <div className="grid lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-16 items-center">
               {/* Text Content */}
               <motion.div
@@ -128,161 +127,134 @@ export default function HomePageClient() {
                   hidden: { opacity: 0 },
                   visible: {
                     opacity: 1,
-                    transition: {
-                      staggerChildren: 0.15,
-                    },
+                    transition: { staggerChildren: 0.12 },
                   },
                 }}
                 className="text-center lg:text-left order-2 lg:order-1"
               >
                 <motion.h1
-                  variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0 } }}
-                  transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                  variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}
+                  transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
                   className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-primary leading-[1.1] tracking-tight mb-4 sm:mb-6"
                 >
                   Find Your Perfect Tutor.
-                  <span className="block text-text-default/80 mt-2">Zero Agency Fees.</span>
+                  <span className="block text-gray-600 mt-2">Zero Agency Fees.</span>
                 </motion.h1>
-                
+
                 <motion.p
-                  variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0 } }}
-                  transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                  className="text-lg sm:text-xl md:text-2xl text-text-default/80 leading-relaxed mb-6 sm:mb-8 max-w-2xl mx-auto lg:mx-0"
+                  variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}
+                  transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                  className="text-lg sm:text-xl text-gray-600 leading-relaxed mb-8 max-w-xl mx-auto lg:mx-0"
                 >
                   Connect with top-rated, MOE-familiar tutors for PSLE, O-Level, and JC subjects. Get qualified profiles within 24 hours.
                 </motion.p>
 
                 <motion.div
-                  variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0 } }}
-                  transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                  className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 justify-center lg:justify-start mb-6 sm:mb-8"
+                  variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}
+                  transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                  className="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start mb-8"
                 >
                   <motion.div
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
+                    whileHover={{ scale: 1.03 }}
+                    whileTap={{ scale: 0.97 }}
                     className="w-full sm:w-auto"
                   >
                     <Button
-                      className="relative bg-accent hover:bg-accent/90 text-white font-semibold px-6 sm:px-8 py-4 sm:py-5 rounded-full text-base sm:text-lg shadow-lg hover:shadow-xl transition-all duration-300 w-full sm:w-auto overflow-hidden group"
+                      className="bg-[#F17720] hover:bg-[#d9691c] text-white font-semibold px-8 py-5 rounded-full text-base sm:text-lg shadow-md hover:shadow-lg transition-all duration-200 w-full sm:w-auto"
                       onClick={scrollToForm}
                     >
-                      <span className="relative z-10">Get Started</span>
-                      <motion.div
-                        className="absolute inset-0 bg-gradient-to-r from-accent to-primary"
-                        initial={{ x: '-100%' }}
-                        whileHover={{ x: 0 }}
-                        transition={{ duration: 0.3 }}
-                      />
+                      Get Started Free
                     </Button>
                   </motion.div>
-                  
-                  <motion.a
+
+                  <a
                     href="https://wa.me/6588701152?text=Hi%20LionCity%20Tutors%2C%20I%27m%20looking%20for%20a%20tutor."
                     target="_blank"
                     rel="noreferrer"
-                    whileHover={{ x: 5 }}
-                    className="text-accent font-medium flex items-center gap-2 transition-all duration-300 text-base sm:text-lg w-full sm:w-auto justify-center group"
+                    className="text-gray-600 hover:text-primary font-medium flex items-center gap-2 transition-colors text-base w-full sm:w-auto justify-center"
                   >
-                    <Phone className="w-5 h-5" />
-                    <span>Chat on WhatsApp</span>
-                    <motion.svg 
-                      className="w-5 h-5" 
-                      fill="none" 
-                      viewBox="0 0 24 24" 
-                      stroke="currentColor"
-                      animate={{ x: [0, 5, 0] }}
-                      transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                    </motion.svg>
-                  </motion.a>
+                    <Phone className="w-4 h-4" />
+                    <span>Or chat on WhatsApp</span>
+                  </a>
                 </motion.div>
-                
+
                 <motion.div
-                  variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0 } }}
-                  transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                  className="flex flex-wrap items-center gap-4 sm:gap-6 justify-center lg:justify-start text-sm sm:text-base"
+                  variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}
+                  transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                  className="flex items-center gap-2 justify-center lg:justify-start text-sm text-gray-500"
                 >
-                  <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-full shadow-sm">
-                    <div className="flex items-center gap-0.5">
-                      {[...Array(5)].map((_, i) => (
-                        <Star key={i} className="w-4 h-4 text-yellow-400 fill-current" />
-                      ))}
-                    </div>
-                    <span className="text-text-default font-medium">4.8/5 on Google</span>
+                  <div className="flex items-center gap-0.5">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className="w-3.5 h-3.5 text-amber-400 fill-current" />
+                    ))}
                   </div>
-                  
-                  <div className="flex items-center gap-2 text-text-default/70">
-                    <CheckCircle className="w-4 h-4 text-accent" />
-                    <span>100+ families matched</span>
-                  </div>
+                  <span>Rated 4.8/5 by 100+ families on Google</span>
                 </motion.div>
               </motion.div>
 
               {/* Image */}
               <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
+                initial={{ opacity: 0, scale: 0.97 }}
                 animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 1, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
-                className="relative h-[300px] sm:h-[400px] md:h-[500px] lg:h-[600px] rounded-3xl overflow-hidden shadow-2xl order-1 lg:order-2"
+                transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+                className="relative h-[300px] sm:h-[400px] md:h-[450px] lg:h-[520px] rounded-2xl overflow-hidden shadow-xl order-1 lg:order-2"
               >
-              <Image 
-                src="/final.webp" 
-                alt="A dedicated tutor helping a student." 
-                fill 
-                priority
-                sizes="(max-width: 768px) 100vw, 50vw"
-                className="object-cover"
-              />
-            </motion.div>
+                <Image
+                  src="/final.webp"
+                  alt="A dedicated tutor helping a student."
+                  fill
+                  priority
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  className="object-cover"
+                />
+              </motion.div>
+            </div>
           </div>
-        </div>
         </section>
         
         <ReviewStrip />
         
-        {/* Stats - Enhanced Mobile */}
+        {/* Stats */}
         <section className="py-16 sm:py-20 md:py-24 bg-background-default">
           <div className="max-w-7xl mx-auto px-4 sm:px-6">
             <motion.div
-              initial={{ opacity: 0, y: 40 }}
+              initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+              transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
               viewport={{ once: true, amount: 0.2 }}
               className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8"
             >
               {[
-                { icon: TrendingUp, end: 100, suffix: "+", label: "Successful Matches", sub: "Last 3 months", color: "from-blue-500/10 to-primary/10" },
-                { icon: Users, end: 300, suffix: "+", label: "Qualified Tutors", sub: "Vetted professionals", color: "from-purple-500/10 to-accent/10" },
-                { icon: Clock, end: 24, suffix: "h", label: "Response Time", sub: "Average match time", color: "from-green-500/10 to-primary/10" },
-                { icon: Star, end: 4.8, suffix: "/5", label: "Client Rating", sub: "From happy parents", decimals: 1, color: "from-yellow-500/10 to-accent/10" }
+                { icon: TrendingUp, end: 100, suffix: "+", label: "Successful Matches", sub: "Last 3 months" },
+                { icon: Users, end: 300, suffix: "+", label: "Qualified Tutors", sub: "Vetted professionals" },
+                { icon: Clock, end: 24, suffix: "h", label: "Response Time", sub: "Average match time" },
+                { icon: Star, end: 4.8, suffix: "/5", label: "Client Rating", sub: "From happy parents", decimals: 1 }
               ].map((stat, i) => {
                 const Icon = stat.icon;
                 return (
-                  <motion.div 
-                    key={i} 
-                    initial={{ opacity: 0, y: 20, scale: 0.9 }}
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0, y: 20, scale: 0.95 }}
                     whileInView={{ opacity: 1, y: 0, scale: 1 }}
                     transition={{ duration: 0.5, delay: i * 0.1 }}
                     viewport={{ once: true }}
-                    whileHover={{ y: -4, scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    className="relative bg-white p-4 sm:p-6 md:p-8 rounded-2xl sm:rounded-3xl shadow-md hover:shadow-xl border border-border/50 transition-all duration-300 overflow-hidden group"
+                    whileHover={{ y: -4 }}
+                    className="relative bg-white p-5 sm:p-6 md:p-8 rounded-2xl shadow-sm hover:shadow-lg border border-gray-100 transition-all duration-300 overflow-hidden group text-center"
                   >
-                    {/* Gradient background on hover */}
-                    <div className={`absolute inset-0 bg-gradient-to-br ${stat.color} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
-                    
-                    <div className="relative z-10 text-center">
+                    {/* Unified subtle gradient on hover */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+                    <div className="relative z-10">
                       <div className="mb-3 sm:mb-4 flex justify-center">
-                        <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-primary/10 to-accent/10 rounded-xl sm:rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                          <Icon className="w-5 h-5 sm:w-6 sm:h-6 text-primary group-hover:text-accent transition-colors duration-300" />
+                        <div className="w-10 h-10 sm:w-12 sm:h-12 bg-primary/8 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                          <Icon className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
                         </div>
                       </div>
-                      <div className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-primary mb-2 sm:mb-3 tracking-tight">
+                      <div className="text-3xl sm:text-4xl md:text-5xl font-bold text-primary mb-2 tracking-tight">
                         <Counter end={stat.end} suffix={stat.suffix} decimals={stat.decimals || 0} />
                       </div>
-                      <p className="text-sm sm:text-base md:text-lg font-semibold text-primary mb-1">{stat.label}</p>
-                      <p className="text-xs sm:text-sm text-text-default/70">{stat.sub}</p>
+                      <p className="text-sm sm:text-base font-semibold text-gray-800 mb-0.5">{stat.label}</p>
+                      <p className="text-xs sm:text-sm text-gray-500">{stat.sub}</p>
                     </div>
                   </motion.div>
                 );
@@ -295,32 +267,32 @@ export default function HomePageClient() {
         
         {/* Social Proof */}
         <section className="section-padding bg-background-subtle relative">
-          <div className="container z-10 mx-auto">
+          <div className="max-w-7xl z-10 mx-auto px-4 sm:px-6">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+              transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
               viewport={{ once: true }}
-              className="flex flex-col items-center justify-center max-w-[540px] mx-auto"
+              className="text-center mb-10"
             >
-              <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tighter -mt-10 text-center lg:whitespace-nowrap">
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-primary">
                 Trusted by Parents Across Singapore
               </h2>
-              <p className="text-center mt-5 opacity-75">
+              <p className="mt-4 text-gray-600 text-lg max-w-xl mx-auto">
                 Verified reviews from families who found success with our tutors.
               </p>
             </motion.div>
 
-            <div className="flex justify-center gap-6 mt-10 [mask-image:linear-gradient(to_bottom,transparent,black_25%,black_75%,transparent)] max-h-[740px] overflow-hidden">
+            <div className="flex justify-center gap-6 [mask-image:linear-gradient(to_bottom,transparent,black_25%,black_75%,transparent)] max-h-[740px] overflow-hidden">
               <TestimonialsColumn testimonials={testimonials.slice(0, 3)} duration={30} />
               <TestimonialsColumn testimonials={testimonials.slice(3, 6)} className="hidden md:block" duration={31} />
               <TestimonialsColumn testimonials={testimonials.slice(6, 9)} className="hidden lg:block" duration={33} />
             </div>
 
-            <div className="mt-12 text-center">
+            <div className="mt-10 text-center">
               <Button
                 onClick={() => window.open('https://search.google.com/local/reviews?placeid=ChIJz5sczNYR2jERc_4Ka3tDwyY','_blank')}
-                className="bg-transparent text-primary border-2 border-primary hover:bg-primary hover:text-text-inverse font-semibold px-8 py-3 rounded-xl shadow-md text-base"
+                className="bg-transparent text-primary border-2 border-primary hover:bg-primary hover:text-white font-semibold px-8 py-3 rounded-full shadow-sm hover:shadow-md transition-all text-base"
               >
                 Read More Google Reviews
               </Button>
@@ -328,20 +300,22 @@ export default function HomePageClient() {
           </div>
         </section>
         
-        <section className="bg-primary/10 py-8">
-            <div className="max-w-4xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between text-center md:text-left">
-                <div className="flex items-center">
-                    <span className="text-3xl mr-4">📚</span>
+        <section className="bg-primary/5 py-8 border-y border-primary/10">
+            <div className="max-w-4xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
+                <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                        <Award className="w-5 h-5 text-primary" />
+                    </div>
                     <div>
                         <h3 className="font-bold text-lg text-primary">Studying for Exams?</h3>
-                        <p className="text-primary/80">We offer free access to top school exam papers and revision notes.</p>
+                        <p className="text-gray-600 text-sm">Free access to top school exam papers and revision notes.</p>
                     </div>
                 </div>
-                <Button 
-                    className="bg-background-card text-primary font-semibold mt-4 md:mt-0 ring-1 ring-inset ring-border hover:bg-primary/10"
+                <Button
+                    className="bg-white text-primary font-semibold ring-1 ring-inset ring-primary/20 hover:bg-primary hover:text-white transition-all shadow-sm"
                     onClick={scrollToResources}
                 >
-                    Show Me The Resources
+                    View Free Resources
                 </Button>
             </div>
         </section>
@@ -364,27 +338,27 @@ export default function HomePageClient() {
         <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center text-primary mb-4">
             Ready to Find The Perfect Tutor?
         </h2>
-        <p className="text-center text-text-default/80 mb-10 text-lg">
+        <p className="text-center text-gray-600 mb-10 text-lg">
             Get matched with qualified tutors in 24 hours. Just fill out the details below.
         </p>
         
-        {/* The existing benefits icons */}
+        {/* Benefits */}
         <div className="flex flex-col sm:flex-row justify-center items-center gap-3 sm:gap-8 mb-8">
-            <div className="flex items-center text-emerald-600">
-                <span className="text-2xl mr-2">✅</span>
-                <span className="font-medium">Matched within 24 hours</span>
+            <div className="flex items-center gap-2 text-gray-600">
+                <CheckCircle className="w-4 h-4 text-primary" />
+                <span className="font-medium text-sm">Matched within 24 hours</span>
             </div>
-            <div className="flex items-center text-emerald-600">
-                <span className="text-2xl mr-2">✅</span>
-                <span className="font-medium">No hidden fees, ever</span>
+            <div className="flex items-center gap-2 text-gray-600">
+                <CheckCircle className="w-4 h-4 text-primary" />
+                <span className="font-medium text-sm">No hidden fees, ever</span>
             </div>
         </div>
             <div className="bg-background-card rounded-xl shadow-lg p-8">
                 {status.submitted ? (
                     <div className="text-center py-10">
-                        <CheckCircle className="text-green-500 w-16 h-16 mx-auto mb-4" />
-                        <h2 className="text-2xl font-semibold mb-2">Thank you!</h2>
-                        <p className="text-text-default/80 mb-4">Our team will be in touch with suitable tutor profiles shortly via WhatsApp.</p>
+                        <CheckCircle className="text-primary w-16 h-16 mx-auto mb-4" />
+                        <h2 className="text-2xl font-semibold text-gray-900 mb-2">Thank you!</h2>
+                        <p className="text-gray-600 mb-4">Our team will be in touch with suitable tutor profiles shortly via WhatsApp.</p>
                         <Button 
                             className="bg-accent text-text-inverse hover:bg-accent/90" 
                             onClick={resetForm}
@@ -417,7 +391,7 @@ export default function HomePageClient() {
                             </div>
                             
                             <div className="w-full bg-gray-200 rounded-full h-2">
-                                <div className="bg-primary h-2 rounded-full transition-all duration-500" style={{ width: `${((currentStep - 1) / 2) * 100}%` }} />
+                                <div className="bg-primary h-2 rounded-full transition-all duration-500" style={{ width: `${(currentStep / 3) * 100}%` }} />
                             </div>
                         </div>
                         {status.error && <div className="bg-red-100 text-red-800 p-4 rounded-md mb-6">{status.error}</div>}
@@ -433,113 +407,89 @@ export default function HomePageClient() {
             </div>
         </section>
         
-        {/* Enhanced Quick Links Section */}
-
-          <section ref={resourcesRef} className="section-padding relative overflow-hidden bg-background-default px-4 sm:px-6">
-           {/* Background Pattern */}
-          <div className="absolute inset-0 opacity-5">
-            <div className="absolute top-10 left-10 w-20 h-20 bg-blue-600 rounded-full blur-xl"></div>
-            <div className="absolute top-32 right-20 w-16 h-16 bg-purple-500 rounded-full blur-lg"></div>
-            <div className="absolute bottom-20 left-1/3 w-24 h-24 bg-pink-500 rounded-full blur-xl"></div>
-          </div>
-
-          <div className="relative max-w-6xl mx-auto">
-            {/* Section Header */}
-            <motion.div 
+        {/* Free Resources */}
+        <section ref={resourcesRef} className="section-padding bg-background-default px-4 sm:px-6">
+          <div className="max-w-6xl mx-auto">
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
+              viewport={{ once: true }}
               className="text-center mb-12"
             >
               <h2 className="text-3xl md:text-4xl font-bold text-primary mb-4">
                 Access Our Free Resources
               </h2>
-              <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-indigo-600 mx-auto rounded-full"></div>
-              <p className="text-slate-600 mt-4 text-lg max-w-2xl mx-auto">
+              <p className="text-gray-600 mt-4 text-lg max-w-2xl mx-auto">
                 Unlock your potential with our comprehensive collection of educational materials
               </p>
             </motion.div>
 
-            {/* Cards Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-
               {/* Free Test Papers */}
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-                whileHover={{ y: -8, scale: 1.02 }}
-                className="group relative p-8 bg-background-card rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer border border-border overflow-hidden"
+                transition={{ duration: 0.6, delay: 0.1 }}
+                viewport={{ once: true }}
+                whileHover={{ y: -6 }}
+                className="group relative p-8 bg-white rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer border border-gray-100 overflow-hidden"
                 onClick={() => router.push("/free-test-papers")}
               >
-                {/* Card Background Gradient */}
-                <div className="absolute inset-0 bg-gradient-to-br from-amber-50 via-white to-amber-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                
-                {/* Icon Container */}
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/3 to-primary/8 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
                 <div className="relative z-10 mb-6">
-                  <div className="w-16 h-16 bg-gradient-to-br from-amber-500 to-amber-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                    <span className="text-2xl">📊</span>
+                  <div className="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                    <FileText className="w-7 h-7 text-primary" />
                   </div>
                 </div>
 
                 <div className="relative z-10">
-                  <h3 className="text-2xl font-bold text-amber-800 mb-3 group-hover:text-amber-900 transition-colors">
+                  <h3 className="text-2xl font-bold text-gray-900 mb-3">
                     Free Test Papers
                   </h3>
-                  <p className="text-amber-700/80 leading-relaxed mb-4">
+                  <p className="text-gray-600 leading-relaxed mb-5">
                     Download comprehensive past year papers for all academic levels and subjects.
                   </p>
-                  <div className="flex items-center text-amber-600 font-medium group-hover:text-amber-700 transition-colors">
+                  <div className="flex items-center text-primary font-medium">
                     <span>Browse Papers</span>
-                    <svg className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                    </svg>
+                    <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
                   </div>
                 </div>
-
-                {/* Hover Effect Border */}
-              <div className="absolute inset-0 rounded-2xl border-2 border-amber-200 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </motion.div>
 
               {/* Free Notes */}
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.3 }}
-                whileHover={{ y: -8, scale: 1.02 }}
-                className="group relative p-8 bg-background-card rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer border border-border overflow-hidden"
+                transition={{ duration: 0.6, delay: 0.2 }}
+                viewport={{ once: true }}
+                whileHover={{ y: -6 }}
+                className="group relative p-8 bg-white rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer border border-gray-100 overflow-hidden"
                 onClick={() => router.push("/free-notes")}
               >
-                {/* Card Background Gradient */}
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-white to-blue-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                
-                {/* Icon Container */}
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/3 to-primary/8 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
                 <div className="relative z-10 mb-6">
-                  <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                    <span className="text-2xl">📚</span>
+                  <div className="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                    <BookOpen className="w-7 h-7 text-primary" />
                   </div>
                 </div>
 
                 <div className="relative z-10">
-                  <h3 className="text-2xl font-bold text-blue-800 mb-3 group-hover:text-blue-900 transition-colors">
+                  <h3 className="text-2xl font-bold text-gray-900 mb-3">
                     Free Notes
                   </h3>
-                  <p className="text-blue-700/80 leading-relaxed mb-4">
+                  <p className="text-gray-600 leading-relaxed mb-5">
                     Access concise, high-quality revision notes curated from top schools.
                   </p>
-                  <div className="flex items-center text-blue-600 font-medium group-hover:text-blue-700 transition-colors">
+                  <div className="flex items-center text-primary font-medium">
                     <span>View Notes</span>
-                    <svg className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                    </svg>
+                    <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
                   </div>
                 </div>
-
-                {/* Hover Effect Border */}
-                <div className="absolute inset-0 rounded-2xl border-2 border-blue-200 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </motion.div>
             </div>
-            
           </div>
         </section>
 
@@ -549,15 +499,23 @@ export default function HomePageClient() {
         </div>
 
         {/* Final CTA Banner */}
-        <section className="bg-primary text-text-inverse py-10 px-6 text-center">
-          <h2 className="text-2xl sm:text-3xl font-bold mb-4 text-text-inverse">Ready to Find the Perfect Tutor?</h2>
-          <p className="mb-6">Get 3 qualified tutor profiles in 24 hours – absolutely free.</p>
-          <Button 
-            className="bg-accent text-text-inverse font-bold px-8 py-3 hover:bg-accent/90 transition-colors" 
-            onClick={scrollToForm}
-          >
-            Request My Tutor Now
-          </Button>
+        <section className="bg-gradient-to-r from-primary to-primary/90 text-white py-16 sm:py-20 px-6 text-center">
+          <div className="max-w-2xl mx-auto">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 text-white">
+              Ready to Find the Perfect Tutor?
+            </h2>
+            <p className="mb-8 text-white/80 text-lg">
+              Get 3 qualified tutor profiles in 24 hours — absolutely free.
+            </p>
+            <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
+              <Button
+                className="bg-[#F17720] hover:bg-[#d9691c] text-white font-bold px-10 py-4 rounded-full text-lg shadow-lg hover:shadow-xl transition-all"
+                onClick={scrollToForm}
+              >
+                Request My Tutor Now
+              </Button>
+            </motion.div>
+          </div>
         </section>
       </main>
     </>

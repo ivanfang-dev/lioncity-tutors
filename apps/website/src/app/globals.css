@@ -3,20 +3,55 @@
 @import "tailwindcss";
 
 @theme {
-  /* Colors */
-  --color-primary: #0474BA; /* Trustworthy Blue */
-  --color-accent: #F17720;  /* Action-driving Orange */
-  --color-text-default: #262626; /* Dark Gray for Readability */
-  --color-text-inverse: #FFFFFF; /* White for Contrast */
-  --color-background-default: #FFFFFF; /* Clean White Base */
-  --color-background-subtle: #F0F5FA; /* Subtle Blue Tint for Sections */
-  --color-background-card: #FFFFFF; /* White for Cards */
-  --color-border: #E0E0E0; /* Light Gray for Borders */
-  --color-rating: #FFA630;  /* Golden Yellow for Ratings */
+  /* ── Brand Colors ── */
+  --color-primary: #0474BA;       /* Trustworthy Blue — brand, headings, links */
+  --color-accent: #F17720;        /* Action Orange — CTAs only, used sparingly */
 
-  /* Fonts & Radius */
+  /* ── Neutrals ── */
+  --color-gray-950: #0a0a0a;
+  --color-gray-900: #171717;
+  --color-gray-800: #262626;
+  --color-gray-700: #404040;
+  --color-gray-600: #525252;
+  --color-gray-500: #737373;
+  --color-gray-400: #a3a3a3;
+  --color-gray-300: #d4d4d4;
+  --color-gray-200: #e5e5e5;
+  --color-gray-100: #f5f5f5;
+  --color-gray-50: #fafafa;
+
+  /* ── Semantic Text ── */
+  --color-text-default: #262626;  /* Gray-800 — primary text */
+  --color-text-secondary: #525252; /* Gray-600 — secondary / subtext */
+  --color-text-tertiary: #737373; /* Gray-500 — captions, hints */
+  --color-text-inverse: #FFFFFF;
+
+  /* ── Backgrounds ── */
+  --color-background-default: #FFFFFF;
+  --color-background-subtle: #f5f5f5;  /* Neutral gray instead of blue tint */
+  --color-background-card: #FFFFFF;
+
+  /* ── Borders ── */
+  --color-border: #e5e5e5;        /* Gray-200 */
+
+  /* ── Semantic States ── */
+  --color-success: #22c55e;
+  --color-error: #ef4444;
+  --color-rating: #FFA630;
+
+  /* ── Shadows ── */
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.10);
+  --shadow-xl: 0 12px 40px rgba(0, 0, 0, 0.12);
+
+  /* ── Fonts & Radius ── */
   --font-family-sans: "Inter", "Helvetica Neue", "Arial", sans-serif;
   --radius: 0.5rem;
+  --radius-sm: 0.375rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
 }
 
 /* Apply base styles */
@@ -41,14 +76,22 @@ h1 {
 }
 
 h2 {
-  font-size: clamp(2rem, 4vw, 3rem);
+  font-size: clamp(1.75rem, 3.5vw, 2.5rem);
   line-height: 1.2;
+  font-weight: 700;
 }
 
-/* Apply primary color to headings by default */
-h1, h2, h3, h4, h5, h6 {
-  color: var(--color-primary);
+h3 {
+  font-size: 1.25rem;
+  line-height: 1.4;
 }
+
+h4 {
+  font-size: 1.125rem;
+  line-height: 1.4;
+}
+
+/* No global heading color override — each heading gets its color from its own utility class or parent context */
 
 /* Ensure headings on colored backgrounds have inverse text color */
 .bg-primary h1,
@@ -201,17 +244,17 @@ html {
   scroll-behavior: smooth;
 }
 
-/* Section spacing utility - Enhanced spacing */
+/* Section spacing utility */
 .section-padding {
-  @apply py-20 md:py-32 lg:py-40;
-}
-
-.section-padding-sm {
   @apply py-16 md:py-24 lg:py-28;
 }
 
-/* Premium animations */
-* {
+.section-padding-sm {
+  @apply py-12 md:py-16 lg:py-20;
+}
+
+/* Premium animations — applied only to interactive elements, not every DOM node */
+button, a, input, select, textarea, [role="button"] {
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
