@@ -2533,6 +2533,9 @@ async function handleCallbackQuery(
   try {
     console.log("📥 Callback data received:", data);
 
+    // Acknowledge immediately to prevent Telegram from retrying the webhook
+    await bot.answerCallbackQuery(callbackQuery.id).catch(() => {});
+
     // Main menu and admin handlers
     if (data === 'main_menu') {
       return await showMainMenu(chatId, bot, userId, ADMIN_USERS);
