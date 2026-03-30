@@ -6,6 +6,11 @@ import { notifyMatchedTutors } from '../utils/tutorNotifier.js';
 
 /* global process */
 
+// Escape special characters in user-supplied text so Telegram's Markdown parser doesn't choke
+function escapeMd(text) {
+  return (text || '').replace(/[_*[\]`]/g, '\\$&');
+}
+
 const SINGAPORE_LOCATIONS = [
   // Northeast
   'Sengkang', 'Punggol', 'Hougang', 'Serangoon', 'Kovan', 'Buangkok',
@@ -120,17 +125,17 @@ function formatTutorProfileSummary(tutor) {
   
   // Personal Information
   profile += `*👤 Personal Information*\n`;
-  profile += `*Name:* ${tutor.fullName || 'Not set'}\n`;
-  profile += `*Contact:* ${tutor.contactNumber || 'Not set'}\n`;
-  profile += `*Email:* ${tutor.email || 'Not set'}\n`;
-  profile += `*Gender:* ${tutor.gender || 'Not set'}\n`;
+  profile += `*Name:* ${escapeMd(tutor.fullName) || 'Not set'}\n`;
+  profile += `*Contact:* ${escapeMd(tutor.contactNumber) || 'Not set'}\n`;
+  profile += `*Email:* ${escapeMd(tutor.email) || 'Not set'}\n`;
+  profile += `*Gender:* ${escapeMd(tutor.gender) || 'Not set'}\n`;
   profile += `*Age:* ${tutor.age || 'Not set'}\n`;
-  profile += `*Race:* ${tutor.race || 'Not set'}\n`;
-  profile += `*Nationality:* ${tutor.nationality || 'Not set'}\n`;
+  profile += `*Race:* ${escapeMd(tutor.race) || 'Not set'}\n`;
+  profile += `*Nationality:* ${escapeMd(tutor.nationality) || 'Not set'}\n`;
   if (tutor.nationality === 'Other' && tutor.nationalityOther) {
-    profile += `*Other Nationality:* ${tutor.nationalityOther}\n`;
+    profile += `*Other Nationality:* ${escapeMd(tutor.nationalityOther)}\n`;
   }
-  profile += `*NRIC (Last 4):* ${tutor.nricLast4 ? '****' + tutor.nricLast4 : 'Not set'}\n`;
+  profile += `*NRIC (Last 4):* ${tutor.nricLast4 ? '****' + escapeMd(tutor.nricLast4) : 'Not set'}\n`;
   
   // Date of Birth
   if (tutor.dob) {
@@ -143,10 +148,10 @@ function formatTutorProfileSummary(tutor) {
   
   // Education & Experience
   profile += `\n*🎓 Education & Experience*\n`;
-  profile += `*Highest Education:* ${tutor.highestEducation || 'Not set'}\n`;
-  profile += `*Current School:* ${tutor.currentSchool || 'Not set'}\n`;
-  profile += `*Previous Schools:* ${tutor.previousSchools || 'Not set'}\n`;
-  profile += `*Tutor Type:* ${tutor.tutorType || 'Not set'}\n`;
+  profile += `*Highest Education:* ${escapeMd(tutor.highestEducation) || 'Not set'}\n`;
+  profile += `*Current School:* ${escapeMd(tutor.currentSchool) || 'Not set'}\n`;
+  profile += `*Previous Schools:* ${escapeMd(tutor.previousSchools) || 'Not set'}\n`;
+  profile += `*Tutor Type:* ${escapeMd(tutor.tutorType) || 'Not set'}\n`;
   profile += `*Years of Experience:* ${tutor.yearsOfExperience || 'Not set'}\n`;
   
   // Teaching Levels
@@ -1163,11 +1168,11 @@ async function handleContact(bot, chatId, userId, contact, Tutor, userSessions, 
     await safeSend(bot, chatId, `Here is your profile summary:\n\n${profileSummary}`, { parse_mode: 'Markdown' });
 
     if (tutor.introduction) {
-      await safeSend(bot, chatId, `*📝 Your Introduction:*\n\n${tutor.introduction}`, { parse_mode: 'Markdown' });
+      await safeSend(bot, chatId, `*📝 Your Introduction:*\n\n${escapeMd(tutor.introduction)}`, { parse_mode: 'Markdown' });
     }
 
     if (tutor.teachingExperience) {
-      await safeSend(bot, chatId, `*👨‍🏫 Your Teaching Experience:*\n\n${tutor.teachingExperience}`, { parse_mode: 'Markdown' });
+      await safeSend(bot, chatId, `*👨‍🏫 Your Teaching Experience:*\n\n${escapeMd(tutor.teachingExperience)}`, { parse_mode: 'Markdown' });
     }
 
     // 5. Finally, show the main menu
@@ -2655,11 +2660,11 @@ async function handleCallbackQuery(
       await safeSend(bot, chatId, profileSummary, { parse_mode: 'Markdown' });
 
       if (tutor.introduction) {
-        await safeSend(bot, chatId, `*📝 Your Introduction:*\n\n${tutor.introduction}`, { parse_mode: 'Markdown' });
+        await safeSend(bot, chatId, `*📝 Your Introduction:*\n\n${escapeMd(tutor.introduction)}`, { parse_mode: 'Markdown' });
       }
 
       if (tutor.teachingExperience) {
-        await safeSend(bot, chatId, `*👨‍🏫 Your Teaching Experience:*\n\n${tutor.teachingExperience}`, { parse_mode: 'Markdown' });
+        await safeSend(bot, chatId, `*👨‍🏫 Your Teaching Experience:*\n\n${escapeMd(tutor.teachingExperience)}`, { parse_mode: 'Markdown' });
       }
       const keyboard = showProfileEditMenu();
       return await safeSend(bot, chatId, 'What would you like to edit?', {
