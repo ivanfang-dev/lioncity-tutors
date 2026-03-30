@@ -181,14 +181,17 @@ export default function HomePageClient() {
                 <motion.div
                   variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}
                   transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-                  className="flex items-center gap-2 justify-center lg:justify-start text-sm text-gray-500"
+                  className="inline-flex items-center gap-3 bg-white px-4 py-2 rounded-full shadow-sm border border-gray-100 text-sm text-gray-600 justify-center lg:justify-start"
                 >
-                  <div className="flex items-center gap-0.5">
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="w-3.5 h-3.5 text-amber-400 fill-current" />
-                    ))}
+                  <div className="flex items-center gap-1.5">
+                    <Star className="w-4 h-4 text-amber-400 fill-current" />
+                    <span className="font-medium">4.8/5 on Google</span>
                   </div>
-                  <span>Rated 4.8/5 by 100+ families on Google</span>
+                  <span className="text-gray-300">|</span>
+                  <div className="flex items-center gap-1.5">
+                    <CheckCircle className="w-4 h-4 text-primary" />
+                    <span className="font-medium">100+ families matched</span>
+                  </div>
                 </motion.div>
               </motion.div>
 

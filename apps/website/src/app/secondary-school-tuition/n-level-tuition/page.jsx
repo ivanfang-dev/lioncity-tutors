@@ -171,17 +171,17 @@ export default function NLevelTuition() {
         </section>
 
         {/* Tutor Request Form Section */}
-        <section ref={formRef} className="bg-gradient-to-br from-indigo-50 to-purple-50 p-8 rounded-2xl shadow-lg">
+        <section ref={formRef} className="bg-gradient-to-br from-blue-50 to-sky-50 p-8 rounded-2xl shadow-lg">
           <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl font-bold text-center text-indigo-700 mb-4">Request an N-Level Tutor</h2>
-            
-            <div className="flex justify-center space-x-8 mb-8">
-              <div className="flex items-center text-emerald-600">
-                <span className="text-2xl mr-2">✅</span>
+            <h2 className="text-3xl font-bold text-center text-primary mb-4">Request an N-Level Tutor</h2>
+
+            <div className="flex justify-center gap-6 sm:gap-10 mb-8 flex-wrap">
+              <div className="flex items-center gap-2 text-gray-600">
+                <CheckCircle className="w-5 h-5 text-primary" />
                 <span className="font-medium">Matched within 24 hours</span>
               </div>
-              <div className="flex items-center text-emerald-600">
-                <span className="text-2xl mr-2">✅</span>
+              <div className="flex items-center gap-2 text-gray-600">
+                <CheckCircle className="w-5 h-5 text-primary" />
                 <span className="font-medium">No hidden fees, ever</span>
               </div>
             </div>
@@ -189,12 +189,12 @@ export default function NLevelTuition() {
             <div className="bg-white rounded-xl shadow-lg p-8">
               {status.submitted ? (
                 <div className="text-center py-10">
-                  <CheckCircle className="text-green-500 w-16 h-16 mx-auto mb-4" />
-                  <h2 className="text-2xl font-semibold mb-2">Thank you!</h2>
-                  <p className="text-gray-600 mb-4">We'll send you tutor profiles shortly.</p>
+                  <CheckCircle className="text-primary w-16 h-16 mx-auto mb-4" />
+                  <h2 className="text-2xl font-semibold mb-2 text-gray-900">Thank you!</h2>
+                  <p className="text-gray-600 mb-4">Our team will be in touch with suitable tutor profiles shortly via WhatsApp.</p>
                   <Button
                     onClick={() => setStatus({ submitting: false, submitted: false, error: null })}
-                    className="bg-indigo-600 text-white px-5 py-2 rounded-md hover:bg-indigo-700 transition-colors"
+                    className="bg-[#F17720] text-white px-6 py-2 rounded-full hover:bg-[#d9691c] transition-colors"
                   >
                     Submit Another Request
                   </Button>
@@ -204,13 +204,13 @@ export default function NLevelTuition() {
                   {/* --- Progress Bar --- */}
                   <div className="mb-8">
                     <div className="flex justify-between mb-1">
-                      <span className={`text-sm font-medium ${currentStep >= 1 ? 'text-indigo-700' : 'text-gray-400'}`}>About You</span>
-                      <span className={`text-sm font-medium ${currentStep >= 2 ? 'text-indigo-700' : 'text-gray-400'}`}>Lesson Details</span>
-                      <span className={`text-sm font-medium ${currentStep >= 3 ? 'text-indigo-700' : 'text-gray-400'}`}>Tutor Preferences</span>
+                      <span className={`text-sm font-medium ${currentStep >= 1 ? 'text-primary' : 'text-gray-400'}`}>About You</span>
+                      <span className={`text-sm font-medium ${currentStep >= 2 ? 'text-primary' : 'text-gray-400'}`}>Lesson Details</span>
+                      <span className={`text-sm font-medium ${currentStep >= 3 ? 'text-primary' : 'text-gray-400'}`}>Tutor Preferences</span>
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div 
-                        className="bg-indigo-600 h-2 rounded-full transition-all duration-500 ease-in-out"
+                      <div
+                        className="bg-primary h-2 rounded-full transition-all duration-500 ease-in-out"
                         style={{ width: `${((currentStep - 1) / 2) * 100}%` }}
                       ></div>
                     </div>
@@ -256,8 +256,8 @@ export default function NLevelTuition() {
         </section>
 
         {/* Section 2: Why N-Levels Matter */}
-        <section className="bg-gradient-to-br from-indigo-50 to-purple-50 p-12 rounded-2xl">
-          <h2 className="text-2xl md:text-3xl font-semibold mb-4 text-indigo-700 text-center">Why N-Level Success Matters</h2>
+        <section className="bg-gradient-to-br from-blue-50 to-sky-50 p-12 rounded-2xl">
+          <h2 className="text-2xl md:text-3xl font-semibold mb-4 text-primary text-center">Why N-Level Success Matters</h2>
           <p className="text-gray-600 text-center max-w-3xl mx-auto mb-8">
             The N-Level exams are a key milestone for students in the Normal Academic and Normal Technical streams. Good results open doors to O-Levels, ITE, and Polytechnic pathways. We help your child build the skills and confidence needed to excel.
           </p>
@@ -266,21 +266,21 @@ export default function NLevelTuition() {
               <div className="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-6">
                 <span className="text-3xl">🎓</span>
               </div>
-              <h3 className="font-bold text-xl text-indigo-700 text-center mb-4">Pathway to Progression</h3>
+              <h3 className="font-bold text-xl text-primary text-center mb-4">Pathway to Progression</h3>
               <p className="text-gray-600 text-center">Qualify for O-Levels, ITE, or Polytechnic with strong N-Level results</p>
             </div>
             <div className="bg-white p-8 rounded-xl shadow-lg transform hover:scale-105 transition-all duration-200">
               <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-6">
                 <span className="text-3xl">💼</span>
               </div>
-              <h3 className="font-bold text-xl text-indigo-700 text-center mb-4">Future Opportunities</h3>
+              <h3 className="font-bold text-xl text-primary text-center mb-4">Future Opportunities</h3>
               <p className="text-gray-600 text-center">Build a strong foundation for future academic and career success</p>
             </div>
             <div className="bg-white p-8 rounded-xl shadow-lg transform hover:scale-105 transition-all duration-200">
               <div className="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-6">
                 <span className="text-3xl">🧠</span>
               </div>
-              <h3 className="font-bold text-xl text-indigo-700 text-center mb-4">Essential Skills</h3>
+              <h3 className="font-bold text-xl text-primary text-center mb-4">Essential Skills</h3>
               <p className="text-gray-600 text-center">Develop critical thinking and problem-solving abilities that last a lifetime</p>
             </div>
           </div>
@@ -288,7 +288,7 @@ export default function NLevelTuition() {
 
         {/* Section 3: Subjects We Cover (N-Level) */}
         <section>
-          <h2 className="text-2xl md:text-3xl font-semibold mb-8 text-indigo-700 text-center">Comprehensive N-Level Subjects</h2>
+          <h2 className="text-2xl md:text-3xl font-semibold mb-8 text-primary text-center">Comprehensive N-Level Subjects</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {/* Languages */}
             <Card className="border-t-4 border-t-emerald-500 shadow-lg">
@@ -416,7 +416,7 @@ export default function NLevelTuition() {
 
         {/* Section 4: N-Level Study Tips */}
         <section className="bg-gradient-to-br from-blue-50 to-indigo-50 p-12 rounded-2xl">
-          <h2 className="text-2xl md:text-3xl font-semibold mb-8 text-indigo-700 text-center">N-Level Study Tips & Resources</h2>
+          <h2 className="text-2xl md:text-3xl font-semibold mb-8 text-primary text-center">N-Level Study Tips & Resources</h2>
           <p className="text-gray-600 text-center max-w-3xl mx-auto mb-8">
             Access our curated tips and resources to help you excel in your N-Level journey. Each resource is crafted by experienced educators to provide comprehensive coverage of the syllabus.
           </p>
@@ -425,7 +425,7 @@ export default function NLevelTuition() {
             <Link href="/blog/n-level-preparation-guide" className="block group">
               <Card className="h-full hover:shadow-xl transition-all duration-300 hover:-translate-y-2 hover:scale-[1.02] cursor-pointer border-2 border-transparent group-hover:border-indigo-500">
                 <CardContent className="p-6 relative">
-                  <h3 className="font-bold text-xl text-indigo-700 mb-2 group-hover:text-indigo-600">N-Level Preparation Guide</h3>
+                  <h3 className="font-bold text-xl text-primary mb-2 group-hover:text-primary">N-Level Preparation Guide</h3>
                   <p className="text-gray-600">Essential tips and strategies for N-Level success.</p>
                 </CardContent>
               </Card>
@@ -434,7 +434,7 @@ export default function NLevelTuition() {
             <Link href="/combined-science-overview" className="block group">
               <Card className="h-full hover:shadow-xl transition-all duration-300 hover:-translate-y-2 hover:scale-[1.02] cursor-pointer border-2 border-transparent group-hover:border-indigo-500">
                 <CardContent className="p-6 relative">
-                  <h3 className="font-bold text-xl text-indigo-700 mb-2 group-hover:text-indigo-600">Combined Science Overview</h3>
+                  <h3 className="font-bold text-xl text-primary mb-2 group-hover:text-primary">Combined Science Overview</h3>
                   <p className="text-gray-600">Complete Guide to All Three Combinations of Combined Science</p>
                 </CardContent>
               </Card>
@@ -443,7 +443,7 @@ export default function NLevelTuition() {
             <Link href="/combined-chemistry-physics" className="block group">
               <Card className="h-full hover:shadow-xl transition-all duration-300 hover:-translate-y-2 hover:scale-[1.02] cursor-pointer border-2 border-transparent group-hover:border-indigo-500">
                 <CardContent className="p-6 relative">
-                  <h3 className="font-bold text-xl text-indigo-700 mb-2 group-hover:text-indigo-600">Combined Chem/Physics Guide</h3>
+                  <h3 className="font-bold text-xl text-primary mb-2 group-hover:text-primary">Combined Chem/Physics Guide</h3>
                   <p className="text-gray-600">Excel in N Level Combined Chemistry/Physics.</p>
                 </CardContent>
               </Card>
@@ -453,7 +453,7 @@ export default function NLevelTuition() {
 
         {/* Section 5: Teaching Methods */}
         <section>
-          <h2 className="text-2xl md:text-3xl font-semibold mb-8 text-indigo-700 text-center">Our Proven Teaching Methods</h2>
+          <h2 className="text-2xl md:text-3xl font-semibold mb-8 text-primary text-center">Our Proven Teaching Methods</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="bg-white p-8 rounded-xl shadow-lg">
               <h3 className="text-xl font-bold text-emerald-700 mb-4">📚 Interactive Learning</h3>
@@ -477,8 +477,8 @@ export default function NLevelTuition() {
         </section>
 
         {/* Section 6: Success Stories */}
-        <section className="bg-gradient-to-r from-indigo-50 to-purple-50 p-12 rounded-2xl">
-          <h2 className="text-2xl md:text-3xl font-semibold mb-8 text-indigo-700 text-center">Success Stories from Our N-Level Students</h2>
+        <section className="bg-gradient-to-r from-blue-50 to-sky-50 p-12 rounded-2xl">
+          <h2 className="text-2xl md:text-3xl font-semibold mb-8 text-primary text-center">Success Stories from Our N-Level Students</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="bg-white p-8 rounded-xl shadow-lg">
               <div className="flex items-start space-x-4">
@@ -503,7 +503,7 @@ export default function NLevelTuition() {
 
         {/* Section 9: Service Areas */}
         <section className="bg-gray-50 p-6 rounded-2xl">
-          <h2 className="text-2xl font-semibold mb-6 text-indigo-700 text-center">N-Level Tuition Available Across Singapore</h2>
+          <h2 className="text-2xl font-semibold mb-6 text-primary text-center">N-Level Tuition Available Across Singapore</h2>
           <p className="text-gray-700 text-center mb-6">
             Our experienced tutors serve families island-wide, including:
           </p>

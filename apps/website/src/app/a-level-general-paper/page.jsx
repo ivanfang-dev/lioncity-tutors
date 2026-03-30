@@ -383,7 +383,7 @@ export default function ALevelGeneralPaper() {
           <p className="mb-4">Our experienced A Level GP tutors specialize in both essay and comprehension skills with proven track records in helping students achieve A grades. We provide comprehensive content mastery, exam techniques, and structured practice programs tailored to your learning needs.</p>
           <Link 
             href="/request-tutor" 
-            className="inline-block bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-3 rounded-lg transition-colors duration-200"
+            className="inline-block bg-[#F17720] text-white px-6 py-3 rounded-full font-bold hover:bg-[#d9691c] transition-all duration-200 shadow-md transform hover:scale-105"
           >
             Get Expert A Level GP Support
           </Link>

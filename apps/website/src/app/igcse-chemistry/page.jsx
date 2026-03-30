@@ -571,7 +571,7 @@ export default function IGCSEChemistry() {
           </p>
           <Link 
             href="/request-tutor" 
-            className="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition duration-300"
+            className="inline-block bg-[#F17720] text-white px-6 py-3 rounded-full font-bold hover:bg-[#d9691c] transition-all duration-200 shadow-md transform hover:scale-105"
           >
             Find Your Perfect IGCSE Chemistry Tutor
           </Link>

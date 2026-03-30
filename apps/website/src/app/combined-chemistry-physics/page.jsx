@@ -511,18 +511,18 @@ export default function CombinedChemistryPhysics() {
             </div>
         </div>
         </div>
-        <section className="bg-gradient-to-br from-green-600 to-blue-600 text-white p-6 sm:p-8 rounded-xl text-center space-y-4">
-          <h2 className="text-2xl sm:text-3xl font-bold">Ready to Excel in Combined Chemistry/Physics?</h2>
-          <p className="text-base sm:text-lg max-w-2xl mx-auto">
+        <section className="bg-gradient-to-r from-primary to-primary/90 text-white py-12 px-6 sm:px-8 rounded-2xl text-center space-y-4 shadow-xl">
+          <h2 className="text-2xl sm:text-3xl font-bold text-white">Ready to Excel in Combined Chemistry/Physics?</h2>
+          <p className="text-base sm:text-lg max-w-2xl mx-auto text-white/80">
             Connect with our specialized combined chemistry/physics tutors who make complex concepts clear and help you achieve your academic goals.
           </p>
-          <Link 
-            href="/request-tutor" 
-            className="inline-block bg-white text-green-600 hover:bg-gray-100 px-4 sm:px-6 py-2 sm:py-3 rounded-lg text-sm sm:text-base font-semibold transition duration-300"
+          <Link
+            href="/request-tutor"
+            className="inline-block bg-[#F17720] text-white hover:bg-[#d9691c] px-6 sm:px-8 py-3 rounded-full text-sm sm:text-base font-bold transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105"
           >
             Request a Combined Chemistry/Physics Tutor
           </Link>
-          <p className="text-xs sm:text-sm text-green-100 mt-2">Free matching service • Combined Chemistry/Physics specialists • Proven grade improvements</p>
+          <p className="text-xs sm:text-sm text-white/60 mt-2">Free matching service • Combined Chemistry/Physics specialists • Proven grade improvements</p>
         </section>
         </article>
       </main>

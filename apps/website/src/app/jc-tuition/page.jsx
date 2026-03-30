@@ -191,18 +191,28 @@ export default function JCTuition() {
         </section>
 
         {/* Tutor Request Form Section */}
-        <section ref={formRef} className="bg-gradient-to-br from-indigo-50 to-purple-50 p-8 rounded-2xl shadow-lg">
+        <section ref={formRef} className="bg-gradient-to-br from-blue-50 to-sky-50 p-8 rounded-2xl shadow-lg">
           <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl font-bold text-center text-indigo-700 mb-4">Request a JC Tutor</h2>
+            <h2 className="text-3xl font-bold text-center text-primary mb-4">Request a JC Tutor</h2>
+            <div className="flex justify-center gap-6 sm:gap-10 mb-8 flex-wrap">
+              <div className="flex items-center gap-2 text-gray-600">
+                <CheckCircle className="w-5 h-5 text-primary" />
+                <span className="font-medium">Matched within 24 hours</span>
+              </div>
+              <div className="flex items-center gap-2 text-gray-600">
+                <CheckCircle className="w-5 h-5 text-primary" />
+                <span className="font-medium">No hidden fees, ever</span>
+              </div>
+            </div>
             <div className="bg-white rounded-xl shadow-lg p-8">
               {status.submitted ? (
                 <div className="text-center py-10">
-                  <CheckCircle className="text-green-500 w-16 h-16 mx-auto mb-4" />
-                  <h2 className="text-2xl font-semibold mb-2">Thank you!</h2>
-                  <p className="text-gray-600 mb-4">We'll send you tutor profiles shortly.</p>
-                  <button 
+                  <CheckCircle className="text-primary w-16 h-16 mx-auto mb-4" />
+                  <h2 className="text-2xl font-semibold mb-2 text-gray-900">Thank you!</h2>
+                  <p className="text-gray-600 mb-4">Our team will be in touch with suitable tutor profiles shortly via WhatsApp.</p>
+                  <button
                     onClick={() => setStatus({ submitting: false, submitted: false, error: null })}
-                    className="bg-indigo-600 text-white px-5 py-2 rounded-md hover:bg-indigo-700 transition-colors"
+                    className="bg-[#F17720] text-white px-6 py-2 rounded-full hover:bg-[#d9691c] transition-colors font-semibold"
                   >
                     Submit Another Request
                   </button>
@@ -212,13 +222,13 @@ export default function JCTuition() {
                   {/* --- Progress Bar --- */}
                   <div className="mb-8">
                     <div className="flex justify-between mb-1">
-                      <span className={`text-sm font-medium ${currentStep >= 1 ? 'text-indigo-700' : 'text-gray-400'}`}>About You</span>
-                      <span className={`text-sm font-medium ${currentStep >= 2 ? 'text-indigo-700' : 'text-gray-400'}`}>Lesson Details</span>
-                      <span className={`text-sm font-medium ${currentStep >= 3 ? 'text-indigo-700' : 'text-gray-400'}`}>Tutor Preferences</span>
+                      <span className={`text-sm font-medium ${currentStep >= 1 ? 'text-primary' : 'text-gray-400'}`}>About You</span>
+                      <span className={`text-sm font-medium ${currentStep >= 2 ? 'text-primary' : 'text-gray-400'}`}>Lesson Details</span>
+                      <span className={`text-sm font-medium ${currentStep >= 3 ? 'text-primary' : 'text-gray-400'}`}>Tutor Preferences</span>
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div 
-                        className="bg-indigo-600 h-2 rounded-full transition-all duration-500 ease-in-out"
+                      <div
+                        className="bg-primary h-2 rounded-full transition-all duration-500 ease-in-out"
                         style={{ width: `${((currentStep - 1) / 2) * 100}%` }}
                       ></div>
                     </div>
@@ -264,28 +274,28 @@ export default function JCTuition() {
         </section>
 
         {/* Section 2: Why A-Levels Matter */}
-        <section className="bg-gradient-to-br from-indigo-50 to-purple-50 p-12 rounded-2xl">
-          <h2 className="text-2xl md:text-3xl font-semibold mb-8 text-indigo-700 text-center">Why A-Level Success Matters for Your Child's Future</h2>
+        <section className="bg-gradient-to-br from-blue-50 to-sky-50 p-12 rounded-2xl">
+          <h2 className="text-2xl md:text-3xl font-semibold mb-8 text-primary text-center">Why A-Level Success Matters for Your Child's Future</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="bg-white p-8 rounded-xl shadow-lg transform hover:scale-105 transition-all duration-200">
               <div className="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-6">
                 <span className="text-3xl">🎓</span>
               </div>
-              <h3 className="font-bold text-xl text-indigo-700 text-center mb-4">Unlock University Doors</h3>
+              <h3 className="font-bold text-xl text-primary text-center mb-4">Unlock University Doors</h3>
               <p className="text-gray-600 text-center">Secure admission to top local and overseas universities with strong A-Level results</p>
             </div>
             <div className="bg-white p-8 rounded-xl shadow-lg transform hover:scale-105 transition-all duration-200">
               <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-6">
                 <span className="text-3xl">💼</span>
               </div>
-              <h3 className="font-bold text-xl text-indigo-700 text-center mb-4">Set Stage for Success</h3>
+              <h3 className="font-bold text-xl text-primary text-center mb-4">Set Stage for Success</h3>
               <p className="text-gray-600 text-center">Build a strong foundation for a rewarding career in your chosen field</p>
             </div>
             <div className="bg-white p-8 rounded-xl shadow-lg transform hover:scale-105 transition-all duration-200">
               <div className="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-6">
                 <span className="text-3xl">🧠</span>
               </div>
-              <h3 className="font-bold text-xl text-indigo-700 text-center mb-4">Master Essential Skills</h3>
+              <h3 className="font-bold text-xl text-primary text-center mb-4">Master Essential Skills</h3>
               <p className="text-gray-600 text-center">Develop critical thinking and problem-solving abilities that go beyond the exam hall</p>
             </div>
           </div>
@@ -293,7 +303,7 @@ export default function JCTuition() {
 
         {/* Section 3: Our Approach */}
         <section>
-          <h2 className="text-2xl md:text-3xl font-semibold mb-4 text-indigo-700 text-center">Our Comprehensive JC Tuition Approach</h2>
+          <h2 className="text-2xl md:text-3xl font-semibold mb-4 text-primary text-center">Our Comprehensive JC Tuition Approach</h2>
           <p className="text-gray-600 text-center max-w-3xl mx-auto mb-8">
             Our approach blends academic expertise with motivational support—so students improve not just in grades, but in confidence and exam-readiness.
           </p>
@@ -321,7 +331,7 @@ export default function JCTuition() {
 
         {/* Section 4: Subjects We Cover */}
         <section>
-          <h2 className="text-2xl md:text-3xl font-semibold mb-8 text-indigo-700 text-center">Comprehensive A-Level Subjects Coverage</h2>
+          <h2 className="text-2xl md:text-3xl font-semibold mb-8 text-primary text-center">Comprehensive A-Level Subjects Coverage</h2>
          
           {/* Stream Tabs */}
           <div className="flex justify-center mb-8">
@@ -329,7 +339,7 @@ export default function JCTuition() {
               <button 
                 className={`px-4 py-2 rounded-md font-medium transition-colors ${
                   activeStream === 'science' 
-                    ? 'bg-indigo-600 text-white' 
+                    ? 'bg-primary text-white' 
                     : 'text-gray-600 hover:bg-gray-100'
                 }`}
                 onClick={() => setActiveStream('science')}
@@ -339,7 +349,7 @@ export default function JCTuition() {
               <button 
                 className={`px-4 py-2 rounded-md font-medium transition-colors ${
                   activeStream === 'arts' 
-                    ? 'bg-indigo-600 text-white' 
+                    ? 'bg-primary text-white' 
                     : 'text-gray-600 hover:bg-gray-100'
                 }`}
                 onClick={() => setActiveStream('arts')}
@@ -1119,7 +1129,7 @@ export default function JCTuition() {
 
         {/* Section 5: A-Level Study Guides */}
         <section className="bg-gradient-to-br from-blue-50 to-indigo-50 p-12 rounded-2xl">
-          <h2 className="text-2xl md:text-3xl font-semibold mb-8 text-indigo-700 text-center">Comprehensive A-Level Study Guides</h2>
+          <h2 className="text-2xl md:text-3xl font-semibold mb-8 text-primary text-center">Comprehensive A-Level Study Guides</h2>
           <p className="text-gray-600 text-center max-w-3xl mx-auto mb-8">
             Access our detailed subject-specific guides to help you excel in your A-Level journey. Each guide is crafted by experienced educators to provide comprehensive coverage of the syllabus.
           </p>
@@ -1127,7 +1137,7 @@ export default function JCTuition() {
             <Link href="/a-level-physics" className="block">
               <Card className="h-full hover:shadow-xl transition-all duration-300 hover:-translate-y-2 hover:scale-[1.02] cursor-pointer">
                 <CardContent className="p-6">
-                  <h3 className="font-bold text-xl text-indigo-700 mb-2">A-Level Physics Guide</h3>
+                  <h3 className="font-bold text-xl text-primary mb-2">A-Level Physics Guide</h3>
                   <p className="text-gray-600">Master key concepts, formulas, and practical skills for A-Level Physics success.</p>
                 </CardContent>
               </Card>
@@ -1135,7 +1145,7 @@ export default function JCTuition() {
             <Link href="/a-level-chemistry" className="block">
               <Card className="h-full hover:shadow-xl transition-all duration-300 hover:-translate-y-2 hover:scale-[1.02] cursor-pointer">
                 <CardContent className="p-6">
-                  <h3 className="font-bold text-xl text-indigo-700 mb-2">A-Level Chemistry Guide</h3>
+                  <h3 className="font-bold text-xl text-primary mb-2">A-Level Chemistry Guide</h3>
                   <p className="text-gray-600">Comprehensive coverage of H1/H2 chemistry concepts.</p>
                 </CardContent>
               </Card>
@@ -1143,7 +1153,7 @@ export default function JCTuition() {
             <Link href="/a-level-biology" className="block">
               <Card className="h-full hover:shadow-xl transition-all duration-300 hover:-translate-y-2 hover:scale-[1.02] cursor-pointer">
                 <CardContent className="p-6">
-                  <h3 className="font-bold text-xl text-indigo-700 mb-2">A-Level Biology Guide</h3>
+                  <h3 className="font-bold text-xl text-primary mb-2">A-Level Biology Guide</h3>
                   <p className="text-gray-600">In-depth understanding of biological systems and processes.</p>
                 </CardContent>
               </Card>
@@ -1151,7 +1161,7 @@ export default function JCTuition() {
             <Link href="/a-level-math" className="block">
               <Card className="h-full hover:shadow-xl transition-all duration-300 hover:-translate-y-2 hover:scale-[1.02] cursor-pointer">
                 <CardContent className="p-6">
-                  <h3 className="font-bold text-xl text-indigo-700 mb-2">A-Level Math Guide</h3>
+                  <h3 className="font-bold text-xl text-primary mb-2">A-Level Math Guide</h3>
                   <p className="text-gray-600">Master calculus, statistics, and mathematical concepts.</p>
                 </CardContent>
               </Card>
@@ -1159,7 +1169,7 @@ export default function JCTuition() {
             <Link href="/a-level-general-paper" className="block">
               <Card className="h-full hover:shadow-xl transition-all duration-300 hover:-translate-y-2 hover:scale-[1.02] cursor-pointer">
                 <CardContent className="p-6">
-                  <h3 className="font-bold text-xl text-indigo-700 mb-2">A-Level General Paper Guide</h3>
+                  <h3 className="font-bold text-xl text-primary mb-2">A-Level General Paper Guide</h3>
                   <p className="text-gray-600">Learn how to tackle essays and comprehension with ease.</p>
                 </CardContent>
               </Card>
@@ -1167,7 +1177,7 @@ export default function JCTuition() {
             <Link href="/blog/a-level-preparation-guide" className="block">
               <Card className="h-full hover:shadow-xl transition-all duration-300 hover:-translate-y-2 hover:scale-[1.02] cursor-pointer">
                 <CardContent className="p-6">
-                  <h3 className="font-bold text-xl text-indigo-700 mb-2">A-Level Preparation Guide</h3>
+                  <h3 className="font-bold text-xl text-primary mb-2">A-Level Preparation Guide</h3>
                   <p className="text-gray-600">Essential tips and strategies for A-Level success.</p>
                 </CardContent>
               </Card>
@@ -1176,8 +1186,8 @@ export default function JCTuition() {
         </section>
 
         {/* Section 5: Success Stories */}
-        <section className="bg-gradient-to-r from-indigo-50 to-purple-50 p-12 rounded-2xl">
-          <h2 className="text-2xl md:text-3xl font-semibold mb-8 text-indigo-700 text-center">Success Stories from Our JC Students</h2>
+        <section className="bg-gradient-to-r from-blue-50 to-sky-50 p-12 rounded-2xl">
+          <h2 className="text-2xl md:text-3xl font-semibold mb-8 text-primary text-center">Success Stories from Our JC Students</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="bg-white p-8 rounded-xl shadow-lg">
               <div className="flex items-start space-x-4">
@@ -1202,7 +1212,7 @@ export default function JCTuition() {
 
         {/* Section 6: Teaching Methods */}
         <section>
-          <h2 className="text-2xl md:text-3xl font-semibold mb-8 text-indigo-700 text-center">Our Proven Teaching Methods</h2>
+          <h2 className="text-2xl md:text-3xl font-semibold mb-8 text-primary text-center">Our Proven Teaching Methods</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="bg-white p-8 rounded-xl shadow-lg">
               <h3 className="text-xl font-bold text-emerald-700 mb-4">📚 Advanced Learning</h3>
@@ -1221,7 +1231,7 @@ export default function JCTuition() {
 
         {/* Section 7: Testimonials */}
         <section>
-          <h2 className="text-2xl md:text-3xl font-semibold mb-8 text-indigo-700 text-center">What Parents Say About Our JC Tuition</h2>
+          <h2 className="text-2xl md:text-3xl font-semibold mb-8 text-primary text-center">What Parents Say About Our JC Tuition</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <blockquote className="bg-gradient-to-br from-indigo-50 to-emerald-50 p-8 rounded-xl border-l-4 border-l-emerald-500 shadow-lg">
               <p className="italic text-lg mb-4">"We saw our daughter's confidence grow week by week. By the time A-Levels arrived, she was ready—not just academically, but mentally."</p>
@@ -1236,7 +1246,7 @@ export default function JCTuition() {
 
         {/* Section 8: Service Areas */}
         <section className="bg-gray-50 p-6 rounded-2xl">
-          <h2 className="text-2xl font-semibold mb-6 text-indigo-700 text-center">JC Tuition Available Across Singapore</h2>
+          <h2 className="text-2xl font-semibold mb-6 text-primary text-center">JC Tuition Available Across Singapore</h2>
           <p className="text-gray-700 text-center mb-6">
             Our experienced tutors serve families island-wide, including:
           </p>
@@ -1295,20 +1305,17 @@ export default function JCTuition() {
         </section>
 
         {/* Section 9: Final CTA - Option 3: High-Impact & Contrasting */}
-        <section className="text-center space-y-6 bg-accent text-white p-12 rounded-2xl shadow-xl">
+        <section className="text-center space-y-6 bg-gradient-to-r from-primary to-primary/90 text-white py-14 px-8 rounded-2xl shadow-xl">
             <h2 className="text-3xl md:text-4xl font-bold text-white">Start Your Journey To A-Level Success Today</h2>
-            <p className="text-text-inverse/80 text-lg max-w-2xl mx-auto">
-                Experience the difference with our handpicked tutors. We'll match you within 24 hours.
+            <p className="text-white/80 text-lg max-w-2xl mx-auto">
+                Experience the difference with our handpicked tutors. We&apos;ll match you within 24 hours.
             </p>
-            <div className="pt-4">
-                <Link href="/request-tutor">
-                    <Button 
-                        className="text-lg px-10 py-4 bg-white text-accent hover:bg-gray-100 font-bold rounded-xl shadow-lg transform hover:scale-105 transition-all duration-200"
-                    >
-                        Request a JC Tutor Now
-                    </Button>
-                </Link>
-            </div>
+            <Button
+                onClick={() => formRef.current?.scrollIntoView({ behavior: 'smooth' })}
+                className="text-lg px-10 py-4 bg-[#F17720] text-white hover:bg-[#d9691c] font-bold rounded-full shadow-lg transform hover:scale-105 transition-all duration-200"
+            >
+                Request a JC Tutor Now
+            </Button>
         </section>
       </div>
     </>

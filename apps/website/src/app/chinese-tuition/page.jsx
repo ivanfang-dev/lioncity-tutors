@@ -65,7 +65,7 @@ export default function ChineseTuition() {
             />
           </div>
           <Link href="/request-tutor">
-            <Button className="text-lg px-8 py-4 mt-4 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-lg shadow-lg transform hover:scale-105 transition-all duration-200">
+            <Button className="text-lg px-8 py-4 mt-4 bg-[#F17720] hover:bg-[#d9691c] text-white font-bold rounded-full shadow-lg transform hover:scale-105 transition-all duration-200">
               Request a Chinese Tutor
             </Button>
           </Link>
@@ -312,9 +312,9 @@ export default function ChineseTuition() {
 
         {/* Section 9: Call to Action */}
         <FinalCTA 
-          title="Help Your Child Excel in Chinese with Singapore's Best Tutors"
-          description="Tell us about your child's Chinese learning needs, and we'll match you with a qualified, caring tutor who can make a real difference."
-          buttonText="Request a Chinese Tutor Today"
+          title="Ready to Boost Your Child's Chinese Grades?"
+          description="Let's find the perfect Chinese tutor to build confidence and achieve academic excellence. The process is simple, fast, and completely free."
+          buttonText="Get a Free Tutor Match"
           subject="Chinese"
         />
       </div>

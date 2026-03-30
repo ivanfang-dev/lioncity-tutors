@@ -133,13 +133,13 @@ export default function BiologyTuition() {
 
           <div className="flex justify-center gap-4">
             <Link href="/request-tutor">
-              <Button className="text-lg px-8 py-4 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg shadow-lg transform hover:scale-105 transition-all duration-200">
+              <Button className="text-lg px-8 py-4 bg-[#F17720] hover:bg-[#d9691c] text-white font-bold rounded-full shadow-lg transform hover:scale-105 transition-all duration-200">
                 Request a Biology Tutor
               </Button>
             </Link>
 
             <Link href="#why-tuition" className="inline-block">
-              <Button className="text-lg px-6 py-4 bg-white border border-green-600 text-green-600 hover:bg-green-50 font-semibold rounded-lg shadow-sm transition-all duration-200">
+              <Button className="text-lg px-6 py-4 bg-white border border-primary text-primary hover:bg-blue-50 font-semibold rounded-full shadow-sm transition-all duration-200">
                 Why Biology Tuition?
               </Button>
             </Link>
@@ -618,9 +618,9 @@ export default function BiologyTuition() {
 
         {/* CTA */}
         <FinalCTA 
-          title="Ready to improve in Biology?"
-          description="Request a matched tutor for a free trial lesson and personalised study plan. Flexible scheduling — online or in-person across Singapore."
-          buttonText="Request a Biology Tutor"
+          title="Ready to Boost Your Child's Biology Grades?"
+          description="Let's find the perfect Biology tutor to build confidence and achieve academic excellence. The process is simple, fast, and completely free."
+          buttonText="Get a Free Tutor Match"
           subject="Biology"
         />
 

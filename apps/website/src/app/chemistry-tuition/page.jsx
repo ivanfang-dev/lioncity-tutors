@@ -69,7 +69,7 @@ export default function ChemistryTuition() {
           </div>
           
           <Link href="/request-tutor">
-            <Button className="text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 mt-3 sm:mt-4 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-lg shadow-lg transform hover:scale-105 transition-all duration-200">
+            <Button className="text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 mt-3 sm:mt-4 bg-[#F17720] hover:bg-[#d9691c] text-white font-semibold rounded-full shadow-lg transform hover:scale-105 transition-all duration-200">
               Request a Chemistry Tutor
             </Button>
           </Link>
@@ -747,9 +747,9 @@ export default function ChemistryTuition() {
 
         {/* Section 10: Final CTA */}
         <FinalCTA 
-          title="Ready to Excel in Chemistry?"
-          description="Connect with our specialized chemistry tutors who make complex concepts clear and help you achieve your academic goals."
-          buttonText="Request a Chemistry Tutor"
+          title="Ready to Boost Your Child's Chemistry Grades?"
+          description="Let's find the perfect Chemistry tutor to build confidence and achieve academic excellence. The process is simple, fast, and completely free."
+          buttonText="Get a Free Tutor Match"
           subject="Chemistry"
         />
       </div>

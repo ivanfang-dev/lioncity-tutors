@@ -153,28 +153,28 @@ export default function PrimarySchoolTuition() {
         </section>
         
         {/* Tutor Request Form Section */}
-        <section ref={formRef} className="bg-gradient-to-br from-indigo-50 to-purple-50 p-8 rounded-2xl shadow-lg">
+        <section ref={formRef} className="bg-gradient-to-br from-blue-50 to-sky-50 p-8 rounded-2xl shadow-lg">
           <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl font-bold text-center text-indigo-700 mb-4">Request a Primary School Tutor</h2>
-            <div className="flex justify-center space-x-8 mb-8">
-              <div className="flex items-center text-emerald-600">
-                <span className="text-2xl mr-2">✅</span>
+            <h2 className="text-3xl font-bold text-center text-primary mb-4">Request a Primary School Tutor</h2>
+            <div className="flex justify-center gap-6 sm:gap-10 mb-8 flex-wrap">
+              <div className="flex items-center gap-2 text-gray-600">
+                <CheckCircle className="w-5 h-5 text-primary" />
                 <span className="font-medium">Matched within 24 hours</span>
               </div>
-              <div className="flex items-center text-emerald-600">
-                <span className="text-2xl mr-2">✅</span>
+              <div className="flex items-center gap-2 text-gray-600">
+                <CheckCircle className="w-5 h-5 text-primary" />
                 <span className="font-medium">No hidden fees, ever</span>
               </div>
             </div>
             <div className="bg-white rounded-xl shadow-lg p-8">
               {status.submitted ? (
                 <div className="text-center py-10">
-                  <CheckCircle className="text-green-500 w-16 h-16 mx-auto mb-4" />
-                  <h2 className="text-2xl font-semibold mb-2">Thank you!</h2>
-                  <p className="text-gray-600 mb-4">We'll send you tutor profiles shortly.</p>
-                  <Button 
+                  <CheckCircle className="text-primary w-16 h-16 mx-auto mb-4" />
+                  <h2 className="text-2xl font-semibold mb-2 text-gray-900">Thank you!</h2>
+                  <p className="text-gray-600 mb-4">Our team will be in touch with suitable tutor profiles shortly via WhatsApp.</p>
+                  <Button
                     onClick={() => setStatus({ submitting: false, submitted: false, error: null })}
-                    className="bg-indigo-600 text-white px-5 py-2 rounded-md hover:bg-indigo-700 transition-colors"
+                    className="bg-[#F17720] text-white px-6 py-2 rounded-full hover:bg-[#d9691c] transition-colors"
                   >
                     Submit Another Request
                   </Button>
@@ -184,12 +184,12 @@ export default function PrimarySchoolTuition() {
                   <div className="mb-8">
                     <div className="flex justify-between mb-1">
                       {["Your Details", "Lesson Details", "Tutor Preferences"].map((step, i) => (
-                        <span key={i} className={`text-sm font-medium ${currentStep >= i + 1 ? 'text-indigo-700' : 'text-gray-400'}`}>{step}</span>
+                        <span key={i} className={`text-sm font-medium ${currentStep >= i + 1 ? 'text-primary' : 'text-gray-400'}`}>{step}</span>
                       ))}
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div 
-                        className="bg-indigo-600 h-2 rounded-full transition-all duration-500 ease-in-out"
+                      <div
+                        className="bg-primary h-2 rounded-full transition-all duration-500 ease-in-out"
                         style={{ width: `${((currentStep - 1) / 2) * 100}%` }}
                       ></div>
                     </div>
@@ -211,8 +211,8 @@ export default function PrimarySchoolTuition() {
         </section>
 
         {/* Section 2: Why Primary Education Matters */}
-        <section className="bg-gradient-to-br from-indigo-50 to-purple-50 p-12 rounded-2xl">
-          <h2 className="text-2xl md:text-3xl font-semibold mb-4 text-indigo-700 text-center">Why Primary Education Matters</h2>
+        <section className="bg-gradient-to-br from-blue-50 to-sky-50 p-12 rounded-2xl">
+          <h2 className="text-2xl md:text-3xl font-semibold mb-4 text-primary text-center">Why Primary Education Matters</h2>
           <p className="text-gray-600 text-center max-w-3xl mx-auto mb-8">
             Primary school years are where habits, confidence, and academic discipline take root. We help your child thrive in this crucial stage — academically and emotionally.
           </p>
@@ -221,21 +221,21 @@ export default function PrimarySchoolTuition() {
               <div className="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-6">
                 <span className="text-3xl">🎓</span>
               </div>
-              <h3 className="font-bold text-xl text-indigo-700 text-center mb-4">Academic Foundation</h3>
+              <h3 className="font-bold text-xl text-primary text-center mb-4">Academic Foundation</h3>
               <p className="text-gray-600 text-center">Builds strong fundamentals for future academic success</p>
             </div>
             <div className="bg-white p-8 rounded-xl shadow-lg transform hover:scale-105 transition-all duration-200">
               <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-6">
                 <span className="text-3xl">💼</span>
               </div>
-              <h3 className="font-bold text-xl text-indigo-700 text-center mb-4">Future Opportunities</h3>
+              <h3 className="font-bold text-xl text-primary text-center mb-4">Future Opportunities</h3>
               <p className="text-gray-600 text-center">Opens doors to top secondary schools and programs</p>
             </div>
             <div className="bg-white p-8 rounded-xl shadow-lg transform hover:scale-105 transition-all duration-200">
               <div className="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-6">
                 <span className="text-3xl">🧠</span>
               </div>
-              <h3 className="font-bold text-xl text-indigo-700 text-center mb-4">Critical Thinking</h3>
+              <h3 className="font-bold text-xl text-primary text-center mb-4">Critical Thinking</h3>
               <p className="text-gray-600 text-center">Develops essential problem-solving and analytical skills</p>
             </div>
           </div>
@@ -243,7 +243,7 @@ export default function PrimarySchoolTuition() {
 
         {/* Section 3: Subjects We Cover */}
         <section>
-          <h2 className="text-2xl md:text-3xl font-semibold mb-8 text-indigo-700 text-center">Comprehensive Primary School Subjects</h2>
+          <h2 className="text-2xl md:text-3xl font-semibold mb-8 text-primary text-center">Comprehensive Primary School Subjects</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <Card className="border-t-4 border-t-emerald-500 shadow-lg">
               <CardContent className="p-8">
@@ -365,7 +365,7 @@ export default function PrimarySchoolTuition() {
 
         {/* Section 4: PSLE Guides */}
         <section className="bg-gradient-to-br from-blue-50 to-indigo-50 p-12 rounded-2xl">
-          <h2 className="text-2xl md:text-3xl font-semibold mb-8 text-indigo-700 text-center">Comprehensive PSLE Preparation Guides</h2>
+          <h2 className="text-2xl md:text-3xl font-semibold mb-8 text-primary text-center">Comprehensive PSLE Preparation Guides</h2>
           <p className="text-gray-600 text-center max-w-3xl mx-auto mb-8">
             Access our detailed subject-specific PSLE guides, designed to help your child excel in every component of the examination.
           </p>
@@ -375,7 +375,7 @@ export default function PrimarySchoolTuition() {
                 <div className="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4">
                   <span className="text-2xl">🎯</span>
                 </div>
-                <h3 className="font-bold text-lg text-indigo-700 text-center mb-2">PSLE Preparation Guide</h3>
+                <h3 className="font-bold text-lg text-primary text-center mb-2">PSLE Preparation Guide</h3>
                 <p className="text-gray-600 text-sm text-center">Complete roadmap to PSLE success with proven strategies and study schedules</p>
               </div>
             </Link>
@@ -441,7 +441,7 @@ export default function PrimarySchoolTuition() {
 
         {/* Section 5: Teaching Methods */}
         <section>
-          <h2 className="text-2xl md:text-3xl font-semibold mb-8 text-indigo-700 text-center">Our Proven Teaching Methods</h2>
+          <h2 className="text-2xl md:text-3xl font-semibold mb-8 text-primary text-center">Our Proven Teaching Methods</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="bg-white p-8 rounded-xl shadow-lg">
               <h3 className="text-xl font-bold text-emerald-700 mb-4">📚 Interactive Learning</h3>
@@ -465,8 +465,8 @@ export default function PrimarySchoolTuition() {
         </section>
 
         {/* Section 6: Success Stories */}
-        <section className="bg-gradient-to-r from-indigo-50 to-purple-50 p-12 rounded-2xl">
-          <h2 className="text-2xl md:text-3xl font-semibold mb-8 text-indigo-700 text-center">Success Stories from Our Primary School Students</h2>
+        <section className="bg-gradient-to-r from-blue-50 to-sky-50 p-12 rounded-2xl">
+          <h2 className="text-2xl md:text-3xl font-semibold mb-8 text-primary text-center">Success Stories from Our Primary School Students</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="bg-white p-8 rounded-xl shadow-lg">
               <div className="flex items-start space-x-4">
@@ -491,7 +491,7 @@ export default function PrimarySchoolTuition() {
 
         {/* Section 7: Teaching Methods */}
         <section>
-          <h2 className="text-2xl md:text-3xl font-semibold mb-8 text-indigo-700 text-center">Our Proven Teaching Methods</h2>
+          <h2 className="text-2xl md:text-3xl font-semibold mb-8 text-primary text-center">Our Proven Teaching Methods</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="bg-white p-8 rounded-xl shadow-lg">
               <h3 className="text-xl font-bold text-emerald-700 mb-4">📚 Interactive Learning</h3>
@@ -510,7 +510,7 @@ export default function PrimarySchoolTuition() {
 
         {/* Section 8: Testimonials */}
         <section>
-          <h2 className="text-2xl md:text-3xl font-semibold mb-8 text-indigo-700 text-center">What Parents Say About Our Primary School Tuition</h2>
+          <h2 className="text-2xl md:text-3xl font-semibold mb-8 text-primary text-center">What Parents Say About Our Primary School Tuition</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <blockquote className="bg-gradient-to-br from-indigo-50 to-emerald-50 p-8 rounded-xl border-l-4 border-l-emerald-500 shadow-lg">
               <p className="italic text-lg mb-4">"The tutors really understand how to make learning fun while ensuring academic progress. My daughter looks forward to her lessons!"</p>
@@ -525,7 +525,7 @@ export default function PrimarySchoolTuition() {
 
         {/* Section 9: Service Areas */}
         <section className="bg-gray-50 p-6 rounded-2xl">
-          <h2 className="text-2xl font-semibold mb-6 text-indigo-700 text-center">Primary School Tuition Available Across Singapore</h2>
+          <h2 className="text-2xl font-semibold mb-6 text-primary text-center">Primary School Tuition Available Across Singapore</h2>
           <p className="text-gray-700 text-center mb-6">
             Our experienced tutors serve families island-wide, including:
           </p>
@@ -584,20 +584,20 @@ export default function PrimarySchoolTuition() {
         </section>
 
         {/* Section 10: Final CTA */}
-        <section className="text-center space-y-8 bg-gradient-to-r from-indigo-600 to-purple-600 text-white p-12 rounded-2xl shadow-xl">
-          <h2 className="text-3xl md:text-4xl font-bold">Start Your Journey To PSLE Success Today</h2>
-          <p className="text-indigo-100 text-lg max-w-2xl mx-auto">
+        <section className="text-center space-y-6 bg-gradient-to-r from-primary to-primary/90 text-white py-14 px-8 rounded-2xl shadow-xl">
+          <h2 className="text-3xl md:text-4xl font-bold text-white">Start Your Journey To PSLE Success Today</h2>
+          <p className="text-white/80 text-lg max-w-2xl mx-auto">
             Experience the difference with our handpicked tutors. We'll match you within 24 hours.
           </p>
           <div className="inline-block">
-              <Button 
-                onClick={() => formRef.current?.scrollIntoView({ behavior: 'smooth' })}
-                className="text-lg px-8 py-4 bg-white text-indigo-700 hover:bg-gray-100 font-semibold rounded-xl shadow-lg transform hover:scale-105 transition-all duration-200"
-              >
-                Request a PSLE Tutor now
-              </Button>
+            <Button
+              onClick={() => formRef.current?.scrollIntoView({ behavior: 'smooth' })}
+              className="text-lg px-8 py-4 bg-[#F17720] text-white hover:bg-[#d9691c] font-bold rounded-full shadow-lg transform hover:scale-105 transition-all duration-200"
+            >
+              Request a PSLE Tutor Now
+            </Button>
           </div>
-          <p className="text-sm text-indigo-100 mt-4">Improved grades • Expert tutors • Proven results</p>
+          <p className="text-sm text-white/60 mt-4">Improved grades • Expert tutors • Proven results</p>
         </section>
       </div>
     </>

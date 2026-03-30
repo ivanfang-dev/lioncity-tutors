@@ -8,18 +8,18 @@ const FinalCTA = ({
   subject = ""
 }) => {
   return (
-    <section className="bg-gradient-to-br from-slate-800 to-blue-900 text-white p-6 sm:p-8 rounded-xl text-center space-y-4">
-      <h2 className="text-2xl sm:text-3xl font-bold">{title}</h2>
-      <p className="text-base sm:text-lg max-w-2xl mx-auto text-blue-100">
+    <section className="bg-gradient-to-r from-primary to-primary/90 text-white py-14 sm:py-16 px-6 sm:px-8 rounded-2xl text-center space-y-4 shadow-xl">
+      <h2 className="text-2xl sm:text-3xl font-bold text-white">{title}</h2>
+      <p className="text-base sm:text-lg max-w-2xl mx-auto text-white/80">
         {description}
       </p>
-      <Link 
-        href="/request-tutor" 
-        className="inline-block bg-emerald-500 text-white hover:bg-emerald-600 px-4 sm:px-6 py-2 sm:py-3 rounded-lg text-sm sm:text-base font-semibold transition duration-300 shadow-lg transform hover:scale-105"
+      <Link
+        href="/request-tutor"
+        className="inline-block bg-[#F17720] text-white hover:bg-[#d9691c] px-6 sm:px-8 py-3 sm:py-4 rounded-full text-sm sm:text-base font-bold transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105"
       >
         {buttonText}
       </Link>
-      <p className="text-xs sm:text-sm text-slate-300 mt-2">
+      <p className="text-xs sm:text-sm text-white/60 mt-2">
         Free matching service • {subject ? `${subject} specialists` : 'Expert tutors'} • Proven grade improvements
       </p>
     </section>

@@ -488,7 +488,7 @@ export default function OLevelEnglish() {
           <p className="mb-4">Our experienced O Level English tutors specialize in both Language and Literature with proven track records in helping students achieve A1 grades. We provide comprehensive language mastery, exam techniques, and structured practice programs tailored to your learning needs.</p>
           <Link 
             href="/request-tutor" 
-            className="inline-block bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-3 rounded-lg transition-colors duration-200"
+            className="inline-block bg-[#F17720] text-white px-6 py-3 rounded-full font-bold hover:bg-[#d9691c] transition-all duration-200 shadow-md transform hover:scale-105"
           >
             Get Expert O Level English Support
           </Link>

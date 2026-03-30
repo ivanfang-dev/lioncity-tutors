@@ -68,7 +68,7 @@ export default function PhysicsTuition() {
             />
           </div>    
           <a href="/request-tutor">
-            <Button className="w-full sm:w-auto text-base sm:text-lg px-4 sm:px-8 py-3 sm:py-4 mt-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-lg transform hover:scale-105 transition-all duration-200">
+            <Button className="w-full sm:w-auto text-base sm:text-lg px-4 sm:px-8 py-3 sm:py-4 mt-4 bg-[#F17720] hover:bg-[#d9691c] text-white font-bold rounded-full shadow-lg transform hover:scale-105 transition-all duration-200">
               Request a Physics Tutor
             </Button>
           </a>
@@ -773,9 +773,9 @@ export default function PhysicsTuition() {
 
         {/* Section 11: Final CTA */}
         <FinalCTA 
-          title="Ready to Excel in Physics?"
-          description="Connect with our specialized physics tutors who make complex concepts clear and help you achieve your academic goals."
-          buttonText="Request a Physics Tutor"
+          title="Ready to Boost Your Child's Physics Grades?"
+          description="Let's find the perfect Physics tutor to build confidence and achieve academic excellence. The process is simple, fast, and completely free."
+          buttonText="Get a Free Tutor Match"
           subject="Physics"
         />
         </div>

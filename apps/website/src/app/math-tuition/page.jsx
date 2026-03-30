@@ -74,7 +74,7 @@ export default function MathTuition() {
             />
           </div>
           <Link href="/request-tutor">
-            <Button className="text-lg px-8 py-4 mt-4 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-lg shadow-lg transform hover:scale-105 transition-all duration-200">
+            <Button className="text-lg px-8 py-4 mt-4 bg-[#F17720] hover:bg-[#d9691c] text-white font-semibold rounded-full shadow-lg transform hover:scale-105 transition-all duration-200">
               Request a Math Tutor
             </Button>
           </Link>
@@ -743,9 +743,9 @@ export default function MathTuition() {
 
         {/* Section 7: Call to Action */}
         <FinalCTA 
-          title="Help Your Child Excel in Math with Singapore's Best Tutors"
-          description="Tell us about your child's math learning needs, and we'll match you with a qualified, caring tutor who can make a real difference."
-          buttonText="Request a Math Tutor Today"
+          title="Ready to Boost Your Child's Math Grades?"
+          description="Let's find the perfect Math tutor to build confidence and achieve academic excellence. The process is simple, fast, and completely free."
+          buttonText="Get a Free Tutor Match"
           subject="Math"
         />
       </div>

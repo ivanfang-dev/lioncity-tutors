@@ -498,7 +498,7 @@ export default function ALevelMath() {
           <p className="mb-4">Our experienced A Level Mathematics tutors specialize in both H1 and H2 Mathematics with proven success in helping students achieve Grade A. We provide comprehensive concept mastery, advanced problem-solving techniques, and exam strategies tailored for university-bound students.</p>
           <Link 
             href="/request-tutor" 
-            className="inline-block bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-3 rounded-lg transition-colors duration-200"
+            className="inline-block bg-[#F17720] text-white px-6 py-3 rounded-full font-bold hover:bg-[#d9691c] transition-all duration-200 shadow-md transform hover:scale-105"
           >
             Get Expert A Level Math Support
           </Link>

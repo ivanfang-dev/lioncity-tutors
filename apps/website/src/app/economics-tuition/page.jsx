@@ -65,7 +65,7 @@ export default function EconomicsTuition() {
             />
           </div>
           <Link href="/request-tutor">
-            <Button className="w-full sm:w-auto text-base sm:text-lg px-4 sm:px-8 py-3 sm:py-4 mt-4 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-lg shadow-lg transform hover:scale-105 transition-all duration-200">
+            <Button className="w-full sm:w-auto text-base sm:text-lg px-4 sm:px-8 py-3 sm:py-4 mt-4 bg-[#F17720] hover:bg-[#d9691c] text-white font-bold rounded-full shadow-lg transform hover:scale-105 transition-all duration-200">
               Request an Economics Tutor
             </Button>
           </Link>
@@ -477,9 +477,9 @@ export default function EconomicsTuition() {
 
         {/* Section 7: Call to Action */}
         <FinalCTA 
-          title="Help Your Child Excel in Economics with Singapore's Best Tutors"
-          description="Tell us about your child's economics learning needs, and we'll match you with a qualified, experienced tutor who can make a real difference."
-          buttonText="Request an Economics Tutor Today"
+          title="Ready to Boost Your Child's Economics Grades?"
+          description="Let's find the perfect Economics tutor to build confidence and achieve academic excellence. The process is simple, fast, and completely free."
+          buttonText="Get a Free Tutor Match"
           subject="Economics"
         />
       </div>
