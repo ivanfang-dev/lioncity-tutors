@@ -122,11 +122,58 @@ app.get("/keep-alive", (req, res) => {
   res.status(200).send("Backend is awake");
 });
 
+// Send Telegram notification for new tutor requests
+async function notifyTelegramNewRequest(contact) {
+  const botToken = process.env.TELEGRAM_BOT_TOKEN;
+  const chatId = process.env.TELEGRAM_NOTIFY_CHAT_ID;
+  if (!botToken || !chatId) return;
+
+  const tutorTypes = [];
+  if (contact.tutorType?.partTime) tutorTypes.push('Part-Time');
+  if (contact.tutorType?.fullTime) tutorTypes.push('Full-Time');
+  if (contact.tutorType?.moeTeacher) tutorTypes.push('MOE Teacher');
+
+  const duration = contact.customDuration || contact.lessonDuration || '-';
+  const frequency = contact.customFrequency || contact.lessonFrequency || '-';
+  const budget = contact.budget?.custom
+    ? `Custom: $${contact.budget.customAmount || '?'}`
+    : 'Market Rate';
+
+  const text = [
+    `🆕 *New Tutor Request*`,
+    ``,
+    `👤 *Name:* ${contact.name}`,
+    `📱 *Mobile:* ${contact.mobile}`,
+    `📚 *Level/Subject:* ${contact.level}`,
+    `📍 *Location:* ${contact.location || '-'}`,
+    `⏱ *Duration:* ${duration}`,
+    `🔄 *Frequency:* ${frequency}`,
+    `🕐 *Preferred Time:* ${contact.preferredTime || '-'}`,
+    `🎓 *Tutor Type:* ${tutorTypes.length ? tutorTypes.join(', ') : 'Any'}`,
+    `💰 *Budget:* ${budget}`,
+    contact.preferences ? `\n📝 *Notes:* ${contact.preferences}` : '',
+  ].filter(Boolean).join('\n');
+
+  try {
+    await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ chat_id: chatId, text, parse_mode: 'Markdown' }),
+    });
+  } catch (err) {
+    console.error('Failed to send Telegram notification:', err);
+  }
+}
+
 // Contact form endpoint
 app.post('/api/requestfortutor', async (req, res) => {
   try {
     const newContact = new Contact(req.body);
     await newContact.save();
+
+    // Fire-and-forget notification (don't block the response)
+    notifyTelegramNewRequest(newContact).catch(() => {});
+
     res.status(200).json({ success: true, message: 'Form submitted and saved successfully!' });
   } catch (err) {
     console.error('Error saving form:', err);
