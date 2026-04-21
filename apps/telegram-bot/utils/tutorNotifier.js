@@ -47,23 +47,28 @@ async function notifyMatchedTutors(assignment, botUsername) {
       `- Reply "Yes" to apply\n` +
       `- Or apply via Telegram: ${applyUrl}`;
 
-    const results = await Promise.allSettled(
-      tutors.map(tutor =>
-        sendWhatsAppMessage(
+    // Send sequentially — whatsapp-web.js uses a single Chrome process and concurrent
+    // sendMessage calls all queue CDP commands on the same browser, causing protocol timeouts.
+    let sent = 0;
+    let failed = 0;
+    const errors = [];
+    for (const tutor of tutors) {
+      try {
+        await sendWhatsAppMessage(
           tutor.contactNumber,
           message,
           assignment._id.toString(),
           assignment.title,
           tutor.fullName || 'Unknown'
-        )
-      )
-    );
-
-    const sent = results.filter(r => r.status === 'fulfilled').length;
-    const failed = results.filter(r => r.status === 'rejected').length;
+        );
+        sent++;
+      } catch (err) {
+        failed++;
+        errors.push(err.message);
+      }
+    }
 
     if (failed > 0) {
-      const errors = results.filter(r => r.status === 'rejected').map(r => r.reason?.message);
       console.log(`WhatsApp notifications: ${sent} sent, ${failed} failed:`, errors);
     }
 

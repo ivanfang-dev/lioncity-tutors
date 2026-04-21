@@ -1617,6 +1617,17 @@ async function confirmPostAssignment(bot, chatId, userSessions, Assignment, chan
       return await safeSend(bot, chatId, '❌ Assignment draft not found or expired. Please create the assignment again.');
     }
 
+    // Idempotency guard: Telegram retries webhooks if we don't respond 200 in time.
+    // Check channelMessageId (post completed) and status (post started) to cover both windows.
+    if (savedAssignment.channelMessageId) {
+      console.log(`Duplicate webhook for assignment ${draftId} — already posted (msg ${savedAssignment.channelMessageId}), skipping.`);
+      return await safeSend(bot, chatId, '✅ Assignment already posted to channel.');
+    }
+    if (savedAssignment.status === 'Open') {
+      console.log(`Duplicate webhook for assignment ${draftId} — already activated, skipping.`);
+      return await safeSend(bot, chatId, '✅ Assignment already posted to channel.');
+    }
+
     // Activate the draft
     savedAssignment.status = 'Open';
     savedAssignment.updatedAt = new Date();
@@ -1631,40 +1642,25 @@ async function confirmPostAssignment(bot, chatId, userSessions, Assignment, chan
       await savedAssignment.save();
     }
     
-    // Notify matched tutors via WhatsApp
-    let notifyResult = { sent: 0, failed: 0 };
-    try {
-      notifyResult = await notifyMatchedTutors(savedAssignment, botUsername);
-    } catch (err) {
-      console.error('Tutor notification error:', err);
-    }
-
     // Clear session
     delete userSessions[chatId].state;
     delete userSessions[chatId].assignmentData;
     delete userSessions[chatId].currentStep;
     delete userSessions[chatId].waitingForCustomRate;
 
-    const notifyMsg = notifyResult.sent > 0
-      ? `📨 Notified ${notifyResult.sent} matching tutor(s) via WhatsApp`
-      : '📨 No matching tutors found';
-
-    let aiMsg = '';
-    if (notifyResult.sent > 0) {
-      if (notifyResult.aiUsed) {
-        aiMsg = '\n🤖 AI ranked tutors';
-      } else if (notifyResult.aiError === 'rate_limit') {
-        aiMsg = '\n⚠️ AI ranking unavailable (rate limit), used unranked order';
-      } else if (notifyResult.aiError === 'other') {
-        aiMsg = '\n⚠️ AI ranking failed, used unranked order';
-      }
-    }
-
-    await safeSend(bot, chatId, `✅ *Assignment Posted Successfully!*\n\n📋 Assignment ID: ${savedAssignment._id}\n📢 Posted to channel\n${notifyMsg}${aiMsg}\n📊 Status: Open for applications`, {
+    // Confirm immediately — WhatsApp notifications run in the background
+    await safeSend(bot, chatId, `✅ *Assignment Posted Successfully!*\n\n📋 Assignment ID: ${savedAssignment._id}\n📢 Posted to channel\n📨 Notifying matching tutors via WhatsApp...\n📊 Status: Open for applications`, {
       parse_mode: 'Markdown',
       reply_markup: {
         inline_keyboard: [[{ text: '🔙 Back to Admin Panel', callback_data: 'admin_panel' }]]
       }
+    });
+
+    // Fire-and-forget WhatsApp notifications so they don't block the webhook response
+    notifyMatchedTutors(savedAssignment, botUsername).then(result => {
+      console.log(`WhatsApp notifications done: ${result.sent} sent, ${result.failed} failed, AI used: ${result.aiUsed}`);
+    }).catch(err => {
+      console.error('Tutor notification error:', err);
     });
     
   } catch (error) {
