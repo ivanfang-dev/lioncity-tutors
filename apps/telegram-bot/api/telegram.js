@@ -1,6 +1,7 @@
 import TelegramBot from 'node-telegram-bot-api';
 import mongoose from 'mongoose';
 import { Assignment, Tutor } from '../../../packages/shared/server-exports.js';
+import { waitUntil } from '@vercel/functions';
 
 let bot = null;
 let isConnected = false;
@@ -114,18 +115,22 @@ export default async function handler(req, res) {
         ADMIN_USERS
       );
     } else if (update.callback_query) {
-  // Pass the entire callback_query object directly to the handler
-  await handlers.handleCallbackQuery(
-    botInstance,
-    update.callback_query,
-    Assignment,
-    Tutor,
-    userSessions,
-    ADMIN_USERS,
-    CHANNEL_ID,
-    BOT_USERNAME
-  );
-}
+      const backgroundWork = await handlers.handleCallbackQuery(
+        botInstance,
+        update.callback_query,
+        Assignment,
+        Tutor,
+        userSessions,
+        ADMIN_USERS,
+        CHANNEL_ID,
+        BOT_USERNAME
+      );
+      // If the handler returned a background promise (e.g. WhatsApp notifications),
+      // register it with Vercel so the function stays alive after the response.
+      if (backgroundWork instanceof Promise) {
+        waitUntil(backgroundWork);
+      }
+    }
 
     return res.status(200).json({ ok: true });
 

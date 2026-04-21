@@ -1656,8 +1656,9 @@ async function confirmPostAssignment(bot, chatId, userSessions, Assignment, chan
       }
     });
 
-    // Fire-and-forget WhatsApp notifications so they don't block the webhook response
-    notifyMatchedTutors(savedAssignment, botUsername).then(result => {
+    // Return the notification promise so the caller can pass it to waitUntil,
+    // keeping the Vercel function alive after the response is sent.
+    return notifyMatchedTutors(savedAssignment, botUsername).then(result => {
       console.log(`WhatsApp notifications done: ${result.sent} sent, ${result.failed} failed, AI used: ${result.aiUsed}`);
     }).catch(err => {
       console.error('Tutor notification error:', err);
