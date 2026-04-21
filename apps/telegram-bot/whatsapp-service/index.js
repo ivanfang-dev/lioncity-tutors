@@ -17,9 +17,17 @@ const client = new Client({
   authStrategy: new LocalAuth(),
   puppeteer: {
     headless: true,
-    args: ['--no-sandbox', '--disable-setuid-sandbox']
+    args: ['--no-sandbox', '--disable-setuid-sandbox'],
+    protocolTimeout: 60000
   }
 });
+
+// Queue to serialize sendMessage calls — concurrent CDP calls on the same Chrome process cause timeouts
+let sendQueue = Promise.resolve();
+function enqueueSend(fn) {
+  sendQueue = sendQueue.then(fn).catch(() => {});
+  return sendQueue;
+}
 
 let isReady = false;
 
@@ -133,7 +141,9 @@ app.post('/send', requireAuth, async (req, res) => {
     const digits = phoneNumber.replace(/\D/g, '').replace(/^65/, '');
     const chatId = `65${digits}@c.us`;
 
-    await client.sendMessage(chatId, message);
+    await new Promise((resolve, reject) => {
+      enqueueSend(() => client.sendMessage(chatId, message).then(resolve).catch(reject));
+    });
 
     // Track this assignment for "Yes" reply handling
     if (assignmentId) {

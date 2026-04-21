@@ -11,7 +11,8 @@ async function sendWhatsAppMessage(phoneNumber, message, assignmentId, assignmen
   const res = await fetch(`${WHATSAPP_SERVICE_URL}/send`, {
     method: 'POST',
     headers,
-    body: JSON.stringify({ phoneNumber, message, assignmentId, assignmentTitle, tutorName })
+    body: JSON.stringify({ phoneNumber, message, assignmentId, assignmentTitle, tutorName }),
+    signal: AbortSignal.timeout(15000)
   });
   if (!res.ok) {
     const err = await res.json().catch(() => ({ error: res.statusText }));
