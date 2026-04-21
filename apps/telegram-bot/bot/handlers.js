@@ -3,6 +3,7 @@ import { generatePhoneVariations } from '../../../packages/shared/utils/phoneUti
 import RateValidator from '../utils/RateValidator.js';
 import ErrorHandler from '../utils/ErrorHandler.js';
 import { notifyMatchedTutors } from '../utils/tutorNotifier.js';
+import { waitUntil } from '@vercel/functions';
 
 /* global process */
 
@@ -1656,13 +1657,15 @@ async function confirmPostAssignment(bot, chatId, userSessions, Assignment, chan
       }
     });
 
-    // Return the notification promise so the caller can pass it to waitUntil,
-    // keeping the Vercel function alive after the response is sent.
-    return notifyMatchedTutors(savedAssignment, botUsername).then(result => {
-      console.log(`WhatsApp notifications done: ${result.sent} sent, ${result.failed} failed, AI used: ${result.aiUsed}`);
-    }).catch(err => {
-      console.error('Tutor notification error:', err);
-    });
+    // Register the notification work with Vercel directly so the function stays alive
+    // after the webhook response is sent, without blocking on it.
+    waitUntil(
+      notifyMatchedTutors(savedAssignment, botUsername).then(result => {
+        console.log(`WhatsApp notifications done: ${result.sent} sent, ${result.failed} failed, AI used: ${result.aiUsed}`);
+      }).catch(err => {
+        console.error('Tutor notification error:', err);
+      })
+    );
     
   } catch (error) {
     console.error('Error confirming assignment:', error);
