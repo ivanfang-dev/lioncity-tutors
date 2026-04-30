@@ -4,7 +4,7 @@ const BOT_TOKEN = process.env.BOT_TOKEN;
 const WEBHOOK_URL = 'https://telegram-bot-pied-chi.vercel.app/api/telegram';
 
 async function setWebhook() {
-  const res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}}/setWebhook`, {
+  const res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/setWebhook`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     body: new URLSearchParams({ url: WEBHOOK_URL })

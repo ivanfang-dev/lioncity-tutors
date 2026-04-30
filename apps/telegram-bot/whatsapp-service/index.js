@@ -30,6 +30,35 @@ function enqueueSend(fn) {
 }
 
 let isReady = false;
+let isRecovering = false;
+
+// WhatsApp Web sometimes silently reloads its page (client updates, session refresh).
+// When that happens the puppeteer frame detaches but `disconnected` does not fire,
+// so isReady stays true and every queued send fails with "detached Frame".
+// Recover by tearing the client down and re-initializing.
+async function recoverClient(reason) {
+  if (isRecovering) return;
+  isRecovering = true;
+  isReady = false;
+  console.warn(`Recovering WhatsApp client: ${reason}`);
+  try {
+    await client.destroy();
+  } catch (err) {
+    console.warn('Error during client.destroy() (ignoring):', err.message);
+  }
+  try {
+    await client.initialize();
+  } catch (err) {
+    console.error('client.initialize() failed during recovery:', err);
+  } finally {
+    isRecovering = false;
+  }
+}
+
+function isDetachedFrameError(err) {
+  const msg = err?.message || String(err);
+  return /detached Frame|Execution context was destroyed|Target closed|Session closed/i.test(msg);
+}
 
 client.on('qr', (qr) => {
   console.log('Scan this QR code with WhatsApp:');
@@ -158,6 +187,10 @@ app.post('/send', requireAuth, async (req, res) => {
     res.json({ ok: true });
   } catch (err) {
     console.error(`Failed to send to ${phoneNumber}:`, err.message);
+    if (isDetachedFrameError(err)) {
+      // Don't await — recovery can take 10-30s and we want to fail fast for this request.
+      recoverClient(err.message);
+    }
     res.status(500).json({ error: err.message });
   }
 });
