@@ -170,8 +170,33 @@ app.post('/send', requireAuth, async (req, res) => {
     const digits = phoneNumber.replace(/\D/g, '').replace(/^65/, '');
     const chatId = `65${digits}@c.us`;
 
+    // Per-send timeout: if puppeteer hangs (page is in a bad state, WhatsApp Web slow,
+    // detached frame), we want a definitive error in <=30s instead of letting the call
+    // sit in the queue blocking subsequent sends.
+    const SEND_TIMEOUT_MS = 30000;
     await new Promise((resolve, reject) => {
-      enqueueSend(() => client.sendMessage(chatId, message).then(resolve).catch(reject));
+      enqueueSend(() => {
+        let settled = false;
+        const timer = setTimeout(() => {
+          if (settled) return;
+          settled = true;
+          reject(new Error(`sendMessage timed out after ${SEND_TIMEOUT_MS}ms`));
+        }, SEND_TIMEOUT_MS);
+        return client.sendMessage(chatId, message).then(
+          (val) => {
+            if (settled) return;
+            settled = true;
+            clearTimeout(timer);
+            resolve(val);
+          },
+          (err) => {
+            if (settled) return;
+            settled = true;
+            clearTimeout(timer);
+            reject(err);
+          }
+        );
+      });
     });
 
     // Track this assignment for "Yes" reply handling
@@ -187,7 +212,7 @@ app.post('/send', requireAuth, async (req, res) => {
     res.json({ ok: true });
   } catch (err) {
     console.error(`Failed to send to ${phoneNumber}:`, err.message);
-    if (isDetachedFrameError(err)) {
+    if (isDetachedFrameError(err) || /timed out after/.test(err.message)) {
       // Don't await — recovery can take 10-30s and we want to fail fast for this request.
       recoverClient(err.message);
     }

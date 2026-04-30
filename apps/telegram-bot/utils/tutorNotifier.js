@@ -12,7 +12,7 @@ async function sendWhatsAppMessage(phoneNumber, message, assignmentId, assignmen
     method: 'POST',
     headers,
     body: JSON.stringify({ phoneNumber, message, assignmentId, assignmentTitle, tutorName }),
-    signal: AbortSignal.timeout(15000)
+    signal: AbortSignal.timeout(45000)
   });
   if (!res.ok) {
     const err = await res.json().catch(() => ({ error: res.statusText }));
