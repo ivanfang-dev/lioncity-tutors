@@ -88,9 +88,6 @@ export default function Navbar() {
             open={openDropdown === "resources"}
             onToggle={() => toggleDropdown("resources")}
           />
-          <div className="absolute -top-2 -right-2">
-            <AnimatedBadge text="Free" color="success" size="xs" icon="sparkles" />
-          </div>
         </div>
         <Dropdown
           label="For Parents"
