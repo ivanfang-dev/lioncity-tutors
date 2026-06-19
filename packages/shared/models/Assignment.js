@@ -102,7 +102,42 @@ const assignmentSchema = new mongoose.Schema({
       trim: true
     }
   }],
-  
+
+  // --- Tutor outreach / escalation state ---
+  // Tracks the wave-based WhatsApp contacting process, separate from `applicants`
+  // (formal Telegram applications). Driven by the escalation scheduler so it survives
+  // restarts — never kept in process memory.
+  outreach: {
+    // Pending   → Open assignment, first wave not sent yet (scheduler will pick it up)
+    // Active    → waves going out, waiting on replies
+    // Fulfilled → reached the interested-tutor target; stop sending new waves
+    // Exhausted → ran out of pool / hit the time cap with too few replies (owner alerted)
+    status: {
+      type: String,
+      enum: ['Pending', 'Active', 'Fulfilled', 'Exhausted'],
+      default: 'Pending'
+    },
+    waveCount: { type: Number, default: 0 },
+    startedAt: { type: Date },
+    lastWaveAt: { type: Date },
+    contacts: [{
+      tutorId: { type: mongoose.Schema.Types.ObjectId, ref: 'Tutor' },
+      phone: { type: String },
+      tutorName: { type: String },
+      wave: { type: Number },
+      sentAt: { type: Date, default: Date.now },
+      // Sent       → message delivered, no reply yet
+      // Interested → tutor replied Yes
+      // Declined   → tutor replied No
+      status: {
+        type: String,
+        enum: ['Sent', 'Interested', 'Declined'],
+        default: 'Sent'
+      },
+      respondedAt: { type: Date }
+    }]
+  },
+
   // Metadata
   createdAt: {
     type: Date,
@@ -149,6 +184,22 @@ assignmentSchema.pre('findOneAndUpdate', function(next) {
 assignmentSchema.index({ level: 1, subject: 1 });
 assignmentSchema.index({ status: 1 });
 assignmentSchema.index({ createdAt: -1 });
+// Lets the escalation scheduler cheaply find assignments due for their next wave.
+assignmentSchema.index({ status: 1, 'outreach.status': 1, 'outreach.lastWaveAt': 1 });
+
+// --- Outreach helpers (used by the escalation scheduler) ---
+
+// How many tutors have replied "Yes" so far — the count we stop new waves at.
+assignmentSchema.methods.interestedCount = function() {
+  return (this.outreach?.contacts || []).filter(c => c.status === 'Interested').length;
+};
+
+// Tutor ids already messaged, so the next wave only pulls fresh tutors.
+assignmentSchema.methods.contactedTutorIds = function() {
+  return (this.outreach?.contacts || [])
+    .map(c => c.tutorId?.toString())
+    .filter(Boolean);
+};
 
 // Static methods
 assignmentSchema.statics.getSubjectsForLevel = function(level) {

@@ -68,7 +68,7 @@ Rank the top ${maxResults} most suitable tutors for this assignment. Consider:
 - Track record with students and demonstrated results
 - Qualifications and education background
 - Years of experience (more is generally better)
-- Rate reasonableness (tutors charging >$90/hr should be ranked lower unless they are exceptionally qualified)
+- Rate fit: candidates are already pre-filtered to the assignment budget (${assignment.rate}); prefer tutors whose rate sits comfortably within it for their tutor type, but do not simply pick the cheapest
 - Quality and detail of their introduction and teaching approach
 - Prefer tutors with more complete profiles over empty ones
 

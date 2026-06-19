@@ -148,8 +148,111 @@ function parseSubjectsFromTitle(title) {
   return [...matched];
 }
 
-// Find up to `limit` tutors matching the assignment's level+subject, location, and tutor type
-async function findMatchingTutors(assignment, limit = 5) {
+// --- Candidate quality ranking (pre-AI) ------------------------------------
+// A cheap deterministic score that narrows the matched pool to the strongest
+// `poolSize` tutors BEFORE the (paid, slower) AI re-ranker looks at them.
+//
+// Weights — tuned to how the agency actually reaches out. Tune freely:
+//   • Budget is enforced first as a hard filter (over-budget tutors are dropped —
+//     no point messaging someone the assignment can't afford), so its real weight
+//     lives in the filter, not this number.
+//   • Experience and commitment sit close together on purpose: a tutor who put real
+//     effort into their profile can outrank a more senior one who left theirs blank.
+const WEIGHTS = { experience: 0.40, commitment: 0.35, budget: 0.25 };
+
+// A tutor asking up to this fraction over the assignment ceiling is still worth
+// messaging (rates are negotiable at the margin); beyond it, drop them.
+const BUDGET_GRACE = 0.20;
+
+// yearsOfExperience is a fixed dropdown on the register-tutor form (website
+// register-tutor/page.jsx) — these are the only five possible values.
+const EXPERIENCE_RANK = {
+  '0-1 year': 1,
+  '1-3 years': 2,
+  '3-5 years': 3,
+  '5-10 years': 4,
+  '10+ years': 5,
+};
+
+// Pull every number out of a free-text money string. "$30-45/hr" → [30, 45].
+function extractNumbers(text) {
+  return (String(text ?? '').match(/\d+(?:\.\d+)?/g) || []).map(Number);
+}
+
+// Parse the assignment's free-text rate into spending ceilings per tutor-type band.
+// Real examples the owner types:
+//   "$30-45/hr (PT), $40-50/hr (FT)" → { partTime: 45, fullTime: 50 }
+//   "$40-50/hr"                       → { default: 50 }
+// FT/MOE bands are typically higher than PT — we honour whichever band the text tags.
+function parseBudget(rateText) {
+  const bands = {};
+  let overallMax = null;
+  for (const segment of String(rateText ?? '').split(',')) {
+    const nums = extractNumbers(segment);
+    if (nums.length === 0) continue;
+    const ceiling = Math.max(...nums);
+    overallMax = overallMax === null ? ceiling : Math.max(overallMax, ceiling);
+    if (/\b(pt|part|undergrad)\w*/i.test(segment)) bands.partTime = ceiling;
+    else if (/\b(ft|full)\w*/i.test(segment)) bands.fullTime = ceiling;
+    else if (/\b(moe|nie)\w*/i.test(segment)) bands.moe = ceiling;
+    else bands.default = ceiling;
+  }
+  return { bands, overallMax };
+}
+
+// The spending ceiling that applies to THIS tutor, based on their type. Full-time /
+// MOE tutors fall back to the highest band available (they cost more); part-timers
+// fall back to the default/overall band.
+function ceilingForTutor(tutor, budget) {
+  const { bands, overallMax } = budget;
+  const type = (tutor.tutorType || '').toLowerCase();
+  if (/part|undergrad/.test(type) && bands.partTime != null) return bands.partTime;
+  if (/full/.test(type) && bands.fullTime != null) return bands.fullTime;
+  if (/moe|nie/.test(type) && bands.moe != null) return bands.moe;
+  return bands.default ?? overallMax ?? null;
+}
+
+// The tutor's own asking rate for this level (lower bound of any range = the least
+// they'd accept). null when they never filled it in for this level.
+function tutorFloorRate(tutor, levelCategory) {
+  const nums = extractNumbers(tutor.hourlyRate?.[levelCategory]);
+  return nums.length ? Math.min(...nums) : null;
+}
+
+// How well a tutor fits the budget → { affordable, comfort } where comfort is 0..1
+// (1 = comfortably cheap, very likely to say yes; 0.5 = right at the ceiling).
+// Unknowns get the benefit of the doubt so we never silently drop a good tutor.
+function budgetFit(tutor, budget, levelCategory) {
+  const ceiling = ceilingForTutor(tutor, budget);
+  const floor = tutorFloorRate(tutor, levelCategory);
+  if (ceiling == null || floor == null) return { affordable: true, comfort: 0.5 };
+  if (floor > ceiling * (1 + BUDGET_GRACE)) return { affordable: false, comfort: 0 };
+  if (floor > ceiling) return { affordable: true, comfort: 0.3 }; // in the grace zone
+  return { affordable: true, comfort: 0.5 + 0.5 * (1 - floor / ceiling) };
+}
+
+// 0..1 measure of effort the tutor put into their profile. Rewards depth, not mere
+// presence — a senior who wrote only "a few lines" scores low here by design.
+function commitmentScore(tutor) {
+  const TARGET = 200; // chars that represent a genuinely filled-out field
+  const fields = [tutor.introduction, tutor.teachingExperience, tutor.trackRecord];
+  const perField = fields.map(f => Math.min((f?.trim().length || 0) / TARGET, 1));
+  return perField.reduce((sum, v) => sum + v, 0) / perField.length;
+}
+
+// Blended 0..1 quality score for ordering the affordable pool.
+function scoreTutor(tutor, fit) {
+  const experience = (EXPERIENCE_RANK[tutor.yearsOfExperience] || 0) / 5;
+  return (
+    WEIGHTS.experience * experience +
+    WEIGHTS.commitment * commitmentScore(tutor) +
+    WEIGHTS.budget * fit.comfort
+  );
+}
+
+// Find the best `poolSize` tutors matching the assignment's level+subject, location,
+// and tutor type — quality-ranked, ready to hand to the AI re-ranker.
+async function findMatchingTutors(assignment, poolSize = 40) {
   const levelCategory = getLevelCategory(assignment.level);
   const region = LOCATION_TO_REGION[assignment.location];
 
@@ -198,13 +301,29 @@ async function findMatchingTutors(assignment, limit = 5) {
     query.tutorType = { $in: allowedTypes };
   }
 
-  const tutors = await Tutor.find(query)
+  // Fetch the full matching set (bounded for safety), then quality-rank in JS.
+  // We deliberately avoid a DB `.limit()` on a recency sort here: that was discarding
+  // our most experienced tutors (who often registered earliest) before the AI ever saw
+  // them. yearsOfExperience/hourlyRate are stored as strings, so ranking has to happen
+  // in application code anyway. The createdAt sort only bounds which 300 we pull in the
+  // rare case a single subject+level+region+type query matches more than that.
+  const MAX_CANDIDATE_FETCH = 300;
+  const candidates = await Tutor.find(query)
     .select('fullName contactNumber tutorType yearsOfExperience highestEducation introduction teachingExperience trackRecord hourlyRate createdAt')
     .sort({ createdAt: -1 })
-    .limit(limit)
+    .limit(MAX_CANDIDATE_FETCH)
     .lean();
 
-  return tutors;
+  // Drop tutors the assignment clearly can't afford, then quality-rank the rest and
+  // hand the strongest `poolSize` to the AI re-ranker.
+  const budget = parseBudget(assignment.rate);
+  const ranked = candidates
+    .map((tutor) => ({ tutor, fit: budgetFit(tutor, budget, levelCategory) }))
+    .filter(({ fit }) => fit.affordable)
+    .map(({ tutor, fit }) => ({ tutor, score: scoreTutor(tutor, fit) }))
+    .sort((a, b) => b.score - a.score);
+
+  return ranked.slice(0, poolSize).map(({ tutor }) => tutor);
 }
 
 export { findMatchingTutors, getLevelCategory, subjectToFieldName, LOCATION_TO_REGION };

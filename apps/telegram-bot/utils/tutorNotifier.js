@@ -22,7 +22,8 @@ async function sendWhatsAppMessage(phoneNumber, message, assignmentId, assignmen
 
 async function notifyMatchedTutors(assignment, botUsername) {
   try {
-    const candidates = await findMatchingTutors(assignment, 25);
+    // Pull the top 40 quality-ranked matches; the AI re-ranker narrows to the best 8.
+    const candidates = await findMatchingTutors(assignment, 40);
 
     if (candidates.length === 0) {
       console.log(`No matching tutors found for assignment ${assignment._id}`);
