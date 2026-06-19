@@ -14,8 +14,10 @@ try {
 const app = express();
 app.use(express.json());
 
-// In-memory map: phone number -> { assignmentId, assignmentTitle, tutorName }
-const sentAssignments = new Map();
+// Where to forward Yes/No tutor replies for durable recording. The bot (on Vercel)
+// owns MongoDB; this service intentionally holds no DB connection, to keep the
+// memory-constrained VM lean. See deploy notes for the BOT_API_URL env var.
+const BOT_API_URL = process.env.BOT_API_URL;
 
 // Telegram bot details (for notifying admin).
 // Configured from env at startup so alerts work without the (serverless, stateless) bot
@@ -137,42 +139,56 @@ client.on('disconnected', (reason) => {
   notifyAdmin(`⚠️ *WhatsApp client disconnected*\nReason: ${reason}`);
 });
 
-// Handle incoming messages (for "Yes" replies)
+// Classify a tutor's free-text reply. We act only on a clear yes/no; anything else
+// (including silence) is ignored — the escalation timer handles non-responders.
+function parseReply(body) {
+  if (!body) return null;
+  if (/^y(es|ep|eah|a|up)?\b/.test(body) || body === 'ok' || body === 'okay' || body.includes('interested')) return 'yes';
+  if (/^n(o|ope|ah)?\b/.test(body)) return 'no';
+  return null;
+}
+
+// Forward a yes/no reply to the bot, which records it in MongoDB and decides whether
+// the assignment's interest target is met. Returns the bot's result, or null if the
+// bot is unreachable / unconfigured.
+async function recordReply(phone, reply) {
+  if (!BOT_API_URL) {
+    console.warn('BOT_API_URL not set — tutor reply not recorded');
+    return null;
+  }
+  const headers = { 'Content-Type': 'application/json' };
+  if (API_KEY) headers['x-api-key'] = API_KEY;
+  const res = await fetch(`${BOT_API_URL}/api/whatsapp-reply`, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({ phone, reply }),
+    signal: AbortSignal.timeout(10000)
+  });
+  if (!res.ok) throw new Error(`reply endpoint returned ${res.status}`);
+  return res.json();
+}
+
+// Handle incoming Yes/No replies from tutors.
 client.on('message', async (message) => {
-  const body = message.body?.trim().toLowerCase();
-  if (body !== 'yes') return;
+  const from = message.from || '';
+  // Only 1:1 chats — ignore groups, status broadcasts, and our own messages.
+  if (message.fromMe || !from.endsWith('@c.us')) return;
 
-  const from = message.from; // format: 65XXXXXXXX@c.us
+  const reply = parseReply(message.body?.trim().toLowerCase());
+  if (!reply) return;
+
   const phone = from.replace('@c.us', '');
-
-  const assignment = sentAssignments.get(phone);
-  if (!assignment) return;
-
   try {
-    // Reply to tutor
-    await message.reply('Thank you! We\'ve noted your interest and will be in touch shortly.');
+    const result = await recordReply(phone, reply);
+    // Only acknowledge tutors who are actually part of an active outreach.
+    if (!result?.matched) return;
 
-    // Notify admin via Telegram if configured
-    if (telegramNotifier) {
-      const { botToken, adminChatId } = telegramNotifier;
-      const text = `WhatsApp Reply: *${assignment.tutorName}* (${phone}) replied Yes to assignment *${assignment.assignmentTitle}* (ID: ${assignment.assignmentId})`;
-
-      await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          chat_id: adminChatId,
-          text,
-          parse_mode: 'Markdown'
-        })
-      });
-    }
-
-    // Remove from map after handling
-    sentAssignments.delete(phone);
-    console.log(`Tutor ${assignment.tutorName} (${phone}) replied Yes to ${assignment.assignmentId}`);
+    await message.reply(reply === 'yes'
+      ? "Thank you! We've noted your interest and will be in touch shortly."
+      : "Thanks for letting us know — we'll keep you in mind for future assignments.");
+    console.log(`Tutor ${phone} replied ${reply} → assignment ${result.assignmentId}`);
   } catch (err) {
-    console.error('Error handling Yes reply:', err);
+    console.error('Error handling tutor reply:', err.message);
   }
 });
 
@@ -252,15 +268,6 @@ app.post('/send', requireAuth, async (req, res) => {
         );
       });
     });
-
-    // Track this assignment for "Yes" reply handling
-    if (assignmentId) {
-      sentAssignments.set(`65${digits}`, {
-        assignmentId,
-        assignmentTitle: assignmentTitle || '',
-        tutorName: tutorName || ''
-      });
-    }
 
     console.log(`Message sent to ${chatId}`);
     res.json({ ok: true });
