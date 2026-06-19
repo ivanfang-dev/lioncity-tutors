@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import { Assignment } from '../../../packages/shared/server-exports.js';
 import { normalizePhone } from '../utils/phone.js';
+import { notifyOwner } from '../utils/ownerAlert.js';
 
 // Stop sending new waves once this many tutors have replied "Yes".
 const INTERESTED_TARGET = Number(process.env.OUTREACH_INTERESTED_TARGET) || 3;
@@ -16,27 +17,14 @@ async function connectToDatabase() {
   isConnected = true;
 }
 
-// Best-effort Telegram ping to the owner when a tutor says yes — this is the signal
-// the owner acts on to get back to the parent fast.
+// Ping the owner when a tutor says yes — the signal they act on to reach the parent fast.
 async function alertOwnerInterested(assignment, tutorName, interestedCount) {
-  const botToken = process.env.BOT_TOKEN;
-  const chatId = process.env.WHATSAPP_ALERT_CHAT_ID
-    || process.env.ADMIN_USERS?.split(',')[0]?.trim();
-  if (!botToken || !chatId) return;
-  const text =
+  await notifyOwner(
     `✅ *Tutor interested*\n` +
     `*${tutorName || 'A tutor'}* said YES to *${assignment.title}*\n` +
     `(${interestedCount}/${INTERESTED_TARGET} interested)` +
-    (assignment.outreach?.status === 'Fulfilled' ? `\n\n🎯 Target reached — no more tutors will be messaged.` : '');
-  try {
-    await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ chat_id: chatId, text, parse_mode: 'Markdown' })
-    });
-  } catch (err) {
-    console.warn('Owner alert failed:', err.message);
-  }
+    (assignment.outreach?.status === 'Fulfilled' ? `\n\n🎯 Target reached — no more tutors will be messaged.` : '')
+  );
 }
 
 // Records a tutor's Yes/No reply (forwarded by the WhatsApp service, which owns no DB).

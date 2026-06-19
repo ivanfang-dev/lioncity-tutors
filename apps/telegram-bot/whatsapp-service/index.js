@@ -303,6 +303,31 @@ setInterval(async () => {
   }
 }, HEALTH_CHECK_MS);
 
+// --- Escalation tick ---
+// The bot (serverless on Vercel) can't run timers, so this always-on service pings
+// the bot's escalation endpoint on a schedule; the bot decides and fires any due next
+// waves. Featherweight here: just an HTTP call — no DB or matching logic on this box.
+const ESCALATION_TICK_MS = Number(process.env.ESCALATION_TICK_MS) || 5 * 60 * 1000;
+if (BOT_API_URL) {
+  setInterval(async () => {
+    try {
+      const headers = { 'Content-Type': 'application/json' };
+      if (API_KEY) headers['x-api-key'] = API_KEY;
+      const res = await fetch(`${BOT_API_URL}/api/escalation-tick`, {
+        method: 'POST',
+        headers,
+        signal: AbortSignal.timeout(20000)
+      });
+      if (!res.ok) console.warn(`Escalation tick returned ${res.status}`);
+    } catch (err) {
+      console.warn('Escalation tick failed:', err.message);
+    }
+  }, ESCALATION_TICK_MS);
+  console.log(`Escalation tick every ${ESCALATION_TICK_MS / 1000}s → ${BOT_API_URL}/api/escalation-tick`);
+} else {
+  console.warn('BOT_API_URL not set — escalation tick disabled');
+}
+
 // --- Start ---
 const PORT = process.env.WHATSAPP_PORT || 3001;
 

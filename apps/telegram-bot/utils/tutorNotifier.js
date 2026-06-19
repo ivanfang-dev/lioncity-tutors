@@ -46,6 +46,68 @@ async function recordWaveContacts(assignmentId, contacts) {
   }
 }
 
+// The WhatsApp message a tutor receives for an assignment.
+function buildAssignmentMessage(assignment, botUsername) {
+  const applyUrl = `https://t.me/${botUsername}?start=apply_${assignment._id}`;
+  return (
+    `New Tuition Assignment Match!\n\n` +
+    `Title: ${assignment.title}\n` +
+    `Level: ${assignment.level}\n` +
+    `Subject: ${assignment.subject}\n` +
+    `Location: ${assignment.location}\n` +
+    `Frequency: ${assignment.frequency}\n` +
+    `Rate: ${assignment.rate}\n` +
+    (assignment.description ? `Description: ${assignment.description}\n` : '') +
+    `\nThis assignment matches your profile.\n` +
+    `- Reply "Yes" to apply\n` +
+    `- Or apply via Telegram: ${applyUrl}`
+  );
+}
+
+// Message every tutor in `batch` and record the successful sends as part of `wave`.
+// Sends sequentially — whatsapp-web.js uses a single Chrome process and concurrent
+// sendMessage calls queue CDP commands on the same browser, causing protocol timeouts.
+async function sendWaveToTutors(assignment, batch, wave, botUsername) {
+  const message = buildAssignmentMessage(assignment, botUsername);
+  let sent = 0;
+  let failed = 0;
+  const errors = [];
+  const contacts = [];
+  for (const tutor of batch) {
+    try {
+      await sendWhatsAppMessage(
+        tutor.contactNumber,
+        message,
+        assignment._id.toString(),
+        assignment.title,
+        tutor.fullName || 'Unknown'
+      );
+      sent++;
+      contacts.push({
+        tutorId: tutor._id,
+        phone: normalizePhone(tutor.contactNumber),
+        tutorName: tutor.fullName || 'Unknown',
+        wave,
+        sentAt: new Date(),
+        status: 'Sent'
+      });
+    } catch (err) {
+      failed++;
+      errors.push(err.message);
+    }
+  }
+
+  if (failed > 0) {
+    console.log(`Wave ${wave} for ${assignment._id}: ${sent} sent, ${failed} failed:`, errors);
+  }
+
+  // Persist who we contacted so Yes/No replies can be matched and the escalation loop
+  // can resume after a restart — this state lives in Mongo, never in process memory.
+  await recordWaveContacts(assignment._id, contacts);
+  return { sent, failed };
+}
+
+// Wave 1 — fired immediately when an assignment is posted. AI-ranked top 8.
 async function notifyMatchedTutors(assignment, botUsername) {
   try {
     // Pull the top 40 quality-ranked matches; the AI re-ranker narrows to the best 8.
@@ -60,60 +122,7 @@ async function notifyMatchedTutors(assignment, botUsername) {
     const { tutors, aiUsed, aiError } = await rankTutorsWithAI(assignment, candidates, 8);
     console.log(`Notifying ${tutors.length} top-ranked tutors (AI used: ${aiUsed})`);
 
-    const applyUrl = `https://t.me/${botUsername}?start=apply_${assignment._id}`;
-
-    const message =
-      `New Tuition Assignment Match!\n\n` +
-      `Title: ${assignment.title}\n` +
-      `Level: ${assignment.level}\n` +
-      `Subject: ${assignment.subject}\n` +
-      `Location: ${assignment.location}\n` +
-      `Frequency: ${assignment.frequency}\n` +
-      `Rate: ${assignment.rate}\n` +
-      (assignment.description ? `Description: ${assignment.description}\n` : '') +
-      `\nThis assignment matches your profile.\n` +
-      `- Reply "Yes" to apply\n` +
-      `- Or apply via Telegram: ${applyUrl}`;
-
-    // Send sequentially — whatsapp-web.js uses a single Chrome process and concurrent
-    // sendMessage calls all queue CDP commands on the same browser, causing protocol timeouts.
-    let sent = 0;
-    let failed = 0;
-    const errors = [];
-    const contacts = [];
-    for (const tutor of tutors) {
-      try {
-        await sendWhatsAppMessage(
-          tutor.contactNumber,
-          message,
-          assignment._id.toString(),
-          assignment.title,
-          tutor.fullName || 'Unknown'
-        );
-        sent++;
-        contacts.push({
-          tutorId: tutor._id,
-          phone: normalizePhone(tutor.contactNumber),
-          tutorName: tutor.fullName || 'Unknown',
-          wave: 1,
-          sentAt: new Date(),
-          status: 'Sent'
-        });
-      } catch (err) {
-        failed++;
-        errors.push(err.message);
-      }
-    }
-
-    if (failed > 0) {
-      console.log(`WhatsApp notifications: ${sent} sent, ${failed} failed:`, errors);
-    }
-
-    // Persist who we contacted so Yes/No replies can be matched and the escalation
-    // loop can resume after a restart — this state must live in Mongo, never in
-    // process memory (which is lost on every WhatsApp-service crash/restart).
-    await recordWaveContacts(assignment._id, contacts);
-
+    const { sent, failed } = await sendWaveToTutors(assignment, tutors, 1, botUsername);
     return { sent, failed, aiUsed, aiError };
   } catch (error) {
     console.error('Error notifying matched tutors:', error);
@@ -121,4 +130,22 @@ async function notifyMatchedTutors(assignment, botUsername) {
   }
 }
 
-export { notifyMatchedTutors };
+// Waves 2+ — message the next-best matching tutors we haven't contacted yet. Uses the
+// deterministic quality ranking (no extra AI call per wave). Returns { exhausted } when
+// the matching pool has no fresh tutors left to try.
+async function escalateAssignment(assignment, botUsername, { waveSize = 6 } = {}) {
+  const candidates = await findMatchingTutors(assignment, 40);
+  const contacted = new Set(assignment.contactedTutorIds());
+  const fresh = candidates.filter(t => !contacted.has(t._id?.toString()));
+
+  if (fresh.length === 0) {
+    return { exhausted: true, sent: 0, failed: 0 };
+  }
+
+  const wave = (assignment.outreach?.waveCount || 1) + 1;
+  const batch = fresh.slice(0, waveSize);
+  const { sent, failed } = await sendWaveToTutors(assignment, batch, wave, botUsername);
+  return { exhausted: false, sent, failed, wave };
+}
+
+export { notifyMatchedTutors, escalateAssignment };
