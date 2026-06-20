@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { Assignment } from '../../../packages/shared/server-exports.js';
+import { Assignment, Tutor } from '../../../packages/shared/server-exports.js';
 import { normalizePhone } from '../utils/phone.js';
 import { notifyOwner } from '../utils/ownerAlert.js';
 
@@ -89,6 +89,12 @@ export default async function handler(req, res) {
       assignment.outreach.status = 'Fulfilled';
     }
     await assignment.save();
+
+    // Credit the tutor for responding (Yes OR No both count — they're reachable). This is
+    // the numerator of their responsiveness score; raises their future ranking.
+    if (tutorId) {
+      await Tutor.updateOne({ _id: tutorId }, { $inc: { 'responseStats.responded': 1 } });
+    }
 
     if (decision === 'Interested') {
       await alertOwnerInterested(assignment, tutorName, interestedCount, tutorId);

@@ -312,6 +312,14 @@ const tutorSchema = new mongoose.Schema({
     weekendEvening: Boolean
   },
 
+  // Outreach responsiveness — drives ranking so chronic non-responders drift to later
+  // waves. `contacted` = times messaged across assignments; `responded` = times they
+  // replied Yes/No. Ratio (smoothed) feeds tutorMatcher's responsivenessScore.
+  responseStats: {
+    contacted: { type: Number, default: 0 },
+    responded: { type: Number, default: 0 }
+  },
+
   // Form metadata
   formType: String
 }, { timestamps: true });

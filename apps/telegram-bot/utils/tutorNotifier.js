@@ -1,6 +1,6 @@
 import { findMatchingTutors } from './tutorMatcher.js';
 import { rankTutorsWithAI } from './tutorRanker.js';
-import { Assignment } from '../../../packages/shared/server-exports.js';
+import { Assignment, Tutor } from '../../../packages/shared/server-exports.js';
 import { normalizePhone } from './phone.js';
 import { formatTimeSlots } from '../../../packages/shared/utils/timeSlots.js';
 import { sendWhatsApp } from './whatsappSender.js';
@@ -30,6 +30,13 @@ async function recordWaveContacts(assignmentId, contacts) {
       { _id: assignmentId, 'outreach.startedAt': { $exists: false } },
       { $set: { 'outreach.startedAt': now } }
     );
+    // Bump each messaged tutor's contacted count — the denominator of their
+    // responsiveness score. (responded is incremented when they reply, in whatsapp-reply.)
+    const tutorIds = contacts.map(c => c.tutorId).filter(Boolean);
+    if (tutorIds.length > 0) {
+      await Tutor.updateMany({ _id: { $in: tutorIds } }, { $inc: { 'responseStats.contacted': 1 } });
+    }
+
     // Diagnostic: confirms recording ran and shows the exact phone keys stored, so a
     // reply that comes back matched=false can be compared against what we saved.
     console.log(`Recorded ${contacts.length} outreach contact(s) for ${assignmentId}: phones=[${contacts.map(c => c.phone).join(', ')}]`);

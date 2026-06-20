@@ -160,7 +160,10 @@ function parseSubjectsFromTitle(title) {
 //     lives in the filter, not this number.
 //   • Experience and commitment sit close together on purpose: a tutor who put real
 //     effort into their profile can outrank a more senior one who left theirs blank.
-const WEIGHTS = { experience: 0.40, commitment: 0.35, budget: 0.25 };
+// Responsiveness is applied SEPARATELY as a multiplier (see responsivenessFactor), not as
+// a weight here — so a proven ghost is dragged down regardless of how good they look on
+// paper, which is the point of "deprioritise non-responders".
+const WEIGHTS = { experience: 0.45, commitment: 0.30, budget: 0.25 };
 
 // A tutor asking up to this fraction over the assignment ceiling is still worth
 // messaging (rates are negotiable at the margin); beyond it, drop them.
@@ -256,14 +259,29 @@ function timeSlotsMatch(assignment, tutor) {
   return wantedSlots.some(s => avail[s]);
 }
 
-// Blended 0..1 quality score for ordering the affordable pool.
+// Multiplier (RESPONSIVENESS_FLOOR..1) applied to a tutor's quality score, based on reply
+// history. A "No" counts as a reply (they're reachable), so only true ghosting is hit.
+// Laplace-smoothed so a new/never-contacted tutor sits at the neutral 0.5 rate → factor
+// 1.0 (no penalty, fair first shot); the penalty only bites as a tutor is repeatedly
+// messaged without ever replying — i.e. it captures "frequently doesn't respond", and
+// grows with the number of misses (confidence), not a single one-off.
+const RESPONSIVENESS_FLOOR = 0.4; // a chronic ghost keeps at most 40% of their score
+function responsivenessFactor(tutor) {
+  const contacted = tutor.responseStats?.contacted || 0;
+  const responded = tutor.responseStats?.responded || 0;
+  const rate = (responded + 2) / (contacted + 4); // smoothed; new tutor = 0.5
+  return Math.max(RESPONSIVENESS_FLOOR, Math.min(1, 0.4 + rate * 1.2));
+}
+
+// Blended 0..1 quality score for ordering the affordable pool, then scaled down for
+// tutors who chronically ignore outreach.
 function scoreTutor(tutor, fit) {
   const experience = (EXPERIENCE_RANK[tutor.yearsOfExperience] || 0) / 5;
-  return (
+  const quality =
     WEIGHTS.experience * experience +
     WEIGHTS.commitment * commitmentScore(tutor) +
-    WEIGHTS.budget * fit.comfort
-  );
+    WEIGHTS.budget * fit.comfort;
+  return quality * responsivenessFactor(tutor);
 }
 
 // Find the best `poolSize` tutors matching the assignment's level+subject, location,
@@ -330,7 +348,7 @@ async function findMatchingTutors(assignment, poolSize = 40) {
   // rare case a single subject+level+region+type query matches more than that.
   const MAX_CANDIDATE_FETCH = 300;
   const candidates = await Tutor.find(query)
-    .select('fullName contactNumber tutorType yearsOfExperience highestEducation introduction teachingExperience trackRecord hourlyRate availableTimeSlots createdAt')
+    .select('fullName contactNumber tutorType yearsOfExperience highestEducation introduction teachingExperience trackRecord hourlyRate availableTimeSlots responseStats createdAt')
     .sort({ createdAt: -1 })
     .limit(MAX_CANDIDATE_FETCH)
     .lean();
