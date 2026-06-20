@@ -180,12 +180,15 @@ client.on('message', async (message) => {
   const phone = from.replace('@c.us', '');
   try {
     const result = await recordReply(phone, reply);
+    // Diagnostic: shows every recognized reply, what it parsed to, and whether the bot
+    // tied it to an active outreach. Lets us tell "not matched" apart from "errored".
+    console.log(`Reply from ${phone}: "${message.body}" → parsed=${reply}, matched=${result ? result.matched : 'no-response'}`);
     // Only acknowledge tutors who are actually part of an active outreach.
     if (!result?.matched) return;
 
     await message.reply(reply === 'yes'
-      ? "Thank you! We've noted your interest and will be in touch shortly."
-      : "Thanks for letting us know — we'll keep you in mind for future assignments.");
+      ? "Thank you for your response! 🙏 We've noted your interest and will contact you should there be a match."
+      : "Thank you for your response. We'll contact you should there be a match in future.");
     console.log(`Tutor ${phone} replied ${reply} → assignment ${result.assignmentId}`);
   } catch (err) {
     console.error('Error handling tutor reply:', err.message);

@@ -2,6 +2,11 @@ import TelegramBot from 'node-telegram-bot-api';
 import mongoose from 'mongoose';
 import { Assignment, Tutor } from '../../../packages/shared/server-exports.js';
 
+// Wave-1 tutor notification + outreach recording runs as a waitUntil background task
+// after this webhook responds. Give it room to finish (sends + the Mongo write that
+// records who was contacted) instead of being killed at the ~10s default.
+export const maxDuration = 60;
+
 let bot = null;
 let isConnected = false;
 let handlers = null;

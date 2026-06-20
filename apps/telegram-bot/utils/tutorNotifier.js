@@ -7,6 +7,12 @@ import { formatTimeSlots } from '../../../packages/shared/utils/timeSlots.js';
 const WHATSAPP_SERVICE_URL = process.env.WHATSAPP_SERVICE_URL || 'http://localhost:3001';
 const WHATSAPP_API_KEY = process.env.WHATSAPP_API_KEY || '';
 
+// Safe-testing switch: when set to a phone number, EVERY outreach wave is redirected to
+// that single number (and recorded under it) instead of going to real tutors — so the
+// full flow, including your own Yes/No reply, can be tested end-to-end. Leave UNSET in
+// production, or no real tutor will ever be messaged.
+const TEST_RECIPIENT_PHONE = process.env.TEST_RECIPIENT_PHONE || '';
+
 async function sendWhatsAppMessage(phoneNumber, message, assignmentId, assignmentTitle, tutorName) {
   const headers = { 'Content-Type': 'application/json' };
   if (WHATSAPP_API_KEY) headers['x-api-key'] = WHATSAPP_API_KEY;
@@ -42,6 +48,9 @@ async function recordWaveContacts(assignmentId, contacts) {
       { _id: assignmentId, 'outreach.startedAt': { $exists: false } },
       { $set: { 'outreach.startedAt': now } }
     );
+    // Diagnostic: confirms recording ran and shows the exact phone keys stored, so a
+    // reply that comes back matched=false can be compared against what we saved.
+    console.log(`Recorded ${contacts.length} outreach contact(s) for ${assignmentId}: phones=[${contacts.map(c => c.phone).join(', ')}]`);
   } catch (err) {
     console.error('Failed to record outreach contacts:', err.message);
   }
@@ -72,6 +81,15 @@ function buildAssignmentMessage(assignment, botUsername) {
 // sendMessage calls queue CDP commands on the same browser, causing protocol timeouts.
 async function sendWaveToTutors(assignment, batch, wave, botUsername) {
   const message = buildAssignmentMessage(assignment, botUsername);
+
+  // Test mode: redirect the whole wave to one number (yours) so you can exercise the
+  // full flow — send, your reply, the ack, the Telegram alert — without paging real
+  // tutors. Recorded under your number too, so your reply matches.
+  if (TEST_RECIPIENT_PHONE && batch.length > 0) {
+    console.log(`TEST MODE: redirecting wave ${wave} (${batch.length} tutor(s)) to ${TEST_RECIPIENT_PHONE}`);
+    batch = [{ ...batch[0], contactNumber: TEST_RECIPIENT_PHONE, fullName: 'TEST RECIPIENT' }];
+  }
+
   let sent = 0;
   let failed = 0;
   const errors = [];
