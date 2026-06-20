@@ -66,6 +66,24 @@ const assignmentSchema = new mongoose.Schema({
     enum: ['Part-time', 'Full-time', 'MOE/Ex-MOE']
   }],
 
+  // Preferred lesson timing — mirrors the tutor's availableTimeSlots so the two can be
+  // matched directly. All false / absent = no timing requirement.
+  preferredTimeSlots: {
+    weekdayMorning: { type: Boolean, default: false },
+    weekdayAfternoon: { type: Boolean, default: false },
+    weekdayEvening: { type: Boolean, default: false },
+    weekendMorning: { type: Boolean, default: false },
+    weekendAfternoon: { type: Boolean, default: false },
+    weekendEvening: { type: Boolean, default: false }
+  },
+
+  // Preferred tutor gender. 'No preference' = no gender filter.
+  preferredGender: {
+    type: String,
+    enum: ['Male', 'Female', 'No preference'],
+    default: 'No preference'
+  },
+
   // Status
   status: {
     type: String,

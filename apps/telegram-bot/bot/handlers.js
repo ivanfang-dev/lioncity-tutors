@@ -1,5 +1,6 @@
 import { EDUCATION_LEVELS, getSubjectsForLevel, RATE_MAPPINGS } from '../../../packages/shared/index.js';
 import { generatePhoneVariations } from '../../../packages/shared/utils/phoneUtils.js';
+import { TIME_SLOTS, formatTimeSlots } from '../../../packages/shared/utils/timeSlots.js';
 import RateValidator from '../utils/RateValidator.js';
 import ErrorHandler from '../utils/ErrorHandler.js';
 import { notifyMatchedTutors } from '../utils/tutorNotifier.js';
@@ -239,6 +240,11 @@ function formatAssignmentForChannel(assignment) {
   msg += `💰 *Rate:* ${assignment.rate}\n`;
   msg += `👨‍🏫 *Tutor Type:* ${assignment.preferredTutorTypes?.length > 0 ? assignment.preferredTutorTypes.join(', ') : 'Any'}\n`;
 
+  const channelSlots = formatTimeSlots(assignment.preferredTimeSlots);
+  if (channelSlots) msg += `⏰ *Timing:* ${channelSlots}\n`;
+  if (assignment.preferredGender && assignment.preferredGender !== 'No preference') {
+    msg += `🧑 *Tutor Gender:* ${assignment.preferredGender}\n`;
+  }
 
   if (assignment.description) {
     msg += `\n📝 *Description:* ${assignment.description}\n`;
@@ -1235,7 +1241,7 @@ async function startAssignmentCreation(bot, chatId, userSessions) {
     pendingRate: userSessions[chatId]?.pendingRate || null  // Preserve pendingRate
   };
   
-  await safeSend(bot, chatId, '🎯 *Creating New Assignment*\n\nStep 1 of 8: Enter the assignment title:', {
+  await safeSend(bot, chatId, '🎯 *Creating New Assignment*\n\nStep 1 of 10: Enter the assignment title:', {
     parse_mode: 'Markdown',
     reply_markup: {
       inline_keyboard: [[{ text: '❌ Cancel', callback_data: 'admin_panel' }]]
@@ -1288,6 +1294,29 @@ function buildTutorTypeKeyboard(selectedTypes) {
   ];
 }
 
+function buildTimeSlotKeyboard(selectedSlots = {}) {
+  const tick = (key) => selectedSlots[key] ? '✅' : '⬜';
+  const anySelected = TIME_SLOTS.some(s => selectedSlots[s.key]);
+  const rows = TIME_SLOTS.map(s => [
+    { text: `${tick(s.key)} ${s.label}`, callback_data: `toggle_assignment_slot_${s.key}` }
+  ]);
+  rows.push([{
+    text: anySelected ? '✅ Done' : '✅ Done - Any timing is fine',
+    callback_data: 'confirm_assignment_slots'
+  }]);
+  rows.push([{ text: '❌ Cancel', callback_data: 'admin_panel' }]);
+  return rows;
+}
+
+function buildGenderKeyboard() {
+  return [
+    [{ text: '👨 Male', callback_data: 'set_assignment_gender_male' }],
+    [{ text: '👩 Female', callback_data: 'set_assignment_gender_female' }],
+    [{ text: '🙂 No preference', callback_data: 'set_assignment_gender_none' }],
+    [{ text: '❌ Cancel', callback_data: 'admin_panel' }]
+  ];
+}
+
 function createInlineKeyboard(options, callbackPrefix, columns = 2) {
   const keyboard = [];
   
@@ -1321,7 +1350,7 @@ async function handleAssignmentStep(bot, chatId, text, userSessions, Assignment)
         session.currentStep = 'level';
         
         // Show level selection with inline keyboard
-        await safeSend(bot, chatId, '🎯 *Creating New Assignment*\n\nStep 2 of 8: Select the education level:', {
+        await safeSend(bot, chatId, '🎯 *Creating New Assignment*\n\nStep 2 of 10: Select the education level:', {
           parse_mode: 'Markdown',
           reply_markup: {
             inline_keyboard: createInlineKeyboard(EDUCATION_LEVELS, 'select_level', 1)
@@ -1345,7 +1374,7 @@ async function handleAssignmentStep(bot, chatId, text, userSessions, Assignment)
         assignmentData.frequency = text.trim();
         session.currentStep = 'rate';
 
-        await safeSend(bot, chatId, '🎯 *Creating New Assignment*\n\nStep 7 of 8: Select the rate type:', {
+        await safeSend(bot, chatId, '🎯 *Creating New Assignment*\n\nStep 7 of 10: Select the rate type:', {
           parse_mode: 'Markdown',
           reply_markup: {
             inline_keyboard: [
@@ -1361,12 +1390,13 @@ async function handleAssignmentStep(bot, chatId, text, userSessions, Assignment)
         if (session.waitingForCustomRate) {
           assignmentData.rate = text.trim();
           session.waitingForCustomRate = false;
-          session.currentStep = 'description';
+          assignmentData.preferredTimeSlots = assignmentData.preferredTimeSlots || {};
+          session.currentStep = 'timing';
 
-          await safeSend(bot, chatId, '🎯 *Creating New Assignment*\n\nStep 8 of 8: Enter additional description or requirements\n\n*Type "skip" to leave empty*\n\n*Examples:* Looking for MOE/Ex-MOE tutor, Student needs help with exam prep, etc.', {
+          await safeSend(bot, chatId, '🎯 *Creating New Assignment*\n\nStep 8 of 10: Select preferred lesson timing\n\n_Tap all slots that work, then press Done_', {
             parse_mode: 'Markdown',
             reply_markup: {
-              inline_keyboard: [[{ text: '❌ Cancel', callback_data: 'admin_panel' }]]
+              inline_keyboard: buildTimeSlotKeyboard(assignmentData.preferredTimeSlots)
             }
           });
         }
@@ -1375,12 +1405,13 @@ async function handleAssignmentStep(bot, chatId, text, userSessions, Assignment)
       case 'confirmRate':
         // User typed a custom rate to override the market rate
         assignmentData.rate = text.trim();
-        session.currentStep = 'description';
+        assignmentData.preferredTimeSlots = assignmentData.preferredTimeSlots || {};
+        session.currentStep = 'timing';
 
-        await safeSend(bot, chatId, '🎯 *Creating New Assignment*\n\nStep 8 of 8: Enter additional description or requirements\n\n*Type "skip" to leave empty*\n\n*Examples:* Looking for MOE/Ex-MOE tutor, Student needs help with exam prep, etc.', {
+        await safeSend(bot, chatId, '🎯 *Creating New Assignment*\n\nStep 8 of 10: Select preferred lesson timing\n\n_Tap all slots that work, then press Done_', {
           parse_mode: 'Markdown',
           reply_markup: {
-            inline_keyboard: [[{ text: '❌ Cancel', callback_data: 'admin_panel' }]]
+            inline_keyboard: buildTimeSlotKeyboard(assignmentData.preferredTimeSlots)
           }
         });
         break;
@@ -1440,7 +1471,7 @@ async function handleAssignmentCallbackQuery(bot, callbackQuery, userSessions) {
       // Get subjects specific to the selected level using the mapping
       const availableSubjects = getSubjectsForLevel(level);
       
-      await bot.editMessageText('🎯 *Creating New Assignment*\n\nStep 3 of 8: Select the subject:', {
+      await bot.editMessageText('🎯 *Creating New Assignment*\n\nStep 3 of 10: Select the subject:', {
         chat_id: chatId,
         message_id: callbackQuery.message.message_id,
         parse_mode: 'Markdown',
@@ -1454,7 +1485,7 @@ async function handleAssignmentCallbackQuery(bot, callbackQuery, userSessions) {
       session.assignmentData.subject = subject;
       session.currentStep = 'location';
 
-      await bot.editMessageText('🎯 *Creating New Assignment*\n\nStep 4 of 8: Select the location:', {
+      await bot.editMessageText('🎯 *Creating New Assignment*\n\nStep 4 of 10: Select the location:', {
         chat_id: chatId,
         message_id: callbackQuery.message.message_id,
         parse_mode: 'Markdown',
@@ -1469,7 +1500,7 @@ async function handleAssignmentCallbackQuery(bot, callbackQuery, userSessions) {
       session.assignmentData.preferredTutorTypes = session.assignmentData.preferredTutorTypes || [];
       session.currentStep = 'tutorType';
 
-      await bot.editMessageText('🎯 *Creating New Assignment*\n\nStep 5 of 8: What type of tutor is the parent looking for?\n\n_Tap to toggle, then press Done_', {
+      await bot.editMessageText('🎯 *Creating New Assignment*\n\nStep 5 of 10: What type of tutor is the parent looking for?\n\n_Tap to toggle, then press Done_', {
         chat_id: chatId,
         message_id: callbackQuery.message.message_id,
         parse_mode: 'Markdown',
@@ -1493,7 +1524,7 @@ async function handleAssignmentCallbackQuery(bot, callbackQuery, userSessions) {
       }
       session.assignmentData.preferredTutorTypes = prefs;
 
-      await bot.editMessageText('🎯 *Creating New Assignment*\n\nStep 5 of 8: What type of tutor is the parent looking for?\n\n_Tap to toggle, then press Done_', {
+      await bot.editMessageText('🎯 *Creating New Assignment*\n\nStep 5 of 10: What type of tutor is the parent looking for?\n\n_Tap to toggle, then press Done_', {
         chat_id: chatId,
         message_id: callbackQuery.message.message_id,
         parse_mode: 'Markdown',
@@ -1505,7 +1536,7 @@ async function handleAssignmentCallbackQuery(bot, callbackQuery, userSessions) {
     } else if (data === 'confirm_tutor_types') {
       session.currentStep = 'frequency';
 
-      await bot.editMessageText('🎯 *Creating New Assignment*\n\nStep 6 of 8: Enter the frequency\n\n*Examples:* Once a week, Twice a week, 3 times a week, Daily, Flexible, etc.\n\n*Please type your response:*', {
+      await bot.editMessageText('🎯 *Creating New Assignment*\n\nStep 6 of 10: Enter the frequency\n\n*Examples:* Once a week, Twice a week, 3 times a week, Daily, Flexible, etc.\n\n*Please type your response:*', {
         chat_id: chatId,
         message_id: callbackQuery.message.message_id,
         parse_mode: 'Markdown',
@@ -1541,7 +1572,7 @@ async function handleAssignmentCallbackQuery(bot, callbackQuery, userSessions) {
           session.assignmentData.rate = finalRateString;
           session.currentStep = 'confirmRate';
 
-          await bot.editMessageText(`🎯 *Creating New Assignment*\n\nStep 7 of 8: Market rate for *${level}*:\n\n💰 *${finalRateString}*\n\nAccept this rate or type a custom rate below:`, {
+          await bot.editMessageText(`🎯 *Creating New Assignment*\n\nStep 7 of 10: Market rate for *${level}*:\n\n💰 *${finalRateString}*\n\nAccept this rate or type a custom rate below:`, {
             chat_id: chatId,
             message_id: callbackQuery.message.message_id,
             parse_mode: 'Markdown',
@@ -1555,14 +1586,15 @@ async function handleAssignmentCallbackQuery(bot, callbackQuery, userSessions) {
 
         // User clicked "✅ Accept Rate" (market rate confirmed)
         } else if (data === 'select_rate_accept') {
-          session.currentStep = 'description';
+          session.assignmentData.preferredTimeSlots = session.assignmentData.preferredTimeSlots || {};
+          session.currentStep = 'timing';
 
-          await bot.editMessageText('🎯 *Creating New Assignment*\n\nStep 8 of 8: Enter additional description or requirements\n\n*Type "skip" to leave empty*', {
+          await bot.editMessageText('🎯 *Creating New Assignment*\n\nStep 8 of 10: Select preferred lesson timing\n\n_Tap all slots that work, then press Done_', {
             chat_id: chatId,
             message_id: callbackQuery.message.message_id,
             parse_mode: 'Markdown',
             reply_markup: {
-              inline_keyboard: [[{ text: '❌ Cancel', callback_data: 'admin_panel' }]]
+              inline_keyboard: buildTimeSlotKeyboard(session.assignmentData.preferredTimeSlots)
             }
           });
 
@@ -1571,7 +1603,7 @@ async function handleAssignmentCallbackQuery(bot, callbackQuery, userSessions) {
           session.waitingForCustomRate = true;
           session.currentStep = 'rate';
           
-          await bot.editMessageText('🎯 *Creating New Assignment*\n\nStep 7 of 8: Enter your custom rate\n\n*Examples:* 55-75/hr, Negotiable\n\n*Please type your response:*', {
+          await bot.editMessageText('🎯 *Creating New Assignment*\n\nStep 7 of 10: Enter your custom rate\n\n*Examples:* 55-75/hr, Negotiable\n\n*Please type your response:*', {
             chat_id: chatId,
             message_id: callbackQuery.message.message_id,
             parse_mode: 'Markdown',
@@ -1579,11 +1611,53 @@ async function handleAssignmentCallbackQuery(bot, callbackQuery, userSessions) {
               inline_keyboard: [[{ text: '❌ Cancel', callback_data: 'admin_panel' }]]
             }
           });
-        } 
+        }
+
+    } else if (data.startsWith('toggle_assignment_slot_')) {
+      const key = data.replace('toggle_assignment_slot_', '');
+      const slots = session.assignmentData.preferredTimeSlots || {};
+      slots[key] = !slots[key];
+      session.assignmentData.preferredTimeSlots = slots;
+
+      await bot.editMessageText('🎯 *Creating New Assignment*\n\nStep 8 of 10: Select preferred lesson timing\n\n_Tap all slots that work, then press Done_', {
+        chat_id: chatId,
+        message_id: callbackQuery.message.message_id,
+        parse_mode: 'Markdown',
+        reply_markup: {
+          inline_keyboard: buildTimeSlotKeyboard(slots)
+        }
+      });
+
+    } else if (data === 'confirm_assignment_slots') {
+      session.currentStep = 'gender';
+
+      await bot.editMessageText('🎯 *Creating New Assignment*\n\nStep 9 of 10: Preferred tutor gender?', {
+        chat_id: chatId,
+        message_id: callbackQuery.message.message_id,
+        parse_mode: 'Markdown',
+        reply_markup: {
+          inline_keyboard: buildGenderKeyboard()
+        }
+      });
+
+    } else if (data.startsWith('set_assignment_gender_')) {
+      const choice = data.replace('set_assignment_gender_', '');
+      const genderMap = { male: 'Male', female: 'Female', none: 'No preference' };
+      session.assignmentData.preferredGender = genderMap[choice] || 'No preference';
+      session.currentStep = 'description';
+
+      await bot.editMessageText('🎯 *Creating New Assignment*\n\nStep 10 of 10: Enter additional description or requirements\n\n*Type "skip" to leave empty*\n\n*Examples:* Student needs exam prep, prefers a patient tutor, etc.', {
+        chat_id: chatId,
+        message_id: callbackQuery.message.message_id,
+        parse_mode: 'Markdown',
+        reply_markup: {
+          inline_keyboard: [[{ text: '❌ Cancel', callback_data: 'admin_panel' }]]
+        }
+      });
     }
-    
+
     await bot.answerCallbackQuery(callbackQuery.id);
-    
+
   } catch (error) {
     console.error('Error handling assignment callback query:', error);
     await bot.answerCallbackQuery(callbackQuery.id, { text: 'Error occurred. Please try again.' });
@@ -1600,10 +1674,16 @@ function formatAssignmentPreview(assignment) {
   msg += `*💰 Rate:* ${assignment.rate}\n`;
   msg += `*👨‍🏫 Tutor Type:* ${assignment.preferredTutorTypes?.length > 0 ? assignment.preferredTutorTypes.join(', ') : 'Any'}\n`;
 
+  const previewSlots = formatTimeSlots(assignment.preferredTimeSlots);
+  if (previewSlots) msg += `*⏰ Timing:* ${previewSlots}\n`;
+  if (assignment.preferredGender && assignment.preferredGender !== 'No preference') {
+    msg += `*🧑 Tutor Gender:* ${assignment.preferredGender}\n`;
+  }
+
   if (assignment.description) {
     msg += `\n*📝 Description:* ${assignment.description}\n`;
   }
-  
+
   msg += `\n*💼 Status:* ${assignment.status}`;
   return msg;
 }
@@ -2659,7 +2739,7 @@ async function handleCallbackQuery(
       return await startAssignmentCreation(bot, chatId, userSessions);
     }
 
-    if (data.startsWith('select_level_') || data.startsWith('select_subject_') || data.startsWith('select_location_') || data.startsWith('toggle_tutor_pref_') || data === 'confirm_tutor_types' || data.startsWith('select_rate_')) {
+    if (data.startsWith('select_level_') || data.startsWith('select_subject_') || data.startsWith('select_location_') || data.startsWith('toggle_tutor_pref_') || data === 'confirm_tutor_types' || data.startsWith('select_rate_') || data.startsWith('toggle_assignment_slot_') || data === 'confirm_assignment_slots' || data.startsWith('set_assignment_gender_')) {
       return await handleAssignmentCallbackQuery(bot, callbackQuery, userSessions);
     }
 

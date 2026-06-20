@@ -2,6 +2,7 @@ import { findMatchingTutors } from './tutorMatcher.js';
 import { rankTutorsWithAI } from './tutorRanker.js';
 import { Assignment } from '../../../packages/shared/server-exports.js';
 import { normalizePhone } from './phone.js';
+import { formatTimeSlots } from '../../../packages/shared/utils/timeSlots.js';
 
 const WHATSAPP_SERVICE_URL = process.env.WHATSAPP_SERVICE_URL || 'http://localhost:3001';
 const WHATSAPP_API_KEY = process.env.WHATSAPP_API_KEY || '';
@@ -49,6 +50,7 @@ async function recordWaveContacts(assignmentId, contacts) {
 // The WhatsApp message a tutor receives for an assignment.
 function buildAssignmentMessage(assignment, botUsername) {
   const applyUrl = `https://t.me/${botUsername}?start=apply_${assignment._id}`;
+  const timing = formatTimeSlots(assignment.preferredTimeSlots);
   return (
     `New Tuition Assignment Match!\n\n` +
     `Title: ${assignment.title}\n` +
@@ -56,6 +58,7 @@ function buildAssignmentMessage(assignment, botUsername) {
     `Subject: ${assignment.subject}\n` +
     `Location: ${assignment.location}\n` +
     `Frequency: ${assignment.frequency}\n` +
+    (timing ? `Timing: ${timing}\n` : '') +
     `Rate: ${assignment.rate}\n` +
     (assignment.description ? `Description: ${assignment.description}\n` : '') +
     `\nThis assignment matches your profile.\n` +

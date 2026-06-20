@@ -7,9 +7,9 @@ import { notifyOwner } from '../utils/ownerAlert.js';
 // Give the background sends (which run after the response) room to finish.
 export const maxDuration = 60;
 
-const WAVE_INTERVAL_MS = Number(process.env.OUTREACH_WAVE_INTERVAL_MS) || 60 * 60 * 1000; // 1h
+const WAVE_INTERVAL_MS = Number(process.env.OUTREACH_WAVE_INTERVAL_MS) || 60 * 30 * 1000; // 30mins
 const WAVE_SIZE = Number(process.env.OUTREACH_WAVE_SIZE) || 6;
-const MAX_DURATION_MS = Number(process.env.OUTREACH_MAX_DURATION_MS) || 6 * 60 * 60 * 1000; // 6h
+const MAX_DURATION_MS = Number(process.env.OUTREACH_MAX_DURATION_MS) || 4 * 60 * 60 * 1000; // 4h
 const INTERESTED_TARGET = Number(process.env.OUTREACH_INTERESTED_TARGET) || 3;
 // Assignments handled per tick. Kept at 1 so each tick's send load stays within the
 // same time budget as the proven wave-1 path; the WhatsApp service ticks frequently,

@@ -1,5 +1,6 @@
 import Tutor from '../../../packages/shared/models/Tutor.js';
 import { LEVEL_SUBJECT_MAPPINGS } from '../../../packages/shared/index.js';
+import { TIME_SLOT_KEYS } from '../../../packages/shared/utils/timeSlots.js';
 
 // Maps assignment location (from inline keyboard) to tutor region boolean key
 const LOCATION_TO_REGION = {
@@ -240,6 +241,20 @@ function commitmentScore(tutor) {
   return perField.reduce((sum, v) => sum + v, 0) / perField.length;
 }
 
+// True when the tutor can cover at least one slot the assignment asked for. Tutors who
+// never filled in their availability get the benefit of the doubt (we'd rather message
+// them than silently drop them over missing data) — same stance as the budget filter.
+function timeSlotsMatch(assignment, tutor) {
+  const wanted = assignment.preferredTimeSlots;
+  if (!wanted) return true;
+  const wantedSlots = TIME_SLOT_KEYS.filter(s => wanted[s]);
+  if (wantedSlots.length === 0) return true; // no timing requirement specified
+
+  const avail = tutor.availableTimeSlots;
+  if (!avail || !TIME_SLOT_KEYS.some(s => avail[s])) return true; // tutor gave no availability
+  return wantedSlots.some(s => avail[s]);
+}
+
 // Blended 0..1 quality score for ordering the affordable pool.
 function scoreTutor(tutor, fit) {
   const experience = (EXPERIENCE_RANK[tutor.yearsOfExperience] || 0) / 5;
@@ -301,6 +316,11 @@ async function findMatchingTutors(assignment, poolSize = 40) {
     query.tutorType = { $in: allowedTypes };
   }
 
+  // Filter by gender if the parent specified one (hard requirement — parents rarely flex).
+  if (assignment.preferredGender && assignment.preferredGender !== 'No preference') {
+    query.gender = assignment.preferredGender;
+  }
+
   // Fetch the full matching set (bounded for safety), then quality-rank in JS.
   // We deliberately avoid a DB `.limit()` on a recency sort here: that was discarding
   // our most experienced tutors (who often registered earliest) before the AI ever saw
@@ -309,17 +329,18 @@ async function findMatchingTutors(assignment, poolSize = 40) {
   // rare case a single subject+level+region+type query matches more than that.
   const MAX_CANDIDATE_FETCH = 300;
   const candidates = await Tutor.find(query)
-    .select('fullName contactNumber tutorType yearsOfExperience highestEducation introduction teachingExperience trackRecord hourlyRate createdAt')
+    .select('fullName contactNumber tutorType yearsOfExperience highestEducation introduction teachingExperience trackRecord hourlyRate availableTimeSlots createdAt')
     .sort({ createdAt: -1 })
     .limit(MAX_CANDIDATE_FETCH)
     .lean();
 
-  // Drop tutors the assignment clearly can't afford, then quality-rank the rest and
-  // hand the strongest `poolSize` to the AI re-ranker.
+  // Drop tutors the assignment clearly can't afford or who can't cover the timing, then
+  // quality-rank the rest and hand the strongest `poolSize` to the AI re-ranker.
   const budget = parseBudget(assignment.rate);
   const ranked = candidates
     .map((tutor) => ({ tutor, fit: budgetFit(tutor, budget, levelCategory) }))
     .filter(({ fit }) => fit.affordable)
+    .filter(({ tutor }) => timeSlotsMatch(assignment, tutor))
     .map(({ tutor, fit }) => ({ tutor, score: scoreTutor(tutor, fit) }))
     .sort((a, b) => b.score - a.score);
 
