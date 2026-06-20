@@ -171,10 +171,6 @@ async function recordReply(phone, reply) {
 // Handle incoming Yes/No replies from tutors.
 client.on('message', async (message) => {
   const from = message.from || '';
-  // Diagnostic: logs EVERY inbound message before any filter, so we can see whether a
-  // tutor's reply actually arrives and in what address format (@c.us vs @lid). Remove
-  // once reply handling is confirmed working.
-  console.log(`Inbound message: from="${from}" fromMe=${message.fromMe} body="${message.body}"`);
   // Only 1:1 chats — ignore groups, status broadcasts, and our own messages.
   if (message.fromMe || !(from.endsWith('@c.us') || from.endsWith('@lid'))) return;
 
@@ -189,10 +185,8 @@ client.on('message', async (message) => {
   if (from.endsWith('@lid')) {
     try {
       const contact = await message.getContact();
-      // Log candidates so we can confirm which field carries the real number on this
-      // whatsapp-web.js version, then prefer it.
-      console.log(`Contact resolve for ${from}: number=${contact?.number} id=${contact?.id?._serialized} user=${contact?.id?.user}`);
       if (contact?.number) phone = contact.number;
+      else console.warn(`Could not resolve number for ${from}`);
     } catch (e) {
       console.warn('getContact failed:', e.message);
     }
@@ -200,15 +194,15 @@ client.on('message', async (message) => {
 
   try {
     const result = await recordReply(phone, reply);
-    // Diagnostic: shows every recognized reply, what it parsed to, and whether the bot
-    // tied it to an active outreach. Lets us tell "not matched" apart from "errored".
-    console.log(`Reply from ${phone}: "${message.body}" → parsed=${reply}, matched=${result ? result.matched : 'no-response'}`);
     // Only acknowledge tutors who are actually part of an active outreach.
-    if (!result?.matched) return;
+    if (!result?.matched) {
+      console.log(`Reply '${reply}' from ${phone} did not match any active outreach`);
+      return;
+    }
 
     await message.reply(reply === 'yes'
       ? "Thank you for your response! 🙏 We've noted your interest and will contact you should there be a match."
-      : "Thank you for your response. We'll contact you should there be a match in future.");
+      : "Thank you for your response. We'll contact you should there be a match in the future.");
     console.log(`Tutor ${phone} replied ${reply} → assignment ${result.assignmentId}`);
   } catch (err) {
     console.error('Error handling tutor reply:', err.message);

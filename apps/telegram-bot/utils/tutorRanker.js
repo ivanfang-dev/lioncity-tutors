@@ -1,4 +1,5 @@
 import { GoogleGenAI } from '@google/genai';
+import { getLevelCategory } from './tutorMatcher.js';
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 
@@ -29,7 +30,7 @@ async function rankTutorsWithAI(assignment, tutors, maxResults = 8) {
   try {
     const ai = getAiClient();
 
-    const levelCategory = assignment.level?.split(' ')[0]?.toLowerCase() || 'secondary';
+    const levelCategory = getLevelCategory(assignment.level) || 'secondary';
     const tutorList = tutors.map((t, i) => {
       const rate = t.hourlyRate?.[levelCategory] ?? t.hourlyRate?.secondary ?? 'Not specified';
       const intro = (t.introduction || 'None').substring(0, INTRO_CHAR_LIMIT);

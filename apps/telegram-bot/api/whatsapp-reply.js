@@ -18,12 +18,26 @@ async function connectToDatabase() {
 }
 
 // Ping the owner when a tutor says yes — the signal they act on to reach the parent fast.
-async function alertOwnerInterested(assignment, tutorName, interestedCount) {
+async function alertOwnerInterested(assignment, tutorName, interestedCount, tutorId) {
+  // Offer a one-tap relay only when we can act on it: we know which tutor, and the
+  // assignment has a parent number to send to.
+  let replyMarkup;
+  if (tutorId && assignment.parentContact) {
+    replyMarkup = {
+      inline_keyboard: [[{
+        text: '📤 Send profile to parent',
+        callback_data: `sendprof_${assignment._id}_${tutorId}`
+      }]]
+    };
+  }
+
   await notifyOwner(
     `✅ *Tutor interested*\n` +
     `*${tutorName || 'A tutor'}* said YES to *${assignment.title}*\n` +
     `(${interestedCount}/${INTERESTED_TARGET} interested)` +
-    (assignment.outreach?.status === 'Fulfilled' ? `\n\n🎯 Target reached — no more tutors will be messaged.` : '')
+    (assignment.parentContact ? '' : `\n\n⚠️ No parent contact on this assignment — relay unavailable.`) +
+    (assignment.outreach?.status === 'Fulfilled' ? `\n\n🎯 Target reached — no more tutors will be messaged.` : ''),
+    replyMarkup
   );
 }
 
@@ -60,11 +74,13 @@ export default async function handler(req, res) {
     }
 
     let tutorName = '';
+    let tutorId = null;
     for (const c of assignment.outreach.contacts) {
       if (c.phone === norm && c.status === 'Sent') {
         c.status = decision;
         c.respondedAt = new Date();
         tutorName = c.tutorName || tutorName;
+        tutorId = c.tutorId || tutorId;
       }
     }
 
@@ -75,7 +91,7 @@ export default async function handler(req, res) {
     await assignment.save();
 
     if (decision === 'Interested') {
-      await alertOwnerInterested(assignment, tutorName, interestedCount);
+      await alertOwnerInterested(assignment, tutorName, interestedCount, tutorId);
     }
 
     return res.status(200).json({

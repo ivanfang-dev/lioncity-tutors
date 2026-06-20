@@ -20,6 +20,7 @@ const LOCATION_TO_REGION = {
 
 // Maps assignment level string prefix to tutor teachingLevels key
 function getLevelCategory(level) {
+  if (!level) return null;
   const prefixes = [
     ['Pre-School', 'preschool'],
     ['Primary', 'primary'],

@@ -60,6 +60,14 @@ const assignmentSchema = new mongoose.Schema({
     trim: true
   },
 
+  // Parent's WhatsApp contact — captured at creation so interested tutors' profiles can
+  // be relayed to the parent. Optional: blank means the relay feature is unavailable for
+  // this assignment (the owner can still handle it manually).
+  parentContact: {
+    type: String,
+    trim: true
+  },
+
   // Preferred Tutor Types
   preferredTutorTypes: [{
     type: String,

@@ -3,31 +3,13 @@ import { rankTutorsWithAI } from './tutorRanker.js';
 import { Assignment } from '../../../packages/shared/server-exports.js';
 import { normalizePhone } from './phone.js';
 import { formatTimeSlots } from '../../../packages/shared/utils/timeSlots.js';
-
-const WHATSAPP_SERVICE_URL = process.env.WHATSAPP_SERVICE_URL || 'http://localhost:3001';
-const WHATSAPP_API_KEY = process.env.WHATSAPP_API_KEY || '';
+import { sendWhatsApp } from './whatsappSender.js';
 
 // Safe-testing switch: when set to a phone number, EVERY outreach wave is redirected to
 // that single number (and recorded under it) instead of going to real tutors — so the
 // full flow, including your own Yes/No reply, can be tested end-to-end. Leave UNSET in
 // production, or no real tutor will ever be messaged.
 const TEST_RECIPIENT_PHONE = process.env.TEST_RECIPIENT_PHONE || '';
-
-async function sendWhatsAppMessage(phoneNumber, message, assignmentId, assignmentTitle, tutorName) {
-  const headers = { 'Content-Type': 'application/json' };
-  if (WHATSAPP_API_KEY) headers['x-api-key'] = WHATSAPP_API_KEY;
-
-  const res = await fetch(`${WHATSAPP_SERVICE_URL}/send`, {
-    method: 'POST',
-    headers,
-    body: JSON.stringify({ phoneNumber, message, assignmentId, assignmentTitle, tutorName }),
-    signal: AbortSignal.timeout(45000)
-  });
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({ error: res.statusText }));
-    throw new Error(err.error || `HTTP ${res.status}`);
-  }
-}
 
 // Append the tutors we just messaged to the assignment's outreach log and mark the
 // wave. Best-effort: a recording failure must not abort the notification flow.
@@ -72,7 +54,8 @@ function buildAssignmentMessage(assignment, botUsername) {
     (assignment.description ? `Description: ${assignment.description}\n` : '') +
     `\nThis assignment matches your profile.\n` +
     `- Reply "Yes" to apply\n` +
-    `- Or apply via Telegram: ${applyUrl}`
+    `- Or apply via Telegram: ${applyUrl}` +
+    `- Reply "No" to decline\n`
   );
 }
 
@@ -96,13 +79,7 @@ async function sendWaveToTutors(assignment, batch, wave, botUsername) {
   const contacts = [];
   for (const tutor of batch) {
     try {
-      await sendWhatsAppMessage(
-        tutor.contactNumber,
-        message,
-        assignment._id.toString(),
-        assignment.title,
-        tutor.fullName || 'Unknown'
-      );
+      await sendWhatsApp(tutor.contactNumber, message);
       sent++;
       contacts.push({
         tutorId: tutor._id,
