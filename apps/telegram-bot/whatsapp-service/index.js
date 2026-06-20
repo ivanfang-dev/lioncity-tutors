@@ -181,7 +181,23 @@ client.on('message', async (message) => {
   const reply = parseReply(message.body?.trim().toLowerCase());
   if (!reply) return;
 
-  const phone = from.replace('@c.us', '').replace('@lid', '');
+  // Resolve the actual phone number. With WhatsApp's newer LID system, message.from is an
+  // opaque "@lid" id that is NOT the phone number, so a @lid reply can't be matched to the
+  // tutor we messaged unless we resolve the contact back to its real number. For a plain
+  // "@c.us" chat the id already IS the number.
+  let phone = from.replace('@c.us', '').replace('@lid', '');
+  if (from.endsWith('@lid')) {
+    try {
+      const contact = await message.getContact();
+      // Log candidates so we can confirm which field carries the real number on this
+      // whatsapp-web.js version, then prefer it.
+      console.log(`Contact resolve for ${from}: number=${contact?.number} id=${contact?.id?._serialized} user=${contact?.id?.user}`);
+      if (contact?.number) phone = contact.number;
+    } catch (e) {
+      console.warn('getContact failed:', e.message);
+    }
+  }
+
   try {
     const result = await recordReply(phone, reply);
     // Diagnostic: shows every recognized reply, what it parsed to, and whether the bot
