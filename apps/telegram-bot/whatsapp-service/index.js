@@ -171,13 +171,17 @@ async function recordReply(phone, reply) {
 // Handle incoming Yes/No replies from tutors.
 client.on('message', async (message) => {
   const from = message.from || '';
+  // Diagnostic: logs EVERY inbound message before any filter, so we can see whether a
+  // tutor's reply actually arrives and in what address format (@c.us vs @lid). Remove
+  // once reply handling is confirmed working.
+  console.log(`Inbound message: from="${from}" fromMe=${message.fromMe} body="${message.body}"`);
   // Only 1:1 chats — ignore groups, status broadcasts, and our own messages.
-  if (message.fromMe || !from.endsWith('@c.us')) return;
+  if (message.fromMe || !(from.endsWith('@c.us') || from.endsWith('@lid'))) return;
 
   const reply = parseReply(message.body?.trim().toLowerCase());
   if (!reply) return;
 
-  const phone = from.replace('@c.us', '');
+  const phone = from.replace('@c.us', '').replace('@lid', '');
   try {
     const result = await recordReply(phone, reply);
     // Diagnostic: shows every recognized reply, what it parsed to, and whether the bot
