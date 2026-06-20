@@ -239,9 +239,11 @@ app.post('/send', requireAuth, async (req, res) => {
   }
 
   try {
-    // Normalize phone: strip non-digits, ensure 65 prefix
-    const digits = phoneNumber.replace(/\D/g, '').replace(/^65/, '');
-    const chatId = `65${digits}@c.us`;
+    // Build the WhatsApp chat id. A bare 8-digit number is a Singapore local number, so
+    // prepend the 65 country code; anything longer already includes a country code
+    // (65… for SG, 1… for a US test number, etc.) and is used as-is.
+    const digits = phoneNumber.replace(/\D/g, '');
+    const chatId = `${digits.length === 8 ? '65' + digits : digits}@c.us`;
 
     // Per-send timeout: if puppeteer hangs (page is in a bad state, WhatsApp Web slow,
     // detached frame), we want a definitive error in <=30s instead of letting the call
