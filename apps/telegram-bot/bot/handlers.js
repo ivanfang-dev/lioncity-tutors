@@ -3,6 +3,7 @@ import { generatePhoneVariations } from '../../../packages/shared/utils/phoneUti
 import { TIME_SLOTS, formatTimeSlots } from '../../../packages/shared/utils/timeSlots.js';
 import { formatTutorProfileForParent } from '../utils/parentProfile.js';
 import { sendWhatsApp } from '../utils/whatsappSender.js';
+import { formatAssignmentForChannel } from '../utils/channelFormat.js';
 import RateValidator from '../utils/RateValidator.js';
 import ErrorHandler from '../utils/ErrorHandler.js';
 import { notifyMatchedTutors } from '../utils/tutorNotifier.js';
@@ -229,32 +230,6 @@ function formatAssignment(assignment) {
   }
   
   msg += `\n*Status:* ${assignment.status}`;
-  return msg;
-}
-
-// Format assignment for channel posting
-function formatAssignmentForChannel(assignment) {
-  let msg = `🎯 *Title:* ${assignment.title}\n\n`;
-  msg += `📚 *Level:* ${assignment.level}\n`;
-  msg += `📖 *Subject:* ${assignment.subject}\n`;
-  msg += `📍 *Location:* ${assignment.location}\n`;
-  msg += `📅 *Frequency:* ${assignment.frequency}\n`;
-  msg += `💰 *Rate:* ${assignment.rate}\n`;
-  msg += `👨‍🏫 *Tutor Type:* ${assignment.preferredTutorTypes?.length > 0 ? assignment.preferredTutorTypes.join(', ') : 'Any'}\n`;
-
-  const channelSlots = formatTimeSlots(assignment.preferredTimeSlots);
-  if (channelSlots) msg += `⏰ *Timing:* ${channelSlots}\n`;
-  if (assignment.preferredGender && assignment.preferredGender !== 'No preference') {
-    msg += `🧑 *Tutor Gender:* ${assignment.preferredGender}\n`;
-  }
-
-  if (assignment.description) {
-    msg += `\n📝 *Description:* ${assignment.description}\n`;
-  }
-
-  msg += `\n💼 *Status:* ${assignment.status}`;
-  msg += `\n\n👇 *Click below to apply for this assignment!*`;
-
   return msg;
 }
 

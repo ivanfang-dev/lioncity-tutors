@@ -54,8 +54,8 @@ function buildAssignmentMessage(assignment, botUsername) {
     (assignment.description ? `Description: ${assignment.description}\n` : '') +
     `\nThis assignment matches your profile.\n` +
     `- Reply "Yes" to apply\n` +
-    `- Or apply via Telegram: ${applyUrl}` +
-    `- Reply "No" to decline\n`
+    `- Reply "No" to decline\n` +
+    `- Or apply via Telegram: ${applyUrl}`
   );
 }
 
