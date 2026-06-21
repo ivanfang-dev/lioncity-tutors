@@ -19,16 +19,22 @@ async function connectToDatabase() {
 
 // Ping the owner when a tutor says yes — the signal they act on to reach the parent fast.
 async function alertOwnerInterested(assignment, tutorName, interestedCount, tutorId) {
-  // Offer a one-tap relay only when we can act on it: we know which tutor, and the
-  // assignment has a parent number to send to.
+  // Offer a one-tap relay only when we can act on it: the assignment has a parent number
+  // to send to. The button forwards the whole interested-but-unsent shortlist, so its
+  // label tracks how many tutors are currently waiting to be sent (1, 2, 3...).
   let replyMarkup;
-  if (tutorId && assignment.parentContact) {
-    replyMarkup = {
-      inline_keyboard: [[{
-        text: '📤 Send profile to parent',
-        callback_data: `sendprof_${assignment._id}_${tutorId}`
-      }]]
-    };
+  if (assignment.parentContact) {
+    const pendingCount = assignment.pendingParentTutorIds().length;
+    if (pendingCount > 0) {
+      replyMarkup = {
+        inline_keyboard: [[{
+          text: pendingCount === 1
+            ? '📤 Send profile to parent'
+            : `📤 Send all ${pendingCount} profiles to parent`,
+          callback_data: `sendallprof_${assignment._id}`
+        }]]
+      };
+    }
   }
 
   await notifyOwner(

@@ -1,7 +1,7 @@
 import { EDUCATION_LEVELS, getSubjectsForLevel, RATE_MAPPINGS } from '../../../packages/shared/index.js';
 import { generatePhoneVariations } from '../../../packages/shared/utils/phoneUtils.js';
 import { TIME_SLOTS, formatTimeSlots } from '../../../packages/shared/utils/timeSlots.js';
-import { formatTutorProfileForParent } from '../utils/parentProfile.js';
+import { formatTutorProfileForParent, formatTutorProfilesForParent } from '../utils/parentProfile.js';
 import { sendWhatsApp } from '../utils/whatsappSender.js';
 import { formatAssignmentForChannel } from '../utils/channelFormat.js';
 import RateValidator from '../utils/RateValidator.js';
@@ -2755,6 +2755,50 @@ async function handleCallbackQuery(
         await safeSend(bot, chatId, `📤 Sent *${tutor.fullName || 'tutor'}*'s profile to the parent (${assignment.parentContact}).`, { parse_mode: 'Markdown' });
       } catch (err) {
         console.error('Failed to relay profile to parent:', err.message);
+        await bot.answerCallbackQuery(callbackQuery.id, { text: 'Send failed — try again.' });
+      }
+      return;
+    }
+
+    // One-tap relay of the whole shortlist: forward every interested-but-unsent tutor's
+    // profile to the parent in a single curated message. Re-tappable — only sends tutors
+    // who said Yes since the last send (see Assignment.pendingParentTutorIds).
+    if (data.startsWith('sendallprof_')) {
+      if (!isAdmin(userId, ADMIN_USERS)) {
+        return await bot.answerCallbackQuery(callbackQuery.id, { text: 'Not authorized.' });
+      }
+      const assignmentId = data.replace('sendallprof_', '');
+      const assignment = await Assignment.findById(assignmentId);
+      if (!assignment?.parentContact) {
+        return await bot.answerCallbackQuery(callbackQuery.id, { text: 'No parent contact on this assignment.' });
+      }
+
+      const pendingIds = assignment.pendingParentTutorIds();
+      if (pendingIds.length === 0) {
+        return await bot.answerCallbackQuery(callbackQuery.id, { text: 'No new interested tutors to send.' });
+      }
+
+      const tutors = await Tutor.find({ _id: { $in: pendingIds } }).lean();
+      const intro = process.env.PARENT_INTRO_MESSAGE
+        || 'Hi! Here is a tutor we found for your request:';
+      try {
+        await sendWhatsApp(assignment.parentContact, formatTutorProfilesForParent(tutors, assignment, intro));
+
+        // Mark exactly the tutors we just sent as relayed, so a later tap forwards only
+        // newcomers. Mutate-then-save mirrors how whatsapp-reply records replies.
+        const now = new Date();
+        const sentSet = new Set(pendingIds);
+        for (const c of assignment.outreach.contacts) {
+          if (c.status === 'Interested' && c.tutorId && sentSet.has(c.tutorId.toString())) {
+            c.relayedToParentAt = now;
+          }
+        }
+        await assignment.save();
+
+        await bot.answerCallbackQuery(callbackQuery.id, { text: `✅ Sent ${tutors.length} to parent` });
+        await safeSend(bot, chatId, `📤 Sent ${tutors.length} tutor profile(s) to the parent (${assignment.parentContact}).`, { parse_mode: 'Markdown' });
+      } catch (err) {
+        console.error('Failed to relay shortlist to parent:', err.message);
         await bot.answerCallbackQuery(callbackQuery.id, { text: 'Send failed — try again.' });
       }
       return;

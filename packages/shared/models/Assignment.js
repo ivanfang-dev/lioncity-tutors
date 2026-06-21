@@ -160,7 +160,10 @@ const assignmentSchema = new mongoose.Schema({
         enum: ['Sent', 'Interested', 'Declined'],
         default: 'Sent'
       },
-      respondedAt: { type: Date }
+      respondedAt: { type: Date },
+      // Set when this interested tutor's profile has been relayed to the parent, so a
+      // repeat "Send all" tap only forwards tutors who said Yes since the last send.
+      relayedToParentAt: { type: Date }
     }]
   },
 
@@ -223,6 +226,16 @@ assignmentSchema.methods.interestedCount = function() {
 // Tutor ids already messaged, so the next wave only pulls fresh tutors.
 assignmentSchema.methods.contactedTutorIds = function() {
   return (this.outreach?.contacts || [])
+    .map(c => c.tutorId?.toString())
+    .filter(Boolean);
+};
+
+// Tutor ids that said "Yes" but haven't been relayed to the parent yet — the set a
+// "Send all" tap should forward. Lets the owner send a first tutor immediately and tap
+// again later for newcomers without re-sending anyone.
+assignmentSchema.methods.pendingParentTutorIds = function() {
+  return (this.outreach?.contacts || [])
+    .filter(c => c.status === 'Interested' && !c.relayedToParentAt)
     .map(c => c.tutorId?.toString())
     .filter(Boolean);
 };

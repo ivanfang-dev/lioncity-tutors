@@ -36,3 +36,37 @@ export function formatTutorProfileForParent(tutor, assignment, intro) {
 
   return lines.join('\n');
 }
+
+// Formats a SHORTLIST of interested tutors as a single WhatsApp message to the parent.
+// Used by the owner's one-tap "Send all N" relay. `tutors` are already vetted (they each
+// said Yes); `assignment` supplies the level for per-tutor rate; `intro` is the
+// owner-configured lead-in (PARENT_INTRO_MESSAGE), worded for the single-tutor case.
+export function formatTutorProfilesForParent(tutors, assignment, intro) {
+  // One tutor isn't a "shortlist" — reuse the single-profile format verbatim so a lone
+  // Yes reads naturally ("Here is a tutor we found...") rather than "Option 1 of 1".
+  if (tutors.length === 1) {
+    return formatTutorProfileForParent(tutors[0], assignment, intro);
+  }
+
+  // Per-tutor card WITHOUT a lead-in line: call formatTutorProfileForParent(tutor,
+  // assignment) and omit the `intro` argument. It returns the same fields as a single
+  // send (name, type, experience, school(s), rate, about, etc.), minus the greeting.
+  //
+  // Plural lead-in: `intro` is worded for a single tutor, so for a shortlist we open with
+  // our own line and keep the configured `intro` only as a fallback if it's missing.
+  const lines = [`Hi! Here are ${tutors.length} tutors we've shortlisted for your request:`];
+
+  // Number each tutor so the parent can reply "I'll go with Option 2". Emoji digits read
+  // cleaner than "*Option 2*" on WhatsApp (which has no plain-text bold). A divider line
+  // before each option gives clear visual breaks when skimming on mobile.
+  const numberEmoji = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣', '🔟'];
+  tutors.forEach((tutor, i) => {
+    const label = numberEmoji[i] || `${i + 1}.`;
+    lines.push('', '──────────', `${label} Option ${i + 1}`, formatTutorProfileForParent(tutor, assignment));
+  });
+
+  // Gentle nudge to reply — closing the loop is what converts a shortlist into a booking.
+  lines.push('', 'Let us know which tutor you’d like to go with and we’ll arrange the rest! 😊');
+
+  return lines.join('\n');
+}
