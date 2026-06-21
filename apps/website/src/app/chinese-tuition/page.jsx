@@ -171,7 +171,7 @@ export default function ChineseTuition() {
             </Card>
             <Card className="border-l-4 border-l-blue-500 shadow-lg hover:shadow-xl transition-shadow duration-200">
               <CardContent className="p-6">
-                <h3 className="font-bold text-lg text-blue-700">Quick Matching (24h)</h3>
+                <h3 className="font-bold text-lg text-blue-700">Quick Matching (8h)</h3>
                 <p className="text-gray-600 mt-2">Get matched with qualified Chinese tutors within 24 hours, ensuring your child can start improving their language skills immediately.</p>
               </CardContent>
             </Card>

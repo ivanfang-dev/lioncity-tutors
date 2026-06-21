@@ -13,7 +13,7 @@ export default function ReviewStrip() {
     {
       icon: Clock,
       title: "Fast Matching",
-      subtitle: "Profiles sent in 24 hours"
+      subtitle: "Profiles sent in 8 hours"
     },
     {
       icon: Shield,
