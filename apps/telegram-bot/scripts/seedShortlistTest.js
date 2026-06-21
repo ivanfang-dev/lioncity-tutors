@@ -14,6 +14,7 @@
 
 import mongoose from 'mongoose';
 import { Assignment, Tutor } from '../../../packages/shared/server-exports.js';
+import { EDUCATION_LEVELS, getSubjectsForLevel } from '../../../packages/shared/index.js';
 import { normalizePhone } from '../utils/phone.js';
 
 const phoneArg = process.argv[2];
@@ -40,11 +41,13 @@ if (tutors.length < tutorCount) {
   process.exit(1);
 }
 
-// Clone a valid level/subject from an existing assignment so the model's level-subject
-// validation passes without hardcoding a combo that might be rejected.
-const template = await Assignment.findOne().lean();
-if (!template) {
-  console.error('No existing assignment to copy a valid level/subject from. Create one first.');
+// Derive a guaranteed-valid level/subject from the canonical lists (not from existing DB
+// rows — legacy assignments can hold subjects that predate the current enum, e.g.
+// "O Level english", which would fail validation).
+const level = EDUCATION_LEVELS.find(l => getSubjectsForLevel(l)?.length > 0);
+const subject = getSubjectsForLevel(level)[0];
+if (!level || !subject) {
+  console.error('Could not derive a valid level/subject from shared constants.');
   await mongoose.disconnect();
   process.exit(1);
 }
@@ -52,8 +55,8 @@ if (!template) {
 const now = new Date();
 const assignment = await Assignment.create({
   title: '[TEST] Shortlist send — safe to delete',
-  level: template.level,
-  subject: template.subject,
+  level,
+  subject,
   location: 'Online',
   frequency: '1x/week',
   rate: '$50/hr',

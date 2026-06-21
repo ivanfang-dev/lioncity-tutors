@@ -19,16 +19,16 @@ export function formatTutorProfileForParent(tutor, assignment, intro) {
   const lines = [];
   if (intro) lines.push(intro, '');
 
-  lines.push(`👤 ${tutor.fullName || 'Tutor'}`);
-  if (tutor.tutorType) lines.push(`Type: ${tutor.tutorType}`);
-  if (tutor.yearsOfExperience) lines.push(`Experience: ${tutor.yearsOfExperience}`);
+  lines.push(`👤 Name: ${tutor.fullName || 'Tutor'}`);
+  if (tutor.tutorType) lines.push('', `Type: ${tutor.tutorType}`);
+  if (tutor.yearsOfExperience) lines.push('', `Experience: ${tutor.yearsOfExperience}`);
 
   // Schools are a strong selling point for SG parents (e.g. "ex-RI").
   const schools = [tutor.currentSchool, tutor.previousSchools].filter(Boolean).join('; ');
-  if (schools) lines.push(`School(s): ${schools}`);
+  if (schools) lines.push('', `School(s): ${schools}`);
 
   const rate = rateForLevel(tutor, assignment?.level);
-  if (rate) lines.push(`Rate: ${rate}`);
+  if (rate) lines.push('', `Rate: ${rate}`);
 
   if (tutor.introduction) lines.push('', `About:\n${tutor.introduction}`);
   if (tutor.teachingExperience) lines.push('', `Teaching experience:\n${tutor.teachingExperience}`);
@@ -62,7 +62,7 @@ export function formatTutorProfilesForParent(tutors, assignment, intro) {
   const numberEmoji = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣', '🔟'];
   tutors.forEach((tutor, i) => {
     const label = numberEmoji[i] || `${i + 1}.`;
-    lines.push('', '──────────', `${label} Option ${i + 1}`, formatTutorProfileForParent(tutor, assignment));
+    lines.push('', '──────────', `${label} Tutor ${i + 1}`, formatTutorProfileForParent(tutor, assignment));
   });
 
   // Gentle nudge to reply — closing the loop is what converts a shortlist into a booking.
