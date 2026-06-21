@@ -163,7 +163,11 @@ const assignmentSchema = new mongoose.Schema({
       respondedAt: { type: Date },
       // Set when this interested tutor's profile has been relayed to the parent, so a
       // repeat "Send all" tap only forwards tutors who said Yes since the last send.
-      relayedToParentAt: { type: Date }
+      relayedToParentAt: { type: Date },
+      // How many reminder pings this contact has received. Only non-responders (status
+      // 'Sent') are ever reminded, and only when no fresh tutors are left to try; capped
+      // by OUTREACH_MAX_REMINDERS so a quiet tutor isn't nagged indefinitely.
+      reminderCount: { type: Number, default: 0 }
     }]
   },
 

@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import { waitUntil } from '@vercel/functions';
 import { Assignment } from '../../../packages/shared/server-exports.js';
-import { escalateAssignment } from '../utils/tutorNotifier.js';
+import { escalateAssignment, remindNonResponders } from '../utils/tutorNotifier.js';
 import { notifyOwner } from '../utils/ownerAlert.js';
 import { formatAssignmentForChannel } from '../utils/channelFormat.js';
 
@@ -12,6 +12,9 @@ const WAVE_INTERVAL_MS = Number(process.env.OUTREACH_WAVE_INTERVAL_MS) || 60 * 3
 const WAVE_SIZE = Number(process.env.OUTREACH_WAVE_SIZE) || 6;
 const MAX_DURATION_MS = Number(process.env.OUTREACH_MAX_DURATION_MS) || 4 * 60 * 60 * 1000; // 4h
 const INTERESTED_TARGET = Number(process.env.OUTREACH_INTERESTED_TARGET) || 3;
+// Max reminder pings a single non-responder can receive once the fresh pool is dry,
+// before we stop and hand the assignment to the owner.
+const MAX_REMINDERS = Number(process.env.OUTREACH_MAX_REMINDERS) || 1;
 // Assignments handled per tick. Kept at 1 so each tick's send load stays within the
 // same time budget as the proven wave-1 path; the WhatsApp service ticks frequently,
 // so a backlog drains quickly. Raise if assignment volume grows.
@@ -57,14 +60,26 @@ async function processAssignment(assignment, now) {
 
   const result = await escalateAssignment(assignment, BOT_USERNAME, { waveSize: WAVE_SIZE });
 
-  if (result.exhausted) {
+  if (!result.exhausted) {
+    console.log(`Escalation wave ${result.wave} for ${assignment._id}: ${result.sent} sent, ${result.failed} failed`);
+    return;
+  }
+
+  // No fresh tutors left to try — before giving up, nudge the non-responders once (up to
+  // MAX_REMINDERS each). Only when there's no one left to remind do we mark Exhausted.
+  const reminder = await remindNonResponders(assignment, BOT_USERNAME, {
+    maxReminders: MAX_REMINDERS,
+    waveSize: WAVE_SIZE
+  });
+
+  if (reminder.remindedNone) {
     await Assignment.updateOne({ _id: assignment._id }, { $set: { 'outreach.status': 'Exhausted' } });
     await notifyOwner(
       `📭 *Ran out of tutors*\n*${assignment.title}* has no more matching tutors to contact ` +
       `(${assignment.interestedCount()} interested).\nPlease follow up manually.`
     );
   } else {
-    console.log(`Escalation wave ${result.wave} for ${assignment._id}: ${result.sent} sent, ${result.failed} failed`);
+    console.log(`Reminder wave for ${assignment._id}: ${reminder.sent} sent, ${reminder.failed} failed`);
   }
 }
 

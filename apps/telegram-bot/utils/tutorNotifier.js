@@ -153,4 +153,69 @@ async function escalateAssignment(assignment, botUsername, { waveSize = 6 } = {}
   return { exhausted: false, sent, failed, wave };
 }
 
-export { notifyMatchedTutors, escalateAssignment };
+// The gentle nudge a non-responding tutor receives. Same apply paths as the first
+// message — just framed as a reminder. (Owner-tunable wording.)
+function buildReminderMessage(assignment, botUsername) {
+  const applyUrl = `https://t.me/${botUsername}?start=apply_${assignment._id}`;
+  const timing = formatTimeSlots(assignment.preferredTimeSlots);
+  return (
+    `Reminder: this assignment is still open and we'd love to hear back from you!\n\n` +
+    `Title: ${assignment.title}\n` +
+    `Level: ${assignment.level}\n` +
+    `Subject: ${assignment.subject}\n` +
+    `Location: ${assignment.location}\n` +
+    `Frequency: ${assignment.frequency}\n` +
+    (timing ? `Timing: ${timing}\n` : '') +
+    `Rate: ${assignment.rate}\n` +
+    `\n- Reply "Yes" to apply\n` +
+    `- Reply "No" to decline\n` +
+    `- Or apply via Telegram: ${applyUrl}`
+  );
+}
+
+// Fallback when escalation has no fresh tutors left: re-ping the non-responders (status
+// 'Sent') who still have reminders remaining, instead of giving up. Re-messages EXISTING
+// contacts in place (no new outreach rows, no responseStats change — a reminder isn't a
+// new tutor contacted) and bumps each one's reminderCount. Returns { remindedNone: true }
+// when there's no one left to remind, so the caller can finally mark the assignment
+// Exhausted.
+async function remindNonResponders(assignment, botUsername, { maxReminders = 1, waveSize = 6 } = {}) {
+  const remindable = (assignment.outreach?.contacts || [])
+    .filter(c => c.status === 'Sent' && (c.reminderCount || 0) < maxReminders);
+  if (remindable.length === 0) {
+    return { remindedNone: true, sent: 0, failed: 0 };
+  }
+
+  const batch = remindable.slice(0, waveSize);
+  const message = buildReminderMessage(assignment, botUsername);
+
+  // Mirror sendWaveToTutors' test-mode redirect: send everything to one number so the
+  // reminder path can be exercised without paging real tutors.
+  const testPhone = process.env.TEST_RECIPIENT_PHONE || '';
+
+  let sent = 0;
+  let failed = 0;
+  const remindedPhones = [];
+  for (const c of batch) {
+    try {
+      await sendWhatsApp(testPhone || c.phone, message);
+      sent++;
+      remindedPhones.push(c.phone);
+    } catch (err) {
+      failed++;
+    }
+  }
+
+  // Bump reminderCount only on the contacts we actually re-messaged.
+  const remindedSet = new Set(remindedPhones);
+  for (const c of assignment.outreach.contacts) {
+    if (c.status === 'Sent' && remindedSet.has(c.phone)) {
+      c.reminderCount = (c.reminderCount || 0) + 1;
+    }
+  }
+  await assignment.save();
+
+  return { remindedNone: false, sent, failed, reminded: batch.length };
+}
+
+export { notifyMatchedTutors, escalateAssignment, remindNonResponders };
