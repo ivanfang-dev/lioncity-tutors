@@ -1,5 +1,13 @@
 import './globals.css';
+import { Inter } from 'next/font/google';
 import Script from 'next/script'; // 1. Make sure this import is here
+
+const inter = Inter({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-sans',
+  display: 'swap',
+});
 import { Toaster } from 'sonner';
 import Navbar from '../components/Navbar';
 import Footer from './Footer';
@@ -27,7 +35,7 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html lang="en" className={inter.variable}>
       <head>
         {/* Preconnect to external domains for faster resource loading */}
         <link rel="preconnect" href="https://www.google-analytics.com" />

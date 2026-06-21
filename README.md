@@ -103,7 +103,7 @@ MONGODB_URI=mongodb+srv://<username>:<password>@cluster0.mongodb.net/lioncity?re
 PORT=4000
 # For telegram bot
 BOT_TOKEN=123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11
-ADMIN_USERS=812379368
+ADMIN_USERS=123456789
 ```
 
 

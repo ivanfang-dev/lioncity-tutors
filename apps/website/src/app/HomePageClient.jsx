@@ -9,7 +9,7 @@ import UniqueFeaturesSection from "@/components/UniqueFeaturesSection";
 import { Step1, Step2, Step3 } from "@/components/FormSteps";
 import TutorPopup from "@/components/TutorPopup";
 import useTuitionRequestForm from "@/components/useTuitionRequestForm";
-import { Star, CheckCircle, Award, Users, Clock, Shield, Quote, TrendingUp, MapPin, Phone, Mail, FileText, BookOpen, ArrowRight } from "lucide-react";
+import { Star, CheckCircle, Award, Users, Clock, Shield, Quote, TrendingUp, MapPin, Mail, FileText, BookOpen, ArrowRight } from "lucide-react";
 
 // Lazy-loaded sections
 import dynamic from 'next/dynamic';
@@ -106,6 +106,9 @@ export default function HomePageClient() {
     { initials: 'R.R', name: 'Mrs Rahman', relation: 'Parent of JC1', text: 'Great follow-up and tutor matched to learning style. Highly recommended.', subject: 'H2 Chemistry', location: 'Woodlands' }
   ];
 
+  const fadeUp = { hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } };
+  const fadeUpTransition = { duration: 0.6, ease: [0.16, 1, 0.3, 1] };
+
   return (
     <>
       <ScrollProgress />
@@ -132,26 +135,55 @@ export default function HomePageClient() {
                 }}
                 className="text-center lg:text-left order-2 lg:order-1"
               >
-                <motion.h1
-                  variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}
-                  transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-                  className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-primary leading-[1.1] tracking-tight mb-4 sm:mb-6"
+                <motion.p
+                  variants={fadeUp}
+                  transition={fadeUpTransition}
+                  className="text-sm font-semibold tracking-[0.22em] uppercase text-primary mb-5"
                 >
-                  Find Your Perfect Tutor.
-                  <span className="block text-gray-600 mt-2">Zero Agency Fees.</span>
+                  PSLE · O-Level · JC
+                </motion.p>
+
+                <motion.h1
+                  variants={fadeUp}
+                  transition={fadeUpTransition}
+                  className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-gray-900 leading-[0.98] tracking-tight mb-6"
+                >
+                  <span className="block">The <span className="text-primary">Right</span> Tutor.</span>
+                  <span className="block">
+                    Matched in{' '}
+                    <span className="relative inline-block whitespace-nowrap">
+                      hours
+                      <svg
+                        className="hero-underline absolute left-[-2%] -bottom-[0.18em] w-[104%] h-[0.5em] overflow-visible text-accent"
+                        viewBox="0 0 200 18"
+                        preserveAspectRatio="none"
+                        aria-hidden="true"
+                      >
+                        <path
+                          d="M3 12 C 40 4, 80 4, 110 9 C 140 14, 170 8, 197 6"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="7"
+                          strokeLinecap="round"
+                        />
+                      </svg>
+                    </span>
+                    .
+                  </span>
                 </motion.h1>
 
                 <motion.p
-                  variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}
-                  transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                  variants={fadeUp}
+                  transition={fadeUpTransition}
                   className="text-lg sm:text-xl text-gray-600 leading-relaxed mb-8 max-w-xl mx-auto lg:mx-0"
                 >
-                  Connect with top-rated, MOE-familiar tutors for PSLE, O-Level, and JC subjects. Get qualified profiles within 24 hours.
+                  Vetted, MOE-familiar tutors matched by hand — {' '}
+                  <span className="font-semibold text-gray-900">within six hours</span>. And parents never pay an agency fee.
                 </motion.p>
 
                 <motion.div
-                  variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}
-                  transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                  variants={fadeUp}
+                  transition={fadeUpTransition}
                   className="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start mb-8"
                 >
                   <motion.div
@@ -163,7 +195,7 @@ export default function HomePageClient() {
                       className="bg-[#F17720] hover:bg-[#d9691c] text-white font-semibold px-8 py-5 rounded-full text-base sm:text-lg shadow-md hover:shadow-lg transition-all duration-200 w-full sm:w-auto"
                       onClick={scrollToForm}
                     >
-                      Get Started Free
+                      Request tutors
                     </Button>
                   </motion.div>
 
@@ -171,17 +203,20 @@ export default function HomePageClient() {
                     href="https://wa.me/6588701152?text=Hi%20LionCity%20Tutors%2C%20I%27m%20looking%20for%20a%20tutor."
                     target="_blank"
                     rel="noreferrer"
-                    className="text-gray-600 hover:text-primary font-medium flex items-center gap-2 transition-colors text-base w-full sm:w-auto justify-center"
+                    className="group text-gray-700 hover:text-primary font-medium flex items-center gap-2 transition-colors text-base w-full sm:w-auto justify-center"
                   >
-                    <Phone className="w-4 h-4" />
-                    <span>Or chat on WhatsApp</span>
+                    <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 text-[#25D366]" aria-hidden="true">
+                      <path d="M12 2a10 10 0 0 0-8.6 15.05L2 22l5.1-1.33A10 10 0 1 0 12 2Zm5.4 14.2c-.23.64-1.34 1.22-1.85 1.26-.5.05-.97.23-3.27-.68-2.76-1.09-4.5-3.9-4.64-4.08-.13-.18-1.1-1.46-1.1-2.79 0-1.32.7-1.97.94-2.24.24-.27.52-.34.7-.34l.5.01c.16 0 .38-.06.59.45.23.55.77 1.9.84 2.04.07.14.11.3.02.48-.09.18-.13.29-.27.45l-.4.46c-.13.13-.27.28-.12.54.15.27.66 1.09 1.42 1.76.97.87 1.79 1.13 2.05 1.26.27.14.42.11.58-.07.16-.18.66-.78.84-1.04.18-.27.36-.22.59-.13.23.09 1.48.7 1.74.82.27.13.44.2.5.31.07.11.07.64-.16 1.27Z" />
+                    </svg>
+                    <span>Or message us on WhatsApp</span>
+                    <span className="text-primary transition-transform group-hover:translate-x-1">→</span>
                   </a>
                 </motion.div>
 
                 <motion.div
-                  variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}
-                  transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-                  className="inline-flex items-center gap-3 bg-white px-4 py-2 rounded-full shadow-sm border border-gray-100 text-sm text-gray-600 justify-center lg:justify-start"
+                  variants={fadeUp}
+                  transition={fadeUpTransition}
+                  className="inline-flex flex-wrap items-center gap-x-3 gap-y-1 max-w-full bg-white px-4 py-2 rounded-3xl shadow-sm border border-gray-100 text-sm text-gray-600 justify-center lg:justify-start"
                 >
                   <div className="flex items-center gap-1.5">
                     <Star className="w-4 h-4 text-amber-400 fill-current" />
@@ -191,6 +226,11 @@ export default function HomePageClient() {
                   <div className="flex items-center gap-1.5">
                     <CheckCircle className="w-4 h-4 text-primary" />
                     <span className="font-medium">100+ families matched</span>
+                  </div>
+                  <span className="text-gray-300">|</span>
+                  <div className="flex items-center gap-1.5">
+                    <Users className="w-4 h-4 text-primary" />
+                    <span className="font-medium">300+ vetted tutors</span>
                   </div>
                 </motion.div>
               </motion.div>
