@@ -4,7 +4,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { BookOpen, Atom, Calculator, ArrowRight, Radiation } from 'lucide-react';
+import { Microscope, Atom, Calculator, ArrowRight, Radiation } from 'lucide-react';
 
 const subjects = [
   { 
@@ -22,17 +22,17 @@ const subjects = [
     gradient: 'from-purple-500/10 to-accent/10'
   },
   { 
-    name: 'A-Level GP', 
-    href: '/a-level-physics', 
+    name: 'A-Level GP',
+    href: '/a-level-general-paper',
     icon: Radiation, 
     description: 'Develop critical thinking and essay writing skills.',
     gradient: 'from-green-500/10 to-primary/10'
   },
-  { 
-    name: 'Primary English', 
-    href: '/psle-english', 
-    icon: BookOpen, 
-    description: 'Excel in composition, comprehension, and grammar.',
+  {
+    name: 'IB Biology',
+    href: '/ibdp-biology',
+    icon: Microscope,
+    description: 'Tackle IB Diploma biology, from cell theory to genetics.',
     gradient: 'from-orange-500/10 to-accent/10'
   },
 ];

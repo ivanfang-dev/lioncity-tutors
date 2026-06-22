@@ -61,7 +61,11 @@ mongoose.connect(process.env.MONGODB_URI)
 const contactSchema = new mongoose.Schema({
   name: { type: String, required: true },
   mobile: { type: String, required: true },
+  // Joined summary of all requested level/subjects (kept for backward compatibility and
+  // quick display); the structured list lives in `levelSubjects`.
   level: { type: String, required: true },
+  // One parent request can cover several subjects (e.g. Physics + Chemistry for one child).
+  levelSubjects: { type: [String], default: undefined },
   location: { type: String },
   
   // Lesson details
@@ -139,12 +143,18 @@ async function notifyTelegramNewRequest(contact) {
     ? `Custom: $${contact.budget.customAmount || '?'}`
     : 'Market Rate';
 
+  // List each subject on its own line when several were requested; otherwise keep the
+  // single-line format.
+  const levelSubjectLine = contact.levelSubjects?.length > 1
+    ? `📚 *Level/Subjects:*\n` + contact.levelSubjects.map((s, i) => `   ${i + 1}. ${s}`).join('\n')
+    : `📚 *Level/Subject:* ${contact.levelSubjects?.[0] || contact.level}`;
+
   const text = [
     `🆕 *New Tutor Request*`,
     ``,
     `👤 *Name:* ${contact.name}`,
     `📱 *Mobile:* ${contact.mobile}`,
-    `📚 *Level/Subject:* ${contact.level}`,
+    levelSubjectLine,
     `📍 *Location:* ${contact.location || '-'}`,
     `⏱ *Duration:* ${duration}`,
     `🔄 *Frequency:* ${frequency}`,

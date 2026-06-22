@@ -80,10 +80,13 @@ export default function HomePageClient() {
     nextStep,
     prevStep,
     handleChange,
+    handleLevelSubjectChange,
+    addLevelSubject,
+    removeLevelSubject,
     handleSubmit,
     resetForm
   } = useTuitionRequestForm({
-      name: '', mobile: '', level: '', location: '',
+      name: '', mobile: '', levelSubjects: [''], location: '',
       lessonDuration: '1.5 Hours', customDuration: '',
       lessonFrequency: '1 Lesson/Week', customFrequency: '',
       preferredTime: '',
@@ -149,7 +152,7 @@ Preferred days & timing: `;
                   transition={fadeUpTransition}
                   className="text-sm font-semibold tracking-[0.22em] uppercase text-primary mb-5"
                 >
-                  PSLE · O-Level · JC
+                  PSLE · O/N-Level · JC
                 </motion.p>
 
                 <motion.h1
@@ -449,7 +452,7 @@ Preferred days & timing: `;
                         {status.error && <div className="bg-red-100 text-red-800 p-4 rounded-md mb-6">{status.error}</div>}
                         
                         {/* Make sure you pass the consolidated handleChange to all steps */}
-                        {currentStep === 1 && <Step1 nextStep={nextStep} formData={formData} handleChange={handleChange} errors={errors} />}
+                        {currentStep === 1 && <Step1 nextStep={nextStep} formData={formData} handleChange={handleChange} handleLevelSubjectChange={handleLevelSubjectChange} addLevelSubject={addLevelSubject} removeLevelSubject={removeLevelSubject} errors={errors} />}
                         {currentStep === 2 && <Step2 nextStep={nextStep} prevStep={prevStep} formData={formData} handleChange={handleChange} errors={errors} />}
                         {currentStep === 3 && <Step3 prevStep={prevStep} formData={formData} handleChange={handleChange} handleCheckboxChange={handleChange} status={status} errors={errors} />}
                     </form>

@@ -41,7 +41,8 @@ const validateStep = (step, data) => {
         } else if (!/^[689]\d{7}$/.test(data.mobile.trim())) {
             newErrors.mobile = "Please enter a valid 8-digit Singapore mobile number.";
         }
-        if (!data.level.trim()) newErrors.level = "Level & Subject are required.";
+        const filledSubjects = (data.levelSubjects || []).map(s => s.trim()).filter(Boolean);
+        if (filledSubjects.length === 0) newErrors.levelSubjects = "At least one level & subject is required.";
     }
     if (step === 2) {
         if (!data.location.trim()) newErrors.location = "Location is required.";
@@ -62,6 +63,12 @@ const useTuitionRequestForm = (initialFormData) => {
         if (savedDraft) {
             try {
                 const parsed = JSON.parse(savedDraft);
+                // Migrate older drafts that stored a single `level` string into the
+                // new `levelSubjects` array so the multi-subject form loads cleanly.
+                if (!Array.isArray(parsed.levelSubjects)) {
+                    parsed.levelSubjects = parsed.level ? [parsed.level] : [''];
+                }
+                delete parsed.level;
                 setFormData(parsed);
             } catch (error) {
                 console.error('Failed to parse form draft:', error);
@@ -115,13 +122,36 @@ const useTuitionRequestForm = (initialFormData) => {
         }
     };
 
+    // --- Multiple level/subject entries (one submission can cover several subjects) ---
+    const handleLevelSubjectChange = (index, value) => {
+        if (errors.levelSubjects) {
+            setErrors(prev => ({ ...prev, levelSubjects: null }));
+        }
+        setFormData(prev => {
+            const next = [...(prev.levelSubjects || [''])];
+            next[index] = value;
+            return { ...prev, levelSubjects: next };
+        });
+    };
+
+    const addLevelSubject = () => {
+        setFormData(prev => ({ ...prev, levelSubjects: [...(prev.levelSubjects || ['']), ''] }));
+    };
+
+    const removeLevelSubject = (index) => {
+        setFormData(prev => {
+            const next = (prev.levelSubjects || ['']).filter((_, i) => i !== index);
+            return { ...prev, levelSubjects: next.length ? next : [''] };
+        });
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         const allErrors = { ...validateStep(1, formData), ...validateStep(2, formData) };
         if (Object.keys(allErrors).length > 0) {
             setErrors(allErrors);
             // Force user back to the step with the first error
-            if (allErrors.name || allErrors.mobile || allErrors.level) {
+            if (allErrors.name || allErrors.mobile || allErrors.levelSubjects) {
                 setCurrentStep(1);
             } else if (allErrors.location) {
                 setCurrentStep(2);
@@ -131,10 +161,25 @@ const useTuitionRequestForm = (initialFormData) => {
 
         setStatus({ submitting: true, submitted: false, error: null });
         try {
+            // Send the cleaned list plus a joined `level` string so the backend's existing
+            // required `level` field and notifications keep working without changes.
+            const cleanedSubjects = (formData.levelSubjects || []).map(s => s.trim()).filter(Boolean);
+            const payload = {
+                ...formData,
+                levelSubjects: cleanedSubjects,
+                level: cleanedSubjects.join('; '),
+                // The form tracks budget as { type, customAmount }, but the backend Contact
+                // schema/notification expect { marketRate, custom, customAmount } booleans.
+                budget: {
+                    marketRate: formData.budget?.type === 'marketRate',
+                    custom: formData.budget?.type === 'custom',
+                    customAmount: formData.budget?.customAmount || ''
+                }
+            };
             const response = await fetch('https://tuition-backend-afud.onrender.com/api/requestfortutor', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(formData)
+                body: JSON.stringify(payload)
             });
             if (!response.ok) {
                 const result = await response.json();
@@ -164,6 +209,9 @@ const useTuitionRequestForm = (initialFormData) => {
         nextStep,
         prevStep,
         handleChange,
+        handleLevelSubjectChange,
+        addLevelSubject,
+        removeLevelSubject,
         handleSubmit,
         resetForm
     };

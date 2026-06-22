@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import { Info, Loader2 } from 'lucide-react';
+import { Info, Loader2, Plus, X } from 'lucide-react';
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
@@ -21,7 +21,7 @@ Select.displayName = 'Select';
 // ===================================
 // STEP 1: Your Details
 // ===================================
-export const Step1 = ({ nextStep, formData, handleChange, errors }) => ( // <-- 1. Accept `errors` prop here
+export const Step1 = ({ nextStep, formData, handleChange, handleLevelSubjectChange, addLevelSubject, removeLevelSubject, errors }) => ( // <-- 1. Accept `errors` prop here
   <div className="space-y-6 animate-fadeIn">
       <h3 className="text-2xl font-bold text-slate-800">Step 1: Your Details</h3>
       <div className="space-y-4">
@@ -46,14 +46,39 @@ export const Step1 = ({ nextStep, formData, handleChange, errors }) => ( // <-- 
               {errors.mobile && <p className="text-red-600 text-sm mt-1">{errors.mobile}</p>}
           </div>
           <div>
-              <Label htmlFor="level" className="text-base font-medium text-slate-700">Student's Level & Subject<span className="text-red-500 -ml-0.5">*</span></Label>
-              <Input
-                  id="level" name="level" type="text" value={formData.level} onChange={handleChange}
-                  placeholder="e.g., Secondary 3 A-Math"
-                  className={cn('mt-1 h-12 text-base', errors.level && 'border-red-500 focus-visible:ring-red-500')}
-              />
-              {/* 2. Add this block to display the error */}
-              {errors.level && <p className="text-red-600 text-sm mt-1">{errors.level}</p>}
+              <Label className="text-base font-medium text-slate-700">Student's Level &amp; Subject<span className="text-red-500 -ml-0.5">*</span></Label>
+              <p className="text-sm text-slate-500 mt-0.5">Need help with more than one subject? Add each one — we can match a tutor who covers them.</p>
+              <div className="space-y-2 mt-2">
+                  {(formData.levelSubjects || ['']).map((entry, index) => (
+                      <div key={index} className="flex items-center gap-2">
+                          <Input
+                              type="text"
+                              value={entry}
+                              onChange={(e) => handleLevelSubjectChange(index, e.target.value)}
+                              placeholder={index === 0 ? "e.g., Secondary 3 A-Math" : "e.g., Secondary 3 Chemistry"}
+                              className={cn('h-12 text-base', errors.levelSubjects && index === 0 && 'border-red-500 focus-visible:ring-red-500')}
+                          />
+                          {(formData.levelSubjects || ['']).length > 1 && (
+                              <button
+                                  type="button"
+                                  onClick={() => removeLevelSubject(index)}
+                                  aria-label="Remove this subject"
+                                  className="flex-shrink-0 h-10 w-10 flex items-center justify-center rounded-md text-slate-400 hover:text-red-600 hover:bg-red-50 transition-colors"
+                              >
+                                  <X size={18} />
+                              </button>
+                          )}
+                      </div>
+                  ))}
+              </div>
+              {errors.levelSubjects && <p className="text-red-600 text-sm mt-1">{errors.levelSubjects}</p>}
+              <button
+                  type="button"
+                  onClick={addLevelSubject}
+                  className="mt-2 inline-flex items-center gap-1.5 text-sm font-semibold text-blue-600 hover:text-blue-700 transition-colors"
+              >
+                  <Plus size={16} /> Add another subject
+              </button>
           </div>
       </div>
       <div className="flex justify-end pt-4">

@@ -41,16 +41,21 @@ async function connectToDatabase() {
 async function processAssignment(assignment, now) {
   // Already satisfied — the reply endpoint normally sets this, but guard anyway.
   if (assignment.interestedCount() >= INTERESTED_TARGET) {
-    assignment.outreach.status = 'Fulfilled';
-    await assignment.save();
+    // Atomic update (see closeStaleAssignments): avoids re-validating a legacy subject.
+    await Assignment.updateOne(
+      { _id: assignment._id },
+      { $set: { 'outreach.status': 'Fulfilled' } }
+    );
     return;
   }
 
   // Past the time cap with too few replies → stop and ask the owner to step in.
   const startedAt = assignment.outreach?.startedAt;
   if (startedAt && (now - new Date(startedAt)) >= MAX_DURATION_MS) {
-    assignment.outreach.status = 'Exhausted';
-    await assignment.save();
+    await Assignment.updateOne(
+      { _id: assignment._id },
+      { $set: { 'outreach.status': 'Exhausted' } }
+    );
     await notifyOwner(
       `⏰ *Outreach timed out*\n*${assignment.title}* got ${assignment.interestedCount()} interested tutor(s) ` +
       `in ${Math.round(MAX_DURATION_MS / 3600000)}h.\nPlease follow up manually.`
@@ -114,8 +119,14 @@ async function closeStaleAssignments(now) {
   const stale = await Assignment.find({ status: 'Open', createdAt: { $lte: cutoff } })
     .limit(MAX_CLOSE_PER_TICK);
   for (const assignment of stale) {
+    // Atomic update: a legacy `subject` outside the current enum would otherwise trip
+    // schema validation (and the level/subject pre-save hook) even though we only touch
+    // status. updateOne skips both, so stale legacy assignments still close cleanly.
+    await Assignment.updateOne(
+      { _id: assignment._id },
+      { $set: { status: 'Closed', updatedAt: new Date() } }
+    );
     assignment.status = 'Closed';
-    await assignment.save();
     await updateChannelPostToClosed(assignment);
     console.log(`Auto-closed assignment ${assignment._id} (Open > ${AUTO_CLOSE_DAYS}d)`);
   }

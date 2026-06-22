@@ -284,6 +284,17 @@ function scoreTutor(tutor, fit) {
   return quality * responsivenessFactor(tutor);
 }
 
+// For a one-tutor-for-many-subjects request, prefer tutors who actually cover more of the
+// requested subjects. Returns a 0.5..1 multiplier: full coverage = 1.0, partial scaled
+// down (but never below 0.5, so a strong partial-coverage tutor still stays in contention).
+// A no-op (returns 1) for single-subject requests and the "any subject" fallback.
+function coverageFactor(tutor, requestedFields, levelCategory) {
+  if (!requestedFields || requestedFields.length <= 1) return 1;
+  const teaches = tutor.teachingLevels?.[levelCategory] || {};
+  const covered = requestedFields.filter(f => teaches[f] === true).length;
+  return 0.5 + 0.5 * (covered / requestedFields.length);
+}
+
 // Find the best `poolSize` tutors matching the assignment's level+subject, location,
 // and tutor type — quality-ranked, ready to hand to the AI re-ranker.
 async function findMatchingTutors(assignment, poolSize = 40) {
@@ -299,12 +310,17 @@ async function findMatchingTutors(assignment, poolSize = 40) {
   }
 
   let subjectQuery;
+  // The specific subjects requested (field names). For a one-tutor-for-many request this
+  // holds 2+ entries and drives coverage-aware ranking below; for a single subject it's
+  // one entry (coverage is then a no-op); for the "any subject" fallback it stays empty.
+  let requestedFields = [];
   if (SPECIAL_SUBJECTS.has(assignment.subject)) {
     // Try to parse subjects from the assignment title
     const fields = parseSubjectsFromTitle(assignment.title || '');
     if (fields.length > 0) {
       console.log(`Parsed subjects from title "${assignment.title}":`, fields);
       subjectQuery = { $or: fields.map(f => ({ [`teachingLevels.${levelCategory}.${f}`]: true })) };
+      requestedFields = fields;
     } else {
       // Fallback: match any tutor who teaches any subject at this level
       console.log(`No subjects parsed from title "${assignment.title}", matching any ${levelCategory} tutor`);
@@ -321,6 +337,7 @@ async function findMatchingTutors(assignment, poolSize = 40) {
       return [];
     }
     subjectQuery = { [`teachingLevels.${levelCategory}.${subjectField}`]: true };
+    requestedFields = [subjectField];
   }
 
   const query = {
@@ -348,7 +365,7 @@ async function findMatchingTutors(assignment, poolSize = 40) {
   // rare case a single subject+level+region+type query matches more than that.
   const MAX_CANDIDATE_FETCH = 300;
   const candidates = await Tutor.find(query)
-    .select('fullName contactNumber tutorType yearsOfExperience highestEducation introduction teachingExperience trackRecord hourlyRate availableTimeSlots responseStats createdAt')
+    .select('fullName contactNumber tutorType yearsOfExperience highestEducation introduction teachingExperience trackRecord hourlyRate availableTimeSlots responseStats teachingLevels createdAt')
     .sort({ createdAt: -1 })
     .limit(MAX_CANDIDATE_FETCH)
     .lean();
@@ -360,7 +377,10 @@ async function findMatchingTutors(assignment, poolSize = 40) {
     .map((tutor) => ({ tutor, fit: budgetFit(tutor, budget, levelCategory) }))
     .filter(({ fit }) => fit.affordable)
     .filter(({ tutor }) => timeSlotsMatch(assignment, tutor))
-    .map(({ tutor, fit }) => ({ tutor, score: scoreTutor(tutor, fit) }))
+    .map(({ tutor, fit }) => ({
+      tutor,
+      score: scoreTutor(tutor, fit) * coverageFactor(tutor, requestedFields, levelCategory),
+    }))
     .sort((a, b) => b.score - a.score);
 
   return ranked.slice(0, poolSize).map(({ tutor }) => tutor);
