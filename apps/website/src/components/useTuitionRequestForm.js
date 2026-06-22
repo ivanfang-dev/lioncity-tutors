@@ -204,6 +204,7 @@ const useTuitionRequestForm = (initialFormData) => {
     return {
         currentStep,
         formData,
+        setFormData, // escape hatch for pages that pre-fill (e.g. URL params, preset buttons)
         errors,
         status,
         nextStep,

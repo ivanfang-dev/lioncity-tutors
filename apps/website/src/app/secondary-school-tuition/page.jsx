@@ -1,34 +1,35 @@
 "use client";
 
-import React, { useState, useRef } from "react";
+import React, { useRef } from "react";
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Step1, Step2, Step3 } from "@/components/FormSteps";
+import FormStepper from "@/components/FormStepper";
+import useTuitionRequestForm from "@/components/useTuitionRequestForm";
+import FormBenefits from "@/components/FormBenefits";
 import { CheckCircle } from "lucide-react";
 
-const validateStep = (step, data) => {
-  const newErrors = {};
-  if (step === 1) {
-    if (!data.name.trim()) newErrors.name = "Name is required.";
-    if (!data.mobile.trim()) {
-      newErrors.mobile = "Mobile number is required.";
-    } else if (!/^[689]\d{7}$/.test(data.mobile.trim())) {
-      newErrors.mobile = "Please enter a valid 8-digit Singapore mobile number.";
-    }
-    if (!data.level.trim()) newErrors.level = "Level & Subject are required.";
-    if (!data.location.trim()) newErrors.location = "Location is required.";
-  }
-  return newErrors;
-};
-
 export default function SecondarySchoolTuition() {
-  const [currentStep, setCurrentStep] = useState(1);
-  const initialFormData = {
+  const formRef = useRef(null);
+  const {
+    currentStep,
+    formData,
+    errors,
+    status,
+    nextStep,
+    prevStep,
+    handleChange,
+    handleLevelSubjectChange,
+    addLevelSubject,
+    removeLevelSubject,
+    handleSubmit,
+    resetForm
+  } = useTuitionRequestForm({
     name: '',
     mobile: '',
-    level: '',
+    levelSubjects: [''],
     location: '',
     lessonDuration: '1.5 Hours',
     customDuration: '',
@@ -38,62 +39,7 @@ export default function SecondarySchoolTuition() {
     tutorType: { partTime: true, fullTime: false, moeTeacher: false },
     budget: { type: 'marketRate', customAmount: '' },
     preferences: ''
-  };
-  const [formData, setFormData] = useState(initialFormData);
-  const [status, setStatus] = useState({ submitting: false, submitted: false, error: null });
-  const [errors, setErrors] = useState({});
-  const formRef = useRef(null);
-
-  const nextStep = () => {
-    const newErrors = validateStep(currentStep, formData);
-    setErrors(newErrors);
-    if (Object.keys(newErrors).length === 0) setCurrentStep(prev => prev + 1);
-  };
-
-  const prevStep = () => {
-    setErrors({});
-    setCurrentStep(prev => prev - 1);
-  };
-
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    const inputValue = type === 'checkbox' ? checked : value;
-    if (errors[name]) setErrors(prev => ({ ...prev, [name]: null }));
-    if (name.includes('.')) {
-      const [parent, child] = name.split('.');
-      setFormData(prev => ({ ...prev, [parent]: { ...prev[parent], [child]: inputValue } }));
-    } else {
-      setFormData(prev => ({ ...prev, [name]: inputValue }));
-    }
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const step1Errors = validateStep(1, formData);
-    if (Object.keys(step1Errors).length > 0) {
-      setErrors(step1Errors);
-      setCurrentStep(1);
-      return;
-    }
-    setStatus({ submitting: true, submitted: false, error: null });
-    try {
-      const response = await fetch('https://tuition-backend-afud.onrender.com/api/requestfortutor', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
-      });
-      if (!response.ok) {
-        const result = await response.json();
-        throw new Error(result.error || 'Form submission failed');
-      }
-      setFormData(initialFormData);
-      setCurrentStep(1);
-      setStatus({ submitting: false, submitted: true, error: null });
-      formRef.current?.scrollIntoView({ behavior: 'smooth' });
-    } catch (error) {
-      setStatus({ submitting: false, submitted: false, error: error.message });
-    }
-  };
+  });
 
   return (
     <main>
@@ -167,16 +113,7 @@ export default function SecondarySchoolTuition() {
             <p className="text-gray-600 text-center mb-8 max-w-2xl mx-auto">
               Fill in the details below and our team will match you with the best O-Level or N-Level tutor — fast, free, and no obligation.
             </p>
-            <div className="flex justify-center gap-6 sm:gap-10 mb-8 flex-wrap">
-              <div className="flex items-center gap-2 text-gray-600">
-                <CheckCircle className="w-5 h-5 text-primary" />
-                <span className="font-medium">Matched within 24 hours</span>
-              </div>
-              <div className="flex items-center gap-2 text-gray-600">
-                <CheckCircle className="w-5 h-5 text-primary" />
-                <span className="font-medium">No hidden fees, ever</span>
-              </div>
-            </div>
+            <FormBenefits />
             <div className="bg-white rounded-xl shadow-lg p-8">
               {status.submitted ? (
                 <div className="text-center py-10">
@@ -184,7 +121,7 @@ export default function SecondarySchoolTuition() {
                   <h3 className="text-2xl font-semibold mb-2 text-gray-900">Thank You!</h3>
                   <p className="text-gray-600 mb-6">Our team will be in touch with suitable tutor profiles shortly via WhatsApp.</p>
                   <Button
-                    onClick={() => setStatus({ submitting: false, submitted: false, error: null })}
+                    onClick={resetForm}
                     className="bg-[#F17720] text-white px-6 py-2 rounded-full hover:bg-[#d9691c] transition-colors"
                   >
                     Submit Another Request
@@ -192,26 +129,14 @@ export default function SecondarySchoolTuition() {
                 </div>
               ) : (
                 <form onSubmit={handleSubmit}>
-                  <div className="mb-8">
-                    <div className="flex justify-between mb-1">
-                      {["Your Details", "Lesson Details", "Tutor Preferences"].map((step, i) => (
-                        <span key={i} className={`text-sm font-medium ${currentStep >= i + 1 ? 'text-primary' : 'text-gray-400'}`}>{step}</span>
-                      ))}
-                    </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div
-                        className="bg-primary h-2 rounded-full transition-all duration-500 ease-in-out"
-                        style={{ width: `${((currentStep - 1) / 2) * 100}%` }}
-                      />
-                    </div>
-                  </div>
+                  <FormStepper currentStep={currentStep} />
                   {status.error && (
                     <div className="bg-red-100 text-red-800 p-4 rounded-md mb-6">
                       <p className="font-semibold">Submission Error</p>
                       <p className="text-sm">{status.error}</p>
                     </div>
                   )}
-                  {currentStep === 1 && <Step1 nextStep={nextStep} formData={formData} handleChange={handleChange} errors={errors} />}
+                  {currentStep === 1 && <Step1 nextStep={nextStep} formData={formData} handleChange={handleChange} handleLevelSubjectChange={handleLevelSubjectChange} addLevelSubject={addLevelSubject} removeLevelSubject={removeLevelSubject} errors={errors} />}
                   {currentStep === 2 && <Step2 nextStep={nextStep} prevStep={prevStep} formData={formData} handleChange={handleChange} errors={errors} />}
                   {currentStep === 3 && <Step3 prevStep={prevStep} formData={formData} handleChange={handleChange} status={status} errors={errors} />}
                 </form>

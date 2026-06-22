@@ -7,6 +7,8 @@ import { motion, useScroll, useTransform, useAnimation } from "framer-motion";
 import Image from 'next/image';
 import UniqueFeaturesSection from "@/components/UniqueFeaturesSection";
 import { Step1, Step2, Step3 } from "@/components/FormSteps";
+import FormStepper from "@/components/FormStepper";
+import FormBenefits from "@/components/FormBenefits";
 import TutorPopup from "@/components/TutorPopup";
 import useTuitionRequestForm from "@/components/useTuitionRequestForm";
 import { Star, CheckCircle, Award, Users, Clock, Shield, Quote, TrendingUp, MapPin, Mail, FileText, BookOpen, ArrowRight } from "lucide-react";
@@ -357,7 +359,7 @@ Preferred days & timing: `;
         
         <section className="bg-primary/5 py-8 border-y border-primary/10">
             <div className="max-w-4xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
-                <div className="flex items-center gap-4">
+                <div className="flex flex-col md:flex-row items-center gap-4">
                     <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0">
                         <Award className="w-5 h-5 text-primary" />
                     </div>
@@ -398,16 +400,7 @@ Preferred days & timing: `;
         </p>
         
         {/* Benefits */}
-        <div className="flex flex-col sm:flex-row justify-center items-center gap-3 sm:gap-8 mb-8">
-            <div className="flex items-center gap-2 text-gray-600">
-                <CheckCircle className="w-4 h-4 text-primary" />
-                <span className="font-medium text-sm">Matched within 24 hours</span>
-            </div>
-            <div className="flex items-center gap-2 text-gray-600">
-                <CheckCircle className="w-4 h-4 text-primary" />
-                <span className="font-medium text-sm">No hidden fees, ever</span>
-            </div>
-        </div>
+        <FormBenefits />
             <div className="bg-background-card rounded-xl shadow-lg p-8">
                 {status.submitted ? (
                     <div className="text-center py-10">
@@ -423,32 +416,7 @@ Preferred days & timing: `;
                     </div>
                 ) : (
                     <form onSubmit={handleSubmit}>
-                        <div className="mb-8">
-                            {/* Desktop: Text labels */}
-                            <div className="hidden sm:flex justify-between mb-1">
-                                {["Your Details", "Lesson Details", "Tutor Preferences"].map((step, i) => (
-                                    <span key={i} className={`text-sm font-medium ${currentStep >= i + 1 ? 'text-primary' : 'text-gray-400'}`}>{step}</span>
-                                ))}
-                            </div>
-                            
-                            {/* Mobile: Numbered circles */}
-                            <div className="flex sm:hidden justify-between px-4 mb-4">
-                                {[1, 2, 3].map((num) => (
-                                    <div key={num} className="flex flex-col items-center gap-1">
-                                        <div className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold transition-colors ${
-                                            currentStep >= num ? 'bg-primary text-white' : 'bg-gray-200 text-gray-500'
-                                        }`}>
-                                            {num}
-                                        </div>
-                                        <span className="text-xs text-gray-500">Step {num}</span>
-                                    </div>
-                                ))}
-                            </div>
-                            
-                            <div className="w-full bg-gray-200 rounded-full h-2">
-                                <div className="bg-primary h-2 rounded-full transition-all duration-500" style={{ width: `${(currentStep / 3) * 100}%` }} />
-                            </div>
-                        </div>
+                        <FormStepper currentStep={currentStep} />
                         {status.error && <div className="bg-red-100 text-red-800 p-4 rounded-md mb-6">{status.error}</div>}
                         
                         {/* Make sure you pass the consolidated handleChange to all steps */}

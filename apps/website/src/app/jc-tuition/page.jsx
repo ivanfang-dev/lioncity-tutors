@@ -6,162 +6,41 @@ import Image from 'next/image';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Step1, Step2, Step3 } from "@/components/FormSteps";
+import FormStepper from "@/components/FormStepper";
+import useTuitionRequestForm from "@/components/useTuitionRequestForm";
+import FormBenefits from "@/components/FormBenefits";
 import { CheckCircle } from "lucide-react"; // Imported for consistency in the success message
 
-// Validation logic for form steps - This is the new function added.
-const validateStep = (step, data) => {
-    const newErrors = {};
-
-    if (step === 1) {
-        if (!data.name.trim()) newErrors.name = "Name is required.";
-        if (!data.mobile.trim()) {
-            newErrors.mobile = "Mobile number is required.";
-        } else if (!/^[689]\d{7}$/.test(data.mobile.trim())) {
-            newErrors.mobile = "Please enter a valid 8-digit Singapore mobile number.";
-        }
-        if (!data.level.trim()) newErrors.level = "Level & Subject are required.";
-    }
-
-    if (step === 2) {
-        if (!data.location.trim()) newErrors.location = "Location is required.";
-    }
-    return newErrors;
-};
-
 export default function JCTuition() {
+  const formRef = useRef(null);
   const [activeStream, setActiveStream] = useState('science');
-  const [currentStep, setCurrentStep] = useState(1);
-  const initialFormData = {
+  const {
+    currentStep,
+    formData,
+    errors,
+    status,
+    nextStep,
+    prevStep,
+    handleChange,
+    handleLevelSubjectChange,
+    addLevelSubject,
+    removeLevelSubject,
+    handleSubmit,
+    resetForm
+  } = useTuitionRequestForm({
     name: '',
     mobile: '',
-    level: 'JC Level', // Set a default value as it's a JC page
+    levelSubjects: ['JC Level'],
     location: '',
-    lessonDuration: '2 Hours', // Default for JC
+    lessonDuration: '1.5 Hours',
     customDuration: '',
     lessonFrequency: '1 Lesson/Week',
     customFrequency: '',
     preferredTime: '',
-    tutorType: {
-      partTime: true, // Default to true as per previous working forms
-      fullTime: false,
-      moeTeacher: false
-    },
-    budget: {
-      type: 'marketRate',
-      customAmount: ''
-    },
-    genderPreference: 'No preference',
-    bilingualRequired: 'No',
+    tutorType: { partTime: true, fullTime: false, moeTeacher: false },
+    budget: { type: 'marketRate', customAmount: '' },
     preferences: ''
-  };
-
-  const [formData, setFormData] = useState(initialFormData);
-  const [status, setStatus] = useState({
-    submitting: false,
-    submitted: false,
-    error: null
   });
-
-  // --- Start of ADDED/MODIFIED LOGIC ---
-  const [errors, setErrors] = useState({});
-  const formRef = useRef(null); // Ref for scrolling into view
-
-  const nextStep = () => {
-      const newErrors = validateStep(currentStep, formData);
-      setErrors(newErrors);
-
-      if (Object.keys(newErrors).length === 0) {
-          setCurrentStep(prev => prev + 1);
-      }
-  };
-
-  const prevStep = () => {
-      setErrors({}); // Clear errors when going back
-      setCurrentStep(prev => prev - 1);
-  };
-
-  const handleChange = (e) => {
-    const { name, value, type } = e.target;
-    
-    // Clear error for the field being edited
-    if (errors[name]) {
-        setErrors(prev => ({ ...prev, [name]: null }));
-    }
-
-    if (name.includes('.')) {
-      const [parent, child] = name.split('.');
-      setFormData(prevData => ({
-        ...prevData,
-        [parent]: {
-          ...prevData[parent],
-          [child]: value
-        }
-      }));
-    } else {
-      setFormData(prevData => ({
-        ...prevData,
-        [name]: value
-      }));
-    }
-  };
-  
-  const handleCheckboxChange = (e) => {
-    const { name, checked } = e.target;
-    if (name.includes('.')) {
-      const [objectName, field] = name.split('.');
-      setFormData(prevData => ({
-        ...prevData,
-        [objectName]: { ...prevData[objectName], [field]: checked }
-      }));
-    } else {
-      setFormData(prevData => ({ ...prevData, [name]: checked }));
-    }
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    
-    // Full validation before submission
-    const step1Errors = validateStep(1, formData);
-    const step2Errors = validateStep(2, formData);
-    const allErrors = { ...step1Errors, ...step2Errors };
-
-    if (Object.keys(allErrors).length > 0) {
-        setErrors(allErrors);
-        // Go to the first step that has an error
-        if (Object.keys(step1Errors).length > 0) {
-            setCurrentStep(1);
-        } else if (Object.keys(step2Errors).length > 0) {
-            setCurrentStep(2);
-        }
-        return; // Stop submission if there are errors
-    }
-
-    setStatus({ submitting: true, submitted: false, error: null });
-    
-    try {
-      const response = await fetch('https://tuition-backend-afud.onrender.com/api/requestfortutor', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(formData) // Your existing payload structure is fine
-      });
-      if (response.ok) {
-        setFormData(initialFormData);
-        setCurrentStep(1);
-        setStatus({ submitting: false, submitted: true, error: null });
-        formRef.current?.scrollIntoView({ behavior: 'smooth' });
-      } else {
-        const errorText = await response.text();
-        throw new Error(errorText || 'Form submission failed');
-      }
-    } catch (error) {
-      setStatus({ submitting: false, submitted: false, error: error.message || 'Failed to submit the form. Please try again.' });
-    }
-  };
-  // --- End of ADDED/MODIFIED LOGIC ---
-
 
   return (
     <>
@@ -194,16 +73,7 @@ export default function JCTuition() {
         <section ref={formRef} className="bg-gradient-to-br from-blue-50 to-sky-50 p-8 rounded-2xl shadow-lg">
           <div className="max-w-4xl mx-auto">
             <h2 className="text-3xl font-bold text-center text-primary mb-4">Request a JC Tutor</h2>
-            <div className="flex justify-center gap-6 sm:gap-10 mb-8 flex-wrap">
-              <div className="flex items-center gap-2 text-gray-600">
-                <CheckCircle className="w-5 h-5 text-primary" />
-                <span className="font-medium">Matched within 24 hours</span>
-              </div>
-              <div className="flex items-center gap-2 text-gray-600">
-                <CheckCircle className="w-5 h-5 text-primary" />
-                <span className="font-medium">No hidden fees, ever</span>
-              </div>
-            </div>
+            <FormBenefits />
             <div className="bg-white rounded-xl shadow-lg p-8">
               {status.submitted ? (
                 <div className="text-center py-10">
@@ -211,7 +81,7 @@ export default function JCTuition() {
                   <h2 className="text-2xl font-semibold mb-2 text-gray-900">Thank you!</h2>
                   <p className="text-gray-600 mb-4">Our team will be in touch with suitable tutor profiles shortly via WhatsApp.</p>
                   <button
-                    onClick={() => setStatus({ submitting: false, submitted: false, error: null })}
+                    onClick={resetForm}
                     className="bg-[#F17720] text-white px-6 py-2 rounded-full hover:bg-[#d9691c] transition-colors font-semibold"
                   >
                     Submit Another Request
@@ -220,19 +90,7 @@ export default function JCTuition() {
               ) : (
                 <form id="mainForm" onSubmit={handleSubmit}>
                   {/* --- Progress Bar --- */}
-                  <div className="mb-8">
-                    <div className="flex justify-between mb-1">
-                      <span className={`text-sm font-medium ${currentStep >= 1 ? 'text-primary' : 'text-gray-400'}`}>About You</span>
-                      <span className={`text-sm font-medium ${currentStep >= 2 ? 'text-primary' : 'text-gray-400'}`}>Lesson Details</span>
-                      <span className={`text-sm font-medium ${currentStep >= 3 ? 'text-primary' : 'text-gray-400'}`}>Tutor Preferences</span>
-                    </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div
-                        className="bg-primary h-2 rounded-full transition-all duration-500 ease-in-out"
-                        style={{ width: `${((currentStep - 1) / 2) * 100}%` }}
-                      ></div>
-                    </div>
-                  </div>
+                  <FormStepper currentStep={currentStep} />
                   {status.error && (
                     <div className="bg-red-100 text-red-800 p-4 rounded-md mb-6">
                       <p className="font-semibold">Submission Error</p>
@@ -244,7 +102,7 @@ export default function JCTuition() {
                     <Step1 
                       nextStep={nextStep} 
                       formData={formData} 
-                      handleChange={handleChange} 
+                      handleChange={handleChange} handleLevelSubjectChange={handleLevelSubjectChange} addLevelSubject={addLevelSubject} removeLevelSubject={removeLevelSubject} 
                       errors={errors} 
                     />
                   )}
@@ -262,7 +120,7 @@ export default function JCTuition() {
                       prevStep={prevStep} 
                       formData={formData} 
                       handleChange={handleChange}
-                      handleCheckboxChange={handleCheckboxChange}
+                      handleCheckboxChange={handleChange}
                       status={status}
                       errors={errors}
                     />

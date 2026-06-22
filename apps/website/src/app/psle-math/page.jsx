@@ -1,136 +1,44 @@
 "use client";
 
-import React, { useState, useRef } from "react";
+import React, { useRef } from "react";
 import Link from 'next/link';
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Step1, Step2, Step3 } from "@/components/FormSteps";
+import FormStepper from "@/components/FormStepper";
+import useTuitionRequestForm from "@/components/useTuitionRequestForm";
+import FormBenefits from "@/components/FormBenefits";
 import { CheckCircle } from "lucide-react";
 
-const validateStep = (step, data) => {
-    const newErrors = {};
-
-    if (step === 1) {
-        if (!data.name.trim()) newErrors.name = "Name is required.";
-        if (!data.mobile.trim()) {
-            newErrors.mobile = "Mobile number is required.";
-        } else if (!/^[689]\d{7}$/.test(data.mobile.trim())) {
-            newErrors.mobile = "Please enter a valid 8-digit Singapore mobile number.";
-        }
-        if (!data.level.trim()) newErrors.level = "Level & Subject are required.";
-    }
-
-    if (step === 2) {
-        if (!data.location.trim()) newErrors.location = "Location is required.";
-    }
-    return newErrors;
-};
-
 export default function PSLEMath() {
-  const [currentStep, setCurrentStep] = useState(1);
-  const initialFormData = {
+  const formRef = useRef(null);
+  const {
+    currentStep,
+    formData,
+    errors,
+    status,
+    nextStep,
+    prevStep,
+    handleChange,
+    handleLevelSubjectChange,
+    addLevelSubject,
+    removeLevelSubject,
+    handleSubmit,
+    resetForm
+  } = useTuitionRequestForm({
     name: '',
     mobile: '',
-    level: 'PSLE Math',
+    levelSubjects: ['PSLE Math'],
     location: '',
     lessonDuration: '1.5 Hours',
     customDuration: '',
     lessonFrequency: '1 Lesson/Week',
     customFrequency: '',
     preferredTime: '',
-    tutorType: {
-      partTime: true,
-      fullTime: false,
-      moeTeacher: false
-    },
-    budget: {
-      type: 'marketRate',
-      customAmount: ''
-    },
+    tutorType: { partTime: true, fullTime: false, moeTeacher: false },
+    budget: { type: 'marketRate', customAmount: '' },
     preferences: ''
-  };
-  const [formData, setFormData] = useState(initialFormData);
-  const [status, setStatus] = useState({
-    submitting: false,
-    submitted: false,
-    error: null
   });
-  const [errors, setErrors] = useState({});
-  const formRef = useRef(null);
-
-  const nextStep = () => {
-      const newErrors = validateStep(currentStep, formData);
-      setErrors(newErrors);
-
-      if (Object.keys(newErrors).length === 0) {
-          setCurrentStep(prev => prev + 1);
-      }
-  };
-
-  const prevStep = () => {
-      setErrors({}); // Clear errors when going back
-      setCurrentStep(prev => prev - 1);
-  };
-
-  const handleChange = (e) => {
-      const { name, value, type, checked } = e.target;
-      const inputValue = type === 'checkbox' ? checked : value;
-
-      // Clear the specific error when the user starts typing
-      if (errors[name]) {
-          setErrors(prev => ({ ...prev, [name]: null }));
-      }
-
-      if (name.includes('.')) {
-          const [parent, child] = name.split('.');
-          setFormData(prev => ({
-              ...prev,
-              [parent]: { ...prev[parent], [child]: inputValue }
-          }));
-      } else {
-          setFormData(prev => ({ ...prev, [name]: inputValue }));
-      }
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-     // Final validation check on all fields before submitting
-      const step1Errors = validateStep(1, formData);
-      const step2Errors = validateStep(2, formData);
-      const allErrors = { ...step1Errors, ...step2Errors }; // Combine errors from all steps
-
-      if (Object.keys(allErrors).length > 0) {
-          setErrors(allErrors);
-          // If there are errors from Step 1, automatically go back to it
-          if (Object.keys(step1Errors).length > 0) {
-              setCurrentStep(1);
-          } else if (Object.keys(step2Errors).length > 0) {
-              setCurrentStep(2);
-          }
-          return; // Stop submission
-      }
-    setStatus({ submitting: true, submitted: false, error: null });
-    try {
-      const response = await fetch('https://tuition-backend-afud.onrender.com/api/requestfortutor', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(formData)
-      });
-      if (response.ok) {
-        setFormData(initialFormData);
-        setCurrentStep(1);
-        setStatus({ submitting: false, submitted: true, error: null });
-        formRef.current?.scrollIntoView({ behavior: 'smooth' });
-      } else {
-        const errorText = await response.text();
-        throw new Error(errorText || 'Form submission failed');
-      }
-    } catch (error) {
-      setStatus({ submitting: false, submitted: false, error: error.message || 'Failed to submit the form. Please try again.' });
-    }
-  };
 
   return (
     <>
@@ -459,44 +367,26 @@ export default function PSLEMath() {
                   Get matched with qualified tutors in 24 hours. Just fill out the details below.
               </p>
               
-              <div className="flex justify-center space-x-8 mb-8">
-                  <div className="flex items-center text-emerald-600">
-                      <span className="text-2xl mr-2">✅</span>
-                      <span className="font-medium">Matched within 24 hours</span>
-                  </div>
-                  <div className="flex items-center text-emerald-600">
-                      <span className="text-2xl mr-2">✅</span>
-                      <span className="font-medium">No hidden fees, ever</span>
-                  </div>
-              </div>
+              <FormBenefits />
               <div className="bg-background-card rounded-xl shadow-lg p-8">
                   {status.submitted ? (
                       <div className="text-center py-10">
-                          <CheckCircle className="text-green-500 w-16 h-16 mx-auto mb-4" />
-                          <h2 className="text-2xl font-semibold mb-2">Thank you!</h2>
-                          <p className="text-text-default/80 mb-4">We'll send you tutor profiles shortly.</p>
+                          <CheckCircle className="text-primary w-16 h-16 mx-auto mb-4" />
+                          <h2 className="text-2xl font-semibold text-gray-900 mb-2">Thank you!</h2>
+                          <p className="text-gray-600 mb-4">Our team will be in touch with suitable tutor profiles shortly via WhatsApp.</p>
                           <Button 
                               className="bg-accent text-text-inverse hover:bg-accent/90" 
-                              onClick={() => setStatus({ submitting: false, submitted: false, error: null })}
+                              onClick={resetForm}
                           >
                               Submit Another Request
                           </Button>
                       </div>
                   ) : (
                       <form onSubmit={handleSubmit}>
-                          <div className="mb-8">
-                              <div className="flex justify-between mb-1">
-                                  {["Your Details", "Lesson Details", "Tutor Preferences"].map((step, i) => (
-                                      <span key={i} className={`text-sm font-medium ${currentStep >= i + 1 ? 'text-primary' : 'text-gray-400'}`}>{step}</span>
-                                  ))}
-                              </div>
-                              <div className="w-full bg-gray-200 rounded-full h-2">
-                                  <div className="bg-primary h-2 rounded-full transition-all duration-500" style={{ width: `${((currentStep - 1) / 2) * 100}%` }} />
-                              </div>
-                          </div>
+                          <FormStepper currentStep={currentStep} />
                           {status.error && <div className="bg-red-100 text-red-800 p-4 rounded-md mb-6">{status.error}</div>}
                           
-                          {currentStep === 1 && <Step1 nextStep={nextStep} formData={formData} handleChange={handleChange} errors={errors} />}
+                          {currentStep === 1 && <Step1 nextStep={nextStep} formData={formData} handleChange={handleChange} handleLevelSubjectChange={handleLevelSubjectChange} addLevelSubject={addLevelSubject} removeLevelSubject={removeLevelSubject} errors={errors} />}
                           {currentStep === 2 && <Step2 nextStep={nextStep} prevStep={prevStep} formData={formData} handleChange={handleChange} errors={errors} />}
                           {currentStep === 3 && <Step3 prevStep={prevStep} formData={formData} handleChange={handleChange} status={status} errors={errors} />}
                       </form>

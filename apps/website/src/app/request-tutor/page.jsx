@@ -1,159 +1,60 @@
 "use client";
 
-import React, { Suspense, useState, useEffect, useRef } from 'react';
+import React, { Suspense, useEffect, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Info, CheckCircle, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Step1, Step2, Step3 } from "@/components/FormSteps";
-
-const validateStep = (step, data) => {
-    const newErrors = {};
-
-    if (step === 1) {
-        if (!data.name.trim()) newErrors.name = "Name is required.";
-        if (!data.mobile.trim()) {
-            newErrors.mobile = "Mobile number is required.";
-        } else if (!/^[689]\d{7}$/.test(data.mobile.trim())) {
-            newErrors.mobile = "Please enter a valid 8-digit Singapore mobile number.";
-        }
-        if (!data.level.trim()) newErrors.level = "Level & Subject are required.";
-    }
-
-    if (step === 2) {
-        if (!data.location.trim()) newErrors.location = "Location is required.";
-    }
-    return newErrors;
-};
-
+import FormStepper from "@/components/FormStepper";
+import useTuitionRequestForm from "@/components/useTuitionRequestForm";
 
 function RequestForTutorContent(){
   const searchParams = useSearchParams();
   const formRef = useRef(null);
-  const [currentStep, setCurrentStep] = useState(1);
-  const initialFormData = {
+  const {
+    currentStep,
+    formData,
+    setFormData,
+    errors,
+    status,
+    nextStep,
+    prevStep,
+    handleChange,
+    handleLevelSubjectChange,
+    addLevelSubject,
+    removeLevelSubject,
+    handleSubmit,
+    resetForm
+  } = useTuitionRequestForm({
     name: '',
     mobile: '',
-    level: '',
+    levelSubjects: [''],
     location: '',
     lessonDuration: '1.5 Hours',
     customDuration: '',
     lessonFrequency: '1 Lesson/Week',
     customFrequency: '',
     preferredTime: '',
-    tutorType: {
-      partTime: true,
-      fullTime: false,
-      moeTeacher: false
-    },
-    budget: {
-      type: 'marketRate', // 'marketRate' or 'custom'
-      customAmount: ''
-    },
+    tutorType: { partTime: true, fullTime: false, moeTeacher: false },
+    budget: { type: 'marketRate', customAmount: '' },
     genderPreference: 'No preference',
     bilingualRequired: 'No',
     preferences: ''
-  };
-
-  const [formData, setFormData] = useState(initialFormData);
-  const [errors, setErrors] = useState({});
-  const [status, setStatus] = useState({
-    submitting: false,
-    submitted: false,
-    error: null
   });
 
-  // This hook reads the URL parameters on page load and pre-fills the form data.
+  // Pre-fill name/mobile from URL parameters on page load.
   useEffect(() => {
     const name = searchParams.get('name');
     const mobile = searchParams.get('mobile');
-
-    // Update the state only if any of the URL parameters exist
-    if (name || mobile ) {
+    if (name || mobile) {
       setFormData(prevData => ({
         ...prevData,
         name: name || prevData.name,
         mobile: mobile || prevData.mobile,
       }));
     }
-  }, [searchParams]);
-
-  const nextStep = () => {
-      const newErrors = validateStep(currentStep, formData);
-      setErrors(newErrors);
-
-      if (Object.keys(newErrors).length === 0) {
-          setCurrentStep(prev => prev + 1);
-      }
-  };
-
-  const prevStep = () => {
-      setErrors({}); // Clear errors when going back
-      setCurrentStep(prev => prev - 1);
-  };
-
-  const handleChange = (e) => {
-      const { name, value, type, checked } = e.target;
-      const inputValue = type === 'checkbox' ? checked : value;
-
-      // Clear the specific error when the user starts typing
-      if (errors[name]) {
-          setErrors(prev => ({ ...prev, [name]: null }));
-      }
-
-      if (name.includes('.')) {
-          const [parent, child] = name.split('.');
-          setFormData(prev => ({
-              ...prev,
-              [parent]: { ...prev[parent], [child]: inputValue }
-          }));
-      } else {
-          setFormData(prev => ({ ...prev, [name]: inputValue }));
-      }
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-     // Final validation check on all fields before submitting
-      const step1Errors = validateStep(1, formData);
-      const step2Errors = validateStep(2, formData);
-      const allErrors = { ...step1Errors, ...step2Errors }; // Combine errors from all steps
-
-      if (Object.keys(allErrors).length > 0) {
-          setErrors(allErrors);
-          // If there are errors from Step 1, automatically go back to it
-          if (Object.keys(step1Errors).length > 0) {
-              setCurrentStep(1);
-          } else if (Object.keys(step2Errors).length > 0) {
-              setCurrentStep(2)
-          }
-          return; // Stop submission
-      }
-    setStatus({ submitting: true, submitted: false, error: null });
-
-    try {
-      const response = await fetch('https://tuition-backend-afud.onrender.com/api/requestfortutor', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(formData)
-      });
-
-      if (response.ok) {
-        setFormData(initialFormData);
-        setCurrentStep(1); // Reset to first step
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        setStatus({ submitting: false, submitted: true, error: null });
-      } else {
-        const errorText = await response.text();
-        throw new Error(errorText || 'Form submission failed');
-      }
-    }
-    catch (error) {
-      setStatus({ submitting: false, submitted: false, error: error.message || 'Failed to submit the form. Please try again.' });
-    }
-  };
+  }, [searchParams, setFormData]);
 
   return (
     <>
@@ -186,31 +87,17 @@ function RequestForTutorContent(){
                                 <p className="text-text-default/80 mb-4">We'll send you tutor profiles shortly.</p>
                                 <Button
                                     className="bg-accent text-text-inverse hover:bg-accent/90"
-                                    onClick={() => setStatus({ submitting: false, submitted: false, error: null })}
+                                    onClick={resetForm}
                                 >
                                     Submit Another Request
                                 </Button>
                             </div>
                         ) : (
                             <form onSubmit={handleSubmit}>
-                                <div className="mb-8">
-                                    <div className="hidden sm:flex justify-between mb-1">
-                                        {["Your Details", "Lesson Details", "Tutor Preferences"].map((step, i) => (
-                                            <span key={i} className={`text-sm font-medium ${currentStep >= i + 1 ? 'text-primary' : 'text-gray-400'}`}>{step}</span>
-                                        ))}
-                                    </div>
-                                    <div className="flex sm:hidden justify-center mb-1">
-                                        <span className="text-sm font-medium text-primary">
-                                            Step {currentStep} of 3
-                                        </span>
-                                    </div>
-                                    <div className="w-full bg-gray-200 rounded-full h-2">
-                                        <div className="bg-primary h-2 rounded-full transition-all duration-500" style={{ width: `${((currentStep - 1) / 2) * 100}%` }} />
-                                    </div>
-                                </div>
+                                <FormStepper currentStep={currentStep} />
                                 {status.error && <div className="bg-red-100 text-red-800 p-4 rounded-md mb-6">{status.error}</div>}
 
-                                {currentStep === 1 && <Step1 nextStep={nextStep} formData={formData} handleChange={handleChange} errors={errors} />}
+                                {currentStep === 1 && <Step1 nextStep={nextStep} formData={formData} handleChange={handleChange} handleLevelSubjectChange={handleLevelSubjectChange} addLevelSubject={addLevelSubject} removeLevelSubject={removeLevelSubject} errors={errors} />}
                                 {currentStep === 2 && <Step2 nextStep={nextStep} prevStep={prevStep} formData={formData} handleChange={handleChange} errors={errors} />}
                                 {currentStep === 3 && <Step3 prevStep={prevStep} formData={formData} handleChange={handleChange} status={status} errors={errors} />}
                             </form>

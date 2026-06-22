@@ -1,105 +1,47 @@
 "use client";
 
-import React, { useState, useRef } from "react";
+import React, { useRef } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Step1, Step2, Step3 } from "../../components/FormSteps";
+import FormStepper from "../../components/FormStepper";
+import useTuitionRequestForm from "../../components/useTuitionRequestForm";
 import { CheckCircle, ArrowRight, Star, BrainCircuit, GraduationCap, Atom } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
-// --- Validation Logic ---
-const validateStep = (step, data) => {
-    const newErrors = {};
-    if (step === 1) {
-        if (!data.name.trim()) newErrors.name = "Name is required.";
-        if (!data.mobile.trim()) {
-            newErrors.mobile = "Mobile number is required.";
-        } else if (!/^[689]\d{7}$/.test(data.mobile.trim())) {
-            newErrors.mobile = "Please enter a valid 8-digit Singapore mobile number.";
-        }
-        if (!data.level.trim()) newErrors.level = "Level & Subject are required.";
-    }
-    if (step === 2) {
-        if (!data.location.trim()) newErrors.location = "Location is required.";
-    }
-    return newErrors;
-};
-
 // --- Main Page Component ---
 export default function TuitionRatesPage() {
-  const [currentStep, setCurrentStep] = useState(1);
-  const initialFormData = {
-    name: '', mobile: '', level: '', location: '',
-    lessonDuration: '1.5 Hours', customDuration: '',
-    lessonFrequency: '1 Lesson/Week', customFrequency: '',
+  const formRef = useRef(null);
+  const {
+    currentStep,
+    formData,
+    errors,
+    status,
+    nextStep,
+    prevStep,
+    handleChange,
+    handleLevelSubjectChange,
+    addLevelSubject,
+    removeLevelSubject,
+    handleSubmit,
+    resetForm
+  } = useTuitionRequestForm({
+    name: '',
+    mobile: '',
+    levelSubjects: [''],
+    location: '',
+    lessonDuration: '1.5 Hours',
+    customDuration: '',
+    lessonFrequency: '1 Lesson/Week',
+    customFrequency: '',
     preferredTime: '',
     tutorType: { partTime: true, fullTime: false, moeTeacher: false },
     budget: { type: 'marketRate', customAmount: '' },
     preferences: ''
-  };
-  const [formData, setFormData] = useState(initialFormData);
-  const [status, setStatus] = useState({ submitting: false, submitted: false, error: null });
-  const [errors, setErrors] = useState({});
-  const formRef = useRef(null);
+  });
 
   const scrollToForm = () => {
     formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  };
-
-  // --- Form Handling Logic ---
-  const nextStep = () => {
-      const newErrors = validateStep(currentStep, formData);
-      setErrors(newErrors);
-      if (Object.keys(newErrors).length === 0) setCurrentStep(prev => prev + 1);
-  };
-
-  const prevStep = () => {
-      setErrors({});
-      setCurrentStep(prev => prev - 1);
-  };
-
-  const handleChange = (e) => {
-      const { name, value, type, checked } = e.target;
-      const inputValue = type === 'checkbox' ? checked : value;
-      if (errors[name]) setErrors(prev => ({ ...prev, [name]: null }));
-      if (name.includes('.')) {
-          const [parent, child] = name.split('.');
-          setFormData(prev => ({ ...prev, [parent]: { ...prev[parent], [child]: inputValue } }));
-      } else {
-          setFormData(prev => ({ ...prev, [name]: inputValue }));
-      }
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const allErrors = { ...validateStep(1, formData), ...validateStep(2, formData) };
-    if (Object.keys(allErrors).length > 0) {
-        setErrors(allErrors);
-        if (allErrors.name || allErrors.mobile || allErrors.level) setCurrentStep(1);
-        else if (allErrors.location) setCurrentStep(2);
-        return;
-    }
-    setStatus({ submitting: true, submitted: false, error: null });
-    try {
-      const response = await fetch('https://tuition-backend-afud.onrender.com/api/requestfortutor', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
-      });
-      if (response.ok) {
-        setFormData(initialFormData);
-        setCurrentStep(1);
-        setStatus({ submitting: false, submitted: true, error: null });
-        setTimeout(() => {
-            formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }, 100);
-      } else {
-        const errorText = await response.text();
-        throw new Error(errorText || 'Form submission failed');
-      }
-    } catch (error) {
-      setStatus({ submitting: false, submitted: false, error: error.message || 'An unexpected error occurred.' });
-    }
   };
 
   const rateData = [
@@ -267,29 +209,17 @@ export default function TuitionRatesPage() {
                         <p className="text-text-default/80 mb-6">We've received your request and will send tutor profiles shortly.</p>
                         <Button
                           className="bg-accent text-text-inverse hover:opacity-90"
-                          onClick={() => setStatus({ submitting: false, submitted: false, error: null })}
+                          onClick={resetForm}
                         >
                           Make Another Request
                         </Button>
                       </div>
                     ) : (
                       <form onSubmit={handleSubmit}>
-                        <div className="mb-8">
-                          <div className="hidden sm:flex justify-between mb-1">
-                              {["Your Details", "Lesson Details", "Tutor Preferences"].map((step, i) => (
-                                  <span key={i} className={`text-sm font-medium ${currentStep >= i + 1 ? 'text-primary' : 'text-gray-400'}`}>{step}</span>
-                              ))}
-                          </div>
-                          <div className="flex sm:hidden justify-center mb-1">
-                              <span className="text-sm font-medium text-primary">Step {currentStep} of 3</span>
-                          </div>
-                          <div className="w-full bg-gray-200 rounded-full h-2">
-                              <div className="bg-primary h-2 rounded-full transition-all duration-500" style={{ width: `${((currentStep - 1) / 2) * 100}%` }} />
-                          </div>
-                        </div>
+                        <FormStepper currentStep={currentStep} />
                         {status.error && <div className="bg-red-100 text-red-800 p-4 rounded-md mb-6">{status.error}</div>}
                         
-                        {currentStep === 1 && <Step1 nextStep={nextStep} formData={formData} handleChange={handleChange} errors={errors} />}
+                        {currentStep === 1 && <Step1 nextStep={nextStep} formData={formData} handleChange={handleChange} handleLevelSubjectChange={handleLevelSubjectChange} addLevelSubject={addLevelSubject} removeLevelSubject={removeLevelSubject} errors={errors} />}
                         {currentStep === 2 && <Step2 nextStep={nextStep} prevStep={prevStep} formData={formData} handleChange={handleChange} errors={errors} />}
                         {currentStep === 3 && <Step3 prevStep={prevStep} formData={formData} handleChange={handleChange} status={status} errors={errors} />}
                       </form>
