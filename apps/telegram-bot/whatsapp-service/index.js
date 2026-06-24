@@ -72,6 +72,11 @@ let isRecovering = false;
 let hasBeenReady = false; // becomes true after the first successful 'ready' — used to distinguish
                           // a normal first-boot QR from a session-lost QR that needs a human re-scan
 
+// How many in-process recovery attempts we make before giving up and letting pm2
+// hand us a fresh process (see handleRecoveryFailure).
+const MAX_RECOVERY_ATTEMPTS = 3;
+let recoveryAttempts = 0;
+
 // WhatsApp Web sometimes silently reloads its page (client updates, session refresh).
 // When that happens the puppeteer frame detaches but `disconnected` does not fire,
 // so isReady stays true and every queued send fails with "detached Frame".
@@ -80,8 +85,9 @@ async function recoverClient(reason) {
   if (isRecovering) return;
   isRecovering = true;
   isReady = false;
-  console.warn(`Recovering WhatsApp client: ${reason}`);
-  notifyAdmin(`⚠️ *WhatsApp client recovering*\nReason: ${reason}\n\nSends are paused while it restarts. You'll get an "online" message when it's back.`);
+  recoveryAttempts += 1;
+  console.warn(`Recovering WhatsApp client (attempt ${recoveryAttempts}/${MAX_RECOVERY_ATTEMPTS}): ${reason}`);
+  notifyAdmin(`⚠️ *WhatsApp client recovering* (attempt ${recoveryAttempts}/${MAX_RECOVERY_ATTEMPTS})\nReason: ${reason}\n\nSends are paused while it restarts. You'll get an "online" message when it's back.`);
   try {
     await client.destroy();
   } catch (err) {
@@ -89,11 +95,33 @@ async function recoverClient(reason) {
   }
   try {
     await client.initialize();
-  } catch (err) {
-    console.error('client.initialize() failed during recovery:', err);
-  } finally {
+    // initialize() resolving doesn't guarantee health — the 'ready' event is the real
+    // all-clear, and it resets recoveryAttempts. If we never reach 'ready', the next
+    // detached-frame/health-check failure will call us again and bump the counter.
     isRecovering = false;
+  } catch (err) {
+    console.error(`client.initialize() failed during recovery (attempt ${recoveryAttempts}):`, err.message);
+    isRecovering = false;
+    await handleRecoveryFailure(reason, err);
   }
+}
+
+// Called when an in-process recovery attempt throws (e.g. the re-init itself times out
+// because a leaked Chromium is still hogging the VM's RAM). The goal is for the service
+// to heal WITHOUT a human — so this should keep trying, and when in-process recovery is
+// clearly not working, fall back to exiting so pm2 respawns us with a clean process
+// (fresh Chromium, no zombie browsers, RAM reclaimed by the OS).
+
+async function handleRecoveryFailure(reason, err) {
+  if (recoveryAttempts < MAX_RECOVERY_ATTEMPTS){
+    const backoffMs = recoveryAttempts * 10000;
+    console.warn(`Retrying recovery in ${backoffMs}ms...`);
+    await new Promise(r => setTimeout(r, backoffMs));
+    return recoverClient(reason);
+  }
+  notifyAdmin(`🔁 *Force-restarting WhatsApp service*\nRecovery failed ${recoveryAttempts}× (${err.message}). Restarting the process for a clean slate.`);
+  await new Promise(r => setTimeout(r, 1500));
+  process.exit(1); 
 }
 
 // True when the error means the WhatsApp Web page's injected runtime is broken or gone
@@ -119,6 +147,7 @@ client.on('ready', () => {
   const recovered = hasBeenReady;
   isReady = true;
   hasBeenReady = true;
+  recoveryAttempts = 0; // we're healthy again — forget any prior failed recovery streak
   console.log('WhatsApp client is ready!');
   if (recovered) {
     notifyAdmin('✅ *WhatsApp client back online*\nSends have resumed.');
