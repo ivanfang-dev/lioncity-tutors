@@ -1,21 +1,82 @@
-// Single place that talks to the WhatsApp service's /send endpoint. Used both for tutor
-// outreach waves and for relaying tutor profiles to parents, so the URL/auth/timeout
-// handling lives in one spot.
-const WHATSAPP_SERVICE_URL = process.env.WHATSAPP_SERVICE_URL || 'http://localhost:3001';
-const WHATSAPP_API_KEY = process.env.WHATSAPP_API_KEY || '';
+// Single place that talks to the WhatsApp Cloud API. Two send paths, both routed through
+// postMessage(): sendWhatsApp() for free-form text (valid only inside the 24h window) and
+// sendWhatsAppTemplate() for approved templates (the only way to reach a tutor cold).
+const GRAPH_API_VERSION = 'v21.0';
+const PHONE_NUMBER_ID = process.env.WHATSAPP_PHONE_NUMBER_ID;
+const ACCESS_TOKEN = process.env.WHATSAPP_ACCESS_TOKEN;
 
-export async function sendWhatsApp(phoneNumber, message) {
-  const headers = { 'Content-Type': 'application/json' };
-  if (WHATSAPP_API_KEY) headers['x-api-key'] = WHATSAPP_API_KEY;
+// Normalize to the digits-only international format the Cloud API expects (no '+'). A bare
+// 8-digit number is a Singapore local number, so prepend the 65 country code; anything
+// longer already carries a country code (65… for SG, 1… for a US test number) and is used
+// as-is.
+function toWaId(phoneNumber) {
+  const digits = String(phoneNumber).replace(/\D/g, '');
+  return digits.length === 8 ? '65' + digits : digits;
+}
 
-  const res = await fetch(`${WHATSAPP_SERVICE_URL}/send`, {
-    method: 'POST',
-    headers,
-    body: JSON.stringify({ phoneNumber, message }),
-    signal: AbortSignal.timeout(45000)
-  });
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({ error: res.statusText }));
-    throw new Error(err.error || `HTTP ${res.status}`);
+// POST a message payload to the Cloud API and throw a diagnosable error on failure.
+// Shared by the text and template senders so auth/endpoint/error handling live in one place.
+async function postMessage(payload) {
+  if (!PHONE_NUMBER_ID || !ACCESS_TOKEN) {
+    throw new Error('WHATSAPP_PHONE_NUMBER_ID / WHATSAPP_ACCESS_TOKEN not configured');
   }
+
+  const res = await fetch(
+    `https://graph.facebook.com/${GRAPH_API_VERSION}/${PHONE_NUMBER_ID}/messages`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${ACCESS_TOKEN}`
+      },
+      body: JSON.stringify({ messaging_product: 'whatsapp', recipient_type: 'individual', ...payload }),
+      signal: AbortSignal.timeout(30000)
+    }
+  );
+
+  if (!res.ok) {
+    // Meta returns structured errors: { error: { message, code, error_data: { details } } }.
+    // Surface code + message so window/template failures (e.g. code 131047) are diagnosable.
+    const body = await res.json().catch(() => ({}));
+    const e = body?.error || {};
+    const detail = e.error_data?.details ? ` — ${e.error_data.details}` : '';
+    throw new Error(
+      `WhatsApp send failed (HTTP ${res.status}${e.code ? `, code ${e.code}` : ''}): ${e.message || res.statusText}${detail}`
+    );
+  }
+}
+
+// Free-form text — only delivers inside the 24h customer-service window (recipient messaged
+// us in the last 24h). Used for in-window replies (e.g. relaying a profile to a parent who
+// just wrote in). Cold outreach must use sendWhatsAppTemplate instead.
+export async function sendWhatsApp(phoneNumber, message) {
+  await postMessage({
+    to: toWaId(phoneNumber),
+    type: 'text',
+    text: { preview_url: false, body: message }
+  });
+}
+
+// Approved-template send — the only way to reach a tutor OUTSIDE the 24h window, which is
+// every cold outreach. `params` fill the body's {{1}}, {{2}}… in positional order; each must
+// be a non-empty, single-line string (Meta rejects empty params, newlines, tabs, or 4+
+// consecutive spaces). Quick-Reply buttons carry no variables, so they need no components.
+// Template params can't contain newlines, tabs, or 4+ consecutive spaces (Meta rejects the
+// send), so flatten all whitespace runs to single spaces. Assignment fields are owner-typed
+// free text and may contain stray line breaks, so this guard lives in the one send choke point.
+function sanitizeParam(value) {
+  return String(value ?? '').replace(/\s+/g, ' ').trim();
+}
+
+export async function sendWhatsAppTemplate(phoneNumber, templateName, params = [], { languageCode = 'en' } = {}) {
+  const clean = params.map(sanitizeParam);
+  const components = clean.length
+    ? [{ type: 'body', parameters: clean.map((text) => ({ type: 'text', text })) }]
+    : [];
+
+  await postMessage({
+    to: toWaId(phoneNumber),
+    type: 'template',
+    template: { name: templateName, language: { code: languageCode }, components }
+  });
 }

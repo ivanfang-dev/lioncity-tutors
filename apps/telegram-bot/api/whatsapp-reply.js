@@ -1,53 +1,9 @@
-import mongoose from 'mongoose';
-import { Assignment, Tutor } from '../../../packages/shared/server-exports.js';
-import { normalizePhone } from '../utils/phone.js';
-import { notifyOwner } from '../utils/ownerAlert.js';
+import { recordTutorReply } from '../utils/recordTutorReply.js';
 
-// Stop sending new waves once this many tutors have replied "Yes".
-const INTERESTED_TARGET = Number(process.env.OUTREACH_INTERESTED_TARGET) || 3;
-
-let isConnected = false;
-async function connectToDatabase() {
-  if (isConnected) return;
-  await mongoose.connect(process.env.MONGODB_URI, {
-    maxPoolSize: 10,
-    serverSelectionTimeoutMS: 5000,
-    socketTimeoutMS: 45000
-  });
-  isConnected = true;
-}
-
-// Ping the owner when a tutor says yes — the signal they act on to reach the parent fast.
-async function alertOwnerInterested(assignment, tutorName, interestedCount, tutorId) {
-  // Offer a one-tap relay only when we can act on it: the assignment has a parent number
-  // to send to. The button forwards the whole interested-but-unsent shortlist, so its
-  // label tracks how many tutors are currently waiting to be sent (1, 2, 3...).
-  let replyMarkup;
-  if (assignment.parentContact) {
-    const pendingCount = assignment.pendingParentTutorIds().length;
-    if (pendingCount > 0) {
-      replyMarkup = {
-        inline_keyboard: [[{
-          text: pendingCount === 1
-            ? '📤 Send profile to parent'
-            : `📤 Send all ${pendingCount} profiles to parent`,
-          callback_data: `sendallprof_${assignment._id}`
-        }]]
-      };
-    }
-  }
-
-  await notifyOwner(
-    `✅ *Tutor interested*\n` +
-    `*${tutorName || 'A tutor'}* said YES to *${assignment.title}*\n` +
-    `(${interestedCount}/${INTERESTED_TARGET} interested)` +
-    (assignment.parentContact ? '' : `\n\n⚠️ No parent contact on this assignment — relay unavailable.`) +
-    (assignment.outreach?.status === 'Fulfilled' ? `\n\n🎯 Target reached — no more tutors will be messaged.` : ''),
-    replyMarkup
-  );
-}
-
-// Records a tutor's Yes/No reply (forwarded by the WhatsApp service, which owns no DB).
+// Legacy reply endpoint: the whatsapp-web.js service (VM) parses a tutor's Yes/No and POSTs
+// { phone, reply } here. Kept working during the Cloud API migration; once the VM is retired
+// the Meta webhook (/api/whatsapp-webhook) becomes the sole entry point. Both share
+// recordTutorReply() so the matching/alert logic can never drift between the two.
 export default async function handler(req, res) {
   try {
     if (req.method !== 'POST') {
@@ -60,59 +16,11 @@ export default async function handler(req, res) {
     }
 
     const { phone, reply } = req.body || {};
-    const decision = reply === 'yes' ? 'Interested' : reply === 'no' ? 'Declined' : null;
-    if (!phone || !decision) {
-      return res.status(400).json({ error: 'phone and reply (yes|no) required' });
+    const result = await recordTutorReply(phone, reply);
+    if (result.error) {
+      return res.status(400).json({ error: result.error });
     }
-
-    await connectToDatabase();
-    const norm = normalizePhone(phone);
-
-    // The most recent still-active outreach that messaged this number and is waiting
-    // on a reply. (A tutor in several open assignments → attribute to the latest wave.)
-    const assignment = await Assignment.findOne({
-      'outreach.status': 'Active',
-      'outreach.contacts': { $elemMatch: { phone: norm, status: 'Sent' } }
-    }).sort({ 'outreach.lastWaveAt': -1 });
-
-    if (!assignment) {
-      return res.status(200).json({ matched: false });
-    }
-
-    let tutorName = '';
-    let tutorId = null;
-    for (const c of assignment.outreach.contacts) {
-      if (c.phone === norm && c.status === 'Sent') {
-        c.status = decision;
-        c.respondedAt = new Date();
-        tutorName = c.tutorName || tutorName;
-        tutorId = c.tutorId || tutorId;
-      }
-    }
-
-    const interestedCount = assignment.interestedCount();
-    if (decision === 'Interested' && interestedCount >= INTERESTED_TARGET) {
-      assignment.outreach.status = 'Fulfilled';
-    }
-    await assignment.save();
-
-    // Credit the tutor for responding (Yes OR No both count — they're reachable). This is
-    // the numerator of their responsiveness score; raises their future ranking.
-    if (tutorId) {
-      await Tutor.updateOne({ _id: tutorId }, { $inc: { 'responseStats.responded': 1 } });
-    }
-
-    if (decision === 'Interested') {
-      await alertOwnerInterested(assignment, tutorName, interestedCount, tutorId);
-    }
-
-    return res.status(200).json({
-      matched: true,
-      assignmentId: assignment._id.toString(),
-      reply,
-      interestedCount,
-      stopped: assignment.outreach.status === 'Fulfilled'
-    });
+    return res.status(200).json(result);
   } catch (err) {
     console.error('whatsapp-reply error:', err);
     return res.status(500).json({ error: 'Internal Server Error', message: err.message });

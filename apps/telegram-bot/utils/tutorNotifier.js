@@ -3,7 +3,12 @@ import { rankTutorsWithAI } from './tutorRanker.js';
 import { Assignment, Tutor } from '../../../packages/shared/server-exports.js';
 import { normalizePhone } from './phone.js';
 import { formatTimeSlots } from '../../../packages/shared/utils/timeSlots.js';
-import { sendWhatsApp } from './whatsappSender.js';
+import { sendWhatsAppTemplate } from './whatsappSender.js';
+
+// The approved outreach template (see WhatsApp Manager). Its body has 6 positional params;
+// buildAssignmentParams() below produces them in order. Quick-Reply buttons ("Yes, interested"
+// / "Not available") carry the reply — handled by the inbound webhook, not here.
+const OUTREACH_TEMPLATE = 'assignment_match';
 
 // Safe-testing switch: when set to a phone number, EVERY outreach wave is redirected to
 // that single number (and recorded under it) instead of going to real tutors — so the
@@ -45,32 +50,28 @@ async function recordWaveContacts(assignmentId, contacts) {
   }
 }
 
-// The WhatsApp message a tutor receives for an assignment.
-function buildAssignmentMessage(assignment, botUsername) {
-  const applyUrl = `https://t.me/${botUsername}?start=apply_${assignment._id}`;
+// Map an assignment to the assignment_match template's 6 body params, in {{1}}..{{6}} order.
+// {{5}} merges optional timing into frequency so the param is never empty (Meta rejects blank
+// params) and stays single-line. Description is intentionally dropped — it can be long/multi-
+// line, which templates can't carry; tutors get it in full when they apply via Telegram.
+function buildAssignmentParams(assignment) {
   const timing = formatTimeSlots(assignment.preferredTimeSlots);
-  return (
-    `New Tuition Assignment Match!\n\n` +
-    `Title: ${assignment.title}\n` +
-    `Level: ${assignment.level}\n` +
-    `Subject: ${assignment.subject}\n` +
-    `Location: ${assignment.location}\n` +
-    `Frequency: ${assignment.frequency}\n` +
-    (timing ? `Timing: ${timing}\n` : '') +
-    `Rate: ${assignment.rate}\n` +
-    (assignment.description ? `Description: ${assignment.description}\n` : '') +
-    `\nThis assignment matches your profile.\n` +
-    `- Reply "Yes" to apply\n` +
-    `- Reply "No" to decline\n` +
-    `- Or apply via Telegram: ${applyUrl}`
-  );
+  const frequency = timing ? `${assignment.frequency}, ${timing}` : assignment.frequency;
+  return [
+    assignment.title,     // {{1}}
+    assignment.level,     // {{2}}
+    assignment.subject,   // {{3}}
+    assignment.location,  // {{4}}
+    frequency,            // {{5}}
+    assignment.rate       // {{6}}
+  ];
 }
 
 // Message every tutor in `batch` and record the successful sends as part of `wave`.
 // Sends sequentially — whatsapp-web.js uses a single Chrome process and concurrent
 // sendMessage calls queue CDP commands on the same browser, causing protocol timeouts.
 async function sendWaveToTutors(assignment, batch, wave, botUsername) {
-  const message = buildAssignmentMessage(assignment, botUsername);
+  const params = buildAssignmentParams(assignment);
 
   // Test mode: redirect the whole wave to one number (yours) so you can exercise the
   // full flow — send, your reply, the ack, the Telegram alert — without paging real
@@ -86,7 +87,7 @@ async function sendWaveToTutors(assignment, batch, wave, botUsername) {
   const contacts = [];
   for (const tutor of batch) {
     try {
-      await sendWhatsApp(tutor.contactNumber, message);
+      await sendWhatsAppTemplate(tutor.contactNumber, OUTREACH_TEMPLATE, params);
       sent++;
       contacts.push({
         tutorId: tutor._id,
@@ -153,26 +154,6 @@ async function escalateAssignment(assignment, botUsername, { waveSize = 6 } = {}
   return { exhausted: false, sent, failed, wave };
 }
 
-// The gentle nudge a non-responding tutor receives. Same apply paths as the first
-// message — just framed as a reminder. (Owner-tunable wording.)
-function buildReminderMessage(assignment, botUsername) {
-  const applyUrl = `https://t.me/${botUsername}?start=apply_${assignment._id}`;
-  const timing = formatTimeSlots(assignment.preferredTimeSlots);
-  return (
-    `Reminder: this assignment is still open and we'd love to hear back from you!\n\n` +
-    `Title: ${assignment.title}\n` +
-    `Level: ${assignment.level}\n` +
-    `Subject: ${assignment.subject}\n` +
-    `Location: ${assignment.location}\n` +
-    `Frequency: ${assignment.frequency}\n` +
-    (timing ? `Timing: ${timing}\n` : '') +
-    `Rate: ${assignment.rate}\n` +
-    `\n- Reply "Yes" to apply\n` +
-    `- Reply "No" to decline\n` +
-    `- Or apply via Telegram: ${applyUrl}`
-  );
-}
-
 // Fallback when escalation has no fresh tutors left: re-ping the non-responders (status
 // 'Sent') who still have reminders remaining, instead of giving up. Re-messages EXISTING
 // contacts in place (no new outreach rows, no responseStats change — a reminder isn't a
@@ -187,7 +168,9 @@ async function remindNonResponders(assignment, botUsername, { maxReminders = 1, 
   }
 
   const batch = remindable.slice(0, waveSize);
-  const message = buildReminderMessage(assignment, botUsername);
+  // Reminders re-send the same approved outreach template — a reminder is just another
+  // send of the match, and cold sends must be templated (no open 24h window to reminders).
+  const params = buildAssignmentParams(assignment);
 
   // Mirror sendWaveToTutors' test-mode redirect: send everything to one number so the
   // reminder path can be exercised without paging real tutors.
@@ -198,7 +181,7 @@ async function remindNonResponders(assignment, botUsername, { maxReminders = 1, 
   const remindedPhones = [];
   for (const c of batch) {
     try {
-      await sendWhatsApp(testPhone || c.phone, message);
+      await sendWhatsAppTemplate(testPhone || c.phone, OUTREACH_TEMPLATE, params);
       sent++;
       remindedPhones.push(c.phone);
     } catch (err) {
@@ -206,14 +189,17 @@ async function remindNonResponders(assignment, botUsername, { maxReminders = 1, 
     }
   }
 
-  // Bump reminderCount only on the contacts we actually re-messaged.
-  const remindedSet = new Set(remindedPhones);
-  for (const c of assignment.outreach.contacts) {
-    if (c.status === 'Sent' && remindedSet.has(c.phone)) {
-      c.reminderCount = (c.reminderCount || 0) + 1;
-    }
+  // Bump reminderCount only on the contacts we actually re-messaged. Targeted $inc
+  // (not .save()): a full-document save re-validates legacy subject/level enums
+  // (ValidationError), and its stale contact array could clobber a reply that landed
+  // while the sends above were in flight.
+  if (remindedPhones.length > 0) {
+    await Assignment.updateOne(
+      { _id: assignment._id },
+      { $inc: { 'outreach.contacts.$[c].reminderCount': 1 } },
+      { arrayFilters: [{ 'c.phone': { $in: remindedPhones }, 'c.status': 'Sent' }] }
+    );
   }
-  await assignment.save();
 
   return { remindedNone: false, sent, failed, reminded: batch.length };
 }

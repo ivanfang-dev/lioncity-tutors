@@ -2,11 +2,11 @@ import { EDUCATION_LEVELS, getSubjectsForLevel, RATE_MAPPINGS } from '../../../p
 import { generatePhoneVariations } from '../../../packages/shared/utils/phoneUtils.js';
 import { TIME_SLOTS, formatTimeSlots } from '../../../packages/shared/utils/timeSlots.js';
 import { formatTutorProfileForParent, formatTutorProfilesForParent } from '../utils/parentProfile.js';
-import { sendWhatsApp } from '../utils/whatsappSender.js';
 import { formatAssignmentForChannel } from '../utils/channelFormat.js';
 import RateValidator from '../utils/RateValidator.js';
 import ErrorHandler from '../utils/ErrorHandler.js';
 import { notifyMatchedTutors } from '../utils/tutorNotifier.js';
+import { sendWhatsApp } from '../utils/whatsappSender.js';
 import { waitUntil } from '@vercel/functions';
 
 /* global process */
@@ -2750,12 +2750,20 @@ async function handleCallbackQuery(
       const intro = process.env.PARENT_INTRO_MESSAGE
         || 'Hi! Here is a tutor we found for your request:';
       try {
-        await sendWhatsApp(assignment.parentContact, formatTutorProfileForParent(tutor, assignment, intro));
-        await bot.answerCallbackQuery(callbackQuery.id, { text: '✅ Sent to parent' });
-        await safeSend(bot, chatId, `📤 Sent *${tutor.fullName || 'tutor'}*'s profile to the parent (${assignment.parentContact}).`, { parse_mode: 'Markdown' });
+        // Split architecture: parent conversations live on the owner's own WhatsApp, not the
+        // Cloud API number (which has no inbox and can't cold-message a parent). So instead of
+        // sending, hand the owner a wa.me link to open the parent chat + the profile to paste.
+        const profileText = formatTutorProfileForParent(tutor, assignment, intro);
+        const waDigits = String(assignment.parentContact).replace(/\D/g, '');
+        const waNumber = waDigits.length === 8 ? '65' + waDigits : waDigits;
+        await bot.answerCallbackQuery(callbackQuery.id, { text: '✅ Ready to forward' });
+        await safeSend(bot, chatId,
+          `📤 *Forward to parent* — [open WhatsApp chat](https://wa.me/${waNumber}) with ${assignment.parentContact}, then paste the profile below:`,
+          { parse_mode: 'Markdown', disable_web_page_preview: true });
+        await safeSend(bot, chatId, profileText);
       } catch (err) {
-        console.error('Failed to relay profile to parent:', err.message);
-        await bot.answerCallbackQuery(callbackQuery.id, { text: 'Send failed — try again.' });
+        console.error('Failed to prepare parent relay:', err.message);
+        await bot.answerCallbackQuery(callbackQuery.id, { text: 'Something went wrong — try again.' });
       }
       return;
     }
@@ -2782,24 +2790,33 @@ async function handleCallbackQuery(
       const intro = process.env.PARENT_INTRO_MESSAGE
         || 'Hi! Here is a tutor we found for your request:';
       try {
-        await sendWhatsApp(assignment.parentContact, formatTutorProfilesForParent(tutors, assignment, intro));
+        // Split architecture: hand the shortlist to the owner to forward from their own
+        // WhatsApp, rather than cold-messaging the parent from the (inboxless) Cloud API number.
+        const profileText = formatTutorProfilesForParent(tutors, assignment, intro);
+        const waDigits = String(assignment.parentContact).replace(/\D/g, '');
+        const waNumber = waDigits.length === 8 ? '65' + waDigits : waDigits;
 
-        // Mark exactly the tutors we just sent as relayed, so a later tap forwards only
-        // newcomers. Mutate-then-save mirrors how whatsapp-reply records replies.
-        const now = new Date();
+        // Mark exactly the tutors we just handed over as relayed, so a later tap forwards only
+        // newcomers. Targeted update (not .save()): a full-document save re-validates legacy
+        // subject/level enums and would throw, leaving these unmarked and re-sent on next tap.
         const sentSet = new Set(pendingIds);
-        for (const c of assignment.outreach.contacts) {
-          if (c.status === 'Interested' && c.tutorId && sentSet.has(c.tutorId.toString())) {
-            c.relayedToParentAt = now;
-          }
-        }
-        await assignment.save();
+        const relayedIds = assignment.outreach.contacts
+          .filter(c => c.status === 'Interested' && c.tutorId && sentSet.has(c.tutorId.toString()))
+          .map(c => c.tutorId);
+        await Assignment.updateOne(
+          { _id: assignment._id },
+          { $set: { 'outreach.contacts.$[c].relayedToParentAt': new Date() } },
+          { arrayFilters: [{ 'c.tutorId': { $in: relayedIds }, 'c.status': 'Interested' }] }
+        );
 
-        await bot.answerCallbackQuery(callbackQuery.id, { text: `✅ Sent ${tutors.length} to parent` });
-        await safeSend(bot, chatId, `📤 Sent ${tutors.length} tutor profile(s) to the parent (${assignment.parentContact}).`, { parse_mode: 'Markdown' });
+        await bot.answerCallbackQuery(callbackQuery.id, { text: `✅ ${tutors.length} ready to forward` });
+        await safeSend(bot, chatId,
+          `📤 *Forward ${tutors.length} profile(s) to parent* — [open WhatsApp chat](https://wa.me/${waNumber}) with ${assignment.parentContact}, then paste below:`,
+          { parse_mode: 'Markdown', disable_web_page_preview: true });
+        await safeSend(bot, chatId, profileText);
       } catch (err) {
-        console.error('Failed to relay shortlist to parent:', err.message);
-        await bot.answerCallbackQuery(callbackQuery.id, { text: 'Send failed — try again.' });
+        console.error('Failed to prepare shortlist relay:', err.message);
+        await bot.answerCallbackQuery(callbackQuery.id, { text: 'Something went wrong — try again.' });
       }
       return;
     }
@@ -3503,6 +3520,24 @@ async function handleMessage(bot, chatId, userId, text, message, Tutor, Assignme
     // Show main menu for established users
     await showMainMenu(chatId, bot, userId, ADMIN_USERS);
     return;
+  }
+
+  // Owner replying (via Telegram's reply) to a forwarded tutor WhatsApp message → relay it
+  // straight back to that tutor. The tutor's number is embedded as "(wa:<digits>)" in the
+  // forwarded text (see whatsapp-webhook.js), so no stored mapping is needed. Free-form text
+  // works here because the tutor just messaged us — the 24h window is open.
+  if (isUserAdmin && message.reply_to_message?.text && !text.startsWith('/')) {
+    const waMatch = message.reply_to_message.text.match(/\(wa:(\d+)\)/);
+    if (waMatch) {
+      try {
+        await sendWhatsApp(waMatch[1], text);
+        await safeSend(bot, chatId, '✅ Sent to the tutor.');
+      } catch (err) {
+        console.error('Failed to relay owner reply to tutor:', err.message);
+        await safeSend(bot, chatId, `❌ Couldn't send — the tutor's 24h reply window may have closed.\n(${err.message})`);
+      }
+      return;
+    }
   }
 
   // Handle /start command - delegate to your existing handleStart function

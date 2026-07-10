@@ -1,7 +1,7 @@
 // Best-effort Telegram alert to the owner/admin. Used for outreach signals (a tutor
 // said yes, an assignment ran out of tutors, etc.). Never throws into the caller.
 // `replyMarkup` optionally attaches an inline keyboard (e.g. a "Send to parent" button).
-export async function notifyOwner(text, replyMarkup) {
+export async function notifyOwner(text, replyMarkup, { parseMode = 'Markdown' } = {}) {
   const botToken = process.env.BOT_TOKEN;
   const chatId = process.env.WHATSAPP_ALERT_CHAT_ID
     || process.env.ADMIN_USERS?.split(',')[0]?.trim();
@@ -10,7 +10,10 @@ export async function notifyOwner(text, replyMarkup) {
     return;
   }
   try {
-    const body = { chat_id: chatId, text, parse_mode: 'Markdown' };
+    // parseMode can be set to null to send raw text (e.g. forwarding a tutor's free-text
+    // message, which may contain characters that would break Markdown parsing).
+    const body = { chat_id: chatId, text };
+    if (parseMode) body.parse_mode = parseMode;
     if (replyMarkup) body.reply_markup = replyMarkup;
     await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
       method: 'POST',
