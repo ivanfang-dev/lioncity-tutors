@@ -19,6 +19,11 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 4000;
 
+// Render terminates TLS at its proxy, so client IPs arrive in X-Forwarded-For. Trust
+// exactly one proxy hop so req.ip (and the rate limiter's per-IP buckets) reflect the
+// real visitor instead of Render's proxy IP — without this, ALL users share one bucket.
+app.set('trust proxy', 1);
+
 
 
 app.use(helmet());
@@ -26,7 +31,7 @@ app.use(helmet());
 // 2. Security Best Practice: Apply rate limiting to all requests
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 20, // Limit each IP to 150 requests per window
+  max: 100, // Limit each IP to 100 requests per window
   standardHeaders: true,
   legacyHeaders: false,
   message: 'Too many requests from this IP, please try again after 15 minutes',
@@ -402,23 +407,29 @@ app.get('/api/assignments', async (req, res) => {
 
 app.get('/api/analytics/popular-papers', async (req, res) => {
   try {
-    const leads = await TestPaperLead.find({});
-    
-    // Count downloads by subject, level, year
-    const analytics = {};
-    
-    leads.forEach(lead => {
-      lead.downloads.forEach(download => {
-        const key = `${download.level}-${download.subject}-${download.year}`;
-        analytics[key] = (analytics[key] || 0) + 1;
-      });
-    });
-    
-    // Sort by popularity
-    const sorted = Object.entries(analytics)
-      .map(([paper, count]) => ({ paper, count }))
-      .sort((a, b) => b.count - a.count);
-    
+    // Count downloads per paper in the database (one $unwind + $group) instead of
+    // loading every lead into memory. Grouped by level/subject/paperTitle — the
+    // fields the schema actually stores.
+    const results = await TestPaperLead.aggregate([
+      { $unwind: '$downloads' },
+      {
+        $group: {
+          _id: {
+            level: '$downloads.level',
+            subject: '$downloads.subject',
+            paperTitle: '$downloads.paperTitle'
+          },
+          count: { $sum: 1 }
+        }
+      },
+      { $sort: { count: -1 } }
+    ]);
+
+    const sorted = results.map(({ _id, count }) => ({
+      paper: `${_id.level}-${_id.subject}-${_id.paperTitle}`,
+      count
+    }));
+
     res.json(sorted);
   } catch (err) {
     console.error('Error getting analytics:', err);

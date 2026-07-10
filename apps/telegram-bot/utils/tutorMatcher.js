@@ -341,7 +341,9 @@ async function findMatchingTutors(assignment, poolSize = 40) {
   }
 
   const query = {
-    contactNumber: { $exists: true, $ne: null, $ne: '' },
+    // $nin with null also excludes docs missing the field entirely, so no $exists needed.
+    // (Was `{ $ne: null, $ne: '' }` — duplicate keys, so JS silently dropped the null check.)
+    contactNumber: { $nin: [null, ''] },
     [`locations.${region}`]: true,
     ...subjectQuery,
   };

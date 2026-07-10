@@ -86,7 +86,7 @@ Example: [3, 1, 7, 2, 5, 8, 4, 6]`;
     const jsonMatch = text.match(/\[[\d,\s]+\]/);
     if (!jsonMatch) {
       console.warn('tutorRanker: could not parse Gemini response, falling back to unranked', { responseText: text });
-      return tutors.slice(0, maxResults);
+      return { tutors: tutors.slice(0, maxResults), aiUsed: false, aiError: 'other' };
     }
 
     const indices = JSON.parse(jsonMatch[0]);
