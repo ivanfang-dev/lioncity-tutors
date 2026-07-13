@@ -1,6 +1,7 @@
 import { recordTutorReply } from '../utils/recordTutorReply.js';
 import { sendWhatsApp } from '../utils/whatsappSender.js';
 import { notifyOwner } from '../utils/ownerAlert.js';
+import { getTutorNameByNumber } from '../utils/tutorLookup.js';
 
 // Meta Cloud API webhook. GET = the one-time verification handshake; POST = inbound events
 // (tutor replies + delivery statuses). Replaces the whatsapp-web.js message handler and the
@@ -52,8 +53,13 @@ async function acknowledge(to, reply) {
 // Sent as plain text (parseMode null) so the tutor's message can't break Markdown parsing.
 async function forwardTutorMessage(from, body) {
   try {
+    // Best-effort name so the owner sees WHO wrote in. Degrades to the bare number if the
+    // sender isn't a known tutor or the lookup fails — never blocks the alert. Keep the
+    // "(wa:<digits>)" token intact so the reply-relay matcher in handlers.js still routes.
+    const name = await getTutorNameByNumber(from);
+    const sender = name || 'an unknown number';
     await notifyOwner(
-      `💬 New WhatsApp message from a tutor (wa:${from})\n\n${body}\n\n↩️ Reply to this message to respond to them.`,
+      `💬 New WhatsApp message from ${sender} (wa:${from})\n\n${body}\n\n↩️ Reply to this message to respond to them.`,
       undefined,
       { parseMode: null }
     );

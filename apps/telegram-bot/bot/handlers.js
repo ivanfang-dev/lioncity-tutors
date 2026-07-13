@@ -7,6 +7,7 @@ import RateValidator from '../utils/RateValidator.js';
 import ErrorHandler from '../utils/ErrorHandler.js';
 import { notifyMatchedTutors } from '../utils/tutorNotifier.js';
 import { sendWhatsApp } from '../utils/whatsappSender.js';
+import { getTutorNameByNumber } from '../utils/tutorLookup.js';
 import { waitUntil } from '@vercel/functions';
 
 /* global process */
@@ -3531,7 +3532,12 @@ async function handleMessage(bot, chatId, userId, text, message, Tutor, Assignme
     if (waMatch) {
       try {
         await sendWhatsApp(waMatch[1], text);
-        await safeSend(bot, chatId, '✅ Sent to the tutor.');
+        // Name the recipient so a mis-swipe to the wrong forwarded message is caught here,
+        // right after sending — not after the fact. Best-effort: getTutorNameByNumber never
+        // throws (falls back to the bare number if the tutor isn't found or the lookup fails).
+        const name = await getTutorNameByNumber(waMatch[1]);
+        const who = name ? `${name} (${waMatch[1]})` : waMatch[1];
+        await safeSend(bot, chatId, `✅ Sent to ${who}.`);
       } catch (err) {
         console.error('Failed to relay owner reply to tutor:', err.message);
         await safeSend(bot, chatId, `❌ Couldn't send — the tutor's 24h reply window may have closed.\n(${err.message})`);
