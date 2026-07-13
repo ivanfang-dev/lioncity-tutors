@@ -5,7 +5,7 @@ import { formatTutorProfileForParent, formatTutorProfilesForParent } from '../ut
 import { formatAssignmentForChannel } from '../utils/channelFormat.js';
 import RateValidator from '../utils/RateValidator.js';
 import ErrorHandler from '../utils/ErrorHandler.js';
-import { notifyMatchedTutors } from '../utils/tutorNotifier.js';
+import { notifyMatchedTutors, escalateAssignment } from '../utils/tutorNotifier.js';
 import { sendWhatsApp } from '../utils/whatsappSender.js';
 import { getTutorNameByNumber } from '../utils/tutorLookup.js';
 import { SINGAPORE_LOCATIONS } from '../utils/locations.js';
@@ -2744,6 +2744,12 @@ async function handleCallbackQuery(
           `📤 *Forward to parent* — [open WhatsApp chat](https://wa.me/${waNumber}) with ${assignment.parentContact}, then paste the profile below:`,
           { parse_mode: 'Markdown', disable_web_page_preview: true });
         await safeSend(bot, chatId, profileText);
+        await safeSend(bot, chatId, '↩️ Once the parent replies:', {
+          reply_markup: { inline_keyboard: [
+            [{ text: '✅ Parent chose a tutor — mark filled', callback_data: `markfilled_${assignment._id}` }],
+            [{ text: '🔄 Parent passed — find more tutors', callback_data: `findmore_${assignment._id}` }]
+          ] }
+        });
       } catch (err) {
         console.error('Failed to prepare parent relay:', err.message);
         await bot.answerCallbackQuery(callbackQuery.id, { text: 'Something went wrong — try again.' });
@@ -2797,8 +2803,170 @@ async function handleCallbackQuery(
           `📤 *Forward ${tutors.length} profile(s) to parent* — [open WhatsApp chat](https://wa.me/${waNumber}) with ${assignment.parentContact}, then paste below:`,
           { parse_mode: 'Markdown', disable_web_page_preview: true });
         await safeSend(bot, chatId, profileText);
+        await safeSend(bot, chatId, '↩️ Once the parent replies:', {
+          reply_markup: { inline_keyboard: [
+            [{ text: '✅ Parent chose a tutor — mark filled', callback_data: `markfilled_${assignment._id}` }],
+            [{ text: '🔄 Parent passed — find more tutors', callback_data: `findmore_${assignment._id}` }]
+          ] }
+        });
       } catch (err) {
         console.error('Failed to prepare shortlist relay:', err.message);
+        await bot.answerCallbackQuery(callbackQuery.id, { text: 'Something went wrong — try again.' });
+      }
+      return;
+    }
+
+    // "Parent passed — find more tutors": the parent wasn't keen on the shortlist we relayed.
+    // Reject those tutors (they stop counting toward the interested target via
+    // viableInterestedCount, and stay in contactedTutorIds so they're never re-messaged), reset
+    // the outreach clock, and fire a fresh wave — resuming the wave engine until new tutors say Yes.
+    if (data.startsWith('findmore_')) {
+      if (!isAdmin(userId, ADMIN_USERS)) {
+        return await bot.answerCallbackQuery(callbackQuery.id, { text: 'Not authorized.' });
+      }
+      const assignmentId = data.replace('findmore_', '');
+      const assignment = await Assignment.findById(assignmentId);
+      if (!assignment) {
+        return await bot.answerCallbackQuery(callbackQuery.id, { text: 'Assignment not found.' });
+      }
+
+      const now = new Date();
+      // Only reject tutors actually shown to the parent (relayed) and not already rejected.
+      const rejectedCount = (assignment.outreach?.contacts || [])
+        .filter(c => c.status === 'Interested' && c.relayedToParentAt && !c.parentRejectedAt).length;
+
+      try {
+        // Targeted update (never .save(): a legacy subject/level outside the current enum would
+        // fail validation). Reject the relayed shortlist AND reset the outreach clock so the 4h
+        // timeout counts from now, not the original start — recordWaveContacts only sets startedAt
+        // when absent, so we must reset it here. Reopen in case auto-close already fired.
+        await Assignment.updateOne(
+          { _id: assignment._id },
+          {
+            $set: {
+              'outreach.contacts.$[c].parentRejectedAt': now,
+              'outreach.status': 'Active',
+              'outreach.startedAt': now,
+              'outreach.lastWaveAt': now,
+              status: 'Open'
+            }
+          },
+          { arrayFilters: [{ 'c.status': 'Interested', 'c.relayedToParentAt': { $exists: true }, 'c.parentRejectedAt': { $exists: false } }] }
+        );
+
+        // Mirror the reset in memory so the immediate escalateAssignment sees Active state; the
+        // rejected tutors are already in contactedTutorIds (by tutorId), so they're excluded from
+        // the fresh pool regardless.
+        assignment.outreach.status = 'Active';
+        assignment.outreach.startedAt = now;
+        assignment.outreach.lastWaveAt = now;
+        assignment.status = 'Open';
+
+        await bot.answerCallbackQuery(callbackQuery.id, { text: '🔄 Finding more tutors…' });
+
+        // Fire one fresh wave immediately (speed is the differentiator), same pattern as wave 1 on
+        // creation. The scheduler's 30-min cadence continues afterward (the wave re-stamps lastWaveAt).
+        waitUntil((async () => {
+          try {
+            const result = await escalateAssignment(assignment, BOT_USERNAME, { waveSize: 6 });
+            if (result.exhausted) {
+              await safeSend(bot, chatId,
+                `📭 *No fresh matching tutors left* for *${assignment.title}* — you've contacted everyone in the pool. You'll need to follow up manually.`,
+                { parse_mode: 'Markdown' });
+            } else {
+              await safeSend(bot, chatId,
+                `🔄 *Resuming outreach* for *${assignment.title}* — messaging more tutors` +
+                (rejectedCount ? ` (the ${rejectedCount} shown to the parent ${rejectedCount === 1 ? 'is' : 'are'} excluded).` : '.'),
+                { parse_mode: 'Markdown' });
+            }
+          } catch (err) {
+            console.error('find-more escalation failed:', err.message);
+            await safeSend(bot, chatId, '❌ Something went wrong resuming outreach — try again.');
+          }
+        })());
+      } catch (err) {
+        console.error('Failed to resume outreach (find more):', err.message);
+        await bot.answerCallbackQuery(callbackQuery.id, { text: 'Something went wrong — try again.' });
+      }
+      return;
+    }
+
+    // Parent chose a tutor: show the interested tutors so the owner can pick the winner.
+    if (data.startsWith('markfilled_')) {
+      if (!isAdmin(userId, ADMIN_USERS)) {
+        return await bot.answerCallbackQuery(callbackQuery.id, { text: 'Not authorized.' });
+      }
+      const assignmentId = data.replace('markfilled_', '');
+      const assignment = await Assignment.findById(assignmentId);
+      if (!assignment) {
+        return await bot.answerCallbackQuery(callbackQuery.id, { text: 'Assignment not found.' });
+      }
+      // Candidates = interested tutors the parent hasn't already been told we're dropping.
+      const candidates = (assignment.outreach?.contacts || [])
+        .filter(c => c.status === 'Interested' && !c.parentRejectedAt && c.tutorId);
+      if (candidates.length === 0) {
+        return await bot.answerCallbackQuery(callbackQuery.id, { text: 'No interested tutors to choose from yet.' });
+      }
+      await bot.answerCallbackQuery(callbackQuery.id);
+      const pickButtons = candidates.map(c => ([{
+        text: `✅ ${c.tutorName || 'Tutor'}`,
+        callback_data: `setwinner_${assignmentId}_${c.tutorId}`
+      }]));
+      pickButtons.push([{ text: '🔙 Cancel', callback_data: `edit_assignment_${assignmentId}` }]);
+      await safeSend(bot, chatId,
+        `Which tutor did the parent choose for *${assignment.title}*?\nThis marks the assignment *Filled* and stops outreach.`,
+        { parse_mode: 'Markdown', reply_markup: { inline_keyboard: pickButtons } });
+      return;
+    }
+
+    // Commit the parent's choice: record the winner, mark Filled, stop outreach, close the channel post.
+    if (data.startsWith('setwinner_')) {
+      if (!isAdmin(userId, ADMIN_USERS)) {
+        return await bot.answerCallbackQuery(callbackQuery.id, { text: 'Not authorized.' });
+      }
+      const [assignmentId, tutorId] = data.replace('setwinner_', '').split('_');
+      const assignment = await Assignment.findById(assignmentId);
+      if (!assignment) {
+        return await bot.answerCallbackQuery(callbackQuery.id, { text: 'Assignment not found.' });
+      }
+      const winnerName = (assignment.outreach?.contacts || [])
+        .find(c => c.tutorId?.toString() === tutorId)?.tutorName || 'the tutor';
+      try {
+        // Targeted update (never .save(): legacy subject/level would fail validation). Mark Filled,
+        // record who won, and stop outreach so no further waves go out.
+        await Assignment.updateOne(
+          { _id: assignment._id },
+          { $set: {
+            status: 'Filled',
+            matchedTutorId: tutorId,
+            filledAt: new Date(),
+            'outreach.status': 'Fulfilled'
+          } }
+        );
+        assignment.status = 'Filled'; // for the channel re-render below
+
+        await bot.answerCallbackQuery(callbackQuery.id, { text: '✅ Marked filled' });
+
+        // Close the channel post so tutors stop applying (same treatment as a manual close).
+        if (assignment.channelMessageId && CHANNEL_ID) {
+          try {
+            await bot.editMessageText(formatAssignmentForChannel(assignment), {
+              chat_id: CHANNEL_ID,
+              message_id: assignment.channelMessageId,
+              parse_mode: 'Markdown',
+              reply_markup: { inline_keyboard: [[{ text: '🔒 Assignment Filled', callback_data: 'assignment_closed' }]] }
+            });
+          } catch (editErr) {
+            console.warn('Mark-filled: channel edit failed:', editErr.message);
+          }
+        }
+
+        await safeSend(bot, chatId,
+          `✅ *${assignment.title}* marked *Filled* — ${winnerName} will take it. Outreach stopped and the assignment is closed.`,
+          { parse_mode: 'Markdown',
+            reply_markup: { inline_keyboard: [[{ text: '🔙 Back to Manage Assignments', callback_data: 'admin_manage_assignments' }]] } });
+      } catch (err) {
+        console.error('Failed to mark assignment filled:', err.message);
         await bot.answerCallbackQuery(callbackQuery.id, { text: 'Something went wrong — try again.' });
       }
       return;
@@ -3699,7 +3867,7 @@ async function adminManageAssignments(bot, chatId, Assignment) {
 
 async function editAssignment(bot, chatId, assignmentId, Assignment) {
   try {
-    const assignment = await Assignment.findById(assignmentId);
+    const assignment = await Assignment.findById(assignmentId).populate('matchedTutorId', 'fullName');
     
     if (!assignment) {
       await safeSend(bot, chatId, '❌ Assignment not found.', {
@@ -3715,16 +3883,35 @@ async function editAssignment(bot, chatId, assignmentId, Assignment) {
     message += `*Level:* ${assignment.level}\n`;
     message += `*Subject:* ${assignment.subject}\n`;
     message += `*Current Status:* ${assignment.status}\n`;
-    message += `*Applications:* ${assignment.applicants ? assignment.applicants.length : 0}\n\n`;
-    message += `What would you like to do?`;
-    
+    message += `*Applications:* ${assignment.applicants ? assignment.applicants.length : 0}\n`;
+    if (assignment.outreach?.status) {
+      message += `*Outreach:* ${assignment.outreach.status} · ${assignment.interestedCount()} interested\n`;
+    }
+    if (assignment.status === 'Filled' && assignment.matchedTutorId) {
+      message += `*Matched tutor:* ${assignment.matchedTutorId.fullName || 'selected'}\n`;
+    }
+    message += `\nWhat would you like to do?`;
+
+    const isFilled = assignment.status === 'Filled';
+    // Once outreach has stopped (target hit or pool exhausted), let the owner resume it if the
+    // parent passed on the tutors we relayed — one tap excludes them and messages fresh tutors.
+    const outreachStopped = ['Fulfilled', 'Exhausted'].includes(assignment.outreach?.status);
     const buttons = [
-      [{ text: assignment.status === 'Open' ? '🔒 Close Assignment' : '🔓 Open Assignment', 
-         callback_data: `toggle_status_${assignmentId}` }],
+      [{ text: assignment.status === 'Open' ? '🔒 Close Assignment' : '🔓 Open Assignment',
+         callback_data: `toggle_status_${assignmentId}` }]
+    ];
+    // Parent picked one of the interested tutors → capture the winner and mark the assignment Filled.
+    if (!isFilled && assignment.interestedCount() > 0) {
+      buttons.push([{ text: '✅ Parent chose a tutor — mark filled', callback_data: `markfilled_${assignmentId}` }]);
+    }
+    if (outreachStopped && !isFilled) {
+      buttons.push([{ text: '🔄 Parent passed — find more tutors', callback_data: `findmore_${assignmentId}` }]);
+    }
+    buttons.push(
       [{ text: '🗑️ Delete Assignment', callback_data: `delete_assignment_${assignmentId}` }],
       [{ text: '👥 View Applications', callback_data: `view_applications_${assignmentId}` }],
       [{ text: '🔙 Back to Manage Assignments', callback_data: 'admin_manage_assignments' }]
-    ];
+    );
     
     await safeSend(bot, chatId, message, {
       parse_mode: 'Markdown',

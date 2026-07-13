@@ -793,7 +793,7 @@ export default function RegisterAsTutor() {
                       <span className="ml-2 font-medium">South</span>
                     </label>
                     <div className="ml-6 text-gray-600 text-sm">
-                      Telok Blangah, Harbourfront, Sentosa, Bukit Merah, Pasir Panjang
+                      Telok Blangah, Harbourfront, Sentosa, Bukit Merah, Pasir Panjang, Chinatown
                     </div>
                   </div>
                   
@@ -841,7 +841,7 @@ export default function RegisterAsTutor() {
                       <span className="ml-2 font-medium">Central</span>
                     </label>
                     <div className="ml-6 text-gray-600 text-sm">
-                      Orchard, Newton, Novena, River Valley, Bugis, Chinatown, CBD
+                      Orchard, Newton, Novena, River Valley, Bugis, CBD, Ang Mo Kio
                     </div>
                   </div>
                   
@@ -857,7 +857,7 @@ export default function RegisterAsTutor() {
                       <span className="ml-2 font-medium">North-East</span>
                     </label>
                     <div className="ml-6 text-gray-600 text-sm">
-                      Sengkang, Punggol, Hougang, Serangoon, Ang Mo Kio, Buangkok
+                      Sengkang, Punggol, Hougang, Serangoon, Buangkok
                     </div>
                   </div>
                   

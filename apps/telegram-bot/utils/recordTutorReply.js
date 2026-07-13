@@ -99,7 +99,9 @@ export async function recordTutorReply(phone, reply) {
   const tutorName = contact?.tutorName || '';
   const tutorId = contact?.tutorId || null;
 
-  const interestedCount = assignment.interestedCount();
+  // Gate on viable (non-parent-rejected) interested tutors, so a resumed "find more" outreach
+  // keeps sending until fresh tutors say Yes rather than instantly re-fulfilling on the old shortlist.
+  const interestedCount = assignment.viableInterestedCount();
   if (decision === 'Interested' && interestedCount >= INTERESTED_TARGET) {
     // Targeted update for the same reason as above — never re-save a legacy document.
     await Assignment.updateOne(

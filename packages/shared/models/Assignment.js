@@ -164,6 +164,11 @@ const assignmentSchema = new mongoose.Schema({
       // Set when this interested tutor's profile has been relayed to the parent, so a
       // repeat "Send all" tap only forwards tutors who said Yes since the last send.
       relayedToParentAt: { type: Date },
+      // Set when the parent has passed on this tutor ("find more tutors"). Such a contact
+      // no longer counts toward the interested target (see viableInterestedCount), so a
+      // resumed outreach keeps sending until fresh tutors say Yes. Still in contactedTutorIds,
+      // so this tutor is never re-messaged.
+      parentRejectedAt: { type: Date },
       // How many reminder pings this contact has received. Only non-responders (status
       // 'Sent') are ever reminded, and only when no fresh tutors are left to try; capped
       // by OUTREACH_MAX_REMINDERS so a quiet tutor isn't nagged indefinitely.
@@ -182,7 +187,11 @@ const assignmentSchema = new mongoose.Schema({
   },
   channelMessageId: {
     type: Number
-  }
+  },
+  // Set when the parent picks a tutor: the assignment is marked 'Filled', outreach stops, and
+  // we record who won (and when) so the owner can see the outcome later.
+  matchedTutorId: { type: mongoose.Schema.Types.ObjectId, ref: 'Tutor' },
+  filledAt: { type: Date }
 });
 
 // Add custom validation for level-subject combination
@@ -222,9 +231,18 @@ assignmentSchema.index({ status: 1, 'outreach.status': 1, 'outreach.lastWaveAt':
 
 // --- Outreach helpers (used by the escalation scheduler) ---
 
-// How many tutors have replied "Yes" so far — the count we stop new waves at.
+// How many tutors have replied "Yes" so far (regardless of parent rejection).
 assignmentSchema.methods.interestedCount = function() {
   return (this.outreach?.contacts || []).filter(c => c.status === 'Interested').length;
+};
+
+// Interested tutors the parent hasn't rejected — the count that gates new waves. Once a
+// "find more" resume marks an earlier shortlist as rejected, those tutors stop counting so
+// outreach keeps going until fresh tutors say Yes. Equals interestedCount() until the first
+// rejection, so the normal path is unchanged.
+assignmentSchema.methods.viableInterestedCount = function() {
+  return (this.outreach?.contacts || [])
+    .filter(c => c.status === 'Interested' && !c.parentRejectedAt).length;
 };
 
 // Tutor ids already messaged, so the next wave only pulls fresh tutors.

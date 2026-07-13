@@ -50,7 +50,6 @@ export const LOCATIONS = [
   { town: 'Lakeside', region: 'west' },
   { town: 'Chinese Garden', region: 'west' },
   { town: 'West Coast', region: 'west' },
-  { town: 'Pasir Panjang', region: 'west' },
   { town: 'Holland Village', region: 'west' },
   { town: 'Commonwealth', region: 'west' },
   // North
@@ -95,6 +94,7 @@ export const LOCATIONS = [
   { town: 'Harbourfront', region: 'south' },
   { town: 'Bukit Merah', region: 'south' },
   { town: 'Telok Blangah', region: 'south' },
+  { town: 'Pasir Panjang', region: 'south' },
   { town: 'Alexandra', region: 'south' },
   { town: 'Outram', region: 'south' },
   { town: 'Tanjong Pagar', region: 'south' },

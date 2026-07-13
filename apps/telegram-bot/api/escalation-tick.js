@@ -39,8 +39,10 @@ async function connectToDatabase() {
 
 // Send the next wave (or close out) for one already-claimed assignment.
 async function processAssignment(assignment, now) {
-  // Already satisfied — the reply endpoint normally sets this, but guard anyway.
-  if (assignment.interestedCount() >= INTERESTED_TARGET) {
+  // Already satisfied — the reply endpoint normally sets this, but guard anyway. Count only
+  // viable (non-parent-rejected) interested tutors so a resumed outreach isn't re-fulfilled by
+  // a shortlist the parent already passed on.
+  if (assignment.viableInterestedCount() >= INTERESTED_TARGET) {
     // Atomic update (see closeStaleAssignments): avoids re-validating a legacy subject.
     await Assignment.updateOne(
       { _id: assignment._id },
