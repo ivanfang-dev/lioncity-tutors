@@ -8,6 +8,7 @@ import ErrorHandler from '../utils/ErrorHandler.js';
 import { notifyMatchedTutors } from '../utils/tutorNotifier.js';
 import { sendWhatsApp } from '../utils/whatsappSender.js';
 import { getTutorNameByNumber } from '../utils/tutorLookup.js';
+import { SINGAPORE_LOCATIONS } from '../utils/locations.js';
 import { waitUntil } from '@vercel/functions';
 
 /* global process */
@@ -16,25 +17,6 @@ import { waitUntil } from '@vercel/functions';
 function escapeMd(text) {
   return (text || '').replace(/[_*[\]`]/g, '\\$&');
 }
-
-const SINGAPORE_LOCATIONS = [
-  // Northeast
-  'Sengkang', 'Punggol', 'Hougang', 'Serangoon', 'Kovan', 'Buangkok',
-  // East
-  'Tampines', 'Pasir Ris', 'Bedok', 'Simei', 'East Coast', 'Katong', 'Marine Parade',
-  // West
-  'Jurong East', 'Jurong West', 'Clementi', 'Boon Lay', 'Pioneer', 'Buona Vista', 'Dover', 'Tengah',
-  // North
-  'Woodlands', 'Sembawang', 'Yishun', 'Admiralty',
-  // Northwest
-  'Bukit Batok', 'Bukit Panjang', 'Choa Chu Kang',
-  // Central
-  'Bishan', 'Toa Payoh', 'Ang Mo Kio', 'Novena', 'Bukit Timah', 'Orchard', 'Thomson',
-  // South
-  'Tiong Bahru', 'Queenstown', 'Redhill', 'Harbourfront',
-  // Other
-  'Online'
-];
 
 // Application states for session management
 const ApplicationStates = {

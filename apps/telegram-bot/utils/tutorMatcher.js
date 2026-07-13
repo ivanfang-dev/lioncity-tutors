@@ -1,22 +1,7 @@
 import Tutor from '../../../packages/shared/models/Tutor.js';
 import { LEVEL_SUBJECT_MAPPINGS } from '../../../packages/shared/index.js';
 import { TIME_SLOT_KEYS } from '../../../packages/shared/utils/timeSlots.js';
-
-// Maps assignment location (from inline keyboard) to tutor region boolean key
-const LOCATION_TO_REGION = {
-  'Sengkang': 'northeast', 'Punggol': 'northeast', 'Hougang': 'northeast',
-  'Serangoon': 'northeast', 'Kovan': 'northeast', 'Buangkok': 'northeast',
-  'Tampines': 'east', 'Pasir Ris': 'east', 'Bedok': 'east',
-  'Simei': 'east', 'East Coast': 'east', 'Katong': 'east', 'Marine Parade': 'east',
-  'Jurong East': 'west', 'Jurong West': 'west', 'Clementi': 'west',
-  'Boon Lay': 'west', 'Pioneer': 'west', 'Buona Vista': 'west', 'Dover': 'west', 'Tengah': 'west',
-  'Woodlands': 'north', 'Sembawang': 'north', 'Yishun': 'north', 'Admiralty': 'north',
-  'Bukit Batok': 'northwest', 'Bukit Panjang': 'northwest', 'Choa Chu Kang': 'northwest',
-  'Bishan': 'central', 'Toa Payoh': 'central', 'Ang Mo Kio': 'central',
-  'Novena': 'central', 'Bukit Timah': 'central', 'Orchard': 'central', 'Thomson': 'central',
-  'Tiong Bahru': 'south', 'Queenstown': 'south', 'Redhill': 'south', 'Harbourfront': 'south',
-  'Online': 'online'
-};
+import { LOCATION_TO_REGION } from './locations.js';
 
 // Maps assignment level string prefix to tutor teachingLevels key
 function getLevelCategory(level) {
