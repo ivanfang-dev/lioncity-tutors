@@ -96,6 +96,14 @@ export async function recordTutorReply(phone, reply) {
   // `new: true` returns the post-update doc, so the flipped contact already carries
   // the decision; any row with this phone belongs to the same tutor.
   const contact = assignment.outreach.contacts.find(c => c.phone === norm);
+  return finalizeReply(assignment, contact, decision, reply);
+}
+
+// Shared tail for both reply recorders (WhatsApp phone-matched and Telegram tutorId-matched):
+// apply the interested-target fulfilment gate, credit the tutor for responding, and alert the
+// owner on a Yes. Keeping it here means the two channels can never drift apart. `assignment`
+// is already the post-update doc; `contact` is the row we just flipped.
+async function finalizeReply(assignment, contact, decision, reply) {
   const tutorName = contact?.tutorName || '';
   const tutorId = contact?.tutorId || null;
 
@@ -103,7 +111,7 @@ export async function recordTutorReply(phone, reply) {
   // keeps sending until fresh tutors say Yes rather than instantly re-fulfilling on the old shortlist.
   const interestedCount = assignment.viableInterestedCount();
   if (decision === 'Interested' && interestedCount >= INTERESTED_TARGET) {
-    // Targeted update for the same reason as above — never re-save a legacy document.
+    // Targeted update — never re-save a legacy document (subject/level enums may fail validation).
     await Assignment.updateOne(
       { _id: assignment._id },
       { $set: { 'outreach.status': 'Fulfilled' } }
@@ -128,4 +136,43 @@ export async function recordTutorReply(phone, reply) {
     interestedCount,
     stopped: assignment.outreach.status === 'Fulfilled'
   };
+}
+
+// Telegram counterpart of recordTutorReply. When a tutor taps ✅ Interested / ❌ on an outreach
+// DM, the callback carries the exact assignmentId and we know the tutorId from their linked
+// telegramId — so match precisely by (assignmentId, tutorId) instead of by phone. Same atomic,
+// no-`.save()` flip + shared finalize tail as the phone path.
+export async function recordTutorReplyByTutorId(tutorId, reply, assignmentId) {
+  const decision = reply === 'yes' ? 'Interested' : reply === 'no' ? 'Declined' : null;
+  if (!tutorId || !assignmentId || !decision) {
+    return { matched: false, error: 'tutorId, assignmentId and reply (yes|no) required' };
+  }
+
+  await connectToDatabase();
+  const tid = new mongoose.Types.ObjectId(tutorId);
+
+  const assignment = await Assignment.findOneAndUpdate(
+    {
+      _id: assignmentId,
+      'outreach.status': 'Active',
+      'outreach.contacts': { $elemMatch: { tutorId: tid, status: 'Sent' } }
+    },
+    {
+      $set: {
+        'outreach.contacts.$[c].status': decision,
+        'outreach.contacts.$[c].respondedAt': new Date()
+      }
+    },
+    {
+      new: true,
+      arrayFilters: [{ 'c.tutorId': tid, 'c.status': 'Sent' }]
+    }
+  );
+
+  if (!assignment) {
+    return { matched: false };
+  }
+
+  const contact = assignment.outreach.contacts.find(c => c.tutorId?.toString() === tid.toString());
+  return finalizeReply(assignment, contact, decision, reply);
 }

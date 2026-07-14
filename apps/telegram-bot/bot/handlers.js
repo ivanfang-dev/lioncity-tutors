@@ -6,6 +6,7 @@ import { formatAssignmentForChannel } from '../utils/channelFormat.js';
 import RateValidator from '../utils/RateValidator.js';
 import ErrorHandler from '../utils/ErrorHandler.js';
 import { notifyMatchedTutors, escalateAssignment } from '../utils/tutorNotifier.js';
+import { recordTutorReplyByTutorId } from '../utils/recordTutorReply.js';
 import { sendWhatsApp } from '../utils/whatsappSender.js';
 import { getTutorNameByNumber } from '../utils/tutorLookup.js';
 import { SINGAPORE_LOCATIONS } from '../utils/locations.js';
@@ -1013,8 +1014,14 @@ async function handleStart(bot, chatId, userId, Tutor, userSessions, startParam 
     // Save updated session
     userSessions[chatId] = updatedSession;
 
-    // Prompt user for contact
-    await safeSend(bot, chatId, '👋 Welcome! To get started, please share your contact number by clicking the button below.', {
+    // Prompt user for contact. A ?start=link deep link means the tutor came specifically to
+    // connect Telegram (so future outreach can reach them here, free, instead of WhatsApp) —
+    // give them linking-specific copy rather than the generic apply welcome.
+    const contactPrompt = startParam === 'link'
+      ? '🔗 *Link your Telegram* to get tuition assignment matches right here — faster than WhatsApp.\n\nTap below to share your number so we can confirm it\'s you.'
+      : '👋 Welcome! To get started, please share your contact number by clicking the button below.';
+    await safeSend(bot, chatId, contactPrompt, {
+      parse_mode: 'Markdown',
       reply_markup: {
         keyboard: [[{
           text: '📞 Share Contact Number',
@@ -1055,10 +1062,13 @@ async function handleContact(bot, chatId, userId, contact, Tutor, userSessions, 
       return;
     }
     
-    // Update telegramId if changed
-    if (tutor.telegramId !== userId) {
+    // Update telegramId if changed, and clear any telegramStale flag: sharing their contact
+    // proves the tutor is reachable on Telegram again, so future outreach can prefer the free
+    // DM. Targeted update (not tutor.save()) to avoid re-validating legacy profile fields.
+    if (tutor.telegramId !== userId || tutor.telegramStale) {
+      await Tutor.updateOne({ _id: tutor._id }, { $set: { telegramId: userId, telegramStale: false } });
       tutor.telegramId = userId;
-      await tutor.save();
+      tutor.telegramStale = false;
     }
     
     // Store tutor ID and preserve existing session data
@@ -1709,7 +1719,7 @@ async function confirmPostAssignment(bot, chatId, userSessions, Assignment, chan
     delete userSessions[chatId].waitingForCustomRate;
 
     // Confirm immediately — WhatsApp notifications run in the background
-    await safeSend(bot, chatId, `✅ *Assignment Posted Successfully!*\n\n📋 Assignment ID: ${savedAssignment._id}\n📢 Posted to channel\n📨 Notifying matching tutors via WhatsApp...\n📊 Status: Open for applications`, {
+    await safeSend(bot, chatId, `✅ *Assignment Posted Successfully!*\n\n📋 Assignment ID: ${savedAssignment._id}\n📢 Posted to channel\n📨 Notifying matching tutors via Telegram/WhatsApp...\n📊 Status: Open for applications`, {
       parse_mode: 'Markdown',
       reply_markup: {
         inline_keyboard: [[{ text: '🔙 Back to Admin Panel', callback_data: 'admin_panel' }]]
@@ -1969,7 +1979,15 @@ async function handleApplication(bot, chatId, userId, assignmentId, Assignment, 
 // Handle start parameters (for assignment applications)
 async function handleStartParameter(bot, chatId, userId, startParam, Assignment, Tutor, userSessions, ADMIN_USERS) {
   try {
-    // Show main menu for unknown parameters
+    // ?start=link — the tutor came to connect their Telegram. By the time we're here they've
+    // already shared their contact, so handleContact has linked telegramId (and cleared any
+    // stale flag); just confirm it so they know outreach will now reach them here for free.
+    if (startParam === 'link') {
+      await safeSend(bot, chatId,
+        '✅ *Telegram linked!*\n\nYou\'ll now get matching tuition assignments right here — usually faster than WhatsApp. Just tap *Interested* or *Apply* when one arrives.',
+        { parse_mode: 'Markdown' });
+    }
+    // Show main menu (also the fallback for unknown parameters).
     await showMainMenu(chatId, bot, userId, ADMIN_USERS);
   } catch (error) {
     console.error('Error handling start parameter:', error);
@@ -2616,9 +2634,31 @@ async function handleSpecificRateEdit(bot, chatId, text, level, userSessions, Tu
 }
 
 // Fixed version of handleCallbackQuery with all editable fields and menus handled
+// Make sure userSessions[chatId] carries a tutorId, resolving it from the tapper's telegramId
+// when the in-memory session was lost (Vercel is serverless — sessions don't survive a cold
+// start). Lets a button tapped straight from an outreach DM reach the apply flow instead of
+// dead-ending on "please /start". No-op when the session already has a tutorId. Returns the
+// session, or null when the Telegram user isn't a linked tutor.
+async function ensureTutorSession(chatId, userId, Tutor, userSessions) {
+  const existing = userSessions[chatId];
+  if (existing?.tutorId) return existing;
+
+  const tutor = await Tutor.findOne({ telegramId: userId });
+  if (!tutor) return null;
+
+  userSessions[chatId] = {
+    ...(existing || {}),
+    tutorId: tutor._id,
+    fullName: tutor.fullName,
+    state: ApplicationStates.VERIFIED,
+    lastActivity: Date.now()
+  };
+  return userSessions[chatId];
+}
+
 async function handleCallbackQuery(
   bot,
-  callbackQuery, 
+  callbackQuery,
   Assignment,
   Tutor,
   userSessions,
@@ -2687,9 +2727,32 @@ async function handleCallbackQuery(
       return await handleApplication(bot, chatId, userId, assignmentId, Assignment, Tutor, userSessions);
     }
 
+    // Telegram outreach quick-reply: tutor tapped "✅ Interested" on an assignment DM. We know
+    // who tapped from their Telegram id (= telegramId), so no session is needed — record it
+    // straight against the outreach contact, mirroring the WhatsApp Yes path.
+    if (data.startsWith('outreach_interested_')) {
+      const assignmentId = data.replace('outreach_interested_', '');
+      const tutor = await Tutor.findOne({ telegramId: userId });
+      if (!tutor) {
+        return await safeSend(bot, chatId, 'Please share your contact with the bot first (/start) so we can match your reply.');
+      }
+      const result = await recordTutorReplyByTutorId(tutor._id, 'yes', assignmentId);
+      // Drop the buttons so the tutor can't double-tap, then confirm.
+      await bot.editMessageReplyMarkup(
+        { inline_keyboard: [] },
+        { chat_id: chatId, message_id: callbackQuery.message?.message_id }
+      ).catch(() => {});
+      return await safeSend(bot, chatId, result.matched
+        ? "✅ Great — we've noted your interest and will be in touch shortly!"
+        : "👍 Thanks! This assignment may already be filled, but we've noted you.");
+    }
+
     // Handle direct assignment application - now prompts for rate first
     if (data.startsWith('apply_assignment_')) {
       const assignmentId = data.replace('apply_assignment_', '');
+      // A tap from an outreach DM may arrive with no in-memory session (serverless cold start),
+      // so resolve the tutor from their telegramId before the apply flow needs session.tutorId.
+      await ensureTutorSession(chatId, userId, Tutor, userSessions);
       return await handleApplicationStart(bot, chatId, userId, assignmentId, Assignment, Tutor, userSessions);
     }
 

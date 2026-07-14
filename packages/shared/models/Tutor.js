@@ -18,6 +18,11 @@ const tutorSchema = new mongoose.Schema({
   race: String,
   nricLast4: String,
   telegramId: { type: String, index: true },
+  // Set true once a cold-outreach DM to this tutor's linked Telegram fails to deliver (they
+  // blocked the bot / deleted the chat / the id went stale). Outreach then skips straight to
+  // WhatsApp for them instead of paying the try-fail-fallback tax on every future wave.
+  // Cleared when they re-link by sharing their contact with the bot again (handleContact).
+  telegramStale: { type: Boolean, default: false },
   // Tutoring Preferences
   teachingLevels: {
   // Pre-School

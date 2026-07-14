@@ -151,6 +151,11 @@ const assignmentSchema = new mongoose.Schema({
       phone: { type: String },
       tutorName: { type: String },
       wave: { type: Number },
+      // Which channel we reached this tutor on. Telegram DMs are free, so outreach prefers
+      // them when the tutor has a linked telegramId and falls back to a WhatsApp template
+      // otherwise (or when the DM fails). Defaults to 'whatsapp' so pre-existing rows — all
+      // sent before Telegram routing existed — read correctly and reply-matching stays right.
+      channel: { type: String, enum: ['whatsapp', 'telegram'], default: 'whatsapp' },
       sentAt: { type: Date, default: Date.now },
       // Sent       → message delivered, no reply yet
       // Interested → tutor replied Yes

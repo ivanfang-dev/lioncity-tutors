@@ -352,7 +352,7 @@ async function findMatchingTutors(assignment, poolSize = 40) {
   // rare case a single subject+level+region+type query matches more than that.
   const MAX_CANDIDATE_FETCH = 300;
   const candidates = await Tutor.find(query)
-    .select('fullName contactNumber tutorType yearsOfExperience highestEducation introduction teachingExperience trackRecord hourlyRate availableTimeSlots responseStats teachingLevels createdAt')
+    .select('fullName contactNumber telegramId telegramStale tutorType yearsOfExperience highestEducation introduction teachingExperience trackRecord hourlyRate availableTimeSlots responseStats teachingLevels createdAt')
     .sort({ createdAt: -1 })
     .limit(MAX_CANDIDATE_FETCH)
     .lean();

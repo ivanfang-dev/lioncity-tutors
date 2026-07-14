@@ -4,6 +4,7 @@ import { Assignment, Tutor } from '../../../packages/shared/server-exports.js';
 import { normalizePhone } from './phone.js';
 import { formatTimeSlots } from '../../../packages/shared/utils/timeSlots.js';
 import { sendWhatsAppTemplate } from './whatsappSender.js';
+import { sendAssignmentDM } from './telegramOutreach.js';
 
 // The approved outreach template (see WhatsApp Manager). Its body has 6 positional params;
 // buildAssignmentParams() below produces them in order. Quick-Reply buttons ("Yes, interested"
@@ -67,6 +68,49 @@ function buildAssignmentParams(assignment) {
   ];
 }
 
+// Reach ONE tutor for this wave and report which channel carried the message, so the
+// outreach log records the right value.
+//
+// This is the money decision. Telegram DMs are FREE; WhatsApp templates are billed per
+// conversation. But only tutors who've linked the bot (tutor.telegramId set) can be DMed,
+// and even a linked tutor can be unreachable — blocked the bot, deleted the chat, stale id —
+// in which case sendAssignmentDM() throws.
+//
+// Tools available to you:
+//   await sendAssignmentDM(tutor, assignment)                                → resolves if the
+//        free DM went out; THROWS if it couldn't be delivered.
+//   await sendWhatsAppTemplate(tutor.contactNumber, OUTREACH_TEMPLATE, params) → the billed
+//        fallback that reaches any tutor with a phone number.
+//
+// @param tutor       matched tutor doc — has `.telegramId` (may be empty) and `.contactNumber`
+// @param assignment  the assignment being offered (for the DM body)
+// @param params      WhatsApp template body params (from buildAssignmentParams)
+// @returns {Promise<'telegram' | 'whatsapp'>} the channel the message actually went out on.
+//          Let a WhatsApp failure throw — sendWaveToTutors counts that as a failed send.
+async function sendToTutor(tutor, assignment, params) {
+  // Free path: DM the tutor on Telegram — but only if they've linked the bot AND we haven't
+  // already found their Telegram unreachable. telegramStale is set the first time a DM fails,
+  // so a tutor who blocked/deleted the bot doesn't cost a wasted try-then-fall-back on every
+  // future wave. (Re-linking via the bot clears the flag — see handleContact.)
+  if (tutor.telegramId && !tutor.telegramStale) {
+    try {
+      await sendAssignmentDM(tutor, assignment);
+      return 'telegram';
+    } catch (err) {
+      // Undeliverable (blocked bot, deleted chat, stale id). Remember it so future waves go
+      // straight to WhatsApp, and fall through to the paid channel now so this tutor is still
+      // reached. Best-effort persist — if it fails we simply retry Telegram next wave.
+      console.warn(`Telegram DM to ${tutor.fullName || tutor._id} failed — marking telegram stale, falling back to WhatsApp: ${err.message}`);
+      await Tutor.updateOne({ _id: tutor._id }, { $set: { telegramStale: true } }).catch(() => {});
+    }
+  }
+
+  // Billed fallback: reaches any tutor with a phone number. Let a failure throw so
+  // sendWaveToTutors counts it as a failed send.
+  await sendWhatsAppTemplate(tutor.contactNumber, OUTREACH_TEMPLATE, params);
+  return 'whatsapp';
+}
+
 // Message every tutor in `batch` and record the successful sends as part of `wave`.
 // Sends sequentially — whatsapp-web.js uses a single Chrome process and concurrent
 // sendMessage calls queue CDP commands on the same browser, causing protocol timeouts.
@@ -87,13 +131,14 @@ async function sendWaveToTutors(assignment, batch, wave, botUsername) {
   const contacts = [];
   for (const tutor of batch) {
     try {
-      await sendWhatsAppTemplate(tutor.contactNumber, OUTREACH_TEMPLATE, params);
+      const channel = await sendToTutor(tutor, assignment, params);
       sent++;
       contacts.push({
         tutorId: tutor._id,
         phone: normalizePhone(tutor.contactNumber),
         tutorName: tutor.fullName || 'Unknown',
         wave,
+        channel,
         sentAt: new Date(),
         status: 'Sent'
       });
@@ -103,9 +148,13 @@ async function sendWaveToTutors(assignment, batch, wave, botUsername) {
     }
   }
 
-  if (failed > 0) {
-    console.log(`Wave ${wave} for ${assignment._id}: ${sent} sent, ${failed} failed:`, errors);
-  }
+  // Split the sends by channel so the WhatsApp-conversation savings are visible in the logs.
+  const viaTelegram = contacts.filter(c => c.channel === 'telegram').length;
+  const viaWhatsApp = contacts.filter(c => c.channel === 'whatsapp').length;
+  console.log(
+    `Wave ${wave} for ${assignment._id}: ${sent} sent (${viaTelegram} via Telegram, ${viaWhatsApp} via WhatsApp), ${failed} failed` +
+    (failed > 0 ? `: ${errors.join('; ')}` : '')
+  );
 
   // Persist who we contacted so Yes/No replies can be matched and the escalation loop
   // can resume after a restart — this state lives in Mongo, never in process memory.
@@ -168,12 +217,21 @@ async function remindNonResponders(assignment, botUsername, { maxReminders = 1, 
   }
 
   const batch = remindable.slice(0, waveSize);
-  // Reminders re-send the same approved outreach template — a reminder is just another
-  // send of the match, and cold sends must be templated (no open 24h window to reminders).
   const params = buildAssignmentParams(assignment);
 
-  // Mirror sendWaveToTutors' test-mode redirect: send everything to one number so the
-  // reminder path can be exercised without paging real tutors.
+  // Route reminders exactly like a fresh wave — Telegram-first, WhatsApp fallback — so a
+  // non-responder we can still reach on Telegram gets a FREE re-ping instead of a billed
+  // template. Contacts store tutorId + channel but not telegramId, so reload the tutor docs.
+  const tutorIds = batch.map(c => c.tutorId).filter(Boolean);
+  const tutors = tutorIds.length
+    ? await Tutor.find({ _id: { $in: tutorIds } })
+        .select('fullName contactNumber telegramId telegramStale')
+        .lean()
+    : [];
+  const tutorById = new Map(tutors.map(t => [t._id.toString(), t]));
+
+  // Mirror sendWaveToTutors' test-mode redirect: send everything to one number (over WhatsApp)
+  // so the reminder path can be exercised without paging real tutors.
   const testPhone = process.env.TEST_RECIPIENT_PHONE || '';
 
   let sent = 0;
@@ -181,7 +239,14 @@ async function remindNonResponders(assignment, botUsername, { maxReminders = 1, 
   const remindedPhones = [];
   for (const c of batch) {
     try {
-      await sendWhatsAppTemplate(testPhone || c.phone, OUTREACH_TEMPLATE, params);
+      const tutor = c.tutorId ? tutorById.get(c.tutorId.toString()) : null;
+      if (testPhone || !tutor) {
+        // Test mode, or a contact with no resolvable tutor doc — re-send the template to the
+        // phone we recorded (cold sends must be templated; there's no open 24h window here).
+        await sendWhatsAppTemplate(testPhone || c.phone, OUTREACH_TEMPLATE, params);
+      } else {
+        await sendToTutor(tutor, assignment, params);
+      }
       sent++;
       remindedPhones.push(c.phone);
     } catch (err) {
