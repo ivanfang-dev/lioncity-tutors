@@ -136,16 +136,22 @@ const assignmentSchema = new mongoose.Schema({
   outreach: {
     // Pending   → Open assignment, first wave not sent yet (scheduler will pick it up)
     // Active    → waves going out, waiting on replies
-    // Fulfilled → reached the interested-tutor target; stop sending new waves
+    // Holding   → hit the interested-tutor target; no new waves, but still collecting late
+    //             yeses until `holdUntil`, when the tick re-ranks and picks the best 3
+    // Fulfilled → shortlist chosen (top 3 ranked); stop sending, relay to parent
     // Exhausted → ran out of pool / hit the time cap with too few replies (owner alerted)
     status: {
       type: String,
-      enum: ['Pending', 'Active', 'Fulfilled', 'Exhausted'],
+      enum: ['Pending', 'Active', 'Holding', 'Fulfilled', 'Exhausted'],
       default: 'Pending'
     },
     waveCount: { type: Number, default: 0 },
     startedAt: { type: Date },
     lastWaveAt: { type: Date },
+    // While status is 'Holding', the moment the escalation tick may release the shortlist
+    // (re-rank the interested pool and pick the best 3). Set when the target is first
+    // reached; set to now for an early release once the pool is comfortably over target.
+    holdUntil: { type: Date },
     contacts: [{
       tutorId: { type: mongoose.Schema.Types.ObjectId, ref: 'Tutor' },
       phone: { type: String },
@@ -169,6 +175,12 @@ const assignmentSchema = new mongoose.Schema({
       // Set when this interested tutor's profile has been relayed to the parent, so a
       // repeat "Send all" tap only forwards tutors who said Yes since the last send.
       relayedToParentAt: { type: Date },
+      // The tutor's 1-based position in the released shortlist (1 = best fit). Stamped on
+      // the top-N interested contacts when the hold window releases (escalation-tick),
+      // scored by quality WITHOUT the responsiveness penalty (they already replied). Absent
+      // means "not shortlisted" — either a backup for when the parent rejects, or a legacy
+      // assignment that filled before the shortlist re-rank existed.
+      shortlistRank: { type: Number },
       // Set when the parent has passed on this tutor ("find more tutors"). Such a contact
       // no longer counts toward the interested target (see viableInterestedCount), so a
       // resumed outreach keeps sending until fresh tutors say Yes. Still in contactedTutorIds,
@@ -258,11 +270,21 @@ assignmentSchema.methods.contactedTutorIds = function() {
 };
 
 // Tutor ids that said "Yes" but haven't been relayed to the parent yet — the set a
-// "Send all" tap should forward. Lets the owner send a first tutor immediately and tap
-// again later for newcomers without re-sending anyone.
+// "Send all" tap should forward, ordered best-first. Lets the owner send a first tutor
+// immediately and tap again later for newcomers without re-sending anyone.
+//
+// Once the hold window has released a ranked shortlist, relay ONLY the top 3 (contacts
+// with shortlistRank set), best-first — the non-shortlisted interested tutors stay
+// recorded as backups for a parent rejection and must not leak into the parent's message.
+// Before any shortlist exists (legacy assignments filling mid-flight, or a resume that
+// hasn't re-ranked yet) fall back to every interested-but-unsent contact, as before.
 assignmentSchema.methods.pendingParentTutorIds = function() {
-  return (this.outreach?.contacts || [])
-    .filter(c => c.status === 'Interested' && !c.relayedToParentAt)
+  const contacts = this.outreach?.contacts || [];
+  const hasShortlist = contacts.some(c => c.shortlistRank != null);
+  const pending = contacts.filter(c => c.status === 'Interested' && !c.relayedToParentAt);
+  const pool = hasShortlist ? pending.filter(c => c.shortlistRank != null) : pending;
+  return pool
+    .sort((a, b) => (a.shortlistRank ?? Infinity) - (b.shortlistRank ?? Infinity))
     .map(c => c.tutorId?.toString())
     .filter(Boolean);
 };

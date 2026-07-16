@@ -1,7 +1,9 @@
 import mongoose from 'mongoose';
 import { waitUntil } from '@vercel/functions';
-import { Assignment } from '../../../packages/shared/server-exports.js';
+import { Assignment, Tutor } from '../../../packages/shared/server-exports.js';
 import { escalateAssignment, remindNonResponders } from '../utils/tutorNotifier.js';
+import { shortlistScore, shortlistReason } from '../utils/tutorMatcher.js';
+import { holdTransition } from '../utils/recordTutorReply.js';
 import { notifyOwner } from '../utils/ownerAlert.js';
 import { formatAssignmentForChannel } from '../utils/channelFormat.js';
 
@@ -26,6 +28,13 @@ const BOT_USERNAME = process.env.BOT_USERNAME;
 const AUTO_CLOSE_DAYS = Number(process.env.ASSIGNMENT_AUTO_CLOSE_DAYS) || 7;
 const MAX_CLOSE_PER_TICK = 20; // bound the Telegram edits done in one tick
 
+// The shortlist relayed to the parent — the best N of everyone who said Yes during the hold
+// window. Tied to the interested target (default 3): we collect extra, then pick this many.
+const SHORTLIST_SIZE = INTERESTED_TARGET;
+// Bound how many hold windows one tick releases, so the owner-alert fan-out stays inside the
+// function's time budget (each release = a Tutor query + one owner Telegram message).
+const MAX_RELEASE_PER_TICK = Number(process.env.OUTREACH_MAX_RELEASE_PER_TICK) || 5;
+
 let isConnected = false;
 async function connectToDatabase() {
   if (isConnected) return;
@@ -39,15 +48,20 @@ async function connectToDatabase() {
 
 // Send the next wave (or close out) for one already-claimed assignment.
 async function processAssignment(assignment, now) {
-  // Already satisfied — the reply endpoint normally sets this, but guard anyway. Count only
-  // viable (non-parent-rejected) interested tutors so a resumed outreach isn't re-fulfilled by
-  // a shortlist the parent already passed on.
-  if (assignment.viableInterestedCount() >= INTERESTED_TARGET) {
-    // Atomic update (see closeStaleAssignments): avoids re-validating a legacy subject.
-    await Assignment.updateOne(
-      { _id: assignment._id },
-      { $set: { 'outreach.status': 'Fulfilled' } }
-    );
+  // Already at target — the reply recorder normally moves it to Holding, but guard anyway.
+  // Count only viable (non-parent-rejected) interested tutors so a resumed outreach isn't
+  // re-held by a shortlist the parent already passed on. Route through the SAME hold-window
+  // decision as the reply path (not a direct Fulfil) so the shortlist still gets re-ranked.
+  const viable = assignment.viableInterestedCount();
+  if (viable >= INTERESTED_TARGET) {
+    const transition = holdTransition(assignment.outreach?.status, viable, now);
+    if (transition) {
+      // Atomic update (see closeStaleAssignments): avoids re-validating a legacy subject.
+      await Assignment.updateOne(
+        { _id: assignment._id },
+        { $set: { 'outreach.status': transition.status, 'outreach.holdUntil': transition.holdUntil } }
+      );
+    }
     return;
   }
 
@@ -87,6 +101,116 @@ async function processAssignment(assignment, now) {
     );
   } else {
     console.log(`Reminder wave for ${assignment._id}: ${reminder.sent} sent, ${reminder.failed} failed`);
+  }
+}
+
+// A hold window has elapsed: re-rank everyone who said Yes into the parent-facing shortlist.
+// Picks the best SHORTLIST_SIZE by shortlistScore (quality WITHOUT the responsiveness penalty
+// — they already replied), stamps their 1..N rank, fulfils the outreach, and alerts the owner.
+async function releaseOneShortlist(assignment) {
+  // Viable = said Yes and the parent hasn't already passed on them (a resumed "find more"
+  // shortlist can leave rejected-but-Interested contacts behind).
+  const viable = (assignment.outreach?.contacts || [])
+    .filter(c => c.status === 'Interested' && !c.parentRejectedAt && c.tutorId);
+
+  // Load just the fields shortlistScore + the owner alert need. Contacts store only tutorId.
+  const tutorIds = viable.map(c => c.tutorId);
+  const tutors = tutorIds.length
+    ? await Tutor.find({ _id: { $in: tutorIds } })
+        .select('fullName yearsOfExperience introduction teachingExperience trackRecord hourlyRate tutorType teachingLevels')
+        .lean()
+    : [];
+  const tutorById = new Map(tutors.map(t => [t._id.toString(), t]));
+
+  const ranked = viable
+    .map(c => ({ contact: c, tutor: tutorById.get(c.tutorId.toString()) }))
+    .filter(x => x.tutor)
+    .map(x => ({ ...x, score: shortlistScore(x.tutor, assignment) }))
+    .sort((a, b) => b.score - a.score)
+    .slice(0, SHORTLIST_SIZE);
+
+  if (ranked.length === 0) {
+    // Nothing left to shortlist (all rejected, or tutor docs vanished). Stop holding so it
+    // doesn't loop, and let the owner know to handle it manually.
+    await Assignment.updateOne({ _id: assignment._id }, { $set: { 'outreach.status': 'Fulfilled' } });
+    await notifyOwner(
+      `🎯 *Hold window closed* — *${assignment.title}*\n` +
+      `No shortlist could be built (interested tutors are unavailable). Please follow up manually.`
+    );
+    return;
+  }
+
+  // Stamp shortlistRank 1..N on the winners AND fulfil in one atomic update. arrayFilters
+  // address each winner by tutorId. Never .save(): a legacy subject/level would fail
+  // re-validation, and a stale contact array could clobber a reply that landed mid-release.
+  const set = { 'outreach.status': 'Fulfilled' };
+  const arrayFilters = [];
+  ranked.forEach((r, i) => {
+    set[`outreach.contacts.$[c${i}].shortlistRank`] = i + 1;
+    arrayFilters.push({ [`c${i}.tutorId`]: r.tutor._id });
+  });
+  await Assignment.updateOne({ _id: assignment._id }, { $set: set }, { arrayFilters });
+
+  // Mirror the release into the in-memory doc so the owner alert (pendingParentTutorIds +
+  // the rich card) sees the ranks and the Fulfilled status.
+  assignment.outreach.status = 'Fulfilled';
+  ranked.forEach((r, i) => {
+    const c = assignment.outreach.contacts.find(cc => cc.tutorId?.toString() === r.tutor._id.toString());
+    if (c) c.shortlistRank = i + 1;
+  });
+
+  await alertOwnerShortlistReady(assignment, ranked);
+}
+
+// Alert the owner that a ranked shortlist is ready to relay: a rich card with the top 3,
+// a one-line "why" per tutor (experience/type + rate-vs-budget), and the one-tap "Send all"
+// button. (Phase 2 upgrades this into the full drafted parent message.)
+async function alertOwnerShortlistReady(assignment, ranked) {
+  let replyMarkup;
+  if (assignment.parentContact) {
+    const pendingCount = assignment.pendingParentTutorIds().length;
+    if (pendingCount > 0) {
+      replyMarkup = {
+        inline_keyboard: [[{
+          text: pendingCount === 1 ? '📤 Send profile to parent' : `📤 Send all ${pendingCount} profiles to parent`,
+          callback_data: `sendallprof_${assignment._id}`
+        }]]
+      };
+    }
+  }
+
+  const medals = ['🥇', '🥈', '🥉'];
+  const cards = ranked.map((r, i) => {
+    const medal = medals[i] || `${i + 1}.`;
+    return `${medal} *${r.tutor.fullName || 'Tutor'}*\n    ${shortlistReason(r.tutor, assignment)}`;
+  });
+
+  await notifyOwner(
+    `🎯 *Shortlist ready* — *${assignment.title}*\n` +
+    `Picked the best ${ranked.length} of ${assignment.viableInterestedCount()} interested tutor(s):\n\n` +
+    cards.join('\n\n') +
+    (assignment.parentContact
+      ? `\n\nTap below to forward the ${ranked.length} profile(s) to the parent.`
+      : `\n\n⚠️ No parent contact on this assignment — relay unavailable.`),
+    replyMarkup
+  );
+}
+
+// Release every hold window whose timer has elapsed. Bounded per tick. Runs every tick
+// (like closeStaleAssignments), independent of whether a wave was due.
+async function releaseHoldingShortlists(now) {
+  const due = await Assignment.find({
+    'outreach.status': 'Holding',
+    'outreach.holdUntil': { $lte: now }
+  }).limit(MAX_RELEASE_PER_TICK);
+
+  for (const assignment of due) {
+    try {
+      await releaseOneShortlist(assignment);
+      console.log(`Released shortlist for ${assignment._id}`);
+    } catch (err) {
+      console.error(`Shortlist release failed for ${assignment._id}:`, err.message);
+    }
   }
 }
 
@@ -180,6 +304,14 @@ export default async function handler(req, res) {
         } catch (err) {
           console.error(`Escalation failed for ${assignment._id}:`, err.message);
         }
+      }
+      // Release any hold windows that have elapsed (re-rank interested → shortlist). Runs
+      // every tick regardless of whether a wave was due, since Holding assignments are
+      // never claimed above (claim query is Active-only, by design — no new waves while holding).
+      try {
+        await releaseHoldingShortlists(now);
+      } catch (err) {
+        console.error('Shortlist release failed:', err.message);
       }
       try {
         await closeStaleAssignments(now);

@@ -280,6 +280,88 @@ function coverageFactor(tutor, requestedFields, levelCategory) {
   return 0.5 + 0.5 * (covered / requestedFields.length);
 }
 
+// Resolve an assignment's requested subjects into a Mongo subject filter plus the list of
+// requested tutor field names (which drives coverage-aware ranking). Returns null when the
+// subject can't be mapped at all — the caller should treat that as "no matches". Shared by
+// the candidate query (findMatchingTutors) and the shortlist re-rank (shortlistScore) so
+// the two never diverge on what the assignment actually asked for.
+//
+// requestedFields: 2+ entries for a one-tutor-for-many request (drives coverage); one entry
+// for a single subject (coverage is then a no-op); empty for the "any subject" fallback.
+function resolveSubjects(assignment, levelCategory) {
+  if (SPECIAL_SUBJECTS.has(assignment.subject)) {
+    // Try to parse subjects from the assignment title
+    const fields = parseSubjectsFromTitle(assignment.title || '');
+    if (fields.length > 0) {
+      console.log(`Parsed subjects from title "${assignment.title}":`, fields);
+      return {
+        subjectQuery: { $or: fields.map(f => ({ [`teachingLevels.${levelCategory}.${f}`]: true })) },
+        requestedFields: fields,
+      };
+    }
+    // Fallback: match any tutor who teaches any subject at this level
+    console.log(`No subjects parsed from title "${assignment.title}", matching any ${levelCategory} tutor`);
+    const allFields = (LEVEL_SUBJECT_MAPPINGS[assignment.level] || [])
+      .map(s => subjectToFieldName(s)).filter(Boolean);
+    return {
+      subjectQuery: allFields.length > 0
+        ? { $or: allFields.map(f => ({ [`teachingLevels.${levelCategory}.${f}`]: true })) }
+        : {},
+      requestedFields: [],
+    };
+  }
+  const subjectField = subjectToFieldName(assignment.subject);
+  if (!subjectField) {
+    console.log('Could not map subject:', assignment.subject);
+    return null;
+  }
+  return {
+    subjectQuery: { [`teachingLevels.${levelCategory}.${subjectField}`]: true },
+    requestedFields: [subjectField],
+  };
+}
+
+// Quality score for RE-RANKING the interested pool into a parent-facing shortlist. Same
+// blend as scoreTutor (experience, commitment, budget comfort, coverage) but deliberately
+// WITHOUT responsivenessFactor: these tutors have already replied, so penalising slower
+// repliers here would be a pure quality loss (roadmap Phase 1). Pure + synchronous so the
+// escalation-tick release path can call it per interested contact.
+function shortlistScore(tutor, assignment) {
+  const levelCategory = getLevelCategory(assignment.level);
+  const budget = parseBudget(assignment.rate);
+  const fit = budgetFit(tutor, budget, levelCategory);
+  const { requestedFields } = resolveSubjects(assignment, levelCategory) || { requestedFields: [] };
+  const experience = (EXPERIENCE_RANK[tutor.yearsOfExperience] || 0) / 5;
+  const quality =
+    WEIGHTS.experience * experience +
+    WEIGHTS.commitment * commitmentScore(tutor) +
+    WEIGHTS.budget * fit.comfort;
+  return quality * coverageFactor(tutor, requestedFields, levelCategory);
+}
+
+// One-line, human-readable "why this tutor" for the owner's shortlist alert: experience,
+// type, and the tutor's asking rate against the budget that applies to them. Pure and
+// synchronous, mirrors the dimensions shortlistScore actually weighs.
+function shortlistReason(tutor, assignment) {
+  const levelCategory = getLevelCategory(assignment.level);
+  const budget = parseBudget(assignment.rate);
+  const ceiling = ceilingForTutor(tutor, budget);
+  const floor = tutorFloorRate(tutor, levelCategory);
+
+  const parts = [];
+  if (tutor.yearsOfExperience) parts.push(`${tutor.yearsOfExperience} exp`);
+  if (tutor.tutorType) parts.push(tutor.tutorType);
+
+  if (floor == null) {
+    parts.push(ceiling != null ? `rate not listed (budget $${ceiling}/h)` : 'rate not listed');
+  } else if (ceiling == null) {
+    parts.push(`asks $${floor}/h`);
+  } else {
+    parts.push(`asks $${floor}/h vs $${ceiling}/h budget${floor > ceiling ? ' ⚠️ over' : ''}`);
+  }
+  return parts.join(' · ');
+}
+
 // Find the best `poolSize` tutors matching the assignment's level+subject, location,
 // and tutor type — quality-ranked, ready to hand to the AI re-ranker.
 async function findMatchingTutors(assignment, poolSize = 40) {
@@ -294,36 +376,9 @@ async function findMatchingTutors(assignment, poolSize = 40) {
     return [];
   }
 
-  let subjectQuery;
-  // The specific subjects requested (field names). For a one-tutor-for-many request this
-  // holds 2+ entries and drives coverage-aware ranking below; for a single subject it's
-  // one entry (coverage is then a no-op); for the "any subject" fallback it stays empty.
-  let requestedFields = [];
-  if (SPECIAL_SUBJECTS.has(assignment.subject)) {
-    // Try to parse subjects from the assignment title
-    const fields = parseSubjectsFromTitle(assignment.title || '');
-    if (fields.length > 0) {
-      console.log(`Parsed subjects from title "${assignment.title}":`, fields);
-      subjectQuery = { $or: fields.map(f => ({ [`teachingLevels.${levelCategory}.${f}`]: true })) };
-      requestedFields = fields;
-    } else {
-      // Fallback: match any tutor who teaches any subject at this level
-      console.log(`No subjects parsed from title "${assignment.title}", matching any ${levelCategory} tutor`);
-      const allFields = (LEVEL_SUBJECT_MAPPINGS[assignment.level] || [])
-        .map(s => subjectToFieldName(s)).filter(Boolean);
-      subjectQuery = allFields.length > 0
-        ? { $or: allFields.map(f => ({ [`teachingLevels.${levelCategory}.${f}`]: true })) }
-        : {};
-    }
-  } else {
-    const subjectField = subjectToFieldName(assignment.subject);
-    if (!subjectField) {
-      console.log('Could not map subject:', assignment.subject);
-      return [];
-    }
-    subjectQuery = { [`teachingLevels.${levelCategory}.${subjectField}`]: true };
-    requestedFields = [subjectField];
-  }
+  const resolved = resolveSubjects(assignment, levelCategory);
+  if (!resolved) return [];
+  const { subjectQuery, requestedFields } = resolved;
 
   const query = {
     // $nin with null also excludes docs missing the field entirely, so no $exists needed.
@@ -373,4 +428,11 @@ async function findMatchingTutors(assignment, poolSize = 40) {
   return ranked.slice(0, poolSize).map(({ tutor }) => tutor);
 }
 
-export { findMatchingTutors, getLevelCategory, subjectToFieldName, LOCATION_TO_REGION };
+export {
+  findMatchingTutors,
+  shortlistScore,
+  shortlistReason,
+  getLevelCategory,
+  subjectToFieldName,
+  LOCATION_TO_REGION,
+};

@@ -10,6 +10,37 @@ import { notifyOwner } from './ownerAlert.js';
 
 // Stop sending new waves once this many tutors have replied "Yes".
 const INTERESTED_TARGET = Number(process.env.OUTREACH_INTERESTED_TARGET) || 3;
+// After the target is reached we don't fulfil immediately — we HOLD for this long, still
+// collecting late yeses, so the shortlist can be the BEST target tutors rather than the
+// fastest. The escalation tick re-ranks and releases when the window elapses.
+const OUTREACH_HOLD_WINDOW_MS = Number(process.env.OUTREACH_HOLD_WINDOW_MS) || 45 * 60 * 1000; // 45min
+// Once the viable interested pool runs this far past target there's nothing to gain from
+// waiting — release immediately (the next tick ranks + fulfils) rather than idling tutors.
+const EARLY_RELEASE_MARGIN = 3;
+
+// Pure decision for the hold-window transition, triggered on an Interested reply. Returns
+// the outreach fields to $set, or null when nothing should change (still below target, or
+// already Holding with the window open and the pool not yet comfortably over target).
+// `now` is injected so the transition can be unit-tested without wall-clock coupling.
+export function holdTransition(currentStatus, viableInterestedCount, now = new Date(), {
+  target = INTERESTED_TARGET,
+  holdWindowMs = OUTREACH_HOLD_WINDOW_MS,
+  earlyReleaseMargin = EARLY_RELEASE_MARGIN,
+} = {}) {
+  if (viableInterestedCount < target) return null;
+  // Comfortably over target — release now (holdUntil in the past → next tick ranks + fulfils).
+  // Fires regardless of current status: one WhatsApp reply can flip several seeded contacts
+  // straight past the margin, so a first-time transition can already warrant an early release.
+  if (viableInterestedCount >= target + earlyReleaseMargin) {
+    return { status: 'Holding', holdUntil: now };
+  }
+  // Just reached target — open the hold window. If we're already Holding (a later yes that's
+  // still under the early-release margin), leave the existing window untouched.
+  if (currentStatus !== 'Holding') {
+    return { status: 'Holding', holdUntil: new Date(now.getTime() + holdWindowMs) };
+  }
+  return null;
+}
 
 let isConnected = false;
 async function connectToDatabase() {
@@ -22,13 +53,24 @@ async function connectToDatabase() {
   isConnected = true;
 }
 
+// Wall-clock HH:MM in Singapore time — the owner's timezone — for the hold-window message.
+function formatSgTime(date) {
+  return new Intl.DateTimeFormat('en-GB', {
+    timeZone: 'Asia/Singapore', hour: '2-digit', minute: '2-digit', hour12: false
+  }).format(date);
+}
+
 // Ping the owner when a tutor says yes — the signal they act on to reach the parent fast.
 async function alertOwnerInterested(assignment, tutorName, interestedCount) {
-  // Offer a one-tap relay only when we can act on it: the assignment has a parent number
-  // to send to. The button forwards the whole interested-but-unsent shortlist, so its
-  // label tracks how many tutors are currently waiting to be sent (1, 2, 3...).
+  const holding = assignment.outreach?.status === 'Holding';
+
+  // Offer a one-tap relay only when we can act on it: the assignment has a parent number to
+  // send to. While Holding we deliberately wait for the ranked shortlist (released by the
+  // tick), so we suppress the early, unranked send here — the send button returns on the
+  // release "rich card" once the best 3 are chosen. The button forwards the whole
+  // interested-but-unsent set, so its label tracks how many are waiting to be sent (1, 2...).
   let replyMarkup;
-  if (assignment.parentContact) {
+  if (assignment.parentContact && !holding) {
     const pendingCount = assignment.pendingParentTutorIds().length;
     if (pendingCount > 0) {
       replyMarkup = {
@@ -42,12 +84,22 @@ async function alertOwnerInterested(assignment, tutorName, interestedCount) {
     }
   }
 
+  // On the yes that reaches target, say we're holding for better candidates (not "done") —
+  // the shortlist is picked when the window elapses, not on the fastest 3 responders.
+  let statusLine = '';
+  if (holding) {
+    const until = assignment.outreach?.holdUntil ? formatSgTime(assignment.outreach.holdUntil) : 'shortly';
+    statusLine =
+      `\n\n🕑 Target reached — *holding for better candidates until ${until}*.\n` +
+      `No new tutors will be messaged; you'll get the ranked top 3 to send when the window closes.`;
+  }
+
   await notifyOwner(
     `✅ *Tutor interested*\n` +
     `*${tutorName || 'A tutor'}* said YES to *${assignment.title}*\n` +
     `(${interestedCount}/${INTERESTED_TARGET} interested)` +
     (assignment.parentContact ? '' : `\n\n⚠️ No parent contact on this assignment — relay unavailable.`) +
-    (assignment.outreach?.status === 'Fulfilled' ? `\n\n🎯 Target reached — no more tutors will be messaged.` : ''),
+    statusLine,
     replyMarkup
   );
 }
@@ -73,7 +125,9 @@ export async function recordTutorReply(phone, reply) {
   // (A tutor in several open assignments → the sort attributes it to the latest wave.)
   const assignment = await Assignment.findOneAndUpdate(
     {
-      'outreach.status': 'Active',
+      // Accept replies while Active AND while Holding — a late "Yes" during the hold window
+      // still counts toward the pool the shortlist re-rank picks from.
+      'outreach.status': { $in: ['Active', 'Holding'] },
       'outreach.contacts': { $elemMatch: { phone: norm, status: 'Sent' } }
     },
     {
@@ -108,16 +162,22 @@ async function finalizeReply(assignment, contact, decision, reply) {
   const tutorId = contact?.tutorId || null;
 
   // Gate on viable (non-parent-rejected) interested tutors, so a resumed "find more" outreach
-  // keeps sending until fresh tutors say Yes rather than instantly re-fulfilling on the old shortlist.
+  // keeps sending until fresh tutors say Yes rather than instantly re-holding on the old shortlist.
   const interestedCount = assignment.viableInterestedCount();
-  if (decision === 'Interested' && interestedCount >= INTERESTED_TARGET) {
-    // Targeted update — never re-save a legacy document (subject/level enums may fail validation).
-    await Assignment.updateOne(
-      { _id: assignment._id },
-      { $set: { 'outreach.status': 'Fulfilled' } }
-    );
-    // Mirror it in memory so the owner alert and the `stopped` return value see it.
-    assignment.outreach.status = 'Fulfilled';
+  if (decision === 'Interested') {
+    // Hitting the target starts a HOLD (not an immediate fulfil): stop new waves but keep
+    // collecting late yeses until holdUntil, when the tick re-ranks and picks the best 3.
+    const transition = holdTransition(assignment.outreach?.status, interestedCount);
+    if (transition) {
+      // Targeted update — never re-save a legacy document (subject/level enums may fail validation).
+      await Assignment.updateOne(
+        { _id: assignment._id },
+        { $set: { 'outreach.status': transition.status, 'outreach.holdUntil': transition.holdUntil } }
+      );
+      // Mirror it in memory so the owner alert and the `stopped` return value see it.
+      assignment.outreach.status = transition.status;
+      assignment.outreach.holdUntil = transition.holdUntil;
+    }
   }
 
   // Credit the tutor for responding (Yes OR No both count — they're reachable).
@@ -134,7 +194,9 @@ async function finalizeReply(assignment, contact, decision, reply) {
     assignmentId: assignment._id.toString(),
     reply,
     interestedCount,
-    stopped: assignment.outreach.status === 'Fulfilled'
+    // No longer sending fresh waves — Holding (target reached, collecting late yeses),
+    // Fulfilled (shortlist chosen) or Exhausted all count as stopped.
+    stopped: assignment.outreach.status !== 'Active'
   };
 }
 
@@ -154,7 +216,8 @@ export async function recordTutorReplyByTutorId(tutorId, reply, assignmentId) {
   const assignment = await Assignment.findOneAndUpdate(
     {
       _id: assignmentId,
-      'outreach.status': 'Active',
+      // Active OR Holding — a late Telegram "Yes" during the hold window still lands.
+      'outreach.status': { $in: ['Active', 'Holding'] },
       'outreach.contacts': { $elemMatch: { tutorId: tid, status: 'Sent' } }
     },
     {

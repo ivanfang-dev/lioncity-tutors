@@ -45,8 +45,12 @@ console.log(`📋 ${a.title || 'Assignment'}  (${a._id})`);
 console.log(`   ${a.level} · ${a.subject}   parentContact: ${a.parentContact || '(none)'}`);
 console.log(`   Assignment status: ${a.status}`);
 console.log(`   Outreach: ${o.status || '(none)'} · wave ${o.waveCount || 0} · started ${fmt(o.startedAt)} · lastWave ${fmt(o.lastWaveAt)}`);
+if (o.status === 'Holding') {
+  const dueIn = o.holdUntil ? Math.round((new Date(o.holdUntil) - Date.now()) / 60000) : null;
+  console.log(`   ⏳ Holding until ${fmt(o.holdUntil)}${dueIn != null ? ` (${dueIn <= 0 ? 'due — next tick releases' : `~${dueIn} min left`})` : ''}`);
+}
 console.log(`   interestedCount (total Yes) = ${a.interestedCount()}`);
-console.log(`   viableInterestedCount (gates waves) = ${viable}   target = ${target}   ${viable >= target ? '→ Fulfilled (stops)' : '→ below target (keeps sending)'}`);
+console.log(`   viableInterestedCount (gates waves) = ${viable}   target = ${target}   ${viable >= target ? '→ target reached (holds, then shortlists)' : '→ below target (keeps sending)'}`);
 if (a.status === 'Filled') {
   console.log(`   ✅ Filled: matchedTutorId ${a.matchedTutorId || '(none)'} at ${fmt(a.filledAt)}`);
 }
@@ -59,6 +63,7 @@ if (contacts.length === 0) {
   console.log(`   Contacts (${contacts.length}):`);
   for (const c of contacts) {
     const flags = [
+      c.shortlistRank != null ? `shortlist #${c.shortlistRank}` : 'shortlist ·',
       c.relayedToParentAt ? 'relayed ✓' : 'relayed ·',
       c.parentRejectedAt ? 'rejected ✓' : 'rejected ·'
     ].join('  ');
