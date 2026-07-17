@@ -9,7 +9,7 @@
 //    or:  MONGODB_URI=... node scripts/verifyOutreach.js <assignmentId>
 
 import mongoose from 'mongoose';
-import { Assignment } from '../../../packages/shared/server-exports.js';
+import { Assignment, Placement } from '../../../packages/shared/server-exports.js';
 
 const assignmentId = process.argv[2];
 
@@ -49,6 +49,11 @@ if (o.status === 'Holding') {
   const dueIn = o.holdUntil ? Math.round((new Date(o.holdUntil) - Date.now()) / 60000) : null;
   console.log(`   ⏳ Holding until ${fmt(o.holdUntil)}${dueIn != null ? ` (${dueIn <= 0 ? 'due — next tick releases' : `~${dueIn} min left`})` : ''}`);
 }
+if (o.shortlistReleasedAt) {
+  console.log(`   📤 Shortlist released ${fmt(o.shortlistReleasedAt)}` +
+    `   nudged ${o.parentNudgedAt ? fmt(o.parentNudgedAt) : '·'}` +
+    `   silence-flagged ${o.parentSilenceEscalatedAt ? fmt(o.parentSilenceEscalatedAt) : '·'}`);
+}
 console.log(`   interestedCount (total Yes) = ${a.interestedCount()}`);
 console.log(`   viableInterestedCount (gates waves) = ${viable}   target = ${target}   ${viable >= target ? '→ target reached (holds, then shortlists)' : '→ below target (keeps sending)'}`);
 if (a.status === 'Filled') {
@@ -65,7 +70,8 @@ if (contacts.length === 0) {
     const flags = [
       c.shortlistRank != null ? `shortlist #${c.shortlistRank}` : 'shortlist ·',
       c.relayedToParentAt ? 'relayed ✓' : 'relayed ·',
-      c.parentRejectedAt ? 'rejected ✓' : 'rejected ·'
+      c.parentPickedAt ? 'PICKED ✓' : 'picked ·',
+      c.parentRejectedAt ? `rejected(${c.parentRejectReason || '?'})` : 'rejected ·'
     ].join('  ');
     const name = (c.tutorName || '(unknown)').padEnd(22);
     const status = String(c.status || '').padEnd(11);
@@ -73,5 +79,15 @@ if (contacts.length === 0) {
   }
 }
 console.log('');
+
+// Placements (Phase 2) — the ground-truth match rows created when the parent picks a tutor.
+const placements = await Placement.find({ assignmentId: a._id }).lean();
+if (placements.length > 0) {
+  console.log(`   Placements (${placements.length}):`);
+  for (const p of placements) {
+    console.log(`   • tutor ${p.tutorId} · ${p.status} · agreedRate ${p.agreedRate || '—'} · filled ${fmt(p.filledAt)} · checkIns ${p.checkIns?.length || 0}`);
+  }
+  console.log('');
+}
 
 await mongoose.disconnect();

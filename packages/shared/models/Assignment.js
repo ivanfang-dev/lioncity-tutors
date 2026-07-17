@@ -152,6 +152,15 @@ const assignmentSchema = new mongoose.Schema({
     // (re-rank the interested pool and pick the best 3). Set when the target is first
     // reached; set to now for an early release once the pool is comfortably over target.
     holdUntil: { type: Date },
+    // When the ranked shortlist alert (drafted parent message + outcome buttons) was handed
+    // to the owner. Starts the parent-silence clock: no pick/reject within 24h → owner nudge,
+    // 48h → flagged for the exception queue (Phase 2 silence follow-up).
+    shortlistReleasedAt: { type: Date },
+    // Gate the 24h silence nudge to once (the tick would otherwise re-ping every run).
+    parentNudgedAt: { type: Date },
+    // Set at 48h of parent silence — flagged for the ops exception queue (Phase 3); stops
+    // further nagging. Presence = "needs manual follow-up".
+    parentSilenceEscalatedAt: { type: Date },
     contacts: [{
       tutorId: { type: mongoose.Schema.Types.ObjectId, ref: 'Tutor' },
       phone: { type: String },
@@ -181,11 +190,17 @@ const assignmentSchema = new mongoose.Schema({
       // means "not shortlisted" — either a backup for when the parent rejects, or a legacy
       // assignment that filled before the shortlist re-rank existed.
       shortlistRank: { type: Number },
+      // Set when the parent PICKED this tutor — the winning contact of the shortlist. Paired
+      // with the assignment's matchedTutorId/filledAt and a Placement doc (Phase 2).
+      parentPickedAt: { type: Date },
       // Set when the parent has passed on this tutor ("find more tutors"). Such a contact
       // no longer counts toward the interested target (see viableInterestedCount), so a
       // resumed outreach keeps sending until fresh tutors say Yes. Still in contactedTutorIds,
       // so this tutor is never re-messaged.
       parentRejectedAt: { type: Date },
+      // Why the parent passed on the shortlist, captured on a "Rejected all → reason" tap.
+      // Feeds shortlist-presentation and pricing analysis (Phase 8). Set alongside parentRejectedAt.
+      parentRejectReason: { type: String, enum: ['rate', 'profiles', 'timing', 'other'] },
       // How many reminder pings this contact has received. Only non-responders (status
       // 'Sent') are ever reminded, and only when no fresh tutors are left to try; capped
       // by OUTREACH_MAX_REMINDERS so a quiet tutor isn't nagged indefinitely.
