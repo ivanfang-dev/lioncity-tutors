@@ -73,6 +73,27 @@ New field on `Tutor`: `pausedAt: Date` (unchanged from Phase 4).
 
 ### 3. One rate-capture mechanism, both channels
 
+**WhatsApp is the primary target, not an afterthought.** The Cloud API has been live in prod
+since 2026-07-10 on the dedicated outreach number, and `api/whatsapp-webhook.js` is the sole
+live inbound entry point. Telegram-first routing (`sendToTutor`) only diverts tutors who have
+a linked `telegramId`, so while `telegramId` coverage is low most outreach — and therefore
+most rate capture — happens over WhatsApp. The design must work there first.
+
+Two facts make WhatsApp viable:
+
+- **No new template, no Meta approval.** The tutor's Quick-Reply tap on `assignment_match`
+  ("Yes, interested" / "Not available") is an inbound message, which opens the 24h customer
+  service window. The rate prompt and their reply are both free-form inside that window —
+  `whatsappSender.js:sendWhatsApp()` already does exactly this send. The template is untouched.
+- **The webhook already receives raw text** (`msg.text?.body`), which is what the parser needs.
+
+**The legacy VM path is excluded because it is structurally incapable, not merely deprecated.**
+`whatsapp-service/index.js:206` runs `parseReply()` on the VM and returns early on anything
+that isn't yes/no, then POSTs only `{ phone, reply }` to `api/whatsapp-reply.js`. A tutor
+typing `45` is discarded on the VM and never reaches the bot — no amount of work downstream
+can recover it. The VM is stopped and this path is dead; do not build on it.
+
+
 1. Tutor says yes → record `Interested` + `responseLatencyMins`, `$set rateRequestedAt =
    now`. Atomic `updateOne` with `arrayFilters` per the repo rules — never `.save()` a
    loaded doc.
@@ -110,8 +131,8 @@ Per Phase 4, per channel:
 - **WhatsApp Cloud API webhook:** after a "Not available" button reply we're inside the
   24h session, so send a free-form interactive **list** message (4 rows; button messages
   cap at 3) and handle the list-reply in the webhook.
-- **Legacy VM path** (`/api/whatsapp-reply`): skip. Being retired with the Cloud API
-  migration; don't build on it.
+- **Legacy VM path** (`/api/whatsapp-reply`): excluded — see §3. The VM is stopped and the
+  path cannot carry raw text regardless.
 
 **New:** when `declineReason === 'rate'`, run the same rate prompt — same
 `rateRequestedAt` field, same parser, same DB matching. The contact stays `Declined` and
@@ -171,6 +192,9 @@ strict one is a permanent one. `RateValidator`'s anchored regex
   the specific failure the persisted design exists to prevent.
 - Manual: `TEST_RECIPIENT_PHONE` to redirect a wave; verify DB state with
   `node --env-file=apps/telegram-bot/.env <script>`.
+- **WhatsApp end-to-end is the primary acceptance test**, not Telegram — it is the channel
+  most tutors are reached on. Prove the full window flow on a real number: template send →
+  Quick-Reply tap → rate prompt delivers in-window → typed `45` → `quotedRate` set.
 
 ## Out of scope
 
