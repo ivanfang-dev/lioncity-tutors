@@ -1,7 +1,6 @@
 "use client";
 
-import React, { useRef } from "react";
-import Link from 'next/link';
+import { useRef } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Step1, Step2, Step3 } from "@/components/FormSteps";
@@ -9,6 +8,66 @@ import FormStepper from "@/components/FormStepper";
 import useTuitionRequestForm from "@/components/useTuitionRequestForm";
 import FormBenefits from "@/components/FormBenefits";
 import { CheckCircle } from "lucide-react";
+import TableOfContents from "@/components/TableOfContents";
+import {
+  GuideHeader, SectionHeading, GuideCard, TopicCard, GuideTimeline, KeyTakeaways, ICON_STROKE,
+} from "@/components/guide";
+import {
+  FileText, CalendarClock, Calculator, Shapes, BarChart3, Brain, Target,
+  TriangleAlert, CalendarDays, BookOpen, Users, ListChecks,
+} from "lucide-react";
+
+const tableOfContents = [
+  { id: "structure", label: "Exam & paper structure" },
+  { id: "timeline", label: "12-month study plan" },
+  { id: "numbers", label: "Numbers & algebra" },
+  { id: "geometry", label: "Geometry & measurement" },
+  { id: "statistics", label: "Statistics & data" },
+  { id: "techniques", label: "Study techniques that work" },
+  { id: "exam-strategies", label: "Paper-by-paper strategy" },
+  { id: "mistakes", label: "Common mistakes to avoid" },
+  { id: "schedule", label: "Weekly study schedule" },
+  { id: "resources", label: "Essential resources" },
+  { id: "tuition", label: "When to consider tuition" },
+];
+
+const timeline = [
+  {
+    title: "P5 Term 4 – P6 Term 1 · Foundation",
+    points: [
+      "Consolidate the concepts carried over from P1–P5",
+      "Secure mental computation and number sense",
+      "Build a consistent, step-by-step way of showing working",
+      "Prioritise accuracy in the four operations",
+    ],
+  },
+  {
+    title: "P6 Term 2 · Skill-building",
+    points: [
+      "Finish the P6 syllabus",
+      "Start topical practice with past-year questions",
+      "Learn the core heuristics (model drawing, working backwards)",
+      "Time each section and log recurring weak topics",
+    ],
+  },
+  {
+    title: "P6 Term 3 to Prelims · Application",
+    points: [
+      "Daily mixed-topic practice at PSLE standard",
+      "Attempt full papers under real exam timing",
+      "Review every mistake and sort it by type",
+      "Rehearse clear presentation for Paper 2 long-answer questions",
+    ],
+  },
+  {
+    title: "Post-Prelims to PSLE · Consolidation",
+    points: [
+      "Target the weak areas surfaced by the prelim analysis",
+      "Keep skills warm with short daily practice sets",
+      "Hold a steady routine — sleep, breaks and calm matter now",
+    ],
+  },
+];
 
 export default function PSLEMath() {
   const formRef = useRef(null);
@@ -42,361 +101,328 @@ export default function PSLEMath() {
 
   return (
     <>
-    <main className="px-4 py-12 max-w-3xl mx-auto">
-      <h1 className="text-3xl font-bold text-blue-800 mb-4">PSLE Math Guide 2025: Master Primary School Mathematics</h1>
-      <p className="text-sm text-gray-500 mb-8">Posted on June 14, 2025 • 12 min read</p>
+      <main className="mx-auto max-w-6xl px-4 sm:px-6 py-12 sm:py-16">
+        <div className="mx-auto max-w-2xl lg:max-w-none lg:grid lg:grid-cols-[minmax(0,42rem)_15rem] lg:justify-center lg:gap-12">
+          {/* Article column */}
+          <div>
+            <GuideHeader
+              title="PSLE Maths Guide 2025: Master Primary School Mathematics"
+              author="By the LionCity Tutors Mathematics Team"
+              meta="Updated June 14, 2025 · 12 min read"
+              imageSrc="/math-tuition.webp"
+              imageAlt="Handwritten working and equations — the problem-solving at the heart of PSLE Mathematics."
+            />
 
-      <article className="space-y-6 text-gray-700 leading-relaxed">
-        <p className="text-lg font-medium text-gray-800">
-          PSLE Mathematics is a crucial subject that tests students' understanding of fundamental mathematical concepts and problem-solving abilities. With the right preparation strategy, students can achieve excellent results. This comprehensive guide provides proven strategies for PSLE Math success in 2025.
-        </p>
-
-        <section>
-          <h2 className="text-2xl font-semibold text-blue-700 mb-3">Understanding PSLE Mathematics Structure</h2>
-          <p>
-            The PSLE Mathematics examination consists of two papers, testing different aspects of mathematical understanding and application.
-          </p>
-          <div className="bg-blue-50 p-4 rounded-lg mt-3">
-            <h4 className="font-semibold mb-2">PSLE Math Papers Breakdown:</h4>
-            <div className="space-y-3">
-              <div>
-                <h5 className="font-semibold text-blue-600">Paper 1 (50 marks, 1 hour)</h5>
-                <ul className="list-disc ml-4 space-y-1 text-sm">
-                  <li>Multiple-choice questions (MCQ)</li>
-                  <li>Short-answer questions</li>
-                  <li>No calculator allowed</li>
-                  <li>Tests basic concepts and mental calculation skills</li>
-                </ul>
-              </div>
-              <div>
-                <h5 className="font-semibold text-blue-600">Paper 2 (50 marks, 1 hour 40 minutes)</h5>
-                <ul className="list-disc ml-4 space-y-1 text-sm">
-                  <li>Short-answer questions</li>
-                  <li>Structured questions</li>
-                  <li>Calculator allowed</li>
-                  <li>Tests problem-solving and application skills</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section>
-          <h2 className="text-2xl font-semibold text-blue-700 mb-3">12-Month PSLE Math Preparation Timeline</h2>
-          
-          <div className="space-y-4">
-            <div className="border-l-4 border-green-400 pl-4">
-              <h4 className="font-semibold text-green-700">Primary 5 Term 4 to Primary 6 Term 1 (Foundation Phase)</h4>
-              <ul className="list-disc ml-4 mt-2 space-y-1">
-                <li>Master fundamental concepts from P1-P5</li>
-                <li>Build strong mental calculation skills</li>
-                <li>Develop systematic problem-solving approaches</li>
-                <li>Focus on accuracy in basic operations</li>
-                <li>Complete all textbook exercises thoroughly</li>
-              </ul>
-            </div>
-
-            <div className="border-l-4 border-yellow-400 pl-4">
-              <h4 className="font-semibold text-yellow-700">Primary 6 Term 2 (Skill Development Phase)</h4>
-              <ul className="list-disc ml-4 mt-2 space-y-1">
-                <li>Complete P6 syllabus coverage</li>
-                <li>Begin intensive practice with past year PSLE papers</li>
-                <li>Develop time management skills</li>
-                <li>Identify and strengthen weak topic areas</li>
-                <li>Master calculator techniques</li>
-              </ul>
-            </div>
-
-            <div className="border-l-4 border-orange-400 pl-4">
-              <h4 className="font-semibold text-orange-700">Primary 6 Term 3 to Prelims (Application Phase)</h4>
-              <ul className="list-disc ml-4 mt-2 space-y-1">
-                <li>Daily practice with PSLE standard questions</li>
-                <li>Focus on exam techniques and presentation</li>
-                <li>Simulate exam conditions with full paper attempts</li>
-                <li>Review and analyze all mistakes systematically</li>
-                <li>Prepare for Preliminary Examinations</li>
-              </ul>
-            </div>
-
-            <div className="border-l-4 border-red-400 pl-4">
-              <h4 className="font-semibold text-red-700">Post-Prelims to PSLE (Mastery Phase)</h4>
-              <ul className="list-disc ml-4 mt-2 space-y-1">
-                <li>Intensive revision based on prelim performance</li>
-                <li>Final consolidation of key concepts</li>
-                <li>Practice papers under strict timing</li>
-                <li>Mental preparation and stress management</li>
-                <li>Maintain consistent study routine</li>
-              </ul>
-            </div>
-          </div>
-        </section>
-
-        <section>
-          <h2 className="text-2xl font-semibold text-blue-700 mb-3">PSLE Math Topics Mastery Guide</h2>
-          
-          <div className="space-y-4">
-            <div className="bg-green-50 p-4 rounded-lg">
-              <h4 className="font-semibold text-green-700 mb-2">🔢 Numbers and Algebra</h4>
-              <div className="space-y-2 text-sm">
-                <div>
-                  <strong>Key Topics:</strong> Whole Numbers, Fractions, Decimals, Percentage, Ratio, Algebra
-                </div>
-                <div>
-                  <strong>Study Strategy:</strong>
-                  <ul className="list-disc ml-4 mt-1 space-y-1">
-                    <li>Master mental calculation techniques</li>
-                    <li>Practice fraction and decimal conversions</li>
-                    <li>Learn percentage and ratio problem-solving</li>
-                    <li>Understand basic algebraic concepts</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-blue-50 p-4 rounded-lg">
-              <h4 className="font-semibold text-blue-700 mb-2">📐 Geometry and Measurement</h4>
-              <div className="space-y-2 text-sm">
-                <div>
-                  <strong>Key Topics:</strong> Angles, Triangles, Quadrilaterals, Circles, Area, Perimeter, Volume
-                </div>
-                <div>
-                  <strong>Study Strategy:</strong>
-                  <ul className="list-disc ml-4 mt-1 space-y-1">
-                    <li>Memorize geometric properties</li>
-                    <li>Practice drawing accurate diagrams</li>
-                    <li>Master area and perimeter calculations</li>
-                    <li>Learn to solve complex measurement problems</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-purple-50 p-4 rounded-lg">
-              <h4 className="font-semibold text-purple-700 mb-2">📊 Statistics and Data Analysis</h4>
-              <div className="space-y-2 text-sm">
-                <div>
-                  <strong>Key Topics:</strong> Tables, Graphs, Average, Probability
-                </div>
-                <div>
-                  <strong>Study Strategy:</strong>
-                  <ul className="list-disc ml-4 mt-1 space-y-1">
-                    <li>Practice reading and interpreting graphs</li>
-                    <li>Master average calculations</li>
-                    <li>Learn basic probability concepts</li>
-                    <li>Practice data analysis questions</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section>
-          <h2 className="text-2xl font-semibold text-blue-700 mb-3">PSLE Math Study Techniques</h2>
-          <div className="bg-amber-50 p-5 rounded-lg">
-            <h4 className="font-semibold mb-3">Proven PSLE Math Study Methods:</h4>
-            <div className="space-y-3 text-sm">
-              <div>
-                <p><strong>The 5-5-5 Method:</strong></p>
-                <p>Practice 5 similar questions, review 5 mistakes from previous sessions, spend 5 minutes on mental math daily.</p>
-              </div>
-              <div>
-                <p><strong>Error Analysis Technique:</strong></p>
-                <p>Keep a detailed error log categorizing mistakes (careless, conceptual, or procedural) and review weekly.</p>
-              </div>
-              <div>
-                <p><strong>Visual Learning:</strong></p>
-                <p>Use diagrams and models to understand mathematical concepts. Draw pictures for word problems.</p>
-              </div>
-              <div>
-                <p><strong>Step-by-Step Problem Solving:</strong></p>
-                <p>Break down complex problems into smaller, manageable steps.</p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section>
-          <h2 className="text-2xl font-semibold text-blue-700 mb-3">PSLE Math Exam Strategies</h2>
-          <div className="space-y-4">
-            <div className="bg-green-50 p-4 rounded-lg">
-              <h4 className="font-semibold text-green-700 mb-2">Paper 1 Strategy:</h4>
-              <ul className="list-disc ml-4 space-y-1 text-sm">
-                <li>Complete MCQs within 30 minutes</li>
-                <li>Show working for short-answer questions</li>
-                <li>Double-check calculations</li>
-                <li>Use elimination method for difficult MCQs</li>
-                <li>Review all answers if time permits</li>
-              </ul>
-            </div>
-            
-            <div className="bg-blue-50 p-4 rounded-lg">
-              <h4 className="font-semibold text-blue-700 mb-2">Paper 2 Strategy:</h4>
-              <ul className="list-disc ml-4 space-y-1 text-sm">
-                <li>Read all questions first</li>
-                <li>Start with easier questions</li>
-                <li>Show clear working steps</li>
-                <li>Use proper mathematical notation</li>
-                <li>Check final answers for reasonableness</li>
-              </ul>
-            </div>
-          </div>
-        </section>
-
-        <section>
-          <h2 className="text-2xl font-semibold text-blue-700 mb-3">Common PSLE Math Mistakes to Avoid</h2>
-          <div className="bg-red-50 p-4 rounded-lg">
-            <h4 className="font-semibold text-red-700 mb-3">Top 10 PSLE Math Pitfalls:</h4>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
-              <div>
-                <ol className="list-decimal ml-4 space-y-1">
-                  <li>Careless calculation errors</li>
-                  <li>Misreading question requirements</li>
-                  <li>Not showing working steps</li>
-                  <li>Incorrect units in answers</li>
-                  <li>Poor time management</li>
-                </ol>
-              </div>
-              <div>
-                <ol className="list-decimal ml-4 space-y-1" start="6">
-                  <li>Incorrect calculator usage</li>
-                  <li>Not checking answer reasonableness</li>
-                  <li>Confusing similar concepts</li>
-                  <li>Incomplete solutions</li>
-                  <li>Poor presentation of working</li>
-                </ol>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section>
-          <h2 className="text-2xl font-semibold text-blue-700 mb-3">Creating Your PSLE Math Study Schedule</h2>
-          <div className="bg-indigo-50 p-5 rounded-lg">
-            <h4 className="font-semibold mb-3">Recommended Weekly Schedule (Primary 6):</h4>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-              <div>
-                <p><strong>School Days:</strong></p>
-                <ul className="list-disc ml-4 space-y-1">
-                  <li>30-45 minutes daily practice</li>
-                  <li>Complete homework thoroughly</li>
-                  <li>Review class notes</li>
-                  <li>Practice mental calculations</li>
-                </ul>
-              </div>
-              <div>
-                <p><strong>Weekends:</strong></p>
-                <ul className="list-disc ml-4 space-y-1">
-                  <li>Complete 1-2 practice papers</li>
-                  <li>Review and analyze mistakes</li>
-                  <li>Focus on weak topics</li>
-                  <li>Prepare summary notes</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section>
-          <h2 className="text-2xl font-semibold text-blue-700 mb-3">Essential PSLE Math Resources</h2>
-          <div className="space-y-3">
-            <div>
-              <h4 className="font-semibold">Recommended Textbooks:</h4>
-              <ul className="list-disc ml-4 text-sm space-y-1">
-                <li>My Pals Are Here! Maths (Marshall Cavendish)</li>
-                <li>Shaping Maths (Marshall Cavendish)</li>
-                <li>Maths Problem-Solving Strategies (EPH)</li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-semibold">Practice Materials:</h4>
-              <ul className="list-disc ml-4 text-sm space-y-1">
-                <li>PSLE past papers (last 5 years)</li>
-                <li>School preliminary examination papers</li>
-                <li>Topical practice books</li>
-                <li>Online practice platforms (KooBits, MathScore)</li>
-              </ul>
-            </div>
-          </div>
-        </section>
-
-        <section>
-          <h2 className="text-2xl font-semibold text-blue-700 mb-3">Mental Preparation for PSLE Math</h2>
-          <p>
-            Mathematical confidence is crucial for PSLE success. Here's how to build it:
-          </p>
-          <ul className="list-disc ml-6 space-y-2 mt-3">
-            <li><strong>Build Number Sense:</strong> Practice mental calculations daily</li>
-            <li><strong>Embrace Mistakes:</strong> Learn from errors and improve</li>
-            <li><strong>Practice Under Pressure:</strong> Simulate exam conditions regularly</li>
-            <li><strong>Stay Positive:</strong> Maintain a growth mindset</li>
-            <li><strong>Take Breaks:</strong> Rest and recharge between study sessions</li>
-            <li><strong>Seek Help:</strong> Don't hesitate to ask questions</li>
-          </ul>
-        </section>
-
-        <section>
-          <h2 className="text-2xl font-semibold text-blue-700 mb-3">When to Consider PSLE Math Tuition</h2>
-          <p>Consider professional PSLE Math tuition if your child:</p>
-          <ul className="list-disc ml-6 space-y-1 mt-3">
-            <li>Struggles with mathematical concepts</li>
-            <li>Needs help with problem-solving strategies</li>
-            <li>Requires structured practice and guidance</li>
-            <li>Benefits from personalized attention</li>
-            <li>Aims for A* grades</li>
-            <li>Needs regular practice supervision</li>
-          </ul>
-          <div className="bg-blue-50 p-4 rounded-lg mt-4">
-            <p><strong>Choose PSLE Math tutors who:</strong> Have extensive experience with the PSLE syllabus, understand common student misconceptions, can teach both conceptual understanding and exam techniques, and provide structured practice programs.</p>
-          </div>
-        </section>
-
-        <section ref={formRef} className="form-section-gradient"> 
-          <div className="max-w-4xl mx-auto px-6 py-16 sm:py-24"> 
-            <motion.div
-              className="form-card-container"
-              initial={{ opacity: 0, y: 50, scale: 0.95 }}
-              whileInView={{ opacity: 1, y: 0, scale: 1 }}
-              transition={{ duration: 0.7, ease: "easeOut" }}
-              viewport={{ once: true, amount: 0.3 }}
-            >
-              <h2 className="text-4xl font-bold text-center text-primary mb-4">
-                  Ready to Find The Perfect Tutor?
-              </h2>
-              <p className="text-center text-text-default/80 mb-10 text-lg">
-                  Get matched with qualified tutors in 24 hours. Just fill out the details below.
+            <article className="space-y-12 text-gray-700 leading-relaxed">
+              <p className="text-lg text-gray-800 leading-relaxed text-pretty">
+                PSLE Mathematics rewards clear thinking far more than raw speed. Most of the paper tests whether a child can read a problem carefully, choose the right method, and show their working cleanly. With a steady plan through P5 and P6, and honest practice on the question types that keep coming back, strong results are well within reach.
               </p>
-              
-              <FormBenefits />
-              <div className="bg-background-card rounded-xl shadow-lg p-8">
-                  {status.submitted ? (
-                      <div className="text-center py-10">
-                          <CheckCircle className="text-primary w-16 h-16 mx-auto mb-4" />
-                          <h2 className="text-2xl font-semibold text-gray-900 mb-2">Thank you!</h2>
-                          <p className="text-gray-600 mb-4">Our team will be in touch with suitable tutor profiles shortly via WhatsApp.</p>
-                          <Button 
-                              className="bg-accent text-text-inverse hover:bg-accent/90" 
-                              onClick={resetForm}
-                          >
-                              Submit Another Request
-                          </Button>
-                      </div>
-                  ) : (
-                      <form onSubmit={handleSubmit}>
-                          <FormStepper currentStep={currentStep} />
-                          {status.error && <div className="bg-red-100 text-red-800 p-4 rounded-md mb-6">{status.error}</div>}
-                          
-                          {currentStep === 1 && <Step1 nextStep={nextStep} formData={formData} handleChange={handleChange} handleLevelSubjectChange={handleLevelSubjectChange} addLevelSubject={addLevelSubject} removeLevelSubject={removeLevelSubject} errors={errors} />}
-                          {currentStep === 2 && <Step2 nextStep={nextStep} prevStep={prevStep} formData={formData} handleChange={handleChange} errors={errors} />}
-                          {currentStep === 3 && <Step3 prevStep={prevStep} formData={formData} handleChange={handleChange} status={status} errors={errors} />}
-                      </form>
-                  )}
-              </div>
-            </motion.div>
+
+              <KeyTakeaways
+                items={[
+                  <>PSLE Maths is two papers &mdash; Paper 1 (no calculator, <span className="tabular-nums">45</span> marks) and Paper 2 (calculator allowed, <span className="tabular-nums">55</span> marks) &mdash; graded on the AL1&ndash;AL8 scale.</>,
+                  <>Most lost marks come from careless slips and misread questions, not gaps in knowledge &mdash; checking work is itself a scoring skill.</>,
+                  <>Heuristics like model drawing and working backwards are what turn hard word problems into method marks.</>,
+                  <>If your child understands topics alone but freezes on multi-step problems, that&rsquo;s the usual signal targeted help pays off.</>,
+                ]}
+              />
+
+              {/* Inline table of contents — mobile / tablet only */}
+              <nav aria-label="Table of contents" className="lg:hidden rounded-xl border border-gray-200 bg-gray-50 p-5 sm:p-6">
+                <div className="flex items-center gap-2 mb-4">
+                  <ListChecks className="h-5 w-5 text-primary" strokeWidth={ICON_STROKE} aria-hidden="true" />
+                  <p className="text-base font-semibold text-gray-900">In this guide</p>
+                </div>
+                <ol className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2 text-sm">
+                  {tableOfContents.map((item) => (
+                    <li key={item.id}>
+                      <a href={`#${item.id}`} className="text-gray-700 hover:text-primary transition-colors">{item.label}</a>
+                    </li>
+                  ))}
+                </ol>
+              </nav>
+
+              <section id="structure" className="scroll-mt-24">
+                <SectionHeading icon={FileText}>Understanding the PSLE Maths papers</SectionHeading>
+                <p className="text-pretty">
+                  PSLE Mathematics is set over two papers, worth 100 marks in total. Each subject is now graded by Achievement Level (AL1 to AL8), where AL1 is the top band &mdash; the aggregate score is the sum of a child&rsquo;s four subject ALs.
+                </p>
+                <GuideCard className="mt-4">
+                  <h4 className="font-semibold text-gray-900 mb-4">PSLE Maths papers breakdown</h4>
+                  <div className="space-y-5">
+                    <div>
+                      <h5 className="font-semibold text-gray-900">Paper 1 &mdash; 45 marks, 1 hour (no calculator)</h5>
+                      <ul className="list-disc ml-5 mt-1.5 space-y-1 text-sm text-gray-700">
+                        <li>Booklet A: 15 multiple-choice questions (20 marks)</li>
+                        <li>Booklet B: 15 short-answer questions (25 marks)</li>
+                        <li>Tests core concepts and mental computation</li>
+                      </ul>
+                    </div>
+                    <div>
+                      <h5 className="font-semibold text-gray-900">Paper 2 &mdash; 55 marks, 1 hour 30 minutes (calculator allowed)</h5>
+                      <ul className="list-disc ml-5 mt-1.5 space-y-1 text-sm text-gray-700">
+                        <li>Short-answer and longer structured questions</li>
+                        <li>Rewards problem-solving, heuristics and clear working</li>
+                        <li>Method marks are awarded for correct steps</li>
+                      </ul>
+                    </div>
+                  </div>
+                </GuideCard>
+              </section>
+
+              <section id="timeline" className="scroll-mt-24">
+                <SectionHeading icon={CalendarClock}>A 12-month PSLE Maths study plan</SectionHeading>
+                <GuideTimeline items={timeline} />
+              </section>
+
+              <section id="numbers" className="scroll-mt-24">
+                <SectionHeading icon={Calculator}>Numbers &amp; algebra</SectionHeading>
+                <div className="space-y-4">
+                  <TopicCard
+                    title="Numbers, fractions & proportion"
+                    chips={["Whole Numbers", "Fractions", "Decimals", "Percentage", "Ratio", "Rate", "Algebra"]}
+                    points={[
+                      "Convert fluently between fractions, decimals and percentages without a calculator",
+                      "Draw bar models for ratio, fraction and before–after problems",
+                      "Set up simple algebraic expressions for unknowns and simplify them",
+                      "Rehearse the recurring PSLE types (equal-fractions, unchanged-quantity, repeated-identity)",
+                    ]}
+                  />
+                </div>
+              </section>
+
+              <section id="geometry" className="scroll-mt-24">
+                <SectionHeading icon={Shapes}>Geometry &amp; measurement</SectionHeading>
+                <div className="space-y-4">
+                  <TopicCard
+                    title="Shape, space & measurement"
+                    chips={["Angles", "Triangles", "Quadrilaterals", "Area & Perimeter", "Circles", "Volume", "Nets"]}
+                    points={[
+                      "State and apply angle properties (on a line, at a point, in triangles and parallel lines)",
+                      "Break composite figures into rectangles, triangles and parts of circles",
+                      "Track units carefully and convert between cm, m, ml and litres",
+                      "Visualise nets and solids to answer volume and surface questions",
+                    ]}
+                  />
+                </div>
+              </section>
+
+              <section id="statistics" className="scroll-mt-24">
+                <SectionHeading icon={BarChart3}>Statistics &amp; data</SectionHeading>
+                <div className="space-y-4">
+                  <TopicCard
+                    title="Reading & interpreting data"
+                    chips={["Tables", "Bar & Line Graphs", "Pie Charts", "Average"]}
+                    points={[
+                      "Read values accurately off tables, bar graphs, line graphs and pie charts",
+                      "Use the average = total ÷ number relationship in both directions",
+                      "Combine information from two representations within one question",
+                      "Sense-check a computed answer against what the graph shows",
+                    ]}
+                  />
+                </div>
+              </section>
+
+              <section id="techniques" className="scroll-mt-24">
+                <SectionHeading icon={Brain}>Study techniques that work</SectionHeading>
+                <GuideCard>
+                  <h4 className="font-semibold text-gray-900 mb-3">Habits that lift PSLE Maths marks</h4>
+                  <div className="space-y-3 text-sm">
+                    <div>
+                      <p><strong className="text-gray-900">Show every step:</strong></p>
+                      <p>Write working line by line &mdash; method marks are awarded even when the final answer is wrong.</p>
+                    </div>
+                    <div>
+                      <p><strong className="text-gray-900">Error log by type:</strong></p>
+                      <p>Sort mistakes into careless, conceptual or method, and review the pattern weekly.</p>
+                    </div>
+                    <div>
+                      <p><strong className="text-gray-900">Deliberate heuristics practice:</strong></p>
+                      <p>Practise model drawing, working backwards and guess-and-check on the hard problems, not just the easy ones.</p>
+                    </div>
+                    <div>
+                      <p><strong className="text-gray-900">Timed mixed sets:</strong></p>
+                      <p>Once a topic is solid, mix it with others under time so recall stays quick under pressure.</p>
+                    </div>
+                  </div>
+                </GuideCard>
+              </section>
+
+              <section id="exam-strategies" className="scroll-mt-24">
+                <SectionHeading icon={Target}>Paper-by-paper exam strategy</SectionHeading>
+                <div className="space-y-4">
+                  <GuideCard>
+                    <h4 className="font-semibold text-gray-900 mb-2">Paper 1 (no calculator)</h4>
+                    <ul className="list-disc ml-5 space-y-1 text-sm text-gray-700">
+                      <li>Clear Booklet A steadily &mdash; mark and return to any MCQ you stall on</li>
+                      <li>Show working in Booklet B even for short answers</li>
+                      <li>Double-check mental calculations, especially with fractions and decimals</li>
+                      <li>Watch units and any rounding instructions</li>
+                      <li>Use spare time to recheck, not to rush ahead</li>
+                    </ul>
+                  </GuideCard>
+                  <GuideCard>
+                    <h4 className="font-semibold text-gray-900 mb-2">Paper 2 (calculator allowed)</h4>
+                    <ul className="list-disc ml-5 space-y-1 text-sm text-gray-700">
+                      <li>Read the whole paper first and start with your surest questions</li>
+                      <li>Set out working in clear, labelled steps for the long-answer marks</li>
+                      <li>Draw and label models and diagrams &mdash; they earn method marks</li>
+                      <li>Key numbers into the calculator twice to catch slips</li>
+                      <li>Check every answer for reasonableness and correct units</li>
+                    </ul>
+                  </GuideCard>
+                </div>
+              </section>
+
+              <section id="mistakes" className="scroll-mt-24">
+                <SectionHeading icon={TriangleAlert}>Common mistakes to avoid</SectionHeading>
+                <GuideCard>
+                  <h4 className="font-semibold text-gray-900 mb-3">Where PSLE Maths marks slip away</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3 text-sm">
+                    <div>
+                      <ol className="list-decimal ml-5 space-y-1 text-gray-700">
+                        <li>Careless calculation slips</li>
+                        <li>Misreading what the question asks</li>
+                        <li>Not showing working</li>
+                        <li>Wrong or missing units</li>
+                        <li>Poor time management</li>
+                      </ol>
+                    </div>
+                    <div>
+                      <ol className="list-decimal ml-5 space-y-1 text-gray-700" start="6">
+                        <li>Rounding at the wrong stage</li>
+                        <li>Not checking answers for reasonableness</li>
+                        <li>Confusing similar problem types</li>
+                        <li>Incomplete final statements</li>
+                        <li>Messy, hard-to-follow working</li>
+                      </ol>
+                    </div>
+                  </div>
+                </GuideCard>
+              </section>
+
+              <section id="schedule" className="scroll-mt-24">
+                <SectionHeading icon={CalendarDays}>A realistic weekly schedule</SectionHeading>
+                <GuideCard>
+                  <h4 className="font-semibold text-gray-900 mb-3">Recommended weekly rhythm (Primary 6)</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
+                    <div>
+                      <p className="font-semibold text-gray-900 mb-1.5">School days</p>
+                      <ul className="list-disc ml-5 space-y-1 text-gray-700">
+                        <li>30–45 minutes of focused practice</li>
+                        <li>Finish and check homework thoroughly</li>
+                        <li>Revisit that day&rsquo;s class examples</li>
+                        <li>A few minutes of mental-math drills</li>
+                      </ul>
+                    </div>
+                    <div>
+                      <p className="font-semibold text-gray-900 mb-1.5">Weekends</p>
+                      <ul className="list-disc ml-5 space-y-1 text-gray-700">
+                        <li>One to two timed practice papers</li>
+                        <li>Review and reclassify every mistake</li>
+                        <li>Targeted practice on the week&rsquo;s weak topic</li>
+                        <li>Update summary and heuristics notes</li>
+                      </ul>
+                    </div>
+                  </div>
+                </GuideCard>
+              </section>
+
+              <section id="resources" className="scroll-mt-24">
+                <SectionHeading icon={BookOpen}>Essential PSLE Maths resources</SectionHeading>
+                <div className="space-y-4">
+                  <div>
+                    <h4 className="font-semibold text-gray-900 mb-1.5">Recommended series</h4>
+                    <ul className="list-disc ml-5 text-sm space-y-1 text-gray-700">
+                      <li>My Pals Are Here! Maths (Marshall Cavendish)</li>
+                      <li>Shaping Maths (Marshall Cavendish)</li>
+                      <li>Problem-solving and heuristics guides for extra depth</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-gray-900 mb-1.5">Practice materials</h4>
+                    <ul className="list-disc ml-5 text-sm space-y-1 text-gray-700">
+                      <li>PSLE past papers (last 5 years)</li>
+                      <li>Top-school preliminary examination papers</li>
+                      <li>Topical practice organised by heuristic</li>
+                      <li>Online practice platforms (e.g. KooBits) — kept in moderation</li>
+                    </ul>
+                  </div>
+                </div>
+              </section>
+
+              <section id="tuition" className="scroll-mt-24">
+                <SectionHeading icon={Users}>When to consider PSLE Maths tuition</SectionHeading>
+                <p>Consider PSLE Maths tuition if your child:</p>
+                <ul className="list-disc ml-6 space-y-1 mt-3 text-gray-700">
+                  <li>Understands topics alone but stalls on multi-step word problems</li>
+                  <li>Struggles to choose the right heuristic for a problem</li>
+                  <li>Keeps losing marks to careless errors under time pressure</li>
+                  <li>Needs structured, supervised practice to stay consistent</li>
+                  <li>Is aiming for AL1–AL2 and wants to close the last gap</li>
+                  <li>Benefits from personalised feedback on presentation</li>
+                </ul>
+                <GuideCard className="mt-4">
+                  <p className="text-sm"><strong className="text-gray-900">Choose PSLE Maths tutors who:</strong> know the current syllabus and AL scoring, teach heuristics and clear presentation rather than just answers, spot recurring error patterns, and keep a primary-aged child engaged and confident.</p>
+                </GuideCard>
+              </section>
+            </article>
           </div>
-        </section>
-      </article>
-    </main>
+
+          {/* Sticky table of contents — desktop only */}
+          <aside className="hidden lg:block">
+            <div className="sticky top-24">
+              <TableOfContents items={tableOfContents} />
+            </div>
+          </aside>
+        </div>
+      </main>
+
+      {/* Conversion block — the live tutor request form */}
+      <section ref={formRef} className="form-section-gradient">
+        <div className="max-w-4xl mx-auto px-6 py-16 sm:py-24">
+          <motion.div
+            className="form-card-container"
+            initial={{ opacity: 0, y: 50, scale: 0.95 }}
+            whileInView={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ duration: 0.7, ease: "easeOut" }}
+            viewport={{ once: true, amount: 0.3 }}
+          >
+            <h2 className="text-4xl font-bold text-center text-primary mb-4">
+              Ready to Find The Perfect Tutor?
+            </h2>
+            <p className="text-center text-text-default/80 mb-10 text-lg">
+              Get matched with qualified tutors in 24 hours. Just fill out the details below.
+            </p>
+
+            <FormBenefits />
+            <div className="bg-background-card rounded-xl shadow-lg p-8">
+              {status.submitted ? (
+                <div className="text-center py-10">
+                  <CheckCircle className="text-primary w-16 h-16 mx-auto mb-4" />
+                  <h2 className="text-2xl font-semibold text-gray-900 mb-2">Thank you!</h2>
+                  <p className="text-gray-600 mb-4">Our team will be in touch with suitable tutor profiles shortly via WhatsApp.</p>
+                  <Button
+                    className="bg-accent text-text-inverse hover:bg-accent/90"
+                    onClick={resetForm}
+                  >
+                    Submit Another Request
+                  </Button>
+                </div>
+              ) : (
+                <form onSubmit={handleSubmit}>
+                  <FormStepper currentStep={currentStep} />
+                  {status.error && <div className="bg-red-100 text-red-800 p-4 rounded-md mb-6">{status.error}</div>}
+
+                  {currentStep === 1 && <Step1 nextStep={nextStep} formData={formData} handleChange={handleChange} handleLevelSubjectChange={handleLevelSubjectChange} addLevelSubject={addLevelSubject} removeLevelSubject={removeLevelSubject} errors={errors} />}
+                  {currentStep === 2 && <Step2 nextStep={nextStep} prevStep={prevStep} formData={formData} handleChange={handleChange} errors={errors} />}
+                  {currentStep === 3 && <Step3 prevStep={prevStep} formData={formData} handleChange={handleChange} status={status} errors={errors} />}
+                </form>
+              )}
+            </div>
+          </motion.div>
+        </div>
+      </section>
     </>
   );
 }
