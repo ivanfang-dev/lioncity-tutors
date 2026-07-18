@@ -1,29 +1,10 @@
 import Tutor from '../../../packages/shared/models/Tutor.js';
 import { LEVEL_SUBJECT_MAPPINGS } from '../../../packages/shared/index.js';
 import { TIME_SLOT_KEYS } from '../../../packages/shared/utils/timeSlots.js';
+// Level → tutor-schema key. Lives in packages/shared because the ops console reads the same
+// per-level tutor fields; re-exported below so existing importers of tutorMatcher are unaffected.
+import { getLevelCategory } from '../../../packages/shared/utils/levelCategory.js';
 import { LOCATION_TO_REGION } from './locations.js';
-
-// Maps assignment level string prefix to tutor teachingLevels key
-function getLevelCategory(level) {
-  if (!level) return null;
-  const prefixes = [
-    ['Pre-School', 'preschool'],
-    ['Primary', 'primary'],
-    ['Secondary', 'secondary'],
-    ['Junior College', 'jc'],
-    ['International Baccalaureate', 'ib'],
-    ['Millennia Institute', 'millenniaInstitute'],
-    ['Polytechnic', 'polytechnic'],
-    ['University', 'university'],
-    ['Graduate Studies', 'university'],
-    ['Music Academy', 'music'],
-    ['Professional Development', 'professional'],
-  ];
-  for (const [prefix, category] of prefixes) {
-    if (level === prefix || level.startsWith(prefix)) return category;
-  }
-  return null;
-}
 
 // Maps subject display name to tutor schema camelCase field name
 function subjectToFieldName(subject) {
@@ -190,6 +171,23 @@ function parseBudget(rateText) {
   return { bands, overallMax };
 }
 
+// The budget bands for an assignment, PREFERRING the precomputed numeric fields (roadmap Phase 7)
+// and falling back to parsing the free-text rate for legacy assignments (never re-saved, so they
+// have no budgetNumeric). Shape matches parseBudget's return so every downstream caller is unchanged.
+function resolveBudget(assignment) {
+  const bn = assignment.budgetNumeric;
+  if (bn && (bn.partTime != null || bn.fullTime != null || bn.moe != null || bn.default != null)) {
+    const bands = {};
+    if (bn.partTime != null) bands.partTime = bn.partTime;
+    if (bn.fullTime != null) bands.fullTime = bn.fullTime;
+    if (bn.moe != null) bands.moe = bn.moe;
+    if (bn.default != null) bands.default = bn.default;
+    const values = Object.values(bands);
+    return { bands, overallMax: values.length ? Math.max(...values) : null };
+  }
+  return parseBudget(assignment.rate);
+}
+
 // The spending ceiling that applies to THIS tutor, based on their type. Full-time /
 // MOE tutors fall back to the highest band available (they cost more); part-timers
 // fall back to the default/overall band.
@@ -202,9 +200,12 @@ function ceilingForTutor(tutor, budget) {
   return bands.default ?? overallMax ?? null;
 }
 
-// The tutor's own asking rate for this level (lower bound of any range = the least
-// they'd accept). null when they never filled it in for this level.
+// The tutor's own asking rate for this level (lower bound of any range = the least they'd accept).
+// Prefers the precomputed numeric mirror (roadmap Phase 7), falling back to parsing the free-text
+// hourlyRate for legacy tutors without rateNumeric. null when they never filled it in for this level.
 function tutorFloorRate(tutor, levelCategory) {
+  const numeric = tutor.rateNumeric?.[levelCategory];
+  if (numeric && numeric.min != null) return numeric.min;
   const nums = extractNumbers(tutor.hourlyRate?.[levelCategory]);
   return nums.length ? Math.min(...nums) : null;
 }
@@ -212,9 +213,14 @@ function tutorFloorRate(tutor, levelCategory) {
 // How well a tutor fits the budget → { affordable, comfort } where comfort is 0..1
 // (1 = comfortably cheap, very likely to say yes; 0.5 = right at the ceiling).
 // Unknowns get the benefit of the doubt so we never silently drop a good tutor.
-function budgetFit(tutor, budget, levelCategory) {
+//
+// quotedRate, when the tutor named one FOR THIS ASSIGNMENT (Phase 4), replaces the profile
+// floor entirely: it's the rate they'll actually take here, so it beats the stale profile
+// guess — the whole reason we ask. Falls back to the profile floor when absent (every
+// candidate-query call, and any interested tutor who ignored the rate prompt).
+function budgetFit(tutor, budget, levelCategory, quotedRate = null) {
   const ceiling = ceilingForTutor(tutor, budget);
-  const floor = tutorFloorRate(tutor, levelCategory);
+  const floor = quotedRate != null ? quotedRate : tutorFloorRate(tutor, levelCategory);
   if (ceiling == null || floor == null) return { affordable: true, comfort: 0.5 };
   if (floor > ceiling * (1 + BUDGET_GRACE)) return { affordable: false, comfort: 0 };
   if (floor > ceiling) return { affordable: true, comfort: 0.3 }; // in the grace zone
@@ -258,15 +264,55 @@ function responsivenessFactor(tutor) {
   return Math.max(RESPONSIVENESS_FLOOR, Math.min(1, 0.4 + rate * 1.2));
 }
 
-// Blended 0..1 quality score for ordering the affordable pool, then scaled down for
-// tutors who chronically ignore outreach.
-function scoreTutor(tutor, fit) {
-  const experience = (EXPERIENCE_RANK[tutor.yearsOfExperience] || 0) / 5;
+// The ranking policy version — bumped whenever WEIGHTS or the scoring logic below change, so the
+// Recommendation decision log (Phase 6) can segment analyses by ranker version. Start at v1.
+const POLICY_VERSION = '2026.07-v1';
+
+// Blended 0..1 quality score for ordering the affordable pool, then scaled down for tutors who
+// chronically ignore outreach — PLUS the component breakdown behind it. Internal: returns
+// { score, components } so the Recommendation log (Phase 6) can record WHY a tutor ranked where they
+// did without re-deriving it. `coverageFactor` is applied by the caller (it needs requestedFields),
+// so it is not part of `components` here — runMatch/buildFeatureSnapshot fold it in.
+function scoreTutorComponents(tutor, fit) {
+  const experienceRank = EXPERIENCE_RANK[tutor.yearsOfExperience] || 0; // 0..5
+  const commitment = commitmentScore(tutor);
+  const responsiveness = responsivenessFactor(tutor);
   const quality =
-    WEIGHTS.experience * experience +
-    WEIGHTS.commitment * commitmentScore(tutor) +
+    WEIGHTS.experience * (experienceRank / 5) +
+    WEIGHTS.commitment * commitment +
     WEIGHTS.budget * fit.comfort;
-  return quality * responsivenessFactor(tutor);
+  return {
+    score: quality * responsiveness,
+    components: {
+      experienceRank,
+      commitmentScore: commitment,
+      budgetComfort: fit.comfort,
+      responsivenessFactor: responsiveness,
+    },
+  };
+}
+
+// Public scorer — unchanged signature and return (a number). Every existing caller keeps working;
+// only the internal breakdown is new.
+function scoreTutor(tutor, fit) {
+  return scoreTutorComponents(tutor, fit).score;
+}
+
+// The full feature snapshot for one tutor against an assignment, as the Recommendation log stores it
+// (Phase 6). Self-contained (resolves the budget + subjects itself), so the shortlist write point —
+// which scores with shortlistScore, not the matching path — can build an identical-shaped snapshot.
+// `qualityGrade` is null until Phase 9 populates it from write-time LLM extraction.
+function buildFeatureSnapshot(tutor, assignment, quotedRate = null) {
+  const levelCategory = getLevelCategory(assignment.level);
+  const budget = resolveBudget(assignment);
+  const fit = budgetFit(tutor, budget, levelCategory, quotedRate);
+  const { requestedFields } = resolveSubjects(assignment, levelCategory) || { requestedFields: [] };
+  const { components } = scoreTutorComponents(tutor, fit);
+  return {
+    ...components,
+    coverageFactor: coverageFactor(tutor, requestedFields, levelCategory),
+    qualityGrade: null,
+  };
 }
 
 // For a one-tutor-for-many-subjects request, prefer tutors who actually cover more of the
@@ -326,10 +372,10 @@ function resolveSubjects(assignment, levelCategory) {
 // WITHOUT responsivenessFactor: these tutors have already replied, so penalising slower
 // repliers here would be a pure quality loss (roadmap Phase 1). Pure + synchronous so the
 // escalation-tick release path can call it per interested contact.
-function shortlistScore(tutor, assignment) {
+function shortlistScore(tutor, assignment, quotedRate = null) {
   const levelCategory = getLevelCategory(assignment.level);
-  const budget = parseBudget(assignment.rate);
-  const fit = budgetFit(tutor, budget, levelCategory);
+  const budget = resolveBudget(assignment);
+  const fit = budgetFit(tutor, budget, levelCategory, quotedRate);
   const { requestedFields } = resolveSubjects(assignment, levelCategory) || { requestedFields: [] };
   const experience = (EXPERIENCE_RANK[tutor.yearsOfExperience] || 0) / 5;
   const quality =
@@ -340,13 +386,18 @@ function shortlistScore(tutor, assignment) {
 }
 
 // One-line, human-readable "why this tutor" for the owner's shortlist alert: experience,
-// type, and the tutor's asking rate against the budget that applies to them. Pure and
-// synchronous, mirrors the dimensions shortlistScore actually weighs.
-function shortlistReason(tutor, assignment) {
+// type, and the tutor's rate against the budget that applies to them. Pure and synchronous,
+// mirrors the dimensions shortlistScore actually weighs.
+//
+// When the tutor quoted a rate for this assignment (Phase 4), it's shown as "quoted $X/h" and
+// used for the over-budget flag — it's the number that matters, and seeing it (vs the posted
+// budget) before relaying is the point. Falls back to the profile "asks $X/h" when absent.
+function shortlistReason(tutor, assignment, quotedRate = null) {
   const levelCategory = getLevelCategory(assignment.level);
-  const budget = parseBudget(assignment.rate);
+  const budget = resolveBudget(assignment);
   const ceiling = ceilingForTutor(tutor, budget);
-  const floor = tutorFloorRate(tutor, levelCategory);
+  const floor = quotedRate != null ? quotedRate : tutorFloorRate(tutor, levelCategory);
+  const rateVerb = quotedRate != null ? 'quoted' : 'asks';
 
   const parts = [];
   if (tutor.yearsOfExperience) parts.push(`${tutor.yearsOfExperience} exp`);
@@ -355,84 +406,227 @@ function shortlistReason(tutor, assignment) {
   if (floor == null) {
     parts.push(ceiling != null ? `rate not listed (budget $${ceiling}/h)` : 'rate not listed');
   } else if (ceiling == null) {
-    parts.push(`asks $${floor}/h`);
+    parts.push(`${rateVerb} $${floor}/h`);
   } else {
-    parts.push(`asks $${floor}/h vs $${ceiling}/h budget${floor > ceiling ? ' ⚠️ over' : ''}`);
+    parts.push(`${rateVerb} $${floor}/h vs $${ceiling}/h budget${floor > ceiling ? ' ⚠️ over' : ''}`);
   }
   return parts.join(' · ');
 }
 
-// Find the best `poolSize` tutors matching the assignment's level+subject, location,
-// and tutor type — quality-ranked, ready to hand to the AI re-ranker.
-async function findMatchingTutors(assignment, poolSize = 40) {
+// The DB-side hard filters, as a CUMULATIVE chain: each stage's query is every filter up to and
+// including it, so counting them in order yields a funnel ("region left 120, subject left 31,
+// tutor type left 4"). findMatchingTutors builds its real query from the last stage, so the
+// attrition report can never drift from the filters outreach actually applies.
+//
+// Because the chain is cumulative, "removed" is conditional on the preceding stages — the order
+// below is the reading order of the funnel, not a claim about each filter in isolation. Pure, so
+// it's testable without a DB.
+//
+// Returns { unmappable, stages, requestedFields, levelCategory }: `unmappable` names the field
+// that couldn't be mapped ('level' | 'location' | 'subject') and means zero matches by definition;
+// `stages` is [] in that case.
+function buildFilterStages(assignment) {
   const levelCategory = getLevelCategory(assignment.level);
   const region = LOCATION_TO_REGION[assignment.location];
+  const empty = { stages: [], requestedFields: [], levelCategory, region };
 
-  if (!levelCategory || !region) {
-    console.log('Could not map assignment for tutor matching:', {
-      level: assignment.level, levelCategory,
-      location: assignment.location, region
-    });
-    return [];
-  }
+  if (!levelCategory) return { ...empty, unmappable: 'level' };
+  if (!region) return { ...empty, unmappable: 'location' };
 
   const resolved = resolveSubjects(assignment, levelCategory);
-  if (!resolved) return [];
+  if (!resolved) return { ...empty, unmappable: 'subject' };
   const { subjectQuery, requestedFields } = resolved;
 
-  const query = {
-    // $nin with null also excludes docs missing the field entirely, so no $exists needed.
-    // (Was `{ $ne: null, $ne: '' }` — duplicate keys, so JS silently dropped the null check.)
-    contactNumber: { $nin: [null, ''] },
-    [`locations.${region}`]: true,
-    ...subjectQuery,
+  const stages = [];
+  let query = {};
+  const add = (filter, clause) => {
+    query = { ...query, ...clause };
+    stages.push({ filter, query });
   };
 
-  // Filter by tutor type if preference is specified
+  // $nin with null also excludes docs missing the field entirely, so no $exists needed.
+  // (Was `{ $ne: null, $ne: '' }` — duplicate keys, so JS silently dropped the null check.)
+  add('contactable', { contactNumber: { $nin: [null, ''] } });
+  // Tutors who told us they've stopped tutoring (decline reason 'inactive' → Tutor.pausedAt).
+  // Mongo equality on null matches BOTH an explicit null and a missing field, so every tutor
+  // predating this field stays matchable — no backfill needed. Cleared when they re-link
+  // (handleContact), which is their way back in. First in the chain with 'contactable' because
+  // both are cheap "can we even talk to them" gates.
+  add('active', { pausedAt: null });
+  add('region', { [`locations.${region}`]: true });
+  add('subject', subjectQuery);
+
   if (assignment.preferredTutorTypes?.length > 0) {
     const allowedTypes = assignment.preferredTutorTypes.flatMap(t => TUTOR_TYPE_MAP[t] || []);
-    query.tutorType = { $in: allowedTypes };
+    add('tutorType', { tutorType: { $in: allowedTypes } });
   }
 
-  // Filter by gender if the parent specified one (hard requirement — parents rarely flex).
+  // Gender is a hard requirement when the parent specified one — parents rarely flex.
   if (assignment.preferredGender && assignment.preferredGender !== 'No preference') {
-    query.gender = assignment.preferredGender;
+    add('gender', { gender: assignment.preferredGender });
   }
 
-  // Fetch the full matching set (bounded for safety), then quality-rank in JS.
-  // We deliberately avoid a DB `.limit()` on a recency sort here: that was discarding
-  // our most experienced tutors (who often registered earliest) before the AI ever saw
-  // them. yearsOfExperience/hourlyRate are stored as strings, so ranking has to happen
-  // in application code anyway. The createdAt sort only bounds which 300 we pull in the
-  // rare case a single subject+level+region+type query matches more than that.
-  const MAX_CANDIDATE_FETCH = 300;
-  const candidates = await Tutor.find(query)
-    .select('fullName contactNumber telegramId telegramStale tutorType yearsOfExperience highestEducation introduction teachingExperience trackRecord hourlyRate availableTimeSlots responseStats teachingLevels createdAt')
+  return { unmappable: null, stages, requestedFields, levelCategory, region };
+}
+
+// The in-JS hard filters (budget, then timing), applied to already-fetched candidates. Returns the
+// survivors with their budget fit (computed once, reused for scoring) plus the per-filter counts.
+// Pure — the stats mode and the live query share it, so neither can drift.
+function applyJsFilters(candidates, assignment, levelCategory) {
+  const budget = resolveBudget(assignment);
+  const withFit = candidates.map((tutor) => ({ tutor, fit: budgetFit(tutor, budget, levelCategory) }));
+
+  const affordable = withFit.filter(({ fit }) => fit.affordable);
+  const available = affordable.filter(({ tutor }) => timeSlotsMatch(assignment, tutor));
+
+  return {
+    kept: available,
+    stages: [
+      { filter: 'budget', before: withFit.length, after: affordable.length, removed: withFit.length - affordable.length },
+      { filter: 'timeSlots', before: affordable.length, after: available.length, removed: affordable.length - available.length },
+    ],
+  };
+}
+
+// The filter that cost the most candidates — the headline of the "pool smaller than wave"
+// diagnosis ("31 tutors teach this, but only 4 are in the region"). null when nothing was
+// removed. Ties go to the earlier (broader) stage, which is the more useful thing to widen.
+function dominantFilter(stages) {
+  let dominant = null;
+  for (const stage of stages) {
+    if (stage.removed > 0 && (!dominant || stage.removed > dominant.removed)) dominant = stage;
+  }
+  return dominant ? dominant.filter : null;
+}
+
+// We deliberately avoid a DB `.limit()` on a recency sort for ranking: that was discarding our
+// most experienced tutors (who often registered earliest) before the AI ever saw them.
+// yearsOfExperience/hourlyRate are stored as strings, so ranking has to happen in application
+// code anyway. The createdAt sort only bounds which 300 we pull in the rare case a single
+// subject+level+region+type query matches more than that.
+const MAX_CANDIDATE_FETCH = 300;
+
+const CANDIDATE_FIELDS =
+  'fullName contactNumber telegramId telegramStale tutorType yearsOfExperience highestEducation ' +
+  'introduction teachingExperience trackRecord hourlyRate availableTimeSlots responseStats teachingLevels createdAt';
+
+// Find the best `poolSize` tutors matching the assignment's level+subject, location, and tutor
+// type — quality-ranked, ready to hand to the AI re-ranker.
+//
+// `withStats` turns on the attrition funnel (see findMatchingTutorsWithStats) at the cost of one
+// countDocuments per DB-side filter, so it stays OFF for outreach and is opted into by the ops
+// console's diagnosis. `model` is injectable for tests.
+async function runMatch(assignment, poolSize, { withStats = false, model = Tutor } = {}) {
+  const { unmappable, stages, requestedFields, levelCategory } = buildFilterStages(assignment);
+
+  if (unmappable) {
+    console.log('Could not map assignment for tutor matching:', {
+      level: assignment.level, location: assignment.location, subject: assignment.subject, unmappable,
+    });
+    return { tutors: [], scored: [], stats: withStats ? { unmappable, stages: [], matched: 0, dominantFilter: null } : null };
+  }
+
+  const query = stages[stages.length - 1].query;
+
+  // Count the DB-side funnel BEFORE fetching, so the numbers describe the whole matching set
+  // rather than the (bounded) fetch. Sequential, not parallel: this path is off the hot path and
+  // a handful of counts on a small collection is cheaper than N concurrent connections.
+  let dbStages = [];
+  if (withStats) {
+    let before = await model.countDocuments({});
+    for (const stage of stages) {
+      const after = await model.countDocuments(stage.query);
+      dbStages.push({ filter: stage.filter, before, after, removed: before - after });
+      before = after;
+    }
+  }
+
+  const candidates = await model.find(query)
+    .select(CANDIDATE_FIELDS)
     .sort({ createdAt: -1 })
     .limit(MAX_CANDIDATE_FETCH)
     .lean();
 
   // Drop tutors the assignment clearly can't afford or who can't cover the timing, then
   // quality-rank the rest and hand the strongest `poolSize` to the AI re-ranker.
-  const budget = parseBudget(assignment.rate);
-  const ranked = candidates
-    .map((tutor) => ({ tutor, fit: budgetFit(tutor, budget, levelCategory) }))
-    .filter(({ fit }) => fit.affordable)
-    .filter(({ tutor }) => timeSlotsMatch(assignment, tutor))
-    .map(({ tutor, fit }) => ({
-      tutor,
-      score: scoreTutor(tutor, fit) * coverageFactor(tutor, requestedFields, levelCategory),
-    }))
+  const { kept, stages: jsStages } = applyJsFilters(candidates, assignment, levelCategory);
+
+  const ranked = kept
+    .map(({ tutor, fit }) => {
+      const { score, components } = scoreTutorComponents(tutor, fit);
+      const cov = coverageFactor(tutor, requestedFields, levelCategory);
+      return { tutor, score: score * cov, components: { ...components, coverageFactor: cov, qualityGrade: null } };
+    })
     .sort((a, b) => b.score - a.score);
 
-  return ranked.slice(0, poolSize).map(({ tutor }) => tutor);
+  // The scored pool (top `poolSize`), carrying rank + score + feature breakdown for the
+  // Recommendation decision log (Phase 6). `tutors` is the same list flattened, for callers that
+  // only need the docs (the AI re-ranker, escalation's fresh-filter).
+  const scored = ranked.slice(0, poolSize).map((r, i) => ({
+    tutor: r.tutor, rank: i + 1, score: r.score, components: r.components,
+  }));
+  const tutors = scored.map(s => s.tutor);
+  if (!withStats) return { tutors, scored, stats: null };
+
+  // The JS filters ran on the fetched (≤ MAX_CANDIDATE_FETCH) set, so splice them onto the DB
+  // funnel from that set's size — that keeps `before`/`after` continuous across the boundary
+  // instead of implying the budget filter saw the full collection.
+  const allStages = [...dbStages, ...jsStages];
+  return {
+    tutors,
+    scored,
+    stats: {
+      unmappable: null,
+      stages: allStages,
+      matched: ranked.length,
+      // Whether the fetch cap truncated the set before the JS filters ran — if so the budget/
+      // timeSlots counts are of the 300 fetched, not of everything the query matched.
+      fetchTruncated: candidates.length >= MAX_CANDIDATE_FETCH,
+      dominantFilter: dominantFilter(allStages),
+    },
+  };
+}
+
+async function findMatchingTutors(assignment, poolSize = 40) {
+  const { tutors } = await runMatch(assignment, poolSize);
+  return tutors;
+}
+
+// Same deterministic match, but returning the SCORED pool: [{ tutor, rank, score, components }],
+// best-first. Powers the Recommendation decision log (Phase 6) at the wave-1 and escalation write
+// points — they need the ranks/scores/features, not just the tutor docs. `components` already folds
+// in coverageFactor and a null qualityGrade, matching Recommendation.featureSnapshot.
+async function findMatchingTutorsScored(assignment, poolSize = 40) {
+  const { scored } = await runMatch(assignment, poolSize);
+  return scored;
+}
+
+// The stats mode: the same match, plus a per-filter attrition funnel explaining how a large tutor
+// collection narrowed to a small pool. Powers the ops console's "pool smaller than wave" row
+// (roadmap Phase 3) and, later, intake budget calibration (Phase 8).
+//
+// Returns { tutors, stats } where stats is
+//   { unmappable, stages: [{ filter, before, after, removed }], matched, fetchTruncated, dominantFilter }.
+async function findMatchingTutorsWithStats(assignment, poolSize = 40, options = {}) {
+  return runMatch(assignment, poolSize, { ...options, withStats: true });
 }
 
 export {
   findMatchingTutors,
+  findMatchingTutorsScored,
+  findMatchingTutorsWithStats,
+  buildFilterStages,
+  applyJsFilters,
+  dominantFilter,
   shortlistScore,
   shortlistReason,
+  buildFeatureSnapshot,
+  POLICY_VERSION,
   getLevelCategory,
   subjectToFieldName,
   LOCATION_TO_REGION,
+  // Exported for unit tests of the Phase 7 numeric-preferred budget path.
+  resolveBudget,
+  tutorFloorRate,
+  budgetFit,
 };

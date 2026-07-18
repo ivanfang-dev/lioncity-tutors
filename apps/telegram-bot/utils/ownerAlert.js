@@ -1,3 +1,25 @@
+// Deep link from an alert into the ops console (roadmap Phase 3). Telegram is the interrupt
+// surface; the console is the workspace — the link is the hop between them, and it's the whole
+// mobile flow: ping → tap → console → wa.me → outcome.
+//
+// Points at the assignment's drill-down rather than the queue anchor the roadmap sketched: the
+// drill-down always exists, whereas a queue row only exists while the assignment needs action, so
+// alerts on healthy assignments (a tutor said yes) would land on a dead fragment. Middleware
+// carries the path through login, so a cold phone still arrives in the right place.
+//
+// Returns null when OPS_CONSOLE_URL isn't configured, so callers just omit the button.
+export function opsLink(assignmentId) {
+  const base = process.env.OPS_CONSOLE_URL;
+  if (!base || !assignmentId) return null;
+  return `${base.replace(/\/$/, '')}/ops/assignment/${assignmentId}`;
+}
+
+// An inline "Open in console" button row, or null when there's no console URL configured.
+export function opsButtonRow(assignmentId, label = '🖥️ Open in console') {
+  const url = opsLink(assignmentId);
+  return url ? [{ text: label, url }] : null;
+}
+
 // Best-effort Telegram alert to the owner/admin. Used for outreach signals (a tutor
 // said yes, an assignment ran out of tutors, etc.). Never throws into the caller.
 // `replyMarkup` optionally attaches an inline keyboard (e.g. a "Send to parent" button).
