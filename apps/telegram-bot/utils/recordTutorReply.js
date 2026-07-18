@@ -1,7 +1,8 @@
 import mongoose from 'mongoose';
 import { Assignment, Tutor } from '../../../packages/shared/server-exports.js';
 import { normalizePhone } from './phone.js';
-import { notifyOwner } from './ownerAlert.js';
+import { notifyOwner, opsButtonRow } from './ownerAlert.js';
+import { buildRatePrompt } from './rateCapture.js';
 
 // Shared core for recording a tutor's Yes/No reply, used by both the legacy
 // /api/whatsapp-reply endpoint (VM-forwarded) and the new /api/whatsapp-webhook
@@ -42,6 +43,19 @@ export function holdTransition(currentStatus, viableInterestedCount, now = new D
   return null;
 }
 
+// How long the tutor took to reply, in whole minutes — the per-contact number Phase 7's
+// medianResponseMins aggregates and the responsiveness factor already scores on. Returns null
+// rather than NaN/garbage when either end is missing (legacy contacts predate sentAt) so the
+// field is simply absent instead of poisoning later averages. Clock skew between the Vercel
+// function and Mongo can put respondedAt marginally before sentAt; clamp to 0 — a negative
+// latency is never meaningful and would drag a median below zero.
+export function responseLatencyMins(sentAt, respondedAt) {
+  if (!sentAt || !respondedAt) return null;
+  const ms = new Date(respondedAt).getTime() - new Date(sentAt).getTime();
+  if (!Number.isFinite(ms)) return null;
+  return Math.max(0, Math.round(ms / 60000));
+}
+
 let isConnected = false;
 async function connectToDatabase() {
   if (isConnected) return;
@@ -69,20 +83,22 @@ async function alertOwnerInterested(assignment, tutorName, interestedCount) {
   // tick), so we suppress the early, unranked send here — the send button returns on the
   // release "rich card" once the best 3 are chosen. The button forwards the whole
   // interested-but-unsent set, so its label tracks how many are waiting to be sent (1, 2...).
-  let replyMarkup;
+  const rows = [];
   if (assignment.parentContact && !holding) {
     const pendingCount = assignment.pendingParentTutorIds().length;
     if (pendingCount > 0) {
-      replyMarkup = {
-        inline_keyboard: [[{
-          text: pendingCount === 1
-            ? '📤 Send profile to parent'
-            : `📤 Send all ${pendingCount} profiles to parent`,
-          callback_data: `sendallprof_${assignment._id}`
-        }]]
-      };
+      rows.push([{
+        text: pendingCount === 1
+          ? '📤 Send profile to parent'
+          : `📤 Send all ${pendingCount} profiles to parent`,
+        callback_data: `sendallprof_${assignment._id}`
+      }]);
     }
   }
+  // Deep link into the console, where the full picture of this assignment lives.
+  const opsRow = opsButtonRow(assignment._id);
+  if (opsRow) rows.push(opsRow);
+  const replyMarkup = rows.length ? { inline_keyboard: rows } : undefined;
 
   // On the yes that reaches target, say we're holding for better candidates (not "done") —
   // the shortlist is picked when the window elapses, not on the fastest 3 responders.
@@ -161,6 +177,38 @@ async function finalizeReply(assignment, contact, decision, reply) {
   const tutorName = contact?.tutorName || '';
   const tutorId = contact?.tutorId || null;
 
+  // Enrich the row we just flipped, in ONE targeted update:
+  //   responseLatencyMins — needs sentAt from the matched row, which we only know post-update.
+  //   rateRequestedAt     — every yes is asked what they'd charge for THIS assignment, because
+  //                         profile rates go stale and posted ranges ("$40-60/hr") leave a bare
+  //                         Yes ambiguous. Persisting the ask here (not in userSessions) is what
+  //                         lets the answer be matched back after a Vercel cold start, and what
+  //                         lets WhatsApp — which has no session at all — use the same path.
+  // arrayFilters on the contact's own _id stays precise even if a tutor holds several rows.
+  const contactSet = {};
+  const latencyMins = responseLatencyMins(contact?.sentAt, contact?.respondedAt);
+  if (latencyMins !== null) {
+    contactSet['outreach.contacts.$[c].responseLatencyMins'] = latencyMins;
+    contact.responseLatencyMins = latencyMins;
+  }
+
+  let ratePrompt = null;
+  if (decision === 'Interested') {
+    const now = new Date();
+    contactSet['outreach.contacts.$[c].rateRequestedAt'] = now;
+    contact.rateRequestedAt = now;
+    // The caller sends this on its own channel — state here, transport there.
+    ratePrompt = buildRatePrompt(assignment);
+  }
+
+  if (Object.keys(contactSet).length && contact?._id) {
+    await Assignment.updateOne(
+      { _id: assignment._id },
+      { $set: contactSet },
+      { arrayFilters: [{ 'c._id': contact._id }] }
+    ).catch(err => console.warn('Failed to enrich outreach contact:', err.message));
+  }
+
   // Gate on viable (non-parent-rejected) interested tutors, so a resumed "find more" outreach
   // keeps sending until fresh tutors say Yes rather than instantly re-holding on the old shortlist.
   const interestedCount = assignment.viableInterestedCount();
@@ -180,9 +228,13 @@ async function finalizeReply(assignment, contact, decision, reply) {
     }
   }
 
-  // Credit the tutor for responding (Yes OR No both count — they're reachable).
+  // Credit the tutor for responding (Yes OR No both count — they're reachable) and stamp their
+  // freshness (Phase 7 lastConfirmedActiveAt — a reply is positive proof they're active).
   if (tutorId) {
-    await Tutor.updateOne({ _id: tutorId }, { $inc: { 'responseStats.responded': 1 } });
+    await Tutor.updateOne(
+      { _id: tutorId },
+      { $inc: { 'responseStats.responded': 1 }, $set: { lastConfirmedActiveAt: new Date() } }
+    );
   }
 
   if (decision === 'Interested') {
@@ -194,6 +246,9 @@ async function finalizeReply(assignment, contact, decision, reply) {
     assignmentId: assignment._id.toString(),
     reply,
     interestedCount,
+    // Set on a Yes: the caller should send this on whichever channel the tutor replied on,
+    // in place of a generic acknowledgement. Null on a No.
+    ratePrompt,
     // No longer sending fresh waves — Holding (target reached, collecting late yeses),
     // Fulfilled (shortlist chosen) or Exhausted all count as stopped.
     stopped: assignment.outreach.status !== 'Active'

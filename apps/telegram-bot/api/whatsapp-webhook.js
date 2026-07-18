@@ -1,7 +1,9 @@
 import { recordTutorReply } from '../utils/recordTutorReply.js';
-import { sendWhatsApp } from '../utils/whatsappSender.js';
+import { sendWhatsApp, sendWhatsAppList } from '../utils/whatsappSender.js';
 import { notifyOwner } from '../utils/ownerAlert.js';
 import { getTutorNameByNumber } from '../utils/tutorLookup.js';
+import { recordQuotedRate } from '../utils/rateCapture.js';
+import { declineReasonListRows, parseListReplyId, recordDeclineReason } from '../utils/declineReason.js';
 
 // Meta Cloud API webhook. GET = the one-time verification handshake; POST = inbound events
 // (tutor replies + delivery statuses). Replaces the whatsapp-web.js message handler and the
@@ -19,31 +21,82 @@ function parseButton(label) {
   return null;
 }
 
-// Fallback for tutors who type instead of tapping (mirrors the old parseReply).
+// Fallback for tutors who type instead of tapping (mirrors the old parseReply). Deliberately
+// keyword-shallow: anything it isn't sure about must fall through to the owner, which is a
+// visible non-failure, rather than being guessed at and silently recorded as the wrong answer.
 function parseText(body) {
   if (!body) return null;
   const t = body.trim().toLowerCase();
+  // Checked BEFORE the yes rule: "not interested" contains "interested", and the bare
+  // /^n(o|ope|ah)?\b/ below can't see it either — \b fails mid-word on "not". Without this, a
+  // tutor typing our own button's label ("Not available") is read as a question, not a decline.
+  if (/^not\s+(available|interested|free|able)\b/.test(t)) return 'no';
   if (/^y(es|ep|eah|a|up)?\b/.test(t) || t === 'ok' || t === 'okay' || t.includes('interested')) return 'yes';
   if (/^n(o|ope|ah)?\b/.test(t)) return 'no';
   return null;
 }
 
-// Pull a yes/no out of whatever inbound message shape Meta sent. Template Quick-Reply taps
-// arrive as type 'button'; interactive-message taps as 'interactive'; typed replies as 'text'.
-function replyFromMessage(msg) {
-  if (msg.type === 'button') return parseButton(msg.button?.text || msg.button?.payload);
-  if (msg.type === 'interactive') return parseButton(msg.interactive?.button_reply?.title);
-  if (msg.type === 'text') return parseText(msg.text?.body);
-  return null;
+// Classify whatever inbound shape Meta sent, WITHOUT deciding what to do about it. Template
+// Quick-Reply taps arrive as type 'button'; interactive taps as 'interactive' (button_reply for
+// our reply-buttons, list_reply for the decline-reason list); typed replies as 'text'.
+//
+// Pure and exported so the parse order can be tested: this deliberately does NOT look for a
+// rate, because "is this a rate?" depends on whether we asked this tutor for one — state that
+// lives in Mongo. The handler applies that check first; see the order comment there.
+export function classifyInbound(msg) {
+  if (msg?.type === 'button') {
+    const reply = parseButton(msg.button?.text || msg.button?.payload);
+    return reply ? { kind: 'reply', reply } : { kind: 'unknown' };
+  }
+  if (msg?.type === 'interactive') {
+    const listId = msg.interactive?.list_reply?.id;
+    if (listId) {
+      const parsed = parseListReplyId(listId);
+      return parsed ? { kind: 'reason', ...parsed } : { kind: 'unknown' };
+    }
+    const reply = parseButton(msg.interactive?.button_reply?.title);
+    return reply ? { kind: 'reply', reply } : { kind: 'unknown' };
+  }
+  if (msg?.type === 'text' && msg.text?.body) {
+    const reply = parseText(msg.text.body);
+    return reply ? { kind: 'reply', reply } : { kind: 'text', body: msg.text.body };
+  }
+  return { kind: 'unknown' };
 }
 
 async function acknowledge(to, reply) {
   try {
     await sendWhatsApp(to, reply === 'yes'
-      ? "Thank you for your response! 🙏 We've noted your interest and will contact you should there be a match."
-      : "Thank you for your response. We'll contact you should there be a match in the future.");
+      ? "Thank you for your response! 🙏 We've noted your interest and will contact you should there be a match. Feel free to contact us anytime at 8870 1152 if you need any further help 😊"
+      : "Thank you for your response. We'll contact you should there be a match in the future. Feel free to contact us anytime at 8870 1152 if you need any further help 😊");
   } catch (err) {
     console.warn('Failed to send tutor acknowledgement:', err.message);
+  }
+}
+
+// Ask an interested tutor what they'd charge for THIS assignment, in place of the generic ack.
+// Free-form, which is legal because the tutor's own button tap just opened the 24h service
+// window — so this needs no template and no Meta approval.
+async function askForRate(to, ratePrompt) {
+  try {
+    await sendWhatsApp(to, `✅ Great — we've noted your interest!\n\n${ratePrompt}`);
+  } catch (err) {
+    console.warn('Failed to send rate prompt:', err.message);
+  }
+}
+
+// Ask a declining tutor why. A list (not reply-buttons) because those cap at 3 and there are 5
+// reasons. Best-effort on top of an already-recorded No.
+async function askDeclineReason(to, assignmentId) {
+  try {
+    await sendWhatsAppList(to, {
+      body: "Thanks for letting us know. Mind telling us why? It helps us send you better-matched assignments.",
+      buttonText: 'Choose a reason',
+      sectionTitle: 'Reason',
+      rows: declineReasonListRows(assignmentId)
+    });
+  } catch (err) {
+    console.warn('Failed to send decline-reason list:', err.message);
   }
 }
 
@@ -65,6 +118,71 @@ async function forwardTutorMessage(from, body) {
     );
   } catch (err) {
     console.warn('Failed to forward tutor message:', err.message);
+  }
+}
+
+// Route ONE inbound tutor message. The order below is load-bearing — three parsers now compete
+// for the same text:
+//
+//   1. RATE. Only when this tutor has a pending rateRequestedAt (recordQuotedRate no-ops
+//      otherwise), and only when the text is rate-shaped, so the DB is untouched for ordinary
+//      messages. Must come first: a tutor answering "40" to a prompt on a $40-60 assignment
+//      would otherwise be read as something else entirely.
+//   2. REASON. A decline-reason list tap.
+//   3. YES/NO. Button payloads, then typed intent.
+//   4. FORWARD. Anything left goes to the owner's Telegram as a question.
+//
+// The combined "yes but $50" case is deliberately not special-cased: no pending request exists
+// at that point, so it lands on (3), is recorded Interested, and the rate prompt follows —
+// the tutor restates the number. A second, looser rate extractor competing with the strict one
+// is a permanent cost; asking once more is not.
+async function handleInbound(from, msg) {
+  const body = msg.type === 'text' ? msg.text?.body : null;
+
+  // (1) Rate.
+  if (body) {
+    const rateResult = await recordQuotedRate({ phone: from, text: body });
+    if (rateResult.matched) {
+      console.log(`Webhook rate $${rateResult.rate} from ${from} → ${rateResult.assignmentId}`);
+      await sendWhatsApp(from, `👍 Noted — $${rateResult.rate}/hr for ${rateResult.assignmentTitle}.` +
+        (rateResult.declined
+          ? "\n\nWe'll let you know if the parent can stretch to that."
+          : "\n\nWe'll be in touch shortly!")
+      ).catch(err => console.warn('Failed to ack rate:', err.message));
+      return;
+    }
+  }
+
+  const inbound = classifyInbound(msg);
+
+  // (2) Decline reason.
+  if (inbound.kind === 'reason') {
+    const result = await recordDeclineReason({ phone: from, reason: inbound.reason, assignmentId: inbound.assignmentId });
+    console.log(`Webhook decline reason '${inbound.reason}' from ${from} → matched=${result.matched}`);
+    if (result.ratePrompt) {
+      await sendWhatsApp(from, result.ratePrompt).catch(err => console.warn('Failed to ask rate after decline:', err.message));
+    } else if (result.matched && inbound.reason === 'inactive') {
+      await sendWhatsApp(from, "Got it — we'll stop sending you assignments. Message us any time to start again.")
+        .catch(() => {});
+    }
+    return;
+  }
+
+  // (3) Yes/no.
+  if (inbound.kind === 'reply') {
+    const result = await recordTutorReply(from, inbound.reply);
+    console.log(`Webhook reply '${inbound.reply}' from ${from} → matched=${result.matched}`, result.assignmentId || '');
+    // Only acknowledge tutors who are part of an active outreach.
+    if (!result.matched) return;
+    if (result.ratePrompt) await askForRate(from, result.ratePrompt);
+    else if (inbound.reply === 'no') await askDeclineReason(from, result.assignmentId);
+    else await acknowledge(from, inbound.reply);
+    return;
+  }
+
+  // (4) Free-text question — forward to the owner's Telegram to handle.
+  if (inbound.kind === 'text') {
+    await forwardTutorMessage(from, inbound.body);
   }
 }
 
@@ -93,17 +211,7 @@ export default async function handler(req, res) {
 
         for (const msg of value.messages || []) {
           const from = msg.from; // wa_id: the tutor's real number, digits only
-          const reply = replyFromMessage(msg);
-
-          if (reply) {
-            const result = await recordTutorReply(from, reply);
-            console.log(`Webhook reply '${reply}' from ${from} → matched=${result.matched}`, result.assignmentId || '');
-            // Only acknowledge tutors who are part of an active outreach.
-            if (result.matched) await acknowledge(from, reply);
-          } else if (msg.type === 'text' && msg.text?.body) {
-            // Free-text question (not Yes/No) — forward to the owner's Telegram to handle.
-            await forwardTutorMessage(from, msg.text.body);
-          }
+          await handleInbound(from, msg);
         }
 
         // Delivery/read/failed callbacks — log failures so a silent drop is never invisible.

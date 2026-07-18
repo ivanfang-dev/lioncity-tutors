@@ -51,6 +51,14 @@ describe('deterministicShortlist (guaranteed fallback)', () => {
     expect(msg).toContain('Sec 3 Maths');
     expect(msg.toLowerCase()).toContain('which tutor');
   });
+
+  test('shows the rate a tutor quoted for this assignment, not their stale profile rate', () => {
+    // Alice's profile says $45, but she quoted $55 for this specific assignment. The parent
+    // must see $55 — quoting the stale profile rate is exactly the failure Phase 4 fixes.
+    const withQuote = deterministicShortlist(assignment, [{ ...tutors[0], quotedRate: 55 }]);
+    expect(withQuote).toContain('$55/hr');
+    expect(withQuote).not.toContain('$45/hr');
+  });
 });
 
 describe('draftParentMessage without an API key falls back deterministically', () => {

@@ -7,13 +7,16 @@ import RateValidator from '../utils/RateValidator.js';
 import ErrorHandler from '../utils/ErrorHandler.js';
 import { notifyMatchedTutors, escalateAssignment } from '../utils/tutorNotifier.js';
 import { recordTutorReplyByTutorId } from '../utils/recordTutorReply.js';
+import { declineReasonKeyboard, recordDeclineReason } from '../utils/declineReason.js';
+import { recordQuotedRate } from '../utils/rateCapture.js';
 import { sendWhatsApp } from '../utils/whatsappSender.js';
 import { getTutorNameByNumber } from '../utils/tutorLookup.js';
 import { SINGAPORE_LOCATIONS } from '../utils/locations.js';
-import { getLevelCategory } from '../utils/tutorMatcher.js';
 import { draftParentMessage, buildWaMeButton } from '../utils/parentMessage.js';
-import { Placement } from '../../../packages/shared/server-exports.js';
-import mongoose from 'mongoose';
+import { recordParentPick, recordParentReject, resumeOutreach } from '../utils/parentOutcome.js';
+import { recordCheckInWell, recordCheckInEnded, recordCheckInEndReason, recordCheckInNoReply } from '../utils/checkInOutcome.js';
+import { checkInRatingRows } from '../utils/checkInButtons.js';
+import { opsButtonRow } from '../utils/ownerAlert.js';
 import { waitUntil } from '@vercel/functions';
 
 /* global process */
@@ -1068,12 +1071,21 @@ async function handleContact(bot, chatId, userId, contact, Tutor, userSessions, 
     
     // Update telegramId if changed, and clear any telegramStale flag: sharing their contact
     // proves the tutor is reachable on Telegram again, so future outreach can prefer the free
-    // DM. Targeted update (not tutor.save()) to avoid re-validating legacy profile fields.
-    if (tutor.telegramId !== userId || tutor.telegramStale) {
-      await Tutor.updateOne({ _id: tutor._id }, { $set: { telegramId: userId, telegramStale: false } });
-      tutor.telegramId = userId;
-      tutor.telegramStale = false;
-    }
+    // DM. Sharing it ALSO un-pauses a tutor who once told us they'd stopped tutoring (decline
+    // reason 'inactive' → pausedAt, a hard filter in findMatchingTutors): coming back and
+    // re-linking is the strongest "I'm active again" signal we get, and without this a paused
+    // tutor would be excluded from matching forever with no way back.
+    // Targeted update (not tutor.save()) to avoid re-validating legacy profile fields. Always stamp
+    // lastConfirmedActiveAt (Phase 7): sharing their contact is positive proof the tutor is active,
+    // and it's the broadest "interacted with the bot" signal we have. The telegram/pause fields only
+    // change when needed, but the activity timestamp updates every time.
+    await Tutor.updateOne(
+      { _id: tutor._id },
+      { $set: { telegramId: userId, telegramStale: false, pausedAt: null, lastConfirmedActiveAt: new Date() } }
+    );
+    tutor.telegramId = userId;
+    tutor.telegramStale = false;
+    tutor.pausedAt = null;
     
     // Store tutor ID and preserve existing session data
     const currentSession = userSessions[chatId] || {};
@@ -1723,11 +1735,13 @@ async function confirmPostAssignment(bot, chatId, userSessions, Assignment, chan
     delete userSessions[chatId].waitingForCustomRate;
 
     // Confirm immediately — WhatsApp notifications run in the background
+    const confirmRows = [];
+    const opsRow = opsButtonRow(savedAssignment._id, '🖥️ Track in console');
+    if (opsRow) confirmRows.push(opsRow);
+    confirmRows.push([{ text: '🔙 Back to Admin Panel', callback_data: 'admin_panel' }]);
     await safeSend(bot, chatId, `✅ *Assignment Posted Successfully!*\n\n📋 Assignment ID: ${savedAssignment._id}\n📢 Posted to channel\n📨 Notifying matching tutors via Telegram/WhatsApp...\n📊 Status: Open for applications`, {
       parse_mode: 'Markdown',
-      reply_markup: {
-        inline_keyboard: [[{ text: '🔙 Back to Admin Panel', callback_data: 'admin_panel' }]]
-      }
+      reply_markup: { inline_keyboard: confirmRows }
     });
 
     // Parent expectation blurb: hand the owner a paste-ready "we're searching, ~6h" message to
@@ -2762,9 +2776,67 @@ async function handleCallbackQuery(
         { inline_keyboard: [] },
         { chat_id: chatId, message_id: callbackQuery.message?.message_id }
       ).catch(() => {});
-      return await safeSend(bot, chatId, result.matched
-        ? "✅ Great — we've noted your interest and will be in touch shortly!"
-        : "👍 Thanks! This assignment may already be filled, but we've noted you.");
+      if (!result.matched) {
+        return await safeSend(bot, chatId, "👍 Thanks! This assignment may already be filled, but we've noted you.");
+      }
+      // The interest is already recorded and already counts toward the target — the rate is
+      // enrichment, so this ask can be ignored without costing the tutor their place.
+      return await safeSend(bot, chatId,
+        `✅ Great — we've noted your interest!\n\n${result.ratePrompt}`);
+    }
+
+    // Tutor tapped "❌ Not available" on an outreach DM. The No is recorded immediately; the
+    // reason buttons that replace the keyboard are best-effort on top of it.
+    if (data.startsWith('outreach_decline_')) {
+      const assignmentId = data.replace('outreach_decline_', '');
+      const tutor = await Tutor.findOne({ telegramId: userId });
+      if (!tutor) {
+        return await safeSend(bot, chatId, 'Please share your contact with the bot first (/start) so we can match your reply.');
+      }
+      const result = await recordTutorReplyByTutorId(tutor._id, 'no', assignmentId);
+      if (!result.matched) {
+        await bot.editMessageReplyMarkup(
+          { inline_keyboard: [] },
+          { chat_id: chatId, message_id: callbackQuery.message?.message_id }
+        ).catch(() => {});
+        return await safeSend(bot, chatId, '👍 Thanks for letting us know.');
+      }
+      // Swap the DM's keyboard for the reason buttons rather than sending a new message —
+      // keeps the assignment context visible next to the question being asked.
+      await bot.editMessageReplyMarkup(
+        { inline_keyboard: declineReasonKeyboard(assignmentId) },
+        { chat_id: chatId, message_id: callbackQuery.message?.message_id }
+      ).catch(() => {});
+      return;
+    }
+
+    // Tutor picked a decline reason. Every "No" was previously thrown-away signal; this is the
+    // only place we learn WHY. Best-effort by design — the Declined status is already recorded.
+    if (data.startsWith('outreach_reason_')) {
+      const [, reason, assignmentId] = data.match(/^outreach_reason_([a-z]+)_(.+)$/) || [];
+      if (!reason || !assignmentId) return;
+      const tutor = await Tutor.findOne({ telegramId: userId });
+      if (!tutor) return;
+
+      const { ratePrompt } = await recordDeclineReason({ tutorId: tutor._id, assignmentId, reason });
+
+      await bot.editMessageReplyMarkup(
+        { inline_keyboard: [] },
+        { chat_id: chatId, message_id: callbackQuery.message?.message_id }
+      ).catch(() => {});
+
+      // A rate decline is the one reason worth a follow-up question: "too low, but I'd do $70"
+      // is sometimes a placement rather than a dead end, and always tells us how far off the
+      // budget was.
+      if (ratePrompt) {
+        return await safeSend(bot, chatId,
+          `Understood — thanks!\n\n${ratePrompt}`);
+      }
+      if (reason === 'inactive') {
+        return await safeSend(bot, chatId,
+          "Got it — we'll stop sending you assignments. Message the bot any time to start again.");
+      }
+      return await safeSend(bot, chatId, '👍 Thanks — that helps us match you better next time.');
     }
 
     // Handle direct assignment application - now prompts for rate first
@@ -3002,73 +3074,24 @@ async function handleCallbackQuery(
       return;
     }
 
-    // Commit the parent's choice: record the winner, mark Filled, stop outreach, close the channel post.
+    // Commit the parent's choice. The recording itself (Filled + winner + Placement + channel post)
+    // lives in parentOutcome.js so this button and the ops console land identical state.
     if (data.startsWith('setwinner_')) {
       if (!isAdmin(userId, ADMIN_USERS)) {
         return await bot.answerCallbackQuery(callbackQuery.id, { text: 'Not authorized.' });
       }
       const [assignmentId, tutorId] = data.replace('setwinner_', '').split('_');
-      const assignment = await Assignment.findById(assignmentId);
-      if (!assignment) {
-        return await bot.answerCallbackQuery(callbackQuery.id, { text: 'Assignment not found.' });
-      }
-      const winnerName = (assignment.outreach?.contacts || [])
-        .find(c => c.tutorId?.toString() === tutorId)?.tutorName || 'the tutor';
       try {
-        const now = new Date();
-        const tutorOid = new mongoose.Types.ObjectId(tutorId);
-        // Targeted update (never .save(): legacy subject/level would fail validation). Mark Filled,
-        // record who won, stamp the winning contact's parentPickedAt, and stop outreach.
-        await Assignment.updateOne(
-          { _id: assignment._id },
-          { $set: {
-            status: 'Filled',
-            matchedTutorId: tutorId,
-            filledAt: now,
-            'outreach.status': 'Fulfilled',
-            'outreach.contacts.$[c].parentPickedAt': now
-          } },
-          { arrayFilters: [{ 'c.tutorId': tutorOid }] }
-        );
-        assignment.status = 'Filled'; // for the channel re-render below
-
-        // Record the Placement — the ground-truth match row the day-30 check-in (Phase 5) and
-        // future ranking work train against. Upsert keyed on (assignment, tutor) so a double-tap
-        // can't duplicate it; best-effort (a Placement failure must not block marking Filled).
-        try {
-          const tutorDoc = await Tutor.findById(tutorId).select('hourlyRate').lean();
-          const agreedRate = tutorDoc?.hourlyRate?.[getLevelCategory(assignment.level)]
-            || tutorDoc?.hourlyRate?.secondary || assignment.rate;
-          await Placement.updateOne(
-            { assignmentId: assignment._id, tutorId: tutorOid },
-            { $setOnInsert: {
-                parentContact: assignment.parentContact,
-                filledAt: now, agreedRate, status: 'active'
-              } },
-            { upsert: true }
-          );
-        } catch (placementErr) {
-          console.error('Failed to record Placement:', placementErr.message);
+        const result = await recordParentPick({ assignmentId, tutorId });
+        if (!result.ok) {
+          return await bot.answerCallbackQuery(callbackQuery.id, {
+            text: result.error === 'assignment_not_found' ? 'Assignment not found.' : 'That tutor is no longer a candidate.'
+          });
         }
 
         await bot.answerCallbackQuery(callbackQuery.id, { text: '✅ Marked filled' });
-
-        // Close the channel post so tutors stop applying (same treatment as a manual close).
-        if (assignment.channelMessageId && CHANNEL_ID) {
-          try {
-            await bot.editMessageText(formatAssignmentForChannel(assignment), {
-              chat_id: CHANNEL_ID,
-              message_id: assignment.channelMessageId,
-              parse_mode: 'Markdown',
-              reply_markup: { inline_keyboard: [[{ text: '🔒 Assignment Filled', callback_data: 'assignment_closed' }]] }
-            });
-          } catch (editErr) {
-            console.warn('Mark-filled: channel edit failed:', editErr.message);
-          }
-        }
-
         await safeSend(bot, chatId,
-          `✅ *${assignment.title}* marked *Filled* — ${winnerName} will take it. Outreach stopped and the assignment is closed.`,
+          `✅ *${result.assignment.title}* marked *Filled* — ${result.tutorName} will take it. Outreach stopped and the assignment is closed.`,
           { parse_mode: 'Markdown',
             reply_markup: { inline_keyboard: [[{ text: '🔙 Back to Manage Assignments', callback_data: 'admin_manage_assignments' }]] } });
       } catch (err) {
@@ -3108,34 +3131,15 @@ async function handleCallbackQuery(
       const cut = rest.lastIndexOf('_');
       const assignmentId = rest.slice(0, cut);
       const reason = rest.slice(cut + 1);
-      const assignment = await Assignment.findById(assignmentId);
-      if (!assignment) {
-        return await bot.answerCallbackQuery(callbackQuery.id, { text: 'Assignment not found.' });
-      }
-      const now = new Date();
-      const rejectedCount = (assignment.outreach?.contacts || [])
-        .filter(c => c.status === 'Interested' && c.shortlistRank != null && !c.parentRejectedAt).length;
       try {
-        // Targeted update (never .save(): a legacy subject/level would fail validation). Reject the
-        // shortlisted tutors with the reason, and reset the outreach clock so the 4h timeout counts
-        // from now. Reopen in case auto-close already fired.
-        await Assignment.updateOne(
-          { _id: assignment._id },
-          { $set: {
-              'outreach.contacts.$[c].parentRejectedAt': now,
-              'outreach.contacts.$[c].parentRejectReason': reason,
-              'outreach.status': 'Active',
-              'outreach.startedAt': now,
-              'outreach.lastWaveAt': now,
-              status: 'Open'
-            } },
-          { arrayFilters: [{ 'c.status': 'Interested', 'c.shortlistRank': { $exists: true }, 'c.parentRejectedAt': { $exists: false } }] }
-        );
-        // Mirror the reset in memory so the immediate escalateAssignment sees Active state.
-        assignment.outreach.status = 'Active';
-        assignment.outreach.startedAt = now;
-        assignment.outreach.lastWaveAt = now;
-        assignment.status = 'Open';
+        // Recording + the outreach reset live in parentOutcome.js, shared with the ops console.
+        const recorded = await recordParentReject({ assignmentId, reason });
+        if (!recorded.ok) {
+          return await bot.answerCallbackQuery(callbackQuery.id, {
+            text: recorded.error === 'assignment_not_found' ? 'Assignment not found.' : 'Something went wrong — try again.'
+          });
+        }
+        const { assignment, rejectedCount } = recorded;
 
         await bot.answerCallbackQuery(callbackQuery.id, { text: '🔄 Finding more tutors…' });
 
@@ -3143,7 +3147,7 @@ async function handleCallbackQuery(
         // cadence continues afterward (the wave re-stamps lastWaveAt).
         waitUntil((async () => {
           try {
-            const result = await escalateAssignment(assignment, BOT_USERNAME, { waveSize: 6 });
+            const result = await resumeOutreach(assignment, { botUsername: BOT_USERNAME });
             if (result.exhausted) {
               await safeSend(bot, chatId,
                 `📭 *No fresh matching tutors left* for *${assignment.title}* — you've contacted everyone in the pool. You'll need to follow up manually.`,
@@ -3173,6 +3177,91 @@ async function handleCallbackQuery(
         return await bot.answerCallbackQuery(callbackQuery.id, { text: 'Not authorized.' });
       }
       return await bot.answerCallbackQuery(callbackQuery.id, { text: "Noted — I'll remind you if it stays quiet." });
+    }
+
+    // ── Day-30 check-in recording (Phase 5) ────────────────────────────────────────────────────
+    // The tick pings the owner about a placement; these buttons record the parent's answer through
+    // the shared recorder (checkInOutcome.js), the same path the ops console uses. Recorders own
+    // the Placement writes; the handler only reports back.
+
+    // "Going well" → ask for a 1–5 rating (a direct quality signal + testimonial raw material).
+    if (data.startsWith('ciwell_')) {
+      if (!isAdmin(userId, ADMIN_USERS)) {
+        return await bot.answerCallbackQuery(callbackQuery.id, { text: 'Not authorized.' });
+      }
+      const placementId = data.replace('ciwell_', '');
+      await bot.answerCallbackQuery(callbackQuery.id).catch(() => {});
+      await safeSend(bot, chatId, 'Glad to hear it! How would the parent rate the tuition so far?', {
+        reply_markup: { inline_keyboard: checkInRatingRows(placementId) },
+      });
+      return;
+    }
+
+    // The rating tap → record going-well + rating. callback: cirate_<placementId>_<1..5>.
+    if (data.startsWith('cirate_')) {
+      if (!isAdmin(userId, ADMIN_USERS)) {
+        return await bot.answerCallbackQuery(callbackQuery.id, { text: 'Not authorized.' });
+      }
+      const rest = data.replace('cirate_', '');
+      const cut = rest.lastIndexOf('_');
+      const placementId = rest.slice(0, cut);
+      const rating = rest.slice(cut + 1);
+      try {
+        const result = await recordCheckInWell({ placementId, rating });
+        if (!result.ok) {
+          return await bot.answerCallbackQuery(callbackQuery.id, { text: 'Could not record that — try again.' });
+        }
+        await bot.answerCallbackQuery(callbackQuery.id, { text: `✅ Recorded ${rating}⭐` }).catch(() => {});
+        await safeSend(bot, chatId, `✅ Logged — tuition going well, rated *${rating}/5*. Thanks!`, { parse_mode: 'Markdown' });
+      } catch (err) {
+        console.error('Failed to record check-in rating:', err.message);
+        await bot.answerCallbackQuery(callbackQuery.id, { text: 'Something went wrong — try again.' }).catch(() => {});
+      }
+      return;
+    }
+
+    // "It ended" → record the ended outcome now, then capture the parent's stated reason as free
+    // text (stored verbatim). The reason is best-effort enrichment: the ended outcome is already
+    // saved, so a never-typed reason costs nothing. State lives on the owner's session, so a cold
+    // start between tap and typing simply drops the reason capture (the owner can note it later).
+    if (data.startsWith('ciended_')) {
+      if (!isAdmin(userId, ADMIN_USERS)) {
+        return await bot.answerCallbackQuery(callbackQuery.id, { text: 'Not authorized.' });
+      }
+      const placementId = data.replace('ciended_', '');
+      try {
+        const result = await recordCheckInEnded({ placementId });
+        if (!result.ok) {
+          return await bot.answerCallbackQuery(callbackQuery.id, { text: 'Could not record that — try again.' });
+        }
+        const session = userSessions[chatId] || (userSessions[chatId] = { state: 'idle' });
+        session.state = 'awaiting_end_reason';
+        session.endReason = { placementId, checkInId: result.checkInId };
+        await bot.answerCallbackQuery(callbackQuery.id, { text: 'Marked as ended' }).catch(() => {});
+        await safeSend(bot, chatId,
+          '🔚 Logged as *ended*. What reason did the parent give? Type it here and I\'ll save it — or send /skip.',
+          { parse_mode: 'Markdown' });
+      } catch (err) {
+        console.error('Failed to record check-in ended:', err.message);
+        await bot.answerCallbackQuery(callbackQuery.id, { text: 'Something went wrong — try again.' }).catch(() => {});
+      }
+      return;
+    }
+
+    // "No reply" → close the loop without asserting survival either way.
+    if (data.startsWith('cinoreply_')) {
+      if (!isAdmin(userId, ADMIN_USERS)) {
+        return await bot.answerCallbackQuery(callbackQuery.id, { text: 'Not authorized.' });
+      }
+      const placementId = data.replace('cinoreply_', '');
+      try {
+        await recordCheckInNoReply({ placementId });
+        await bot.answerCallbackQuery(callbackQuery.id, { text: 'Noted — no reply.' }).catch(() => {});
+      } catch (err) {
+        console.error('Failed to record check-in no-reply:', err.message);
+        await bot.answerCallbackQuery(callbackQuery.id, { text: 'Something went wrong — try again.' }).catch(() => {});
+      }
+      return;
     }
 
     if (data.trim() === 'admin_post_assignment') {
@@ -3905,6 +3994,27 @@ async function handleMessage(bot, chatId, userId, text, message, Tutor, Assignme
     return await handleStart(bot, chatId, userId, Tutor, userSessions, startParam);
   }
 
+  // Owner is typing the parent's stated reason a day-30 placement ended (Phase 5), captured after
+  // an "It ended" tap set session.endReason. Placed before the tutorId gate below because the owner
+  // isn't necessarily a registered tutor. /skip abandons the capture; the ended outcome is already
+  // saved either way, so this only attaches the verbatim reason.
+  if (isUserAdmin && session.state === 'awaiting_end_reason' && session.endReason) {
+    const { placementId, checkInId } = session.endReason;
+    session.state = 'idle';
+    session.endReason = undefined;
+    if (text.trim() === '/skip') {
+      return await safeSend(bot, chatId, '👍 No reason saved. The placement is still logged as ended.');
+    }
+    if (!checkInId) {
+      return await safeSend(bot, chatId, '⚠️ Couldn\'t link that reason to the check-in, but the placement is logged as ended.');
+    }
+    const result = await recordCheckInEndReason({ placementId, checkInId, reason: text });
+    if (!result.ok) {
+      return await safeSend(bot, chatId, '⚠️ Couldn\'t save the reason, but the placement is logged as ended.');
+    }
+    return await safeSend(bot, chatId, '✅ Saved the reason. Thanks!');
+  }
+
   // Check if user is in awaiting_contact state
   if (session.state === ApplicationStates.AWAITING_CONTACT) {
     return await safeSend(bot, chatId, '👋 Please share your contact number using the button below to continue.', {
@@ -4022,6 +4132,25 @@ async function handleMessage(bot, chatId, userId, text, message, Tutor, Assignme
   if (session.state.startsWith('awaiting_rate_')) {
     const level = session.state.replace('awaiting_rate_', '');
     return await handleSpecificRateEdit(bot, chatId, text, level, userSessions, Tutor);
+  }
+
+  // A bare number answering the rate prompt we sent after their ✅ (or after a rate-decline).
+  // Deliberately LAST of the text handlers: every in-session flow above is a question the bot
+  // just asked in this conversation, so it owns the reply — a tutor typing "45" at the age
+  // prompt means 45 years old, not $45/hr. The outreach ask has no session by design (its state
+  // lives in Mongo so it survives cold starts), which is exactly why it must yield to the
+  // explicit ones rather than race them. Unlike the WhatsApp webhook, where no sessions exist
+  // and the rate parser therefore runs FIRST.
+  if (session.tutorId) {
+    const rateResult = await recordQuotedRate({ tutorId: session.tutorId, text });
+    if (rateResult.matched) {
+      return await safeSend(bot, chatId,
+        `👍 Noted — $${rateResult.rate}/hr for *${escapeMd(rateResult.assignmentTitle)}*.` +
+        (rateResult.declined
+          ? "\n\nWe'll let you know if the parent can stretch to that."
+          : "\n\nWe'll be in touch shortly!"),
+        { parse_mode: 'Markdown' });
+    }
   }
 
   // Default response - show main menu

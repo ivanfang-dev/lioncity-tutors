@@ -37,8 +37,13 @@ export function buildWaMeButton(phone, text, label = 'Send via WhatsApp') {
   return { text: label, url };
 }
 
-// The tutor's per-level asking rate, matched to the assignment level (falls back to secondary).
+// The rate to show the parent for this tutor. A quotedRate — what the tutor said they'd charge
+// for THIS assignment (Phase 4) — wins over the profile rate, which is a stale guess and often
+// a range the parent can't act on. Falls back to the per-level profile rate (then secondary).
+// quotedRate is a transient number the caller attaches to the tutor view-model, not a stored
+// tutor field.
 function rateForLevel(tutor, level) {
+  if (tutor.quotedRate != null) return `$${tutor.quotedRate}/hr`;
   const category = getLevelCategory(level);
   return tutor.hourlyRate?.[category] || tutor.hourlyRate?.secondary || null;
 }
@@ -121,12 +126,22 @@ function expectationMessage(assignment) {
   return `Hi! Thanks for your request for a ${assignment.title} tutor — we're searching our tutor network now and will send you a shortlist of suitable profiles, usually within about 6 hours. We'll be in touch shortly! 😊`;
 }
 
+// Deterministic day-30 check-in (Phase 5) — the owner forwards this to ask whether tuition is
+// still going well. Names the tutor when we have it ("with Jane") so it reads as a personal
+// follow-up rather than a form. The rating we capture is on the owner's recording buttons, not
+// asked of the parent here — parents answer in prose, the owner grades it.
+function checkInMessage(assignment, tutorName) {
+  const withTutor = tutorName ? ` with ${tutorName}` : '';
+  return `Hi! Just checking in — how's the ${assignment.title} tuition${withTutor} going so far? We'd love to hear any feedback, and we're always here if you need anything. 😊`;
+}
+
 // Draft any parent-facing message. `kind`:
 //   'shortlist'   → payload { assignment, tutors } (LLM with deterministic fallback)
 //   'nudge'       → payload { assignment }
 //   'expectation' → payload { assignment }
+//   'checkin'     → payload { assignment, tutorName } (day-30 check-in, Phase 5)
 export async function draftParentMessage(kind, payload = {}) {
-  const { assignment, tutors } = payload;
+  const { assignment, tutors, tutorName } = payload;
   switch (kind) {
     case 'shortlist':
       return (await llmShortlist(assignment, tutors)) || deterministicShortlist(assignment, tutors);
@@ -134,6 +149,8 @@ export async function draftParentMessage(kind, payload = {}) {
       return nudgeMessage(assignment);
     case 'expectation':
       return expectationMessage(assignment);
+    case 'checkin':
+      return checkInMessage(assignment, tutorName);
     default:
       throw new Error(`draftParentMessage: unknown kind "${kind}"`);
   }

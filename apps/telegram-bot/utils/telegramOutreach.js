@@ -61,9 +61,21 @@ async function postToTelegram(method, payload) {
 }
 
 // DM a matching tutor about an assignment with two inline buttons:
-//   ✅ Interested       → outreach_interested_<id> — a lightweight Yes, mirroring the WhatsApp
-//                          quick-reply; recorded straight against the outreach contact.
-//   📝 Apply with my rate → apply_assignment_<id> — the existing formal apply flow, unchanged.
+//   ✅ Interested       → outreach_interested_<id> — a Yes, mirroring the WhatsApp quick-reply;
+//                          recorded against the outreach contact, then followed by the rate ask.
+//   ❌ Not available     → outreach_decline_<id> — a No, followed by the reason buttons.
+//
+// The old '📝 Apply with my rate' button is GONE, folded into ✅. It routed to apply_assignment_,
+// which writes to assignment.applicants — a DIFFERENT array from outreach.contacts — so a tutor
+// who used it was invisible to outreach: no credit toward INTERESTED_TARGET, no shortlistRank,
+// no shortlist alert, and waves kept firing at a tutor who had already said yes with a rate.
+// Every yes now carries a rate anyway, so the two buttons were the same action. The apply flow
+// itself is untouched and keeps its real entry point: the public channel post.
+//
+// '❌ Not available' is NEW. Telegram tutors previously had no way to decline at all — they
+// could only ignore the DM and keep collecting reminders. It is also what the decline-reason
+// buttons hang off, which the WhatsApp side has had (via the template) since day one.
+//
 // Both are callback_data (not a t.me deep link) so the tutor stays in the DM instead of being
 // re-prompted to share a contact they've already linked. Requires tutor.telegramId; throws if
 // the DM can't be sent so the caller reaches this tutor over WhatsApp instead.
@@ -77,7 +89,7 @@ export async function sendAssignmentDM(tutor, assignment) {
     reply_markup: {
       inline_keyboard: [
         [{ text: '✅ Interested', callback_data: `outreach_interested_${assignment._id}` }],
-        [{ text: '📝 Apply with my rate', callback_data: `apply_assignment_${assignment._id}` }]
+        [{ text: '❌ Not available', callback_data: `outreach_decline_${assignment._id}` }]
       ]
     }
   });

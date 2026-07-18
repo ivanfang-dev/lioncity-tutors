@@ -57,6 +57,29 @@ export async function sendWhatsApp(phoneNumber, message) {
   });
 }
 
+// Interactive LIST send — free-form, so like sendWhatsApp it only delivers inside the 24h
+// window. Used for the decline-reason question, which always follows the tutor's own button tap
+// (that tap is what opens the window). A list rather than reply-buttons because those cap at 3
+// options and there are 5 reasons.
+//
+// Meta's limits, all of which fail the whole send rather than truncating: button text ≤20 chars,
+// section title ≤24, row title ≤24, row description ≤72, row id ≤200, ≤10 rows per section.
+// Callers keep labels short (see declineReason.js) rather than trusting a silent trim.
+export async function sendWhatsAppList(phoneNumber, { body, buttonText, sectionTitle, rows }) {
+  await postMessage({
+    to: toWaId(phoneNumber),
+    type: 'interactive',
+    interactive: {
+      type: 'list',
+      body: { text: body },
+      action: {
+        button: buttonText,
+        sections: [{ title: sectionTitle, rows }]
+      }
+    }
+  });
+}
+
 // Approved-template send — the only way to reach a tutor OUTSIDE the 24h window, which is
 // every cold outreach. `params` fill the body's {{1}}, {{2}}… in positional order; each must
 // be a non-empty, single-line string (Meta rejects empty params, newlines, tabs, or 4+
