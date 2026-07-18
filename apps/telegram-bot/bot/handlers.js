@@ -2853,6 +2853,26 @@ async function handleCallbackQuery(
     // Telegram outreach quick-reply: tutor tapped "✅ Interested" on an assignment DM. We know
     // who tapped from their Telegram id (= telegramId), so no session is needed — record it
     // straight against the outreach contact, mirroring the WhatsApp Yes path.
+    // Dormant tutor tapped "keep me listed" on their reactivation DM (Phase 10 step 3). Clear the
+    // auto-pause and re-confirm activity so they re-enter the matching pool immediately — same clear
+    // as sharing their contact (handleContact). Resolved by the sender's telegramId, so no id rides
+    // in the callback data. updateOne, not save(), to avoid re-validating a legacy profile.
+    if (data === 'reactivate') {
+      await bot.editMessageReplyMarkup(
+        { inline_keyboard: [] },
+        { chat_id: chatId, message_id: callbackQuery.message?.message_id }
+      ).catch(() => {});
+      const tutor = await Tutor.findOne({ telegramId: userId });
+      if (!tutor) {
+        return await safeSend(bot, chatId, 'Please share your contact with the bot first (/start) so we can relist you.');
+      }
+      await Tutor.updateOne(
+        { _id: tutor._id },
+        { $set: { pausedAt: null, telegramStale: false, lastConfirmedActiveAt: new Date() } }
+      );
+      return await safeSend(bot, chatId, "✅ Great — you're active again and back in the matching pool. We'll be in touch with suitable assignments!");
+    }
+
     if (data.startsWith('outreach_interested_')) {
       const assignmentId = data.replace('outreach_interested_', '');
       const tutor = await Tutor.findOne({ telegramId: userId });

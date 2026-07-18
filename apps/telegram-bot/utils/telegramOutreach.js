@@ -94,3 +94,19 @@ export async function sendAssignmentDM(tutor, assignment) {
     }
   });
 }
+
+// One FREE reactivation DM to a tutor we've auto-paused for dormancy (roadmap Phase 10 step 3): many
+// unanswered messages and no confirmed activity in months. One tap ('reactivate', handled in
+// handlers.js) clears pausedAt and puts them back in the pool. Telegram-only — no WhatsApp spend.
+// Throws if the DM can't be delivered so the caller can log it; the pause itself still stands.
+export async function sendReactivationDM(tutor) {
+  if (!tutor.telegramId) throw new Error('tutor has no telegramId');
+
+  await postToTelegram('sendMessage', {
+    chat_id: tutor.telegramId,
+    text: "Hi! We haven't been able to match you to an assignment in a while, so we've paused your profile to keep our shortlists tidy. Still tutoring and want to keep receiving assignment matches? Just tap below to stay listed. 👇",
+    reply_markup: {
+      inline_keyboard: [[{ text: '✅ Still tutoring — keep me listed', callback_data: 'reactivate' }]]
+    }
+  });
+}

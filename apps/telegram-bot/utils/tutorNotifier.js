@@ -8,6 +8,12 @@ import { normalizePhone } from './phone.js';
 import { formatTimeSlots } from '../../../packages/shared/utils/timeSlots.js';
 import { sendWhatsAppTemplate } from './whatsappSender.js';
 import { sendAssignmentDM } from './telegramOutreach.js';
+import { computeWaveSize, trailingInterestRate } from './waveSizing.js';
+import { loadCappedTutorIds } from './exposureCaps.js';
+
+// The interested-tutor target an assignment aims for before holding (mirrors escalation-tick and
+// recordTutorReply). Wave 1 has zero interested yet, so it needs the full target's worth.
+const INTERESTED_TARGET = Number(process.env.OUTREACH_INTERESTED_TARGET) || 3;
 
 // The approved outreach template (see WhatsApp Manager). Its body has 6 positional params;
 // buildAssignmentParams() below produces them in order. Quick-Reply buttons ("Yes, interested"
@@ -171,15 +177,20 @@ async function notifyMatchedTutors(assignment, botUsername) {
     // Pull the top 40 quality-ranked matches (with their score breakdown for the decision log). The
     // ranking now folds in each tutor's extracted qualityGrade, so wave 1 takes its top 8 directly —
     // no query-time Gemini re-rank (removed an API call, a failure mode, and ~5s from wave 1).
-    const scored = await findMatchingTutorsScored(assignment, 40);
+    // Exposure caps (Phase 10 step 4): exclude tutors already holding ≥2 unresolved offers.
+    const excludeTutorIds = await loadCappedTutorIds();
+    const scored = await findMatchingTutorsScored(assignment, 40, { excludeTutorIds });
 
     if (scored.length === 0) {
       console.log(`No matching tutors found for assignment ${assignment._id}`);
       return { sent: 0, failed: 0, aiUsed: false, aiError: null };
     }
 
-    const tutors = scored.slice(0, 8).map(s => s.tutor);
-    console.log(`Notifying ${tutors.length} top-ranked tutors for assignment ${assignment._id} (deterministic)`);
+    // Adaptive wave sizing (Phase 10 step 2): size wave 1 to the full interested target and the
+    // trailing interest rate, instead of a fixed 8. Clamped to [4, 12].
+    const waveSize = computeWaveSize(INTERESTED_TARGET, await trailingInterestRate());
+    const tutors = scored.slice(0, waveSize).map(s => s.tutor);
+    console.log(`Notifying ${tutors.length} top-ranked tutors for assignment ${assignment._id} (deterministic, waveSize ${waveSize})`);
 
     const { sent, failed } = await sendWaveToTutors(assignment, tutors, 1, botUsername);
 
@@ -202,8 +213,10 @@ async function notifyMatchedTutors(assignment, botUsername) {
 // Waves 2+ — message the next-best matching tutors we haven't contacted yet. Uses the
 // deterministic quality ranking (no extra AI call per wave). Returns { exhausted } when
 // the matching pool has no fresh tutors left to try.
-async function escalateAssignment(assignment, botUsername, { waveSize = 6 } = {}) {
-  const scored = await findMatchingTutorsScored(assignment, 40);
+async function escalateAssignment(assignment, botUsername, { waveSize = 6, excludeTutorIds = null } = {}) {
+  // Exposure caps (Phase 10 step 4): the tick passes the set of tutors already holding ≥2 unresolved
+  // offers, held out of this wave. Computed once per tick by the caller.
+  const scored = await findMatchingTutorsScored(assignment, 40, { excludeTutorIds });
   const contacted = new Set(assignment.contactedTutorIds());
   // Re-rank the not-yet-contacted tutors 1..N — the escalation decision only ever chooses among
   // these, so ranks relative to the fresh pool are what the decision log should record.

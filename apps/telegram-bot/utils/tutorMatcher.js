@@ -266,10 +266,15 @@ function responsivenessFactor(tutor) {
 
 // The ranking policy version — bumped whenever WEIGHTS or the scoring logic below change, so the
 // Recommendation decision log (Phase 6) can segment analyses by ranker version. Start at v1.
-// Bumped for Phase 9 Step B: the quality term now uses the extracted qualityGrade instead of
-// commitmentScore, and wave 1 no longer runs the query-time Gemini re-rank — a ranking-logic change
-// the decision log should be able to segment on.
-const POLICY_VERSION = '2026.07-v2';
+// Bumped for Phase 10 step 4: a newcomer boost enters the score and exposure-capped tutors are held
+// out of new waves — a ranking-policy change the decision log should segment on. (v2 was Phase 9's
+// qualityGrade swap + re-rank retirement.)
+const POLICY_VERSION = '2026.07-v3';
+
+// Newcomer boost (Phase 10 step 4): a small multiplier for tutors with zero lifetime placements and
+// a decent profile, so unproven-but-promising supply gets wave exposure before it churns out.
+const NEWCOMER_BOOST = 1.08;
+const NEWCOMER_QUALITY_MIN = 0.6; // "decent profile": qualitySignal ≥ this (grade ≥ 3, or equiv commitment)
 
 // Blended 0..1 quality score for ordering the affordable pool, then scaled down for tutors who
 // chronically ignore outreach — PLUS the component breakdown behind it. Internal: returns
@@ -297,8 +302,13 @@ function scoreTutorComponents(tutor, fit, { useQualityGrade = true } = {}) {
     WEIGHTS.experience * (experienceRank / 5) +
     WEIGHTS.commitment * qualityTerm +
     WEIGHTS.budget * fit.comfort;
+  // Phase 10 step 4: give unproven-but-decent newcomers (0 lifetime placements, decent profile) a
+  // small lift so they surface in waves before churning. stats.placed is the materialized count
+  // (Phase 7); absent → treated as 0 (a never-placed tutor).
+  const isNewcomer = (tutor.stats?.placed || 0) === 0 && qualitySignal(tutor) >= NEWCOMER_QUALITY_MIN;
+  const boost = isNewcomer ? NEWCOMER_BOOST : 1;
   return {
-    score: quality * responsiveness,
+    score: quality * responsiveness * boost,
     components: {
       experienceRank,
       commitmentScore: commitment,
@@ -525,7 +535,8 @@ const MAX_CANDIDATE_FETCH = 300;
 const CANDIDATE_FIELDS =
   'fullName contactNumber telegramId telegramStale tutorType yearsOfExperience highestEducation ' +
   'introduction teachingExperience trackRecord hourlyRate availableTimeSlots responseStats teachingLevels createdAt ' +
-  'profileFeatures'; // Phase 9: qualityGrade feeds the quality signal in scoring (Step B)
+  'profileFeatures ' + // Phase 9: qualityGrade feeds the quality signal in scoring (Step B)
+  'stats';             // Phase 10: stats.placed drives the newcomer boost
 
 // Find the best `poolSize` tutors matching the assignment's level+subject, location, and tutor
 // type — quality-ranked, ready to hand to the AI re-ranker.
@@ -533,7 +544,7 @@ const CANDIDATE_FIELDS =
 // `withStats` turns on the attrition funnel (see findMatchingTutorsWithStats) at the cost of one
 // countDocuments per DB-side filter, so it stays OFF for outreach and is opted into by the ops
 // console's diagnosis. `model` is injectable for tests.
-async function runMatch(assignment, poolSize, { withStats = false, model = Tutor, useQualityGrade = true } = {}) {
+async function runMatch(assignment, poolSize, { withStats = false, model = Tutor, useQualityGrade = true, excludeTutorIds = null } = {}) {
   const { unmappable, stages, requestedFields, levelCategory } = buildFilterStages(assignment);
 
   if (unmappable) {
@@ -544,6 +555,12 @@ async function runMatch(assignment, poolSize, { withStats = false, model = Tutor
   }
 
   const query = stages[stages.length - 1].query;
+
+  // Exposure caps (Phase 10 step 4): hold tutors already sitting on ≥2 unresolved offers out of new
+  // waves. Applied to the FETCH only, not the attrition funnel — the funnel describes the matching
+  // pool, while this is a wave-time throttle. Empty/absent set → no change to the query.
+  const excludeIds = excludeTutorIds ? [...excludeTutorIds] : [];
+  const fetchQuery = excludeIds.length ? { ...query, _id: { $nin: excludeIds } } : query;
 
   // Count the DB-side funnel BEFORE fetching, so the numbers describe the whole matching set
   // rather than the (bounded) fetch. Sequential, not parallel: this path is off the hot path and
@@ -558,7 +575,7 @@ async function runMatch(assignment, poolSize, { withStats = false, model = Tutor
     }
   }
 
-  const candidates = await model.find(query)
+  const candidates = await model.find(fetchQuery)
     .select(CANDIDATE_FIELDS)
     .sort({ createdAt: -1 })
     .limit(MAX_CANDIDATE_FETCH)

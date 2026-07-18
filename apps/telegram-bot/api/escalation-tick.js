@@ -10,6 +10,10 @@ import { checkInAction, recordCheckInNoReply, CHECKIN_DUE_MS, CHECKIN_REPING_MS 
 import { checkInButtonRows } from '../utils/checkInButtons.js';
 import { runTutorStatsMaterialization } from '../utils/materializeTutorStats.js';
 import { runProfileExtractionSweep } from '../utils/profileExtractor.js';
+import { isNightSG, activeElapsedMs } from '../utils/outreachSchedule.js';
+import { computeWaveSize, trailingInterestRate } from '../utils/waveSizing.js';
+import { runDormancySweep } from '../utils/dormancy.js';
+import { loadCappedTutorIds } from '../utils/exposureCaps.js';
 import { notifyOwner, opsButtonRow } from '../utils/ownerAlert.js';
 import { formatAssignmentForChannel } from '../utils/channelFormat.js';
 import { shortlistDecided, shortlistedContacts } from '../../../packages/shared/utils/outreachState.js';
@@ -18,7 +22,8 @@ import { shortlistDecided, shortlistedContacts } from '../../../packages/shared/
 export const maxDuration = 60;
 
 const WAVE_INTERVAL_MS = Number(process.env.OUTREACH_WAVE_INTERVAL_MS) || 60 * 30 * 1000; // 30mins
-const WAVE_SIZE = Number(process.env.OUTREACH_WAVE_SIZE) || 6;
+// Wave size is now adaptive (Phase 10 step 2 — see computeWaveSize/trailingInterestRate), no longer a
+// fixed per-wave constant.
 const MAX_DURATION_MS = Number(process.env.OUTREACH_MAX_DURATION_MS) || 4 * 60 * 60 * 1000; // 4h
 const INTERESTED_TARGET = Number(process.env.OUTREACH_INTERESTED_TARGET) || 3;
 // Max reminder pings a single non-responder can receive once the fresh pool is dry,
@@ -93,7 +98,7 @@ async function connectToDatabase() {
 }
 
 // Send the next wave (or close out) for one already-claimed assignment.
-async function processAssignment(assignment, now) {
+async function processAssignment(assignment, now, expectedInterestRate, excludeTutorIds) {
   // Already at target — the reply recorder normally moves it to Holding, but guard anyway.
   // Count only viable (non-parent-rejected) interested tutors so a resumed outreach isn't
   // re-held by a shortlist the parent already passed on. Route through the SAME hold-window
@@ -111,9 +116,11 @@ async function processAssignment(assignment, now) {
     return;
   }
 
-  // Past the time cap with too few replies → stop and ask the owner to step in.
+  // Past the time cap with too few replies → stop and ask the owner to step in. Elapsed EXCLUDES the
+  // overnight quiet window (Phase 10 step 1): an assignment posted at 21:00 shouldn't burn its budget
+  // while no waves are being sent.
   const startedAt = assignment.outreach?.startedAt;
-  if (startedAt && (now - new Date(startedAt)) >= MAX_DURATION_MS) {
+  if (startedAt && activeElapsedMs(startedAt, now) >= MAX_DURATION_MS) {
     await Assignment.updateOne(
       { _id: assignment._id },
       { $set: { 'outreach.status': 'Exhausted' } }
@@ -126,10 +133,14 @@ async function processAssignment(assignment, now) {
     return;
   }
 
-  const result = await escalateAssignment(assignment, BOT_USERNAME, { waveSize: WAVE_SIZE });
+  // Adaptive wave sizing (Phase 10 step 2): size the wave to the replies still needed and the
+  // trailing interest rate (clamped [4,12]), instead of a fixed per-wave count.
+  const remainingNeeded = INTERESTED_TARGET - viable;
+  const waveSize = computeWaveSize(remainingNeeded, expectedInterestRate);
+  const result = await escalateAssignment(assignment, BOT_USERNAME, { waveSize, excludeTutorIds });
 
   if (!result.exhausted) {
-    console.log(`Escalation wave ${result.wave} for ${assignment._id}: ${result.sent} sent, ${result.failed} failed`);
+    console.log(`Escalation wave ${result.wave} for ${assignment._id}: ${result.sent} sent, ${result.failed} failed (waveSize ${waveSize})`);
     return;
   }
 
@@ -137,7 +148,7 @@ async function processAssignment(assignment, now) {
   // MAX_REMINDERS each). Only when there's no one left to remind do we mark Exhausted.
   const reminder = await remindNonResponders(assignment, BOT_USERNAME, {
     maxReminders: MAX_REMINDERS,
-    waveSize: WAVE_SIZE
+    waveSize
   });
 
   if (reminder.remindedNone) {
@@ -553,28 +564,38 @@ export default async function handler(req, res) {
     const dueBefore = new Date(now.getTime() - WAVE_INTERVAL_MS);
 
     // Atomically claim due assignments — set lastWaveAt=now so a concurrent or next
-    // tick can't grab the same one and double-send.
+    // tick can't grab the same one and double-send. Skipped entirely during the 22:00–08:00 SGT
+    // quiet hours (Phase 10 step 1): no new tutor waves overnight. The maintenance below still runs
+    // (holding release, parent nudges, check-ins, stats, extraction) — only wave SENDS are gated,
+    // and Holding release is exempt by design since those tutors already replied.
     const claimed = [];
-    for (let i = 0; i < MAX_PER_TICK; i++) {
-      const assignment = await Assignment.findOneAndUpdate(
-        {
-          status: 'Open',
-          'outreach.status': 'Active',
-          'outreach.lastWaveAt': { $lte: dueBefore }
-        },
-        { $set: { 'outreach.lastWaveAt': now } },
-        { new: true, sort: { 'outreach.lastWaveAt': 1 } }
-      );
-      if (!assignment) break;
-      claimed.push(assignment);
+    if (!isNightSG(now)) {
+      for (let i = 0; i < MAX_PER_TICK; i++) {
+        const assignment = await Assignment.findOneAndUpdate(
+          {
+            status: 'Open',
+            'outreach.status': 'Active',
+            'outreach.lastWaveAt': { $lte: dueBefore }
+          },
+          { $set: { 'outreach.lastWaveAt': now } },
+          { new: true, sort: { 'outreach.lastWaveAt': 1 } }
+        );
+        if (!assignment) break;
+        claimed.push(assignment);
+      }
     }
 
     // Background maintenance runs every tick (even when no wave is due): escalate any
     // claimed assignments, then auto-close stale ones. Slow work goes after the response.
     waitUntil((async () => {
+      // Computed once per tick and shared across every claimed assignment (only when a wave may go
+      // out): the trailing interest rate for adaptive wave sizing (Phase 10 step 2) and the set of
+      // exposure-capped tutors held out of new waves (Phase 10 step 4).
+      const expectedInterestRate = claimed.length ? await trailingInterestRate() : null;
+      const cappedTutorIds = claimed.length ? await loadCappedTutorIds() : null;
       for (const assignment of claimed) {
         try {
-          await processAssignment(assignment, now);
+          await processAssignment(assignment, now, expectedInterestRate, cappedTutorIds);
         } catch (err) {
           console.error(`Escalation failed for ${assignment._id}:`, err.message);
         }
@@ -618,6 +639,13 @@ export default async function handler(req, res) {
         await runProfileExtractionSweep(now);
       } catch (err) {
         console.error('Profile extraction sweep failed:', err.message);
+      }
+      // Auto-pause dormant tutors and offer Telegram reactivation (Phase 10 step 3). Bounded per run,
+      // and skipped at night so a reactivation DM never pings a tutor at 3am. Best-effort.
+      try {
+        if (!isNightSG(now)) await runDormancySweep(now);
+      } catch (err) {
+        console.error('Dormancy sweep failed:', err.message);
       }
     })());
 
