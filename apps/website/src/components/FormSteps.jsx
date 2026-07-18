@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import { Info, Loader2, Plus, X } from 'lucide-react';
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
@@ -142,11 +142,28 @@ export const Step2 = ({ nextStep, prevStep, formData, handleChange, errors }) =>
 // ===================================
 export const Step3 = ({ prevStep, formData, handleChange, status }) => {
   const [openInfo, setOpenInfo] = useState(null);
+  // Read-only budget guidance (roadmap Phase 8): the typical rate tutors ask for the chosen level,
+  // fetched from the bot's aggregate rate-guide. Informational only — it never gates the budget the
+  // parent can enter. Silent when the level is unrecognized or data is sparse (typical stays null).
+  const [rateHint, setRateHint] = useState(null);
+  const levelSubject = (formData.levelSubjects || [])[0] || '';
+
+  useEffect(() => {
+    const level = levelSubject.trim();
+    if (!level) { setRateHint(null); return; }
+    let cancelled = false;
+    const params = new URLSearchParams({ level });
+    fetch(`/api/rate-guide?${params.toString()}`)
+      .then(res => (res.ok ? res.json() : null))
+      .then(data => { if (!cancelled) setRateHint(data?.typical || null); })
+      .catch(() => { if (!cancelled) setRateHint(null); });
+    return () => { cancelled = true; };
+  }, [levelSubject]);
 
   const handleInfoToggle = (tutorType) => {
       setOpenInfo(openInfo === tutorType ? null : tutorType);
   };
-  
+
   return (
       <div className="space-y-8 animate-fadeIn">
           <h3 className="text-2xl font-bold text-slate-800">Step 3: Tutor Preferences</h3>
@@ -222,6 +239,15 @@ export const Step3 = ({ prevStep, formData, handleChange, status }) => {
         {/* Budget Section */}
         <div className="border border-slate-200 rounded-xl p-6 space-y-5">
             <h4 className="text-lg font-semibold text-slate-800">Your Budget</h4>
+            {rateHint && (
+                <div className="flex items-start gap-2 rounded-lg bg-blue-50 border border-blue-100 p-3">
+                    <Info size={16} className="text-blue-600 mt-0.5 flex-shrink-0" />
+                    <p className="text-sm text-blue-900">
+                        Typical rate for this level: <span className="font-semibold">${rateHint.p25}–${rateHint.p75}/hr</span>
+                        <span className="text-blue-800"> (median ${rateHint.p50}). Just a guide — you're free to set any budget.</span>
+                    </p>
+                </div>
+            )}
             <div className="flex items-center">
                 <input type="radio" id="budgetMarketRate" name="budget.type" value="marketRate" checked={formData.budget.type === 'marketRate'} onChange={handleChange} className="h-5 w-5 text-blue-600 border-slate-400 focus:ring-blue-500" />
                 <Label htmlFor="budgetMarketRate" className="ml-3 text-base">Follow market rates</Label>

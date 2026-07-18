@@ -3,7 +3,7 @@ import { LEVEL_SUBJECT_MAPPINGS } from '../../../packages/shared/index.js';
 import { TIME_SLOT_KEYS } from '../../../packages/shared/utils/timeSlots.js';
 // Level → tutor-schema key. Lives in packages/shared because the ops console reads the same
 // per-level tutor fields; re-exported below so existing importers of tutorMatcher are unaffected.
-import { getLevelCategory } from '../../../packages/shared/utils/levelCategory.js';
+import { getLevelCategory, getLevelCategoryLoose } from '../../../packages/shared/utils/levelCategory.js';
 import { LOCATION_TO_REGION } from './locations.js';
 
 // Maps subject display name to tutor schema camelCase field name
@@ -611,10 +611,180 @@ async function findMatchingTutorsWithStats(assignment, poolSize = 40, options = 
   return runMatch(assignment, poolSize, { ...options, withStats: true });
 }
 
+// --- Intake budget calibration (roadmap Phase 8) ---------------------------
+// Before outreach starts, tell the owner whether an assignment is postable at its rate: how many
+// tutors it can afford now, the typical rate for this level/region, and what raising the budget
+// would unlock. Informational ONLY — it never blocks posting (see roadmap "No blocking behavior").
+
+// Round UP to the nearest $5 — the granularity parents and tutors actually think in, so a suggested
+// rate reads as a real number ($45) rather than an interpolated one ($43.75).
+function roundUpTo5(n) {
+  return Math.ceil(n / 5) * 5;
+}
+
+// Linear-interpolated percentile of an ascending-sorted numeric array (p in 0..1). null when empty.
+// Same method as a spreadsheet PERCENTILE — no dependency, and the arrays here are tiny.
+function percentile(sortedAsc, p) {
+  if (!sortedAsc.length) return null;
+  const idx = (sortedAsc.length - 1) * p;
+  const lo = Math.floor(idx);
+  const hi = Math.ceil(idx);
+  if (lo === hi) return sortedAsc[lo];
+  return sortedAsc[lo] + (sortedAsc[hi] - sortedAsc[lo]) * (idx - lo);
+}
+
+// How many tutors in `pool` would accept a FLAT ceiling of `ceiling` for this level — the what-if
+// behind "At $25/h: 4 tutors. At $40/h: 31." Uses the SAME budgetFit as live matching (so the
+// what-if can't drift from reality), with one default band applied to everyone: a hypothetical
+// budget is a single number, not the per-tutor-type bands a real assignment carries. null ceiling
+// (unparseable rate) → null.
+function poolAtCeiling(pool, ceiling, levelCategory) {
+  if (ceiling == null) return null;
+  const budget = { bands: { default: ceiling }, overallMax: ceiling };
+  return pool.filter(t => budgetFit(t, budget, levelCategory).affordable).length;
+}
+
+// Pure core of the calibration. `pool` is the tutors matching the assignment on everything EXCEPT
+// budget (DB hard filters + timing already applied); `stats` is the attrition funnel from the live
+// match. Returns the view-model the owner confirmation and website hint render — no I/O, so it's
+// unit-testable directly.
+//
+// Two distinct failure modes the numbers separate, because they need opposite responses:
+//   • budget too low  → `pool` is large but few are affordable now; raising the rate helps.
+//   • supply too thin → `pool` itself is tiny; raising the rate won't help, the region/subject is
+//     the bottleneck (`dominantFilter`). `poolTotal` vs `poolAtCurrent` is exactly this distinction.
+function summarizeBudget(pool, assignment, levelCategory, stats) {
+  const floors = pool
+    .map(t => tutorFloorRate(t, levelCategory))
+    .filter(f => f != null)
+    .sort((a, b) => a - b);
+
+  const typical = floors.length
+    ? {
+        p25: Math.round(percentile(floors, 0.25)),
+        p50: Math.round(percentile(floors, 0.50)),
+        p75: Math.round(percentile(floors, 0.75)),
+      }
+    : null;
+
+  const budget = resolveBudget(assignment);
+  const currentCeiling = budget.overallMax; // representative single number for the "At $X" line
+  const poolAtCurrent = poolAtCeiling(pool, currentCeiling, levelCategory);
+
+  // Suggest a higher rate only when raising would genuinely help: the p75 floor rounded up to $5,
+  // and only if it exceeds the current ceiling AND reaches strictly more tutors. At p75, roughly
+  // three-quarters of available tutors are within reach. When supply (not price) is the limit this
+  // stays null — nudging the budget up would be misleading.
+  let suggested = null;
+  let poolAtSuggested = null;
+  if (typical && currentCeiling != null) {
+    const candidate = roundUpTo5(typical.p75);
+    if (candidate > currentCeiling) {
+      const reachable = poolAtCeiling(pool, candidate, levelCategory);
+      if (reachable > poolAtCurrent) {
+        suggested = candidate;
+        poolAtSuggested = reachable;
+      }
+    }
+  }
+
+  return {
+    poolTotal: pool.length,        // match everything but budget — the ceiling of what any rate buys
+    floorSampleSize: floors.length, // how many tutors named a rate for this level (confidence)
+    currentCeiling,
+    poolAtCurrent,
+    typical,
+    suggested,
+    poolAtSuggested,
+    dominantFilter: stats?.dominantFilter ?? null,
+    fetchTruncated: stats?.fetchTruncated ?? false,
+  };
+}
+
+// Async entry point: run the calibration for an assignment against the live tutor collection.
+// Reuses runMatch's tested stats path for the funnel/dominant filter, plus one extra fetch of the
+// pre-budget pool WITH rateNumeric (which CANDIDATE_FIELDS omits) for the floor percentiles. Off
+// the hot path — it runs once, at creation — so the second fetch is fine. `model` injectable for tests.
+//
+// Returns { ok: false, unmappable } when the assignment can't be mapped (nothing to calibrate), else
+// { ok: true, levelCategory, region, ...summarizeBudget() }.
+async function budgetCalibration(assignment, options = {}) {
+  const model = options.model || Tutor;
+  const { unmappable, stages, levelCategory, region } = buildFilterStages(assignment);
+  if (unmappable) return { ok: false, unmappable };
+
+  const { stats } = await runMatch(assignment, 1, { withStats: true, model });
+
+  const query = stages[stages.length - 1].query;
+  const candidates = await model.find(query)
+    .select('tutorType rateNumeric hourlyRate availableTimeSlots')
+    .sort({ createdAt: -1 })
+    .limit(MAX_CANDIDATE_FETCH)
+    .lean();
+  const pool = candidates.filter(t => timeSlotsMatch(assignment, t));
+
+  return { ok: true, unmappable: null, levelCategory, region, ...summarizeBudget(pool, assignment, levelCategory, stats) };
+}
+
+// The typical asking rate for a level (optionally narrowed by region and tutor type), as p25/p50/p75
+// of tutor floors — the read-only "hint" beside the website form's budget field (roadmap Phase 8).
+// Lighter than budgetCalibration: no subject/assignment, just "what do tutors charge for this level".
+// Uses the SAME floor + percentile logic as the owner-side calibration, so both sides agree.
+//
+// `level` is free-text from the form, so it goes through getLevelCategoryLoose — the shorthand-
+// tolerant matcher — resolving "Secondary 3 A-Math" AND "Sec 3"/"S3"/"P4"/"JC1" to a category.
+// Anything unrecognizable returns ok:false and the form shows no hint (never a wrong one). The
+// strict getLevelCategory stays the matcher's entry point; only this free-text path is lenient.
+// `location`/`type` are optional filters.
+async function rateGuide({ level, location, type } = {}, options = {}) {
+  const model = options.model || Tutor;
+  const levelCategory = getLevelCategoryLoose(level);
+  if (!levelCategory) return { ok: false, reason: 'level' };
+
+  // Only tutors who stated a rate for this level speak to its market rate. hourlyRate.<cat> is the
+  // source text (always present when a rate was entered); rateNumeric is derived from it, and
+  // tutorFloorRate prefers the numeric mirror then falls back to parsing the text.
+  const query = { pausedAt: null, [`hourlyRate.${levelCategory}`]: { $nin: [null, ''] } };
+  if (location) {
+    const region = LOCATION_TO_REGION[location];
+    if (region) query[`locations.${region}`] = true;
+  }
+  if (type) {
+    const allowed = TUTOR_TYPE_MAP[type];
+    if (allowed) query.tutorType = { $in: allowed };
+  }
+
+  const candidates = await model.find(query)
+    .select(`tutorType rateNumeric hourlyRate`)
+    .limit(MAX_CANDIDATE_FETCH)
+    .lean();
+
+  const floors = candidates
+    .map(t => tutorFloorRate(t, levelCategory))
+    .filter(f => f != null)
+    .sort((a, b) => a - b);
+
+  if (!floors.length) return { ok: true, levelCategory, typical: null, sampleSize: 0 };
+  return {
+    ok: true,
+    levelCategory,
+    typical: {
+      p25: Math.round(percentile(floors, 0.25)),
+      p50: Math.round(percentile(floors, 0.50)),
+      p75: Math.round(percentile(floors, 0.75)),
+    },
+    sampleSize: floors.length,
+  };
+}
+
 export {
   findMatchingTutors,
   findMatchingTutorsScored,
   findMatchingTutorsWithStats,
+  budgetCalibration,
+  rateGuide,
+  summarizeBudget,
+  percentile,
   buildFilterStages,
   applyJsFilters,
   dominantFilter,

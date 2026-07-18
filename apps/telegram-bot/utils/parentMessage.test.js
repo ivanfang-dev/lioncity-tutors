@@ -75,4 +75,13 @@ describe('draftParentMessage without an API key falls back deterministically', (
     expect((await draftParentMessage('nudge', { assignment }))).toContain('Sec 3 Maths');
     expect((await draftParentMessage('expectation', { assignment })).toLowerCase()).toContain('6 hours');
   });
+
+  test('budget kind quotes the typical range and the suggested rate (Phase 8)', async () => {
+    const calib = { typical: { p25: 35, p50: 45, p75: 55 }, suggested: 60 };
+    const msg = await draftParentMessage('budget', { assignment, calib });
+    expect(msg).toContain('$35–$55/hr');
+    expect(msg).toContain('$60/hr');
+    expect(msg).toContain('Sec 3 Maths');
+    expect(msg.toLowerCase()).toContain('do our very best'); // stays no-pressure
+  });
 });

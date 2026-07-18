@@ -126,6 +126,20 @@ function expectationMessage(assignment) {
   return `Hi! Thanks for your request for a ${assignment.title} tutor — we're searching our tutor network now and will send you a shortlist of suitable profiles, usually within about 6 hours. We'll be in touch shortly! 😊`;
 }
 
+// Parent-forwardable budget-renegotiation blurb (Phase 8). The owner forwards this when intake
+// calibration shows the posted budget is thin for the level — it quotes the typical market range
+// and a suggested rate warmly, with zero pressure (parents can always keep their budget). Only
+// meaningful when `calib.suggested` is set; the caller gates on that before drafting.
+function budgetMessage(assignment, calib) {
+  const t = calib?.typical;
+  const range = t ? `around $${t.p25}–$${t.p75}/hr` : 'a little higher than usual';
+  const suggested = calib?.suggested;
+  const suggestLine = suggested
+    ? ` A budget of about $${suggested}/hr would let us line up a strong shortlist quickly,`
+    : '';
+  return `Hi! Quick note on your ${assignment.title} tutor search — most experienced tutors for ${assignment.level} in your area charge ${range}.${suggestLine} but we'll do our very best whatever budget you're comfortable with. Just let us know how you'd like to proceed! 😊`;
+}
+
 // Deterministic day-30 check-in (Phase 5) — the owner forwards this to ask whether tuition is
 // still going well. Names the tutor when we have it ("with Jane") so it reads as a personal
 // follow-up rather than a form. The rating we capture is on the owner's recording buttons, not
@@ -140,8 +154,9 @@ function checkInMessage(assignment, tutorName) {
 //   'nudge'       → payload { assignment }
 //   'expectation' → payload { assignment }
 //   'checkin'     → payload { assignment, tutorName } (day-30 check-in, Phase 5)
+//   'budget'      → payload { assignment, calib } (intake budget renegotiation, Phase 8)
 export async function draftParentMessage(kind, payload = {}) {
-  const { assignment, tutors, tutorName } = payload;
+  const { assignment, tutors, tutorName, calib } = payload;
   switch (kind) {
     case 'shortlist':
       return (await llmShortlist(assignment, tutors)) || deterministicShortlist(assignment, tutors);
@@ -151,6 +166,8 @@ export async function draftParentMessage(kind, payload = {}) {
       return expectationMessage(assignment);
     case 'checkin':
       return checkInMessage(assignment, tutorName);
+    case 'budget':
+      return budgetMessage(assignment, calib);
     default:
       throw new Error(`draftParentMessage: unknown kind "${kind}"`);
   }

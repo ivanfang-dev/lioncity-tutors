@@ -6,6 +6,7 @@ import { formatAssignmentForChannel } from '../utils/channelFormat.js';
 import RateValidator from '../utils/RateValidator.js';
 import ErrorHandler from '../utils/ErrorHandler.js';
 import { notifyMatchedTutors, escalateAssignment } from '../utils/tutorNotifier.js';
+import { budgetCalibration } from '../utils/tutorMatcher.js';
 import { recordTutorReplyByTutorId } from '../utils/recordTutorReply.js';
 import { declineReasonKeyboard, recordDeclineReason } from '../utils/declineReason.js';
 import { recordQuotedRate } from '../utils/rateCapture.js';
@@ -1693,6 +1694,51 @@ function formatAssignmentPreview(assignment) {
   return msg;
 }
 
+// A thin pre-budget pool (this many tutors or fewer match everything but budget) is a SUPPLY
+// problem, not a price one — raising the rate won't help, so we name the real bottleneck instead.
+const CALIB_THIN_POOL = 6;
+
+// Human phrasing for the attrition funnel's dominant filter (roadmap Phase 3/8), for the "thin pool"
+// line of the budget check. Owner-facing, so it names what to widen.
+const CALIB_FILTER_LABEL = {
+  region: 'in this region',
+  subject: 'for this subject & level',
+  tutorType: 'of the tutor type requested',
+  gender: 'of the gender preference',
+  timeSlots: 'for the timing requested',
+  budget: 'within budget',
+  contactable: 'we can contact',
+  active: 'still active',
+};
+
+// Compose the owner-facing "budget check" for the creation confirmation from a budgetCalibration()
+// result (roadmap Phase 8). Purely informational — returns null when there's nothing worth showing
+// (assignment unmappable, or neither a pool count nor a typical range could be computed), so the
+// caller simply skips it and never blocks posting.
+function formatBudgetCalibration(calib, assignment) {
+  if (!calib || !calib.ok) return null;
+  const { currentCeiling, poolAtCurrent, typical, suggested, poolAtSuggested, poolTotal, dominantFilter } = calib;
+  const n = (count, noun = 'tutor') => `*${count}* ${noun}${count === 1 ? '' : 's'}`;
+
+  const lines = [];
+  if (currentCeiling != null && poolAtCurrent != null) {
+    lines.push(`• ${n(poolAtCurrent)} fit at $${currentCeiling}/hr.`);
+  }
+  if (typical) {
+    lines.push(`• Typical ${assignment.level} rate: *$${typical.p25}–$${typical.p75}/hr* (median $${typical.p50}).`);
+  }
+  if (suggested != null && poolAtSuggested != null) {
+    lines.push(`• Raising to *$${suggested}/hr* would reach ${n(poolAtSuggested)}.`);
+  }
+  if (poolTotal <= CALIB_THIN_POOL && dominantFilter) {
+    const where = CALIB_FILTER_LABEL[dominantFilter] || `(${dominantFilter})`;
+    lines.push(`⚠️ Only ${n(poolTotal)} match ${where} at *any* budget — a thin pool here is about supply, not price.`);
+  }
+
+  if (lines.length === 0) return null;
+  return `📊 *Budget check* — before outreach:\n${lines.join('\n')}`;
+}
+
 async function confirmPostAssignment(bot, chatId, userSessions, Assignment, channelId, botUsername, draftId) {
   try {
     console.log('Channel ID being used:', channelId);
@@ -1743,6 +1789,31 @@ async function confirmPostAssignment(bot, chatId, userSessions, Assignment, chan
       parse_mode: 'Markdown',
       reply_markup: { inline_keyboard: confirmRows }
     });
+
+    // Intake budget calibration (roadmap Phase 8): before outreach begins, tell the owner how many
+    // tutors this assignment can afford at its rate, the typical market range, and what raising the
+    // budget would unlock — so an unfillable rate is caught at creation, not diagnosed 4h later.
+    // Purely informational: it NEVER blocks posting (the assignment is already Open above), and any
+    // failure is swallowed. When the budget looks thin, also hand over a parent-forwardable
+    // renegotiation blurb (owner-in-the-loop wa.me button, same seam as every parent message).
+    try {
+      const calib = await budgetCalibration(savedAssignment);
+      const calibText = formatBudgetCalibration(calib, savedAssignment);
+      if (calibText) {
+        const rows = [];
+        if (calib.suggested != null && savedAssignment.parentContact) {
+          const blurb = await draftParentMessage('budget', { assignment: savedAssignment, calib });
+          const waButton = buildWaMeButton(savedAssignment.parentContact, blurb, '📤 Suggest budget to parent');
+          if (waButton) rows.push([waButton]);
+        }
+        await safeSend(bot, chatId, calibText, {
+          parse_mode: 'Markdown', disable_web_page_preview: true,
+          reply_markup: rows.length ? { inline_keyboard: rows } : undefined,
+        });
+      }
+    } catch (calibErr) {
+      console.warn('Budget calibration failed:', calibErr.message);
+    }
 
     // Parent expectation blurb: hand the owner a paste-ready "we're searching, ~6h" message to
     // forward so the parent knows profiles are coming. Owner-in-the-loop — never messaged

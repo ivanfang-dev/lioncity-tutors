@@ -65,6 +65,19 @@ export async function fetchParentDraft({ assignmentId, kind }) {
   return response.json();
 }
 
+// The typical asking rate for a level (roadmap Phase 8) — aggregate p25/p50/p75 of tutor floors,
+// no PII. Powers the read-only rate hint on the public request-tutor form (through a public proxy
+// route, since parents aren't authed). Computed on the bot so it can't drift from matching.
+export async function fetchRateGuide({ level, location, type }) {
+  const url = botUrl('/api/rate-guide');
+  url.searchParams.set('level', level);
+  if (location) url.searchParams.set('location', location);
+  if (type) url.searchParams.set('type', type);
+  const response = await fetch(url, { headers: authHeaders(), cache: 'no-store' });
+  if (!response.ok) throw new Error(`rate-guide failed (${response.status}): ${await readError(response)}`);
+  return response.json();
+}
+
 // The per-filter attrition funnel explaining a thin matching pool. On-demand (one countDocuments
 // per filter), so only the drill-down asks for it.
 export async function fetchMatchStats({ assignmentId }) {
