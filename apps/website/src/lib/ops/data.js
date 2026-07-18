@@ -99,6 +99,27 @@ export async function loadCheckInQueue(now = Date.now()) {
   }));
 }
 
+// Data for the weekly health metrics tab (roadmap deferred item). A bounded recent slice of
+// assignments (contacts included — that's where the funnel/channel/timing signals live), all
+// placements (few), and the tutor dormancy counts. The metric math itself is pure
+// (@lioncity/shared healthMetrics) and runs on this in the page.
+const METRICS_MAX_ASSIGNMENTS = 500;
+
+export async function loadHealthMetricsData() {
+  await dbConnect();
+  const [assignments, placements, total, dormant] = await Promise.all([
+    Assignment.find({})
+      .select('status outreach matchedTutorId filledAt createdAt')
+      .sort({ createdAt: -1 })
+      .limit(METRICS_MAX_ASSIGNMENTS)
+      .lean(),
+    Placement.find({}).select('survived30d status').lean(),
+    Tutor.countDocuments({}),
+    Tutor.countDocuments({ pausedAt: { $ne: null } }),
+  ]);
+  return { assignments, placements, tutorCounts: { total, dormant }, sampled: assignments.length };
+}
+
 // Mongo ObjectIds and Dates can't cross the server/client boundary as-is, and the queue rows are
 // handed to client components (the outcome buttons). Flatten to strings/numbers at the edge.
 export function serializeAssignment(assignment) {

@@ -41,6 +41,19 @@ export async function recordOutcome({ outcome, assignmentId, tutorId, reason }) 
   return response.json();
 }
 
+// Console v2 recovery (roadmap deferred item): apply a one-tap fix to a stalled assignment and fire
+// a retry wave. `action`: 'widen_region' | 'raise_ceiling' (optional amount) | 'relax_type'.
+export async function recoverAssignment({ assignmentId, action, amount }) {
+  const response = await fetch(botUrl('/api/recover'), {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...authHeaders() },
+    body: JSON.stringify({ assignmentId, action, amount }),
+    cache: 'no-store',
+  });
+  if (!response.ok) throw new Error(`recover failed (${response.status}): ${await readError(response)}`);
+  return response.json();
+}
+
 // Record a day-30 check-in outcome (roadmap Phase 5) through the same recorder the Telegram buttons
 // use. `outcome`: 'well' (optional rating) | 'ended' (optional endReason) | 'noreply'.
 export async function recordCheckIn({ outcome, placementId, rating, endReason }) {

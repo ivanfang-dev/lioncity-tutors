@@ -111,3 +111,23 @@ export const SINGAPORE_LOCATIONS = LOCATIONS.map((l) => l.town);
 export const LOCATION_TO_REGION = Object.fromEntries(
   LOCATIONS.map((l) => [l.town, l.region])
 );
+
+// Geographic adjacency between tutor-regions, for the ops console's "widen to adjacent regions and
+// retry" recovery (roadmap deferred item). No maps API — a static table over the coarse region
+// buckets. Central touches everything; 'online' is location-agnostic and has no neighbours (widening
+// an online assignment is meaningless). Kept symmetric so widening is predictable.
+export const REGION_ADJACENCY = {
+  central:   ['north', 'south', 'east', 'west', 'northeast', 'northwest'],
+  north:     ['central', 'northeast', 'northwest'],
+  south:     ['central', 'east', 'west'],
+  east:      ['central', 'northeast', 'south'],
+  west:      ['central', 'northwest', 'south'],
+  northeast: ['central', 'north', 'east'],
+  northwest: ['central', 'north', 'west'],
+  online:    [],
+};
+
+// The regions bordering `region` (excluding itself). Empty for unknown/'online'.
+export function adjacentRegions(region) {
+  return REGION_ADJACENCY[region] || [];
+}

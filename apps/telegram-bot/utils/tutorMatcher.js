@@ -479,7 +479,12 @@ function buildFilterStages(assignment) {
   // (handleContact), which is their way back in. First in the chain with 'contactable' because
   // both are cheap "can we even talk to them" gates.
   add('active', { pausedAt: null });
-  add('region', { [`locations.${region}`]: true });
+  // Region: normally the assignment's single region, but the ops console's "widen to adjacent
+  // regions" recovery stamps extra regions onto `matchRegions`, which we OR in here (deduped).
+  const regions = [region, ...(assignment.matchRegions || [])].filter((r, i, a) => r && a.indexOf(r) === i);
+  add('region', regions.length > 1
+    ? { $or: regions.map(r => ({ [`locations.${r}`]: true })) }
+    : { [`locations.${region}`]: true });
   add('subject', subjectQuery);
 
   if (assignment.preferredTutorTypes?.length > 0) {

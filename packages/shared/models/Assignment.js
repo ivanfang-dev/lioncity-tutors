@@ -87,6 +87,11 @@ const assignmentSchema = new mongoose.Schema({
     trim: true
   },
 
+  // Extra tutor-regions to match beyond the one implied by `location` — set by the ops console's
+  // "widen to adjacent regions and retry" recovery (roadmap deferred item). Absent/empty = match the
+  // single base region as before. The matcher ORs these into the region filter (buildFilterStages).
+  matchRegions: [{ type: String }],
+
   // Preferred Tutor Types
   preferredTutorTypes: [{
     type: String,

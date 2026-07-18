@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import OpsHeader from './OpsHeader';
 import QueueRow from './QueueRow';
 import CheckInRow from './CheckInRow';
@@ -43,9 +44,14 @@ export default async function OpsPage({ searchParams }) {
         </section>
 
         <section aria-labelledby="assignments" className="mt-8">
-          <h2 id="assignments" className="mb-3 text-sm font-semibold text-[var(--color-text-default)]">
-            Assignments
-          </h2>
+          <div className="mb-3 flex items-center justify-between">
+            <h2 id="assignments" className="text-sm font-semibold text-[var(--color-text-default)]">
+              Assignments
+            </h2>
+            <Link href="/ops/metrics" className="text-xs font-medium text-[var(--color-primary)] hover:underline">
+              Health metrics →
+            </Link>
+          </div>
 
           {assignments.length === 0 ? (
             <p className="rounded-lg border border-dashed border-[var(--color-border)] bg-white p-6 text-center text-sm text-[var(--color-text-tertiary)]">
