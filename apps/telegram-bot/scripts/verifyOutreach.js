@@ -80,12 +80,18 @@ if (contacts.length === 0) {
 }
 console.log('');
 
-// Placements (Phase 2) — the ground-truth match rows created when the parent picks a tutor.
+// Placements (Phase 2) — the ground-truth match rows created when the parent picks a tutor —
+// plus the day-30 check-in state (Phase 5): the ping lifecycle and any recorded outcomes.
 const placements = await Placement.find({ assignmentId: a._id }).lean();
 if (placements.length > 0) {
   console.log(`   Placements (${placements.length}):`);
   for (const p of placements) {
-    console.log(`   • tutor ${p.tutorId} · ${p.status} · agreedRate ${p.agreedRate || '—'} · filled ${fmt(p.filledAt)} · checkIns ${p.checkIns?.length || 0}`);
+    console.log(`   • tutor ${p.tutorId} · ${p.status} · agreedRate ${p.agreedRate || '—'} · filled ${fmt(p.filledAt)}` +
+      ` · survived30d ${p.survived30d == null ? '?' : p.survived30d}`);
+    console.log(`       check-in: requested ${fmt(p.checkInRequestedAt)} · re-pinged ${fmt(p.checkInRepingedAt)} · rows ${p.checkIns?.length || 0}`);
+    for (const c of (p.checkIns || [])) {
+      console.log(`         - ${fmt(c.at)}  ${c.status}${c.rating ? `  ${c.rating}⭐` : ''}${c.endReason ? `  reason: "${c.endReason}"` : ''}`);
+    }
   }
   console.log('');
 }

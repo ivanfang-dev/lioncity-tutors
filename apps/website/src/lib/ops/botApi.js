@@ -41,6 +41,19 @@ export async function recordOutcome({ outcome, assignmentId, tutorId, reason }) 
   return response.json();
 }
 
+// Record a day-30 check-in outcome (roadmap Phase 5) through the same recorder the Telegram buttons
+// use. `outcome`: 'well' (optional rating) | 'ended' (optional endReason) | 'noreply'.
+export async function recordCheckIn({ outcome, placementId, rating, endReason }) {
+  const response = await fetch(botUrl('/api/checkin-outcome'), {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...authHeaders() },
+    body: JSON.stringify({ outcome, placementId, rating, endReason }),
+    cache: 'no-store',
+  });
+  if (!response.ok) throw new Error(`checkin-outcome failed (${response.status}): ${await readError(response)}`);
+  return response.json();
+}
+
 // The drafted parent message + its wa.me deep link. Called on tap rather than on render — drafting
 // runs through Gemini, and paying for that on every queue load would make the console slow.
 export async function fetchParentDraft({ assignmentId, kind }) {

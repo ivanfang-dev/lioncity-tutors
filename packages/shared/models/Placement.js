@@ -26,6 +26,14 @@ const placementSchema = new mongoose.Schema({
     rating: { type: Number },       // 1–5, when the parent gives one
     endReason: { type: String }     // verbatim parent reason when it ended
   }],
+  // The day-30 check-in ping lifecycle (Phase 5), separate from `checkIns` (which only ever holds
+  // RECORDED outcomes). The tick uses these two timestamps + an empty checkIns array to drive a
+  // three-step cadence without re-pinging a placement it already asked about:
+  //   1. filledAt <= now-28d and checkInRequestedAt unset → first owner ping, set checkInRequestedAt.
+  //   2. checkInRequestedAt <= now-3d, still no checkIns → one re-ping, set checkInRepingedAt.
+  //   3. checkInRepingedAt <= now-3d, still no checkIns → append a 'no_reply' checkIn and stop.
+  checkInRequestedAt: { type: Date }, // when the owner was first pinged for the day-30 outcome
+  checkInRepingedAt: { type: Date },  // when the single 3-day re-ping was sent
   // Set true/false by the 30-day check-in; null = not yet checked.
   survived30d: { type: Boolean },
   status: { type: String, enum: ['active', 'ended', 'unknown'], default: 'active' },

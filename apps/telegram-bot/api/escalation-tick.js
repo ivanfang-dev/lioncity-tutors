@@ -1,12 +1,17 @@
 import mongoose from 'mongoose';
 import { waitUntil } from '@vercel/functions';
-import { Assignment, Tutor } from '../../../packages/shared/server-exports.js';
+import { Assignment, Tutor, Placement } from '../../../packages/shared/server-exports.js';
 import { escalateAssignment, remindNonResponders } from '../utils/tutorNotifier.js';
-import { shortlistScore, shortlistReason } from '../utils/tutorMatcher.js';
+import { shortlistScore, shortlistReason, buildFeatureSnapshot } from '../utils/tutorMatcher.js';
+import { recordRecommendation } from '../utils/recordRecommendation.js';
 import { holdTransition } from '../utils/recordTutorReply.js';
 import { draftParentMessage, buildWaMeButton, waMeLink } from '../utils/parentMessage.js';
-import { notifyOwner } from '../utils/ownerAlert.js';
+import { checkInAction, recordCheckInNoReply, CHECKIN_DUE_MS, CHECKIN_REPING_MS } from '../utils/checkInOutcome.js';
+import { checkInButtonRows } from '../utils/checkInButtons.js';
+import { runTutorStatsMaterialization } from '../utils/materializeTutorStats.js';
+import { notifyOwner, opsButtonRow } from '../utils/ownerAlert.js';
 import { formatAssignmentForChannel } from '../utils/channelFormat.js';
+import { shortlistDecided, shortlistedContacts } from '../../../packages/shared/utils/outreachState.js';
 
 // Give the background sends (which run after the response) room to finish.
 export const maxDuration = 60;
@@ -42,6 +47,10 @@ const PARENT_NUDGE_AFTER_MS = Number(process.env.PARENT_NUDGE_AFTER_MS) || 24 * 
 const PARENT_FLAG_AFTER_MS = Number(process.env.PARENT_FLAG_AFTER_MS) || 48 * 60 * 60 * 1000; // 48h
 const MAX_NUDGE_PER_TICK = Number(process.env.OUTREACH_MAX_NUDGE_PER_TICK) || 5;
 
+// Day-30 check-in (Phase 5): how many owner pings (first + re-ping) one tick may send, bounded like
+// the other fan-outs so a backlog of due placements can't blow the function's time budget.
+const MAX_CHECKIN_PER_TICK = Number(process.env.OUTREACH_MAX_CHECKIN_PER_TICK) || 5;
+
 // Pure decision for the parent-silence follow-up: 'nudge' (24h, once), 'flag' (48h, once), or
 // null. `now` injected for testing. Self-contained: returns null the moment an outcome is
 // recorded (pick → status Filled or parentPickedAt; reject → parentRejectedAt on a shortlisted
@@ -54,22 +63,21 @@ export function parentSilenceAction(assignment, now = new Date(), {
   if (!o.shortlistReleasedAt) return null;      // no shortlist handed over yet
   if (o.parentSilenceEscalatedAt) return null;  // already flagged — done nagging
   if (assignment.status === 'Filled') return null;
+  // Scoped to the CURRENT release cycle — see shortlistDecided. Shared with the ops console so
+  // the queue can't show a row the tick considers resolved.
+  if (shortlistDecided(assignment)) return null;
 
-  // "Decided" only counts outcomes from the CURRENT release cycle: a reject → resume →
-  // re-release leaves stale rejected contacts (still carrying shortlistRank + parentRejectedAt)
-  // from the prior shortlist, which must not suppress the new shortlist's nudge. Scope by
-  // timestamp against shortlistReleasedAt.
-  const releasedAt = new Date(o.shortlistReleasedAt);
-  const decided = (o.contacts || []).some(c =>
-    (c.parentPickedAt && new Date(c.parentPickedAt) >= releasedAt) ||
-    (c.shortlistRank != null && c.parentRejectedAt && new Date(c.parentRejectedAt) >= releasedAt)
-  );
-  if (decided) return null;
-
-  const elapsed = now - releasedAt;
+  const elapsed = now - new Date(o.shortlistReleasedAt);
   if (elapsed >= flagAfterMs) return 'flag';
   if (elapsed >= nudgeAfterMs && !o.parentNudgedAt) return 'nudge';
   return null;
+}
+
+// An "Open in console" keyboard for alerts that carry no other buttons, or undefined when no
+// console URL is configured (notifyOwner then sends a plain message).
+function opsKeyboard(assignmentId) {
+  const row = opsButtonRow(assignmentId);
+  return row ? { inline_keyboard: [row] } : undefined;
 }
 
 let isConnected = false;
@@ -111,7 +119,8 @@ async function processAssignment(assignment, now) {
     );
     await notifyOwner(
       `⏰ *Outreach timed out*\n*${assignment.title}* got ${assignment.interestedCount()} interested tutor(s) ` +
-      `in ${Math.round(MAX_DURATION_MS / 3600000)}h.\nPlease follow up manually.`
+      `in ${Math.round(MAX_DURATION_MS / 3600000)}h.\nPlease follow up manually.`,
+      opsKeyboard(assignment._id)
     );
     return;
   }
@@ -134,7 +143,8 @@ async function processAssignment(assignment, now) {
     await Assignment.updateOne({ _id: assignment._id }, { $set: { 'outreach.status': 'Exhausted' } });
     await notifyOwner(
       `📭 *Ran out of tutors*\n*${assignment.title}* has no more matching tutors to contact ` +
-      `(${assignment.interestedCount()} interested).\nPlease follow up manually.`
+      `(${assignment.interestedCount()} interested).\nPlease follow up manually.`,
+      opsKeyboard(assignment._id)
     );
   } else {
     console.log(`Reminder wave for ${assignment._id}: ${reminder.sent} sent, ${reminder.failed} failed`);
@@ -150,21 +160,25 @@ async function releaseOneShortlist(assignment) {
   const viable = (assignment.outreach?.contacts || [])
     .filter(c => c.status === 'Interested' && !c.parentRejectedAt && c.tutorId);
 
-  // Load just the fields shortlistScore + the owner alert need. Contacts store only tutorId.
+  // Load just the fields shortlistScore + the owner alert + the decision-log snapshot need.
+  // Contacts store only tutorId. responseStats is included so the Recommendation featureSnapshot's
+  // responsivenessFactor is accurate (shortlistScore itself doesn't use it, by design).
   const tutorIds = viable.map(c => c.tutorId);
   const tutors = tutorIds.length
     ? await Tutor.find({ _id: { $in: tutorIds } })
-        .select('fullName yearsOfExperience introduction teachingExperience trackRecord hourlyRate tutorType teachingLevels')
+        .select('fullName yearsOfExperience introduction teachingExperience trackRecord hourlyRate tutorType teachingLevels responseStats')
         .lean()
     : [];
   const tutorById = new Map(tutors.map(t => [t._id.toString(), t]));
 
-  const ranked = viable
+  // The full viable pool, scored + sorted — kept whole for the decision log below; `ranked` is the
+  // top SHORTLIST_SIZE that actually go to the parent.
+  const rankedAll = viable
     .map(c => ({ contact: c, tutor: tutorById.get(c.tutorId.toString()) }))
     .filter(x => x.tutor)
-    .map(x => ({ ...x, score: shortlistScore(x.tutor, assignment) }))
-    .sort((a, b) => b.score - a.score)
-    .slice(0, SHORTLIST_SIZE);
+    .map(x => ({ ...x, score: shortlistScore(x.tutor, assignment, x.contact.quotedRate ?? null) }))
+    .sort((a, b) => b.score - a.score);
+  const ranked = rankedAll.slice(0, SHORTLIST_SIZE);
 
   if (ranked.length === 0) {
     // Nothing left to shortlist (all rejected, or tutor docs vanished). Stop holding so it
@@ -172,7 +186,8 @@ async function releaseOneShortlist(assignment) {
     await Assignment.updateOne({ _id: assignment._id }, { $set: { 'outreach.status': 'Fulfilled' } });
     await notifyOwner(
       `🎯 *Hold window closed* — *${assignment.title}*\n` +
-      `No shortlist could be built (interested tutors are unavailable). Please follow up manually.`
+      `No shortlist could be built (interested tutors are unavailable). Please follow up manually.`,
+      opsKeyboard(assignment._id)
     );
     return;
   }
@@ -209,6 +224,21 @@ async function releaseOneShortlist(assignment) {
   });
 
   await alertOwnerShortlistReady(assignment, ranked);
+
+  // Log the shortlist decision (Phase 6): the whole viable pool with per-tutor score + features, and
+  // which ones were actually shortlisted to the parent. After the relay, best-effort — never blocks.
+  const shortlistedIds = new Set(ranked.map(r => r.tutor._id.toString()));
+  await recordRecommendation({
+    assignmentId: assignment._id,
+    trigger: 'shortlist',
+    candidates: rankedAll.map((r, i) => ({
+      tutorId: r.tutor._id,
+      rank: i + 1,
+      score: r.score,
+      contacted: shortlistedIds.has(r.tutor._id.toString()),
+      featureSnapshot: buildFeatureSnapshot(r.tutor, assignment, r.contact.quotedRate ?? null),
+    })),
+  });
 }
 
 // Outcome-capture buttons for a released shortlist: one "Picked #N" per ranked tutor, plus
@@ -236,7 +266,7 @@ async function alertOwnerShortlistReady(assignment, ranked) {
   const medals = ['🥇', '🥈', '🥉'];
   const cards = ranked.map((r, i) => {
     const medal = medals[i] || `${i + 1}.`;
-    return `${medal} *${r.tutor.fullName || 'Tutor'}*\n    ${shortlistReason(r.tutor, assignment)}`;
+    return `${medal} *${r.tutor.fullName || 'Tutor'}*\n    ${shortlistReason(r.tutor, assignment, r.contact.quotedRate ?? null)}`;
   });
 
   let text =
@@ -250,7 +280,12 @@ async function alertOwnerShortlistReady(assignment, ranked) {
     // Draft the parent-facing message and offer it as a one-tap "open WhatsApp with the draft
     // pre-filled" button. Best-effort: any drafting failure falls back to a template inside
     // draftParentMessage; a too-long draft returns no button, so we paste it into the body.
-    const draft = await draftParentMessage('shortlist', { assignment, tutors: ranked.map(r => r.tutor) });
+    // Attach each tutor's quoted rate (Phase 4) onto the drafting view-model so the parent
+    // message quotes what the tutor will actually charge for this assignment, not their profile.
+    const draft = await draftParentMessage('shortlist', {
+      assignment,
+      tutors: ranked.map(r => ({ ...r.tutor, quotedRate: r.contact.quotedRate ?? null })),
+    });
     const waButton = buildWaMeButton(assignment.parentContact, draft, '📤 Send via WhatsApp');
     if (waButton) {
       rows.push([waButton]);
@@ -264,6 +299,9 @@ async function alertOwnerShortlistReady(assignment, ranked) {
   } else {
     text += `\n\n⚠️ No parent contact on this assignment — relay unavailable.`;
   }
+
+  const opsRow = opsButtonRow(assignment._id);
+  if (opsRow) rows.push(opsRow);
 
   await notifyOwner(text, rows.length ? { inline_keyboard: rows } : undefined, { disableWebPagePreview: true });
 }
@@ -290,8 +328,7 @@ async function releaseHoldingShortlists(now) {
 // a drafted reminder behind a wa.me button, a flag (48h) just marks it for manual follow-up.
 // Both re-show the outcome-capture buttons so the owner can still record the result from here.
 async function alertOwnerParentSilent(assignment, kind) {
-  const shortlisted = (assignment.outreach?.contacts || [])
-    .filter(c => c.shortlistRank != null && !c.parentRejectedAt)
+  const shortlisted = shortlistedContacts(assignment)
     .map(c => ({ tutorId: c.tutorId, tutorName: c.tutorName, shortlistRank: c.shortlistRank }));
 
   const rows = [];
@@ -310,6 +347,8 @@ async function alertOwnerParentSilent(assignment, kind) {
   if (assignment.parentContact && shortlisted.length) {
     rows.push(...buildOutcomeButtons(assignment._id, shortlisted));
   }
+  const opsRow = opsButtonRow(assignment._id);
+  if (opsRow) rows.push(opsRow);
   await notifyOwner(text, rows.length ? { inline_keyboard: rows } : undefined, { disableWebPagePreview: true });
 }
 
@@ -336,6 +375,114 @@ async function nudgeSilentParents(now) {
       console.log(`Parent-silence ${action} for ${assignment._id}`);
     } catch (err) {
       console.error(`Parent silence follow-up failed for ${assignment._id}:`, err.message);
+    }
+  }
+}
+
+// Ping the owner that a placement is due its day-30 check-in: parent number + tutor name, a drafted
+// "how's it going?" message behind a wa.me button (paste-block fallback), and the recording buttons
+// (Going well / It ended / No reply) that all land through checkInOutcome.js. `kind` is 'due' (first
+// ping) or 'reping' (the single 3-day follow-up), which only changes the wording.
+async function alertOwnerCheckIn(placement, kind) {
+  const [assignment, tutor] = await Promise.all([
+    Assignment.findById(placement.assignmentId).select('title level subject parentContact').lean(),
+    Tutor.findById(placement.tutorId).select('fullName').lean(),
+  ]);
+  const title = assignment?.title || 'a past assignment';
+  const tutorName = tutor?.fullName || 'the tutor';
+  const parentContact = placement.parentContact || assignment?.parentContact || null;
+  const filledAt = placement.filledAt ? new Date(placement.filledAt) : null;
+  const daysAgo = filledAt ? Math.round((Date.now() - filledAt.getTime()) / (24 * 60 * 60 * 1000)) : null;
+
+  const header = kind === 'reping' ? '🔁 *Check-in reminder*' : '📅 *Day-30 check-in due*';
+  let text =
+    `${header} — *${title}*\n` +
+    `${tutorName} was placed${daysAgo != null ? ` ${daysAgo} days ago` : ''}. ` +
+    `Ask the parent${parentContact ? ` (${parentContact})` : ''} how it's going, then record the outcome:`;
+
+  const rows = [];
+  if (parentContact) {
+    const draft = await draftParentMessage('checkin', { assignment: { title }, tutorName });
+    const waButton = buildWaMeButton(parentContact, draft, '📤 Ask parent via WhatsApp');
+    if (waButton) rows.push([waButton]);
+    else text += `\n\n📋 Open [WhatsApp](${waMeLink(parentContact)}) with ${parentContact} and paste:\n\n${draft}`;
+  } else {
+    text += `\n\n⚠️ No parent contact on this placement — reach out manually.`;
+  }
+
+  rows.push(...checkInButtonRows(placement._id));
+  const opsRow = opsButtonRow(placement.assignmentId);
+  if (opsRow) rows.push(opsRow);
+
+  await notifyOwner(text, { inline_keyboard: rows }, { disableWebPagePreview: true });
+}
+
+// Drive the day-30 check-in cadence (Phase 5). Three steps, each bounded per tick:
+//   1. First ping   — active placements 28d+ old, never pinged.
+//   2. Re-ping once — pinged 3d+ ago with still no recorded outcome.
+//   3. Give up      — re-pinged 3d+ ago and still silent: append a 'no_reply' checkIn so the
+//                     placement leaves the due queue (no owner message — we've asked twice).
+// The gate timestamp is written BEFORE the owner alert so a slow/failed send can't double-ping on
+// the next tick (same discipline as nudgeSilentParents). checkInAction is the single source of
+// truth for the thresholds; the queries mirror it.
+async function runDay30CheckIns(now) {
+  const dueCutoff = new Date(now.getTime() - CHECKIN_DUE_MS);
+  const repingCutoff = new Date(now.getTime() - CHECKIN_REPING_MS);
+  let budget = MAX_CHECKIN_PER_TICK;
+
+  // 1. First pings.
+  const firstDue = await Placement.find({
+    status: 'active',
+    filledAt: { $lte: dueCutoff },
+    checkInRequestedAt: { $exists: false },
+    checkIns: { $size: 0 },
+  }).limit(budget);
+  for (const p of firstDue) {
+    if (checkInAction(p, now) !== 'ping') continue;
+    try {
+      await Placement.updateOne({ _id: p._id }, { $set: { checkInRequestedAt: now } });
+      await alertOwnerCheckIn(p, 'due');
+      budget--;
+      console.log(`Day-30 check-in ping for placement ${p._id}`);
+    } catch (err) {
+      console.error(`Check-in ping failed for placement ${p._id}:`, err.message);
+    }
+  }
+
+  // 2. Re-pings, within the remaining ping budget.
+  if (budget > 0) {
+    const repingDue = await Placement.find({
+      status: 'active',
+      checkInRequestedAt: { $lte: repingCutoff },
+      checkInRepingedAt: { $exists: false },
+      checkIns: { $size: 0 },
+    }).limit(budget);
+    for (const p of repingDue) {
+      if (checkInAction(p, now) !== 'reping') continue;
+      try {
+        await Placement.updateOne({ _id: p._id }, { $set: { checkInRepingedAt: now } });
+        await alertOwnerCheckIn(p, 'reping');
+        console.log(`Day-30 check-in re-ping for placement ${p._id}`);
+      } catch (err) {
+        console.error(`Check-in re-ping failed for placement ${p._id}:`, err.message);
+      }
+    }
+  }
+
+  // 3. Give up on the ones that never answered the re-ping. No owner message — just close the loop
+  // so the queue stays clean. Bounded generously (cheap DB writes, no external calls).
+  const giveUp = await Placement.find({
+    status: 'active',
+    checkInRepingedAt: { $lte: repingCutoff },
+    checkIns: { $size: 0 },
+  }).limit(20);
+  for (const p of giveUp) {
+    if (checkInAction(p, now) !== 'giveup') continue;
+    try {
+      await recordCheckInNoReply({ placementId: p._id });
+      console.log(`Day-30 check-in gave up (no_reply) for placement ${p._id}`);
+    } catch (err) {
+      console.error(`Check-in give-up failed for placement ${p._id}:`, err.message);
     }
   }
 }
@@ -445,10 +592,23 @@ export default async function handler(req, res) {
       } catch (err) {
         console.error('Parent silence follow-up failed:', err.message);
       }
+      // Day-30 check-ins on placements: ping the owner, re-ping once, then give up (Phase 5).
+      try {
+        await runDay30CheckIns(now);
+      } catch (err) {
+        console.error('Day-30 check-in run failed:', err.message);
+      }
       try {
         await closeStaleAssignments(now);
       } catch (err) {
         console.error('Auto-close failed:', err.message);
+      }
+      // Recompute the materialized tutor.stats cache — self-guarded to run at most once per day
+      // (Phase 7). Best-effort: it logs and swallows its own errors, so it can't break the tick.
+      try {
+        await runTutorStatsMaterialization(now);
+      } catch (err) {
+        console.error('Tutor-stats materialization failed:', err.message);
       }
     })());
 
