@@ -1,5 +1,6 @@
-import { findMatchingTutors } from './tutorMatcher.js';
+import { findMatchingTutorsScored } from './tutorMatcher.js';
 import { rankTutorsWithAI } from './tutorRanker.js';
+import { recordRecommendation, candidatesFromScored } from './recordRecommendation.js';
 import { Assignment, Tutor } from '../../../packages/shared/server-exports.js';
 import { normalizePhone } from './phone.js';
 import { formatTimeSlots } from '../../../packages/shared/utils/timeSlots.js';
@@ -165,19 +166,30 @@ async function sendWaveToTutors(assignment, batch, wave, botUsername) {
 // Wave 1 — fired immediately when an assignment is posted. AI-ranked top 8.
 async function notifyMatchedTutors(assignment, botUsername) {
   try {
-    // Pull the top 40 quality-ranked matches; the AI re-ranker narrows to the best 8.
-    const candidates = await findMatchingTutors(assignment, 40);
+    // Pull the top 40 quality-ranked matches (with their score breakdown for the decision log);
+    // the AI re-ranker narrows to the best 8.
+    const scored = await findMatchingTutorsScored(assignment, 40);
 
-    if (candidates.length === 0) {
+    if (scored.length === 0) {
       console.log(`No matching tutors found for assignment ${assignment._id}`);
       return { sent: 0, failed: 0, aiUsed: false, aiError: null };
     }
 
+    const candidates = scored.map(s => s.tutor);
     console.log(`Found ${candidates.length} candidates for assignment ${assignment._id}, ranking with AI...`);
     const { tutors, aiUsed, aiError } = await rankTutorsWithAI(assignment, candidates, 8);
     console.log(`Notifying ${tutors.length} top-ranked tutors (AI used: ${aiUsed})`);
 
     const { sent, failed } = await sendWaveToTutors(assignment, tutors, 1, botUsername);
+
+    // Log what the ranker knew and chose (Phase 6). After the wave, so this can't delay outreach;
+    // best-effort so a failure can't break it. `contacted` = the top 8 we actually messaged.
+    await recordRecommendation({
+      assignmentId: assignment._id,
+      trigger: 'wave1',
+      candidates: candidatesFromScored(scored, tutors.map(t => t._id)),
+    });
+
     return { sent, failed, aiUsed, aiError };
   } catch (error) {
     console.error('Error notifying matched tutors:', error);
@@ -189,9 +201,13 @@ async function notifyMatchedTutors(assignment, botUsername) {
 // deterministic quality ranking (no extra AI call per wave). Returns { exhausted } when
 // the matching pool has no fresh tutors left to try.
 async function escalateAssignment(assignment, botUsername, { waveSize = 6 } = {}) {
-  const candidates = await findMatchingTutors(assignment, 40);
+  const scored = await findMatchingTutorsScored(assignment, 40);
   const contacted = new Set(assignment.contactedTutorIds());
-  const fresh = candidates.filter(t => !contacted.has(t._id?.toString()));
+  // Re-rank the not-yet-contacted tutors 1..N — the escalation decision only ever chooses among
+  // these, so ranks relative to the fresh pool are what the decision log should record.
+  const fresh = scored
+    .filter(s => !contacted.has(s.tutor._id?.toString()))
+    .map((s, i) => ({ ...s, rank: i + 1 }));
 
   if (fresh.length === 0) {
     return { exhausted: true, sent: 0, failed: 0 };
@@ -199,7 +215,15 @@ async function escalateAssignment(assignment, botUsername, { waveSize = 6 } = {}
 
   const wave = (assignment.outreach?.waveCount || 1) + 1;
   const batch = fresh.slice(0, waveSize);
-  const { sent, failed } = await sendWaveToTutors(assignment, batch, wave, botUsername);
+  const { sent, failed } = await sendWaveToTutors(assignment, batch.map(s => s.tutor), wave, botUsername);
+
+  // Log the escalation decision (Phase 6). After the wave, best-effort. `contacted` = this batch.
+  await recordRecommendation({
+    assignmentId: assignment._id,
+    trigger: 'escalation',
+    candidates: candidatesFromScored(fresh, batch.map(s => s.tutor._id)),
+  });
+
   return { exhausted: false, sent, failed, wave };
 }
 
