@@ -3,7 +3,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import FinalCTA from "@/components/FinalCTA";
+import { GuideCTA } from "@/components/guide";
 
 
 export const metadata = {
@@ -772,11 +772,11 @@ export default function PhysicsTuition() {
         </section>
 
         {/* Section 11: Final CTA */}
-        <FinalCTA 
+        <GuideCTA
           title="Ready to Boost Your Child's Physics Grades?"
           description="Let's find the perfect Physics tutor to build confidence and achieve academic excellence. The process is simple, fast, and completely free."
           buttonText="Get a Free Tutor Match"
-          subject="Physics"
+          whatsappHref={`https://wa.me/6588701152?text=${encodeURIComponent("Hi LionCity Tutors! I'd like help finding a Physics tutor.\n\nStudent level:\nCurrent grade:\nLocation:\nPreferred days & timing: ")}`}
         />
         </div>
     </>

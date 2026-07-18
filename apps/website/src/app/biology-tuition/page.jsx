@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import biologyImage from '../../../public/biology.webp';
-import FinalCTA from "@/components/FinalCTA";
+import { GuideCTA } from "@/components/guide";
 
 export const metadata = {
   title: 'Best Biology Tuition Singapore | Secondary, JC H1/H2, IGCSE, IB Biology Tutors | Lion City Tutors',
@@ -617,11 +617,11 @@ export default function BiologyTuition() {
         </section>
 
         {/* CTA */}
-        <FinalCTA 
+        <GuideCTA
           title="Ready to Boost Your Child's Biology Grades?"
           description="Let's find the perfect Biology tutor to build confidence and achieve academic excellence. The process is simple, fast, and completely free."
           buttonText="Get a Free Tutor Match"
-          subject="Biology"
+          whatsappHref={`https://wa.me/6588701152?text=${encodeURIComponent("Hi LionCity Tutors! I'd like help finding a Biology tutor.\n\nStudent level:\nCurrent grade:\nLocation:\nPreferred days & timing: ")}`}
         />
 
         {/* Footer mini-links */}

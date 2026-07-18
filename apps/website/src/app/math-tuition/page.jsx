@@ -3,7 +3,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import FinalCTA from "@/components/FinalCTA";     
+import { GuideCTA } from "@/components/guide";     
 
 export const metadata = {
   title: 'Best Math Tuition Singapore | PSLE, O Level, A Level Math Tutors | Lion City Tutors',
@@ -742,11 +742,11 @@ export default function MathTuition() {
         </section>
 
         {/* Section 7: Call to Action */}
-        <FinalCTA 
+        <GuideCTA
           title="Ready to Boost Your Child's Math Grades?"
           description="Let's find the perfect Math tutor to build confidence and achieve academic excellence. The process is simple, fast, and completely free."
           buttonText="Get a Free Tutor Match"
-          subject="Math"
+          whatsappHref={`https://wa.me/6588701152?text=${encodeURIComponent("Hi LionCity Tutors! I'd like help finding a Math tutor.\n\nStudent level:\nCurrent grade:\nLocation:\nPreferred days & timing: ")}`}
         />
       </div>
     </>

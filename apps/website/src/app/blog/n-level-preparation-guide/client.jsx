@@ -330,13 +330,13 @@ const NLevelPrepClient = () => {
                   viewport={{ once: true, amount: 0.5 }}
                   transition={{ duration: 0.5 }}
                 >
-                  <div className="bg-white p-6 rounded-lg shadow-md border-t-4 border-red-500 h-full">
+                  <div className="bg-white p-6 rounded-lg shadow-md border border-gray-200 h-full">
                     <h3 className="text-2xl font-bold text-red-700 mb-3 flex items-center">
                       <XCircle className="h-6 w-6 mr-2"/>
                       {mistake.title}
                     </h3>
                     <p className="text-gray-600 mb-4">{mistake.description}</p>
-                    <div className="p-3 bg-green-100 border-l-4 border-green-500 text-green-800 rounded-r-lg">
+                    <div className="p-3 rounded-lg bg-green-50 border border-green-200 text-green-800">
                       <p><strong className="font-semibold">How to Avoid:</strong> {mistake.solution}</p>
                     </div>
                   </div>

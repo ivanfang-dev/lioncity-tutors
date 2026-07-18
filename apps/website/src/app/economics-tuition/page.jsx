@@ -3,7 +3,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import FinalCTA from "@/components/FinalCTA";
+import { GuideCTA } from "@/components/guide";
 
 export const metadata = {
   title: 'Best Economics Tuition Singapore | H1, H2, IB Economics Tutors | Lion City Tutors',
@@ -476,11 +476,11 @@ export default function EconomicsTuition() {
         </section>
 
         {/* Section 7: Call to Action */}
-        <FinalCTA 
+        <GuideCTA
           title="Ready to Boost Your Child's Economics Grades?"
           description="Let's find the perfect Economics tutor to build confidence and achieve academic excellence. The process is simple, fast, and completely free."
           buttonText="Get a Free Tutor Match"
-          subject="Economics"
+          whatsappHref={`https://wa.me/6588701152?text=${encodeURIComponent("Hi LionCity Tutors! I'd like help finding an Economics tutor.\n\nStudent level:\nCurrent grade:\nLocation:\nPreferred days & timing: ")}`}
         />
       </div>
     </>

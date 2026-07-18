@@ -1,7 +1,3 @@
-import Link from 'next/link';
-import Image from 'next/image';
-import physicsImage from "../../../public/o-level-physics.webp"
-
 export const metadata = {
   title: 'O Level Physics Guide 2025: Complete Study Strategy for Singapore Students | LionCity Tutors',
   description: 'Ultimate O Level Physics preparation guide for Singapore students. Expert strategies, practical techniques, and proven tips to score A1 in O Level Physics 2025.',
@@ -25,540 +21,559 @@ export const metadata = {
   },
 };
 
+import TableOfContents from '@/components/TableOfContents';
+import {
+  GuideHeader, SectionHeading, GuideCard, TopicCard, GuideTimeline, KeyTakeaways, GuideCTA, ICON_STROKE,
+} from '@/components/guide';
+import {
+  FileText, CalendarClock, Gauge, Waves, Zap, Brain, Target,
+  TriangleAlert, CalendarDays, BookOpen, Ruler, GraduationCap, Users,
+  Hourglass, HeartHandshake, Flag, ListChecks,
+} from 'lucide-react';
+
+const tableOfContents = [
+  { id: 'structure', label: 'Exam & paper structure' },
+  { id: 'timeline', label: '18-month study timeline' },
+  { id: 'mechanics', label: 'Mechanics' },
+  { id: 'waves', label: 'Waves & optics' },
+  { id: 'electromagnetism', label: 'Electricity & magnetism' },
+  { id: 'study-techniques', label: 'Study techniques that work' },
+  { id: 'exam-strategies', label: 'Paper-by-paper exam strategy' },
+  { id: 'mistakes', label: 'Common mistakes to avoid' },
+  { id: 'schedule', label: 'Weekly study schedule' },
+  { id: 'resources', label: 'Essential resources' },
+  { id: 'practical', label: 'Practical & lab skills' },
+  { id: 'pathways', label: 'Future pathways' },
+  { id: 'tuition', label: 'When to consider tuition' },
+  { id: 'final-months', label: 'Final month' },
+  { id: 'exam-day', label: 'Mental prep & exam day' },
+  { id: 'conclusion', label: 'Conclusion' },
+];
+
+const timeline = [
+  {
+    title: 'Secondary 3 · Foundation Phase',
+    points: [
+      'Master basic measurement and units',
+      'Build strong foundation in kinematics and dynamics',
+      'Develop systematic approach to problem-solving',
+      'Focus on understanding rather than memorization',
+      'Complete all practical worksheets thoroughly',
+    ],
+  },
+  {
+    title: 'Secondary 4 Term 1–2 · Skill Development Phase',
+    points: [
+      'Master waves, electricity, and magnetism',
+      'Begin intensive practice with past year papers',
+      'Develop time management skills for different papers',
+      'Strengthen practical skills and data analysis',
+      'Practice drawing accurate diagrams and graphs',
+    ],
+  },
+  {
+    title: 'Secondary 4 Term 3 to Prelims · Application Phase',
+    points: [
+      'Daily practice with O Level standard questions',
+      'Focus on exam techniques and answer presentation',
+      'Simulate exam conditions with full paper attempts',
+      'Review and analyze all mistakes systematically',
+      'Prepare comprehensively for Preliminary Examinations',
+    ],
+  },
+  {
+    title: 'Post-Prelims to O Levels · Mastery Phase',
+    points: [
+      'Intensive revision based on prelim performance',
+      'Final consolidation of formulas and key concepts',
+      'Practice papers under strict timing conditions',
+      'Mental preparation and exam stress management',
+      'Maintain a consistent study routine until exam day',
+    ],
+  },
+];
+
 export default function OLevelPhysics() {
+  const whatsappMessage = `Hi LionCity Tutors! I'd like help finding an O Level Physics tutor.
+
+Student level (e.g. Sec 3 / Sec 4):
+Current grade:
+Location:
+Preferred days & timing: `;
+  const whatsappHref = `https://wa.me/6588701152?text=${encodeURIComponent(whatsappMessage)}`;
+
   return (
     <>
-    <main className="px-4 py-12 max-w-3xl mx-auto">
-      <h1 className="text-3xl font-bold text-blue-800 mb-4">O Level Physics Guide 2025: Master Mechanics, Waves & Electricity</h1>
-      <p className="text-sm text-gray-500 mb-8">Posted on June 14, 2025 • 15 min read</p>
+    <main className="mx-auto max-w-6xl px-4 sm:px-6 py-12 sm:py-16">
+      <div className="mx-auto max-w-2xl lg:max-w-none lg:grid lg:grid-cols-[minmax(0,42rem)_15rem] lg:justify-center lg:gap-12">
+        {/* Article column */}
+        <div>
+          <GuideHeader
+            title="O Level Physics Guide 2025: Master Mechanics, Waves & Electricity"
+            author="By the LionCity Tutors Physics Team"
+            meta="Updated June 14, 2025 · 15 min read"
+            imageSrc="/o-level-physics.webp"
+            imageAlt="Apparatus on a lab bench — the mechanics, waves and electricity at the heart of O Level Physics."
+          />
 
-       <div className="my-8 relative w-full max-w-3xl mx-auto aspect-video overflow-hidden rounded-xl shadow-lg"> 
-        <Image 
-          src= {physicsImage}
-          alt="Singapore students mastering O Level Biology using advanced memory techniques and local ecosystem studies"
-          fill
-          className="object-cover"
-          sizes="(max-width: 768px) 100vw, 768px" 
-          placeholder="blur"
-          priority
-        />
-      </div>
-
-      <article className="space-y-6 text-gray-700 leading-relaxed">
-        <p className="text-lg font-medium text-gray-800">
-          O Level Physics is a fundamental subject that builds the foundation for further studies in science and engineering. With its focus on mechanics, waves, electricity, and modern physics, O Level Physics requires both theoretical understanding and practical application skills. This comprehensive guide provides proven strategies for achieving A1 grades in O Level Physics 2025.
-        </p>
-
-        <section>
-          <h2 className="text-2xl font-semibold text-blue-700 mb-3">Understanding O Level Physics Structure</h2>
-          <p>
-            Singapore's O Level Physics (Paper 5054) is designed to develop students' understanding of physics principles and their applications in everyday life and technology.
-          </p>
-          <div className="bg-blue-50 p-4 rounded-lg mt-3">
-            <h4 className="font-semibold mb-2">O Level Physics Papers Breakdown:</h4>
-            <div className="space-y-3">
-              <div>
-                <h5 className="font-semibold text-blue-600">Paper 1: Multiple Choice Questions</h5>
-                <ul className="list-disc ml-4 space-y-1 text-sm">
-                  <li>40 questions worth 40 marks</li>
-                  <li>Duration: 1 hour</li>
-                  <li>30% of total O Level Physics grade</li>
-                  <li>Tests breadth of knowledge across all topics</li>
-                </ul>
-              </div>
-              <div>
-                <h5 className="font-semibold text-blue-600">Paper 2: Structured Questions</h5>
-                <ul className="list-disc ml-4 space-y-1 text-sm">
-                  <li>Variable number of questions worth 80 marks</li>
-                  <li>Duration: 1 hour 45 minutes</li>
-                  <li>50% of total O Level Physics grade</li>
-                  <li>Focuses on application and problem-solving</li>
-                </ul>
-              </div>
-              <div>
-                <h5 className="font-semibold text-blue-600">Paper 3: Practical Test</h5>
-                <ul className="list-disc ml-4 space-y-1 text-sm">
-                  <li>2-3 experiments worth 40 marks</li>
-                  <li>Duration: 1 hour 50 minutes</li>
-                  <li>20% of total O Level Physics grade</li>
-                  <li>Tests practical skills and data analysis</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section>
-          <h2 className="text-2xl font-semibold text-blue-700 mb-3">18-Month O Level Physics Preparation Timeline</h2>
-          
-          <div className="space-y-4">
-            <div className="border-l-4 border-green-400 pl-4">
-              <h4 className="font-semibold text-green-700">Secondary 3 (Foundation Phase)</h4>
-              <ul className="list-disc ml-4 mt-2 space-y-1">
-                <li>Master basic measurement and units</li>
-                <li>Build strong foundation in kinematics and dynamics</li>
-                <li>Develop systematic approach to problem-solving</li>
-                <li>Focus on understanding rather than memorization</li>
-                <li>Complete all practical worksheets thoroughly</li>
-              </ul>
-            </div>
-
-            <div className="border-l-4 border-yellow-400 pl-4">
-              <h4 className="font-semibold text-yellow-700">Secondary 4 Term 1-2 (Skill Development Phase)</h4>
-              <ul className="list-disc ml-4 mt-2 space-y-1">
-                <li>Master waves, electricity, and magnetism</li>
-                <li>Begin intensive practice with past year papers</li>
-                <li>Develop time management skills for different papers</li>
-                <li>Strengthen practical skills and data analysis</li>
-                <li>Practice drawing accurate diagrams and graphs</li>
-              </ul>
-            </div>
-
-            <div className="border-l-4 border-orange-400 pl-4">
-              <h4 className="font-semibold text-orange-700">Secondary 4 Term 3 to Prelims (Application Phase)</h4>
-              <ul className="list-disc ml-4 mt-2 space-y-1">
-                <li>Daily practice with O Level standard questions</li>
-                <li>Focus on exam techniques and answer presentation</li>
-                <li>Simulate exam conditions with full paper attempts</li>
-                <li>Review and analyze all mistakes systematically</li>
-                <li>Prepare comprehensively for Preliminary Examinations</li>
-              </ul>
-            </div>
-
-            <div className="border-l-4 border-red-400 pl-4">
-              <h4 className="font-semibold text-red-700">Post-Prelims to O Levels (Mastery Phase)</h4>
-              <ul className="list-disc ml-4 mt-2 space-y-1">
-                <li>Intensive revision based on prelim performance</li>
-                <li>Final consolidation of formulas and key concepts</li>
-                <li>Practice papers under strict timing conditions</li>
-                <li>Mental preparation and exam stress management</li>
-                <li>Maintain consistent study routine until exam day</li>
-              </ul>
-            </div>
-          </div>
-        </section>
-
-        <section>
-          <h2 className="text-2xl font-semibold text-blue-700 mb-3">Mechanics Mastery Guide</h2>
-          
-          <div className="space-y-4">
-            <div className="bg-blue-50 p-4 rounded-lg">
-              <h4 className="font-semibold text-blue-700 mb-2">⚡ Kinematics & Dynamics (25-30% of papers)</h4>
-              <div className="space-y-2 text-sm">
-                <div>
-                  <strong>Key Topics:</strong> Motion Graphs, Newton's Laws, Forces, Momentum, Energy Conservation
-                </div>
-                <div>
-                  <strong>Study Strategy:</strong>
-                  <ul className="list-disc ml-4 mt-1 space-y-1">
-                    <li>Master motion graph interpretation</li>
-                    <li>Practice force diagrams and free body analysis</li>
-                    <li>Understand energy conservation principles</li>
-                    <li>Learn to solve projectile motion problems</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-red-50 p-4 rounded-lg">
-              <h4 className="font-semibold text-red-700 mb-2">🔄 Turning Effects & Pressure (15-20% of papers)</h4>
-              <div className="space-y-2 text-sm">
-                <div>
-                  <strong>Key Topics:</strong> Moments, Center of Gravity, Pressure, Hydraulics
-                </div>
-                <div>
-                  <strong>Study Strategy:</strong>
-                  <ul className="list-disc ml-4 mt-1 space-y-1">
-                    <li>Master moment calculations</li>
-                    <li>Practice pressure problems</li>
-                    <li>Understand hydraulic principles</li>
-                    <li>Learn to solve equilibrium problems</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section>
-          <h2 className="text-2xl font-semibold text-blue-700 mb-3">Waves & Optics Mastery Guide</h2>
-          
-          <div className="space-y-4">
-            <div className="bg-amber-50 p-4 rounded-lg">
-              <h4 className="font-semibold text-amber-700 mb-2">🌊 Wave Properties & Behavior (20-25% of papers)</h4>
-              <div className="space-y-2 text-sm">
-                <div>
-                  <strong>Key Topics:</strong> Wave Characteristics, Sound Waves, Light Waves, Reflection, Refraction
-                </div>
-                <div>
-                  <strong>Study Strategy:</strong>
-                  <ul className="list-disc ml-4 mt-1 space-y-1">
-                    <li>Master wave equation applications</li>
-                    <li>Practice ray diagram construction</li>
-                    <li>Understand wave phenomena</li>
-                    <li>Learn to solve optics problems</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-indigo-50 p-4 rounded-lg">
-              <h4 className="font-semibold text-indigo-700 mb-2">👁️ Lenses & Optical Instruments (15-20% of papers)</h4>
-              <div className="space-y-2 text-sm">
-                <div>
-                  <strong>Key Topics:</strong> Convex & Concave Lenses, Magnification, Microscopes, Telescopes
-                </div>
-                <div>
-                  <strong>Study Strategy:</strong>
-                  <ul className="list-disc ml-4 mt-1 space-y-1">
-                    <li>Master lens equation applications</li>
-                    <li>Practice ray diagram construction</li>
-                    <li>Understand optical instrument principles</li>
-                    <li>Learn to solve magnification problems</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section>
-          <h2 className="text-2xl font-semibold text-blue-700 mb-3">Electricity & Magnetism Mastery Guide</h2>
-          
-          <div className="space-y-4">
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <h4 className="font-semibold text-gray-700 mb-2">⚡ Electric Circuits (20-25% of papers)</h4>
-              <div className="space-y-2 text-sm">
-                <div>
-                  <strong>Key Topics:</strong> Current, Voltage, Resistance, Series & Parallel Circuits, Power
-                </div>
-                <div>
-                  <strong>Study Strategy:</strong>
-                  <ul className="list-disc ml-4 mt-1 space-y-1">
-                    <li>Master circuit analysis techniques</li>
-                    <li>Practice Ohm's Law applications</li>
-                    <li>Understand power calculations</li>
-                    <li>Learn to solve complex circuit problems</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-orange-50 p-4 rounded-lg">
-              <h4 className="font-semibold text-orange-700 mb-2">🧲 Magnetism & Electromagnetism (15-20% of papers)</h4>
-              <div className="space-y-2 text-sm">
-                <div>
-                  <strong>Key Topics:</strong> Magnetic Fields, Electromagnetic Induction, Transformers, Motors
-                </div>
-                <div>
-                  <strong>Study Strategy:</strong>
-                  <ul className="list-disc ml-4 mt-1 space-y-1">
-                    <li>Master magnetic field concepts</li>
-                    <li>Practice induction problems</li>
-                    <li>Understand transformer principles</li>
-                    <li>Learn to solve motor problems</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section>
-          <h2 className="text-2xl font-semibold text-blue-700 mb-3">O Level Physics Study Techniques That Work</h2>
-          <div className="bg-emerald-50 p-5 rounded-lg">
-            <h4 className="font-semibold mb-3">Proven O Level Physics Study Methods:</h4>
-            <div className="space-y-3 text-sm">
-              <div>
-                <p><strong>The Problem-Solving Method:</strong></p>
-                <p>Practice solving 5 different types of physics problems daily, focusing on systematic approaches and mathematical accuracy.</p>
-              </div>
-              <div>
-                <p><strong>Concept Mapping Technique:</strong></p>
-                <p>Create visual connections between different physics topics to see the bigger picture and relationships.</p>
-              </div>
-              <div>
-                <p><strong>Formula Derivation Practice:</strong></p>
-                <p>Don't just memorize equations - understand how they're derived and when to apply them.</p>
-              </div>
-              <div>
-                <p><strong>Real-World Connection Method:</strong></p>
-                <p>Always connect theoretical concepts to real-world applications and phenomena.</p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section>
-          <h2 className="text-2xl font-semibold text-blue-700 mb-3">O Level Physics Exam Strategies</h2>
-          <div className="space-y-4">
-            <div className="bg-blue-50 p-4 rounded-lg">
-              <h4 className="font-semibold text-blue-700 mb-2">Paper 1 (MCQ) Strategy:</h4>
-              <ul className="list-disc ml-4 space-y-1 text-sm">
-                <li>Allocate 1.5 minutes per question maximum</li>
-                <li>Use elimination method for difficult questions</li>
-                <li>Pay attention to units and significant figures</li>
-                <li>Don't second-guess yourself unless you find a clear error</li>
-                <li>Review flagged questions if time permits</li>
-              </ul>
-            </div>
-            
-            <div className="bg-blue-50 p-4 rounded-lg">
-              <h4 className="font-semibold text-blue-700 mb-2">Paper 2 (Structured Questions) Strategy:</h4>
-              <ul className="list-disc ml-4 space-y-1 text-sm">
-                <li>Read all questions first and start with strongest topics</li>
-                <li>Show all working clearly - partial credit is available</li>
-                <li>Use proper units and significant figures</li>
-                <li>Draw clear diagrams with proper labels</li>
-                <li>Check calculations and units in final answers</li>
-              </ul>
-            </div>
-
-            <div className="bg-blue-50 p-4 rounded-lg">
-              <h4 className="font-semibold text-blue-700 mb-2">Paper 3 (Practical) Strategy:</h4>
-              <ul className="list-disc ml-4 space-y-1 text-sm">
-                <li>Read instructions carefully before starting</li>
-                <li>Record all measurements with proper units</li>
-                <li>Draw clear and accurate graphs</li>
-                <li>Show all calculations clearly</li>
-                <li>Check for systematic errors</li>
-              </ul>
-            </div>
-          </div>
-        </section>
-
-        <section>
-          <h2 className="text-2xl font-semibold text-blue-700 mb-3">Common O Level Physics Mistakes to Avoid</h2>
-          <div className="bg-red-50 p-4 rounded-lg">
-            <h4 className="font-semibold text-red-700 mb-3">Top 10 O Level Physics Pitfalls:</h4>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
-              <div>
-                <ol className="list-decimal ml-4 space-y-1">
-                  <li>Incorrect unit conversions</li>
-                  <li>Confusing vector and scalar quantities</li>
-                  <li>Missing forces in free body diagrams</li>
-                  <li>Wrong significant figures in calculations</li>
-                  <li>Incorrect sign conventions</li>
-                </ol>
-              </div>
-              <div>
-                <ol className="list-decimal ml-4 space-y-1" start="6">
-                  <li>Incorrect interpretation of graphs</li>
-                  <li>Missing units in numerical answers</li>
-                  <li>Confusing different types of energy</li>
-                  <li>Inadequate explanation of principles</li>
-                  <li>Poor time management across papers</li>
-                </ol>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section>
-          <h2 className="text-2xl font-semibold text-blue-700 mb-3">Creating Your O Level Physics Study Schedule</h2>
-          <div className="bg-indigo-50 p-5 rounded-lg">
-            <h4 className="font-semibold mb-3">Recommended Weekly Schedule (Secondary 4):</h4>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-              <div>
-                <p><strong>School Days:</strong></p>
-                <ul className="list-disc ml-4 space-y-1">
-                  <li>2-3 hours daily practice and revision</li>
-                  <li>Focus on homework + additional past paper questions</li>
-                  <li>Review lecture notes within 24 hours</li>
-                  <li>Practice 3-5 challenging problems daily</li>
-                  <li>Memorize 2-3 new formulas weekly</li>
-                </ul>
-              </div>
-              <div>
-                <p><strong>Weekends:</strong></p>
-                <ul className="list-disc ml-4 space-y-1">
-                  <li>Complete 1-2 full practice papers</li>
-                  <li>Intensive topic revision for weak areas</li>
-                  <li>Create summary notes and concept maps</li>
-                  <li>Review and analyze all week's mistakes</li>
-                  <li>Practice practical skills and experiments</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section>
-          <h2 className="text-2xl font-semibold text-blue-700 mb-3">Essential O Level Physics Resources</h2>
-          <div className="space-y-3">
-            <div>
-              <h4 className="font-semibold">Recommended Textbooks:</h4>
-              <ul className="list-disc ml-4 text-sm space-y-1">
-                <li>Physics Matters (Marshall Cavendish) - comprehensive coverage</li>
-                <li>O Level Physics Guide (Shinglee) - exam-focused</li>
-                <li>Understanding Physics (Jim Breithaupt) - conceptual approach</li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-semibold">Practice Materials:</h4>
-              <ul className="list-disc ml-4 text-sm space-y-1">
-                <li>GCE O Level past papers (last 10 years minimum)</li>
-                <li>School preliminary examination papers</li>
-                <li>Topical practice books for specific physics areas</li>
-                <li>Online practice platforms and simulations</li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-semibold">Digital Tools:</h4>
-              <ul className="list-disc ml-4 text-sm space-y-1">
-                <li>PhET simulations for visualizing physics concepts</li>
-                <li>Physics problem-solving apps</li>
-                <li>Online physics calculators</li>
-                <li>Anki for memorizing formulas and concepts</li>
-              </ul>
-            </div>
-          </div>
-        </section>
-
-        <section>
-          <h2 className="text-2xl font-semibold text-blue-700 mb-3">Practical Skills and Laboratory Techniques</h2>
-          <p>
-            O Level Physics emphasizes practical skills and data analysis abilities that are tested in Paper 3:
-          </p>
-          <ul className="list-disc ml-6 space-y-2 mt-3">
-            <li><strong>Master Common Techniques:</strong> Measurement, data collection, error analysis, and graph plotting</li>
-            <li><strong>Data Analysis Skills:</strong> Interpret graphs, calculate uncertainties, and draw valid conclusions</li>
-            <li><strong>Safety Awareness:</strong> Understand laboratory safety protocols and equipment handling</li>
-            <li><strong>Observation Skills:</strong> Learn to describe physical phenomena using precise scientific language</li>
-            <li><strong>Experimental Design:</strong> Understand how to plan investigations and control variables</li>
-            <li><strong>Error Analysis:</strong> Identify sources of experimental error and suggest improvements</li>
-          </ul>
-        </section>
-
-        <section>
-          <h2 className="text-2xl font-semibold text-blue-700 mb-3">Post-O Level Physics Pathways</h2>
-          <div className="bg-teal-50 p-4 rounded-lg">
-            <h4 className="font-semibold mb-2">Your O Level Physics Results Open These Doors:</h4>
-            <div className="space-y-2 text-sm">
-              <div>
-                <strong>A1-B3 grades in O Level Physics:</strong>
-                <ul className="list-disc ml-4 mt-1">
-                  <li>Eligible for H2 Physics in Junior College</li>
-                  <li>Access to engineering and science courses in polytechnics</li>
-                  <li>Strong foundation for university STEM programs</li>
-                </ul>
-              </div>
-              <div>
-                <strong>C5-C6 grades in O Level Physics:</strong>
-                <ul className="list-disc ml-4 mt-1">
-                  <li>Eligible for H1 Physics in Junior College</li>
-                  <li>Access to most polytechnic diploma courses</li>
-                  <li>Foundation for technical and applied science programs</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section>
-          <h2 className="text-2xl font-semibold text-blue-700 mb-3">When to Consider O Level Physics Tuition</h2>
-          <p>Consider professional O Level Physics tuition if your child:</p>
-          <ul className="list-disc ml-6 space-y-1 mt-3">
-            <li>Struggles with complex physics concepts and problem-solving</li>
-            <li>Needs help connecting theoretical knowledge to practical applications</li>
-            <li>Requires structured guidance for mathematical problem-solving</li>
-            <li>Lacks confidence in data analysis and graph interpretation</li>
-            <li>Aims for A1 grades to meet JC or polytechnic course requirements</li>
-            <li>Benefits from personalized feedback on answer techniques</li>
-          </ul>
-          <div className="bg-blue-50 p-4 rounded-lg mt-4">
-            <p><strong>Choose O Level Physics tutors who:</strong> Have extensive experience with current O Level syllabi, understand common student misconceptions, can explain complex concepts clearly, provide structured practice programs, and have strong backgrounds in physics or engineering.</p>
-          </div>
-        </section>
-
-        <section>
-          <h2 className="text-2xl font-semibold text-blue-700 mb-3">Final Month O Level Physics Preparation</h2>
-          <div className="bg-orange-50 p-4 rounded-lg">
-            <h4 className="font-semibold mb-2">Last 30 Days Strategy:</h4>
-            <div className="space-y-2 text-sm">
-              <div>
-                <strong>Week 1-2: Intensive Practice</strong>
-                <ul className="list-disc ml-4 mt-1">
-                  <li>Complete 2 full papers daily</li>
-                  <li>Time all practice sessions strictly</li>
-                  <li>Analyze performance patterns and focus areas</li>
-                </ul>
-              </div>
-              <div>
-                <strong>Week 3: Consolidation</strong>
-                <ul className="list-disc ml-4 mt-1">
-                  <li>Review all formula sheets and key concepts</li>
-                  <li>Practice weak topics with targeted questions</li>
-                  <li>Ensure calculator proficiency and backup preparation</li>
-                </ul>
-              </div>
-              <div>
-                <strong>Week 4: Final Preparation</strong>
-                <ul className="list-disc ml-4 mt-1">
-                  <li>Light revision and confidence building</li>
-                  <li>Ensure adequate rest and stress management</li>
-                  <li>Prepare all examination materials and logistics</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section>
-          <h2 className="text-2xl font-semibold text-blue-700 mb-3">Mental Preparation and Exam Day Success</h2>
-          <div className="space-y-4">
-            <div className="bg-blue-50 p-4 rounded-lg">
-              <h4 className="font-semibold text-blue-700 mb-2">Stress Management Techniques:</h4>
-              <ul className="list-disc ml-4 space-y-1 text-sm">
-                <li>Practice deep breathing exercises before and during exams</li>
-                <li>Use positive visualization - imagine yourself succeeding</li>
-                <li>Maintain perspective - one exam doesn't define your future</li>
-                <li>Get adequate sleep (7-8 hours) especially the week before exams</li>
-                <li>Stay physically active to manage stress hormones naturally</li>
-              </ul>
-            </div>
-
-            <div className="bg-yellow-50 p-4 rounded-lg">
-              <h4 className="font-semibold text-yellow-700 mb-2">Exam Day Protocol:</h4>
-              <ul className="list-disc ml-4 space-y-1 text-sm">
-                <li>Arrive 30 minutes early with all required materials</li>
-                <li>Bring multiple pens, pencils, calculator, and data booklet</li>
-                <li>Read instructions carefully - don't rush into questions</li>
-                <li>Start with questions you're most confident about</li>
-                <li>If stuck, move on and return later with fresh perspective</li>
-                <li>Use remaining time to check calculations and units</li>
-              </ul>
-            </div>
-          </div>
-        </section>
-
-        <section>
-          <h2 className="text-2xl font-semibold text-blue-700 mb-3">Conclusion: Your O Level Physics Success Journey</h2>
-          <p>
-            Achieving excellence in O Level Physics requires dedication, strategic preparation, and consistent practice. The comprehensive approach outlined in this guide - from understanding the syllabus structure through mastering each topic area to developing effective exam strategies - provides you with the roadmap to success.
-          </p>
-          <p className="mt-3">
-            Remember that O Level Physics is not just about memorizing formulas and equations. It's about developing critical thinking skills, understanding the physical world around us, and preparing for exciting careers in science and technology. Every challenging problem you solve and every concept you master builds towards your future success.
-          </p>
-          <div className="bg-blue-100 p-4 rounded-lg mt-4 border-l-4 border-blue-500">
-            <p className="font-semibold text-blue-800">
-              Success in O Level Physics comes from consistent daily practice, understanding rather than memorization, and maintaining confidence in your abilities. Trust your preparation, stay focused during exams, and remember that your hard work will pay off in opening doors to amazing opportunities in science and engineering.
+          <article className="space-y-12 text-gray-700 leading-relaxed">
+            <p className="text-lg text-gray-800 leading-relaxed text-pretty">
+              O Level Physics is a fundamental subject that builds the foundation for further studies in science and engineering. With its focus on mechanics, waves, electricity, and modern physics, O Level Physics requires both theoretical understanding and practical application skills. This comprehensive guide provides proven strategies for achieving A1 grades in O Level Physics 2025.
             </p>
-          </div>
-        </section>
 
-        <div className="text-center mt-8 p-6 bg-gray-50 rounded-lg">
-          <p className="text-sm text-gray-600 mb-4">
-            Need personalized guidance for your O Level Physics preparation? Our experienced tutors provide targeted support to help you achieve your goals.
-          </p>
-          <Link 
-            href="/request-tutor" 
-            className="inline-block bg-[#F17720] text-white px-6 py-3 rounded-full font-bold hover:bg-[#d9691c] transition-all duration-200 shadow-md transform hover:scale-105"
-          >
-            Find Your Perfect O Level Physics Tutor
-          </Link>
+            {/* Key takeaways */}
+            <KeyTakeaways
+              items={[
+                <>O Level Physics (5054) is three papers &mdash; MCQ (<span className="tabular-nums">30%</span>), structured (<span className="tabular-nums">50%</span>) and a practical test (<span className="tabular-nums">20%</span>).</>,
+                <>A steady Sec 3&rarr;Sec 4 timeline built on understanding beats last-minute memorisation every time.</>,
+                <>The biggest score lever isn&rsquo;t knowing more &mdash; it&rsquo;s answer technique: correct units, shown working and clear diagrams.</>,
+                <>Struggling with problem-solving, circuits or practical questions is the usual signal that targeted tuition will help.</>,
+              ]}
+            />
+
+            {/* Inline table of contents — mobile / tablet only */}
+            <nav aria-label="Table of contents" className="lg:hidden rounded-xl border border-gray-200 bg-gray-50 p-5 sm:p-6">
+              <div className="flex items-center gap-2 mb-4">
+                <ListChecks className="h-5 w-5 text-primary" strokeWidth={ICON_STROKE} aria-hidden="true" />
+                <p className="text-base font-semibold text-gray-900">In this guide</p>
+              </div>
+              <ol className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2 text-sm">
+                {tableOfContents.map((item) => (
+                  <li key={item.id}>
+                    <a href={`#${item.id}`} className="text-gray-700 hover:text-primary transition-colors">{item.label}</a>
+                  </li>
+                ))}
+              </ol>
+            </nav>
+
+            <section id="structure" className="scroll-mt-24">
+              <SectionHeading icon={FileText}>Understanding O Level Physics Structure</SectionHeading>
+              <p className="text-pretty">
+                Singapore&rsquo;s O Level Physics (Paper 5054) is designed to develop students&rsquo; understanding of physics principles and their applications in everyday life and technology.
+              </p>
+              <GuideCard className="mt-4">
+                <h4 className="font-semibold text-gray-900 mb-4">O Level Physics Papers Breakdown</h4>
+                <div className="space-y-5">
+                  <div>
+                    <h5 className="font-semibold text-gray-900">Paper 1: Multiple Choice Questions</h5>
+                    <ul className="list-disc ml-5 mt-1.5 space-y-1 text-sm text-gray-700">
+                      <li>40 questions worth 40 marks</li>
+                      <li>Duration: 1 hour</li>
+                      <li>30% of total O Level Physics grade</li>
+                      <li>Tests breadth of knowledge across all topics</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <h5 className="font-semibold text-gray-900">Paper 2: Structured Questions</h5>
+                    <ul className="list-disc ml-5 mt-1.5 space-y-1 text-sm text-gray-700">
+                      <li>Variable number of questions worth 80 marks</li>
+                      <li>Duration: 1 hour 45 minutes</li>
+                      <li>50% of total O Level Physics grade</li>
+                      <li>Focuses on application and problem-solving</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <h5 className="font-semibold text-gray-900">Paper 3: Practical Test</h5>
+                    <ul className="list-disc ml-5 mt-1.5 space-y-1 text-sm text-gray-700">
+                      <li>2–3 experiments worth 40 marks</li>
+                      <li>Duration: 1 hour 50 minutes</li>
+                      <li>20% of total O Level Physics grade</li>
+                      <li>Tests practical skills and data analysis</li>
+                    </ul>
+                  </div>
+                </div>
+              </GuideCard>
+            </section>
+
+            <section id="timeline" className="scroll-mt-24">
+              <SectionHeading icon={CalendarClock}>18-Month O Level Physics Preparation Timeline</SectionHeading>
+              <GuideTimeline items={timeline} />
+            </section>
+
+            <section id="mechanics" className="scroll-mt-24">
+              <SectionHeading icon={Gauge}>Mechanics Mastery Guide</SectionHeading>
+              <div className="space-y-4">
+                <TopicCard
+                  title="Kinematics & Dynamics"
+                  weight="25–30% of papers"
+                  chips={['Motion Graphs', 'Newton’s Laws', 'Forces', 'Momentum', 'Energy Conservation']}
+                  points={[
+                    'Master motion graph interpretation',
+                    'Practice force diagrams and free body analysis',
+                    'Understand energy conservation principles',
+                    'Learn to solve projectile motion problems',
+                  ]}
+                />
+                <TopicCard
+                  title="Turning Effects & Pressure"
+                  weight="15–20% of papers"
+                  chips={['Moments', 'Center of Gravity', 'Pressure', 'Hydraulics']}
+                  points={[
+                    'Master moment calculations',
+                    'Practice pressure problems',
+                    'Understand hydraulic principles',
+                    'Learn to solve equilibrium problems',
+                  ]}
+                />
+              </div>
+            </section>
+
+            <section id="waves" className="scroll-mt-24">
+              <SectionHeading icon={Waves}>Waves & Optics Mastery Guide</SectionHeading>
+              <div className="space-y-4">
+                <TopicCard
+                  title="Wave Properties & Behavior"
+                  weight="20–25% of papers"
+                  chips={['Wave Characteristics', 'Sound Waves', 'Light Waves', 'Reflection', 'Refraction']}
+                  points={[
+                    'Master wave equation applications',
+                    'Practice ray diagram construction',
+                    'Understand wave phenomena',
+                    'Learn to solve optics problems',
+                  ]}
+                />
+                <TopicCard
+                  title="Lenses & Optical Instruments"
+                  weight="15–20% of papers"
+                  chips={['Convex & Concave Lenses', 'Magnification', 'Microscopes', 'Telescopes']}
+                  points={[
+                    'Master lens equation applications',
+                    'Practice ray diagram construction',
+                    'Understand optical instrument principles',
+                    'Learn to solve magnification problems',
+                  ]}
+                />
+              </div>
+            </section>
+
+            <section id="electromagnetism" className="scroll-mt-24">
+              <SectionHeading icon={Zap}>Electricity & Magnetism Mastery Guide</SectionHeading>
+              <div className="space-y-4">
+                <TopicCard
+                  title="Electric Circuits"
+                  weight="20–25% of papers"
+                  chips={['Current', 'Voltage', 'Resistance', 'Series & Parallel Circuits', 'Power']}
+                  points={[
+                    'Master circuit analysis techniques',
+                    'Practice Ohm’s Law applications',
+                    'Understand power calculations',
+                    'Learn to solve complex circuit problems',
+                  ]}
+                />
+                <TopicCard
+                  title="Magnetism & Electromagnetism"
+                  weight="15–20% of papers"
+                  chips={['Magnetic Fields', 'Electromagnetic Induction', 'Transformers', 'Motors']}
+                  points={[
+                    'Master magnetic field concepts',
+                    'Practice induction problems',
+                    'Understand transformer principles',
+                    'Learn to solve motor problems',
+                  ]}
+                />
+              </div>
+            </section>
+
+            <section id="study-techniques" className="scroll-mt-24">
+              <SectionHeading icon={Brain}>O Level Physics Study Techniques That Work</SectionHeading>
+              <GuideCard>
+                <h4 className="font-semibold text-gray-900 mb-3">Proven O Level Physics Study Methods</h4>
+                <div className="space-y-3 text-sm">
+                  <div>
+                    <p><strong className="text-gray-900">The Problem-Solving Method:</strong></p>
+                    <p>Practice solving 5 different types of physics problems daily, focusing on systematic approaches and mathematical accuracy.</p>
+                  </div>
+                  <div>
+                    <p><strong className="text-gray-900">Concept Mapping Technique:</strong></p>
+                    <p>Create visual connections between different physics topics to see the bigger picture and relationships.</p>
+                  </div>
+                  <div>
+                    <p><strong className="text-gray-900">Formula Derivation Practice:</strong></p>
+                    <p>Don&rsquo;t just memorize equations &mdash; understand how they&rsquo;re derived and when to apply them.</p>
+                  </div>
+                  <div>
+                    <p><strong className="text-gray-900">Real-World Connection Method:</strong></p>
+                    <p>Always connect theoretical concepts to real-world applications and phenomena.</p>
+                  </div>
+                </div>
+              </GuideCard>
+            </section>
+
+            <section id="exam-strategies" className="scroll-mt-24">
+              <SectionHeading icon={Target}>O Level Physics Exam Strategies</SectionHeading>
+              <div className="space-y-4">
+                <GuideCard>
+                  <h4 className="font-semibold text-gray-900 mb-2">Paper 1 (MCQ) Strategy</h4>
+                  <ul className="list-disc ml-5 space-y-1 text-sm text-gray-700">
+                    <li>Allocate 1.5 minutes per question maximum</li>
+                    <li>Use the elimination method for difficult questions</li>
+                    <li>Pay attention to units and significant figures</li>
+                    <li>Don&rsquo;t second-guess yourself unless you find a clear error</li>
+                    <li>Review flagged questions if time permits</li>
+                  </ul>
+                </GuideCard>
+
+                <GuideCard>
+                  <h4 className="font-semibold text-gray-900 mb-2">Paper 2 (Structured Questions) Strategy</h4>
+                  <ul className="list-disc ml-5 space-y-1 text-sm text-gray-700">
+                    <li>Read all questions first and start with your strongest topics</li>
+                    <li>Show all working clearly &mdash; partial credit is available</li>
+                    <li>Use proper units and significant figures</li>
+                    <li>Draw clear diagrams with proper labels</li>
+                    <li>Check calculations and units in your final answers</li>
+                  </ul>
+                </GuideCard>
+
+                <GuideCard>
+                  <h4 className="font-semibold text-gray-900 mb-2">Paper 3 (Practical) Strategy</h4>
+                  <ul className="list-disc ml-5 space-y-1 text-sm text-gray-700">
+                    <li>Read instructions carefully before starting</li>
+                    <li>Record all measurements with proper units</li>
+                    <li>Draw clear and accurate graphs</li>
+                    <li>Show all calculations clearly</li>
+                    <li>Check for systematic errors</li>
+                  </ul>
+                </GuideCard>
+              </div>
+            </section>
+
+            <section id="mistakes" className="scroll-mt-24">
+              <SectionHeading icon={TriangleAlert}>Common O Level Physics Mistakes to Avoid</SectionHeading>
+              <GuideCard>
+                <h4 className="font-semibold text-gray-900 mb-3">Top 10 O Level Physics Pitfalls</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3 text-sm">
+                  <div>
+                    <ol className="list-decimal ml-5 space-y-1 text-gray-700">
+                      <li>Incorrect unit conversions</li>
+                      <li>Confusing vector and scalar quantities</li>
+                      <li>Missing forces in free body diagrams</li>
+                      <li>Wrong significant figures in calculations</li>
+                      <li>Incorrect sign conventions</li>
+                    </ol>
+                  </div>
+                  <div>
+                    <ol className="list-decimal ml-5 space-y-1 text-gray-700" start="6">
+                      <li>Incorrect interpretation of graphs</li>
+                      <li>Missing units in numerical answers</li>
+                      <li>Confusing different types of energy</li>
+                      <li>Inadequate explanation of principles</li>
+                      <li>Poor time management across papers</li>
+                    </ol>
+                  </div>
+                </div>
+              </GuideCard>
+            </section>
+
+            <section id="schedule" className="scroll-mt-24">
+              <SectionHeading icon={CalendarDays}>Creating Your O Level Physics Study Schedule</SectionHeading>
+              <GuideCard>
+                <h4 className="font-semibold text-gray-900 mb-3">Recommended Weekly Schedule (Secondary 4)</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
+                  <div>
+                    <p className="font-semibold text-gray-900 mb-1.5">School Days</p>
+                    <ul className="list-disc ml-5 space-y-1 text-gray-700">
+                      <li>2–3 hours of daily practice and revision</li>
+                      <li>Focus on homework plus additional past-paper questions</li>
+                      <li>Review lecture notes within 24 hours</li>
+                      <li>Practice 3–5 challenging problems daily</li>
+                      <li>Learn 2–3 new formulas each week</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <p className="font-semibold text-gray-900 mb-1.5">Weekends</p>
+                    <ul className="list-disc ml-5 space-y-1 text-gray-700">
+                      <li>Complete 1–2 full practice papers</li>
+                      <li>Intensive topic revision for weak areas</li>
+                      <li>Create summary notes and concept maps</li>
+                      <li>Review and analyse the week&rsquo;s mistakes</li>
+                      <li>Practise practical skills and experiments</li>
+                    </ul>
+                  </div>
+                </div>
+              </GuideCard>
+            </section>
+
+            <section id="resources" className="scroll-mt-24">
+              <SectionHeading icon={BookOpen}>Essential O Level Physics Resources</SectionHeading>
+              <div className="space-y-4">
+                <div>
+                  <h4 className="font-semibold text-gray-900 mb-1.5">Recommended Textbooks</h4>
+                  <ul className="list-disc ml-5 text-sm space-y-1 text-gray-700">
+                    <li>Physics Matters (Marshall Cavendish) &mdash; comprehensive coverage</li>
+                    <li>O Level Physics Guide (Shinglee) &mdash; exam-focused</li>
+                    <li>Understanding Physics (Jim Breithaupt) &mdash; conceptual approach</li>
+                  </ul>
+                </div>
+                <div>
+                  <h4 className="font-semibold text-gray-900 mb-1.5">Practice Materials</h4>
+                  <ul className="list-disc ml-5 text-sm space-y-1 text-gray-700">
+                    <li>GCE O Level past papers (last 10 years minimum)</li>
+                    <li>School preliminary examination papers</li>
+                    <li>Topical practice books for specific physics areas</li>
+                    <li>Online practice platforms and simulations</li>
+                  </ul>
+                </div>
+                <div>
+                  <h4 className="font-semibold text-gray-900 mb-1.5">Digital Tools</h4>
+                  <ul className="list-disc ml-5 text-sm space-y-1 text-gray-700">
+                    <li>PhET simulations for visualizing physics concepts</li>
+                    <li>Physics problem-solving apps</li>
+                    <li>Online physics calculators</li>
+                    <li>Anki for memorizing formulas and concepts</li>
+                  </ul>
+                </div>
+              </div>
+            </section>
+
+            <section id="practical" className="scroll-mt-24">
+              <SectionHeading icon={Ruler}>Practical Skills and Laboratory Techniques</SectionHeading>
+              <p className="text-pretty">
+                O Level Physics emphasizes practical skills and data analysis abilities that are tested in Paper 3:
+              </p>
+              <ul className="list-disc ml-6 space-y-2 mt-3 text-gray-700">
+                <li><strong className="text-gray-900">Master Common Techniques:</strong> Measurement, data collection, error analysis, and graph plotting</li>
+                <li><strong className="text-gray-900">Data Analysis Skills:</strong> Interpret graphs, calculate uncertainties, and draw valid conclusions</li>
+                <li><strong className="text-gray-900">Safety Awareness:</strong> Understand laboratory safety protocols and equipment handling</li>
+                <li><strong className="text-gray-900">Observation Skills:</strong> Learn to describe physical phenomena using precise scientific language</li>
+                <li><strong className="text-gray-900">Experimental Design:</strong> Understand how to plan investigations and control variables</li>
+                <li><strong className="text-gray-900">Error Analysis:</strong> Identify sources of experimental error and suggest improvements</li>
+              </ul>
+            </section>
+
+            <section id="pathways" className="scroll-mt-24">
+              <SectionHeading icon={GraduationCap}>Post-O Level Physics Pathways</SectionHeading>
+              <GuideCard>
+                <h4 className="font-semibold text-gray-900 mb-3">Your O Level Physics Results Open These Doors</h4>
+                <div className="space-y-4 text-sm">
+                  <div>
+                    <strong className="text-gray-900">A1-B3 grades in O Level Physics:</strong>
+                    <ul className="list-disc ml-5 mt-1 space-y-1 text-gray-700">
+                      <li>Eligible for H2 Physics in Junior College</li>
+                      <li>Access to engineering and science courses in polytechnics</li>
+                      <li>Strong foundation for university STEM programs</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <strong className="text-gray-900">C5-C6 grades in O Level Physics:</strong>
+                    <ul className="list-disc ml-5 mt-1 space-y-1 text-gray-700">
+                      <li>Eligible for H1 Physics in Junior College</li>
+                      <li>Access to most polytechnic diploma courses</li>
+                      <li>Foundation for technical and applied science programs</li>
+                    </ul>
+                  </div>
+                </div>
+              </GuideCard>
+            </section>
+
+            <section id="tuition" className="scroll-mt-24">
+              <SectionHeading icon={Users}>When to Consider O Level Physics Tuition</SectionHeading>
+              <p>Consider professional O Level Physics tuition if your child:</p>
+              <ul className="list-disc ml-6 space-y-1 mt-3 text-gray-700">
+                <li>Struggles with complex physics concepts and problem-solving</li>
+                <li>Needs help connecting theoretical knowledge to practical applications</li>
+                <li>Requires structured guidance for mathematical problem-solving</li>
+                <li>Lacks confidence in data analysis and graph interpretation</li>
+                <li>Aims for A1 grades to meet JC or polytechnic course requirements</li>
+                <li>Benefits from personalized feedback on answer techniques</li>
+              </ul>
+              <GuideCard className="mt-4">
+                <p className="text-sm"><strong className="text-gray-900">Choose O Level Physics tutors who:</strong> Have extensive experience with current O Level syllabi, understand common student misconceptions, can explain complex concepts clearly, provide structured practice programs, and have strong backgrounds in physics or engineering.</p>
+              </GuideCard>
+            </section>
+
+            <section id="final-months" className="scroll-mt-24">
+              <SectionHeading icon={Hourglass}>Final Month O Level Physics Preparation</SectionHeading>
+              <GuideCard>
+                <h4 className="font-semibold text-gray-900 mb-3">Last 30 Days Strategy</h4>
+                <div className="space-y-4 text-sm">
+                  <div>
+                    <strong className="text-gray-900">Week 1–2: Intensive Practice</strong>
+                    <ul className="list-disc ml-5 mt-1 space-y-1 text-gray-700">
+                      <li>Complete 2 full papers daily</li>
+                      <li>Time all practice sessions strictly</li>
+                      <li>Analyze performance patterns and focus areas</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <strong className="text-gray-900">Week 3: Consolidation</strong>
+                    <ul className="list-disc ml-5 mt-1 space-y-1 text-gray-700">
+                      <li>Review all formula sheets and key concepts</li>
+                      <li>Practice weak topics with targeted questions</li>
+                      <li>Ensure calculator proficiency and backup preparation</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <strong className="text-gray-900">Week 4: Final Preparation</strong>
+                    <ul className="list-disc ml-5 mt-1 space-y-1 text-gray-700">
+                      <li>Light revision and confidence building</li>
+                      <li>Ensure adequate rest and stress management</li>
+                      <li>Prepare all examination materials and logistics</li>
+                    </ul>
+                  </div>
+                </div>
+              </GuideCard>
+            </section>
+
+            <section id="exam-day" className="scroll-mt-24">
+              <SectionHeading icon={HeartHandshake}>Mental Preparation and Exam Day Success</SectionHeading>
+              <div className="space-y-4">
+                <GuideCard>
+                  <h4 className="font-semibold text-gray-900 mb-2">Stress Management Techniques</h4>
+                  <ul className="list-disc ml-5 space-y-1 text-sm text-gray-700">
+                    <li>Practice deep breathing exercises before and during exams</li>
+                    <li>Use positive visualization &mdash; imagine yourself succeeding</li>
+                    <li>Maintain perspective &mdash; one exam doesn&rsquo;t define your future</li>
+                    <li>Get adequate sleep (7–8 hours), especially the week before exams</li>
+                    <li>Stay physically active to manage stress hormones naturally</li>
+                  </ul>
+                </GuideCard>
+
+                <GuideCard>
+                  <h4 className="font-semibold text-gray-900 mb-2">Exam Day Protocol</h4>
+                  <ul className="list-disc ml-5 space-y-1 text-sm text-gray-700">
+                    <li>Arrive 30 minutes early with all required materials</li>
+                    <li>Bring multiple pens, pencils, a calculator, and your data booklet</li>
+                    <li>Read instructions carefully &mdash; don&rsquo;t rush into questions</li>
+                    <li>Start with the questions you&rsquo;re most confident about</li>
+                    <li>If stuck, move on and return later with a fresh perspective</li>
+                    <li>Use any remaining time to check calculations and units</li>
+                  </ul>
+                </GuideCard>
+              </div>
+            </section>
+
+            <section id="conclusion" className="scroll-mt-24">
+              <SectionHeading icon={Flag}>Conclusion: Your O Level Physics Success Journey</SectionHeading>
+              <p className="text-pretty">
+                Achieving excellence in O Level Physics requires dedication, strategic preparation, and consistent practice. The comprehensive approach outlined in this guide &mdash; from understanding the syllabus structure through mastering each topic area to developing effective exam strategies &mdash; provides you with the roadmap to success.
+              </p>
+              <p className="mt-3 text-pretty">
+                Remember that O Level Physics is not just about memorizing formulas and equations. It&rsquo;s about developing critical thinking skills, understanding the physical world around us, and preparing for exciting further studies in science and technology. Every challenging problem you solve and every concept you master builds towards your future success.
+              </p>
+              <div className="rounded-xl border border-primary/15 bg-primary/5 p-5 sm:p-6 mt-4">
+                <p className="font-semibold text-gray-900">
+                  Success in O Level Physics comes from consistent daily practice, understanding rather than memorization, and maintaining confidence in your abilities. Trust your preparation, stay focused during exams, and remember that your hard work will pay off in opening doors to amazing opportunities in science and engineering.
+                </p>
+              </div>
+            </section>
+
+            {/* Conversion block */}
+            <GuideCTA
+              title="Find your O Level Physics tutor"
+              description="Tell us your child’s level and goals. We hand-match a vetted, MOE-familiar O Level Physics tutor — usually within hours — and parents never pay an agency fee."
+              buttonText="Find your O Level Physics tutor"
+              whatsappHref={whatsappHref}
+            />
+          </article>
         </div>
-      </article>
+
+        {/* Sticky table of contents — desktop only */}
+        <aside className="hidden lg:block">
+          <div className="sticky top-24">
+            <TableOfContents items={tableOfContents} />
+          </div>
+        </aside>
+      </div>
     </main>
     </>
   );

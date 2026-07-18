@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import FinalCTA from "@/components/FinalCTA";
+import { GuideCTA } from "@/components/guide";
 
 // --- SEO & CONTENT DATA ---
 
@@ -422,11 +422,11 @@ export default function EnglishTuitionPage() {
         </section>
 
         {/* Section 7: Final CTA */}
-        <FinalCTA 
+        <GuideCTA
           title="Ready to Boost Your Child's English Grades?"
           description="Let's find the perfect English tutor to build confidence and achieve academic excellence. The process is simple, fast, and completely free."
           buttonText="Get a Free Tutor Match"
-          subject="English"
+          whatsappHref={`https://wa.me/6588701152?text=${encodeURIComponent("Hi LionCity Tutors! I'd like help finding an English tutor.\n\nStudent level:\nCurrent grade:\nLocation:\nPreferred days & timing: ")}`}
         />
       </div>
     </>
