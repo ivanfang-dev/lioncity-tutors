@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { deriveRateNumeric } from '../utils/numericRates.js';
 
 // Define Tutor Schema
 const tutorSchema = new mongoose.Schema({
@@ -23,6 +24,19 @@ const tutorSchema = new mongoose.Schema({
   // WhatsApp for them instead of paying the try-fail-fallback tax on every future wave.
   // Cleared when they re-link by sharing their contact with the bot again (handleContact).
   telegramStale: { type: Boolean, default: false },
+  // Set when the tutor tells us they're not currently tutoring (decline reason 'inactive').
+  // A HARD filter in findMatchingTutors — a paused tutor is never matched or messaged again
+  // until they come back. Cleared wherever telegramStale clears (handleContact): re-linking
+  // is them re-engaging, which is the strongest available "I'm active" signal. Absent/null =
+  // active, so every pre-existing tutor is unaffected.
+  pausedAt: { type: Date, default: null },
+  // Last time we had positive proof this tutor is active: any Telegram interaction with the bot
+  // (handleContact) or any outreach reply, Yes or No (both reply recorders). Feeds Phase 10 dormancy
+  // detection. Distinct from responseStats (lifetime counts) — this is a freshness timestamp.
+  lastConfirmedActiveAt: { type: Date, default: null },
+  // Postal district (roadmap Phase 7): data collection for later travel-time scoring, NOT a matching
+  // filter yet (matching stays region-based). Captured on new intake; legacy tutors stay blank.
+  postalDistrict: { type: String, trim: true },
   // Tutoring Preferences
   teachingLevels: {
   // Pre-School
@@ -302,6 +316,22 @@ const tutorSchema = new mongoose.Schema({
     professional: String,
   },
 
+  // Numeric mirror of hourlyRate (roadmap Phase 7), derived from the free-text strings above so
+  // matching reads numbers instead of regex-parsing text on every query. Populated by the pre-save
+  // hook below (registration + profile rate edits) and by a one-off backfill; matching prefers it
+  // when present and falls back to parsing hourlyRate for legacy docs. Per-level { min, max }.
+  rateNumeric: {
+    preschool: { min: Number, max: Number },
+    primary: { min: Number, max: Number },
+    secondary: { min: Number, max: Number },
+    jc: { min: Number, max: Number },
+    ib: { min: Number, max: Number },
+    music: { min: Number, max: Number },
+    polytechnic: { min: Number, max: Number },
+    university: { min: Number, max: Number },
+    professional: { min: Number, max: Number },
+  },
+
   // Tutor Profile
   introduction: String,
   teachingExperience: String,
@@ -325,9 +355,41 @@ const tutorSchema = new mongoose.Schema({
     responded: { type: Number, default: 0 }
   },
 
+  // Materialized performance stats (roadmap Phase 7), recomputed daily from the event sources
+  // (outreach.contacts + placements) inside the escalation tick. A CACHE for ranking and the ops
+  // console — events remain the source of truth; nothing here is incremented live. Absent until the
+  // first materialization run touches this tutor.
+  //   contacted/responded/interested — lifetime counts derived from outreach.contacts
+  //   placed/survived30d             — from placements (placed = matched, survived30d = lasted 30d)
+  //   medianResponseMins             — median reply latency across contacts with a recorded latency
+  //   lastRepliedAt                  — most recent outreach reply
+  //   computedAt                     — when this row was last recomputed
+  stats: {
+    contacted: { type: Number },
+    responded: { type: Number },
+    interested: { type: Number },
+    placed: { type: Number },
+    survived30d: { type: Number },
+    medianResponseMins: { type: Number },
+    lastRepliedAt: { type: Date },
+    computedAt: { type: Date },
+  },
+
   // Form metadata
   formType: String
 }, { timestamps: true });
+
+// Keep rateNumeric in sync with hourlyRate on every save (roadmap Phase 7): tutor registration
+// (backend new Tutor().save()) and profile rate edits (tutor.save()) both flow through here, so the
+// numeric fields are populated going forward without touching each call site. Recomputed whenever
+// hourlyRate changed (or on a brand-new doc); a no-op otherwise. Pure derivation — never introduces
+// validation risk on legacy docs.
+tutorSchema.pre('save', function deriveRateNumericHook(next) {
+  if (this.isNew || this.isModified('hourlyRate')) {
+    this.rateNumeric = deriveRateNumeric(this.hourlyRate);
+  }
+  next();
+});
 
 const Tutor = mongoose.models.Tutor || mongoose.model('Tutor', tutorSchema);
 

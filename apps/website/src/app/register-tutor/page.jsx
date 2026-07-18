@@ -263,7 +263,10 @@ const initialFormData = {
   nationalityOther: '',
   race: '',
   nricLast4: '',
-  
+  // Home postal code / district (roadmap Phase 7): collected for later travel-time matching between
+  // tutor and assignment. Optional, not used for matching yet.
+  postalDistrict: '',
+
   // Tutoring Preferences - updated to match new teachingOptions structure
   teachingLevels: {
     preschool: { 
@@ -716,6 +719,20 @@ export default function RegisterAsTutor() {
                       pattern="[0-9]{3}[A-Za-z]{1}"
                       placeholder="e.g. 123A"
                     />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Home Postal Code</label>
+                    <input
+                      name="postalDistrict"
+                      maxLength={6}
+                      value={formData.postalDistrict}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      inputMode="numeric"
+                      placeholder="e.g. 560123"
+                    />
+                    <p className="mt-1 text-xs text-gray-500">Helps us match you with assignments closer to home.</p>
                   </div>
                 </div>
                 <p className="mt-3 text-xs text-gray-600 mb-2">

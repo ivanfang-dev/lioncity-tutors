@@ -5,6 +5,7 @@ import {
   isValidLevelSubjectCombination,
   getSubjectsForLevel
 } from '../client-exports.js';
+import { deriveBudgetNumeric } from '../utils/numericRates.js';
 
 // Define Assignment Schema
 const assignmentSchema = new mongoose.Schema({
@@ -53,7 +54,25 @@ const assignmentSchema = new mongoose.Schema({
     required: true,
     trim: true
   },
-  
+
+  // Numeric mirror of `rate` (roadmap Phase 7): the spending CEILING per tutor-type band, derived
+  // from the free-text rate at creation (deriveBudgetNumeric) so matching reads numbers instead of
+  // regex-parsing text every query. Matching prefers this when present, falls back to parsing `rate`
+  // for legacy assignments (which are never re-saved). Any band may be absent.
+  budgetNumeric: {
+    partTime: { type: Number },
+    fullTime: { type: Number },
+    moe: { type: Number },
+    default: { type: Number },
+  },
+
+  // Postal district (roadmap Phase 7): data collection for later travel-time scoring, NOT a matching
+  // filter yet (matching stays region-based). Captured on new intake; legacy assignments stay blank.
+  postalDistrict: {
+    type: String,
+    trim: true,
+  },
+
   // Requirements
   requirements: {
     type: String,
@@ -204,7 +223,27 @@ const assignmentSchema = new mongoose.Schema({
       // How many reminder pings this contact has received. Only non-responders (status
       // 'Sent') are ever reminded, and only when no fresh tutors are left to try; capped
       // by OUTREACH_MAX_REMINDERS so a quiet tutor isn't nagged indefinitely.
-      reminderCount: { type: Number, default: 0 }
+      reminderCount: { type: Number, default: 0 },
+      // How long the tutor took to reply (respondedAt − sentAt, whole minutes). Absent on
+      // legacy contacts and on anyone who never replied. Feeds Phase 7's medianResponseMins.
+      responseLatencyMins: { type: Number },
+      // Why the tutor said no, captured on a reason button/list tap right after the ❌.
+      // Best-effort — the Declined status is already recorded whether or not they answer.
+      // 'inactive' additionally sets tutor.pausedAt, excluding them from future matching.
+      declineReason: { type: String, enum: ['rate', 'distance', 'schedule', 'inactive', 'other'] },
+      // The rate this tutor named FOR THIS ASSIGNMENT, at reply time. Not a "counter-offer":
+      // every yes is asked for one, because profile rates go stale and posted rates are often
+      // ranges ("$40-60/hr") that a bare Yes doesn't resolve. Also captured on a rate-decline
+      // (contact stays Declined but we learn how far off the budget was — Phase 8). Absent =
+      // the tutor never answered the prompt; the shortlist falls back to their profile rate,
+      // flagged unconfirmed. Interest is the signal, this is enrichment — never a gate.
+      quotedRate: { type: Number },
+      // Set when we asked this contact for their rate; cleared once quotedRate lands. This is
+      // the PERSISTED state that matches an inbound bare number ("45") back to the assignment
+      // it answers. It deliberately does not live in the in-memory userSessions map: Vercel
+      // cold-starts between the prompt and the reply would drop it, and WhatsApp has no
+      // session concept at all. See docs/superpowers/specs/2026-07-16-tutor-rate-capture-design.md.
+      rateRequestedAt: { type: Date }
     }]
   },
 
@@ -230,7 +269,15 @@ const assignmentSchema = new mongoose.Schema({
 assignmentSchema.pre('save', function(next) {
   // Update timestamp
   this.updatedAt = new Date();
-  
+
+  // Derive budgetNumeric from the free-text rate (roadmap Phase 7) so matching reads numbers instead
+  // of re-parsing text. On the creation flow (Telegram draft → post, both .save()) this populates it
+  // at creation; recomputed whenever `rate` changes. Legacy assignments are only ever touched via
+  // updateOne (which skips this hook), so they never re-validate and simply stay without it.
+  if (this.isNew || this.isModified('rate')) {
+    this.budgetNumeric = deriveBudgetNumeric(this.rate);
+  }
+
   // Validate level-subject combination
   if (!isValidLevelSubjectCombination(this.level, this.subject)) {
     const error = new Error(`Subject "${this.subject}" is not available for education level "${this.level}"`);
