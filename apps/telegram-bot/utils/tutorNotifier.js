@@ -1,5 +1,7 @@
 import { findMatchingTutorsScored } from './tutorMatcher.js';
-import { rankTutorsWithAI } from './tutorRanker.js';
+// Phase 9 Step B retired the query-time Gemini re-rank: wave 1 now takes the deterministic top 8
+// directly (the ranking already prefers each tutor's extracted qualityGrade). tutorRanker.js stays
+// in-tree, unused, until the new ranking is proven — hence no import here.
 import { recordRecommendation, candidatesFromScored } from './recordRecommendation.js';
 import { Assignment, Tutor } from '../../../packages/shared/server-exports.js';
 import { normalizePhone } from './phone.js';
@@ -163,11 +165,12 @@ async function sendWaveToTutors(assignment, batch, wave, botUsername) {
   return { sent, failed };
 }
 
-// Wave 1 — fired immediately when an assignment is posted. AI-ranked top 8.
+// Wave 1 — fired immediately when an assignment is posted. Deterministic top 8 (Phase 9 Step B).
 async function notifyMatchedTutors(assignment, botUsername) {
   try {
-    // Pull the top 40 quality-ranked matches (with their score breakdown for the decision log);
-    // the AI re-ranker narrows to the best 8.
+    // Pull the top 40 quality-ranked matches (with their score breakdown for the decision log). The
+    // ranking now folds in each tutor's extracted qualityGrade, so wave 1 takes its top 8 directly —
+    // no query-time Gemini re-rank (removed an API call, a failure mode, and ~5s from wave 1).
     const scored = await findMatchingTutorsScored(assignment, 40);
 
     if (scored.length === 0) {
@@ -175,10 +178,8 @@ async function notifyMatchedTutors(assignment, botUsername) {
       return { sent: 0, failed: 0, aiUsed: false, aiError: null };
     }
 
-    const candidates = scored.map(s => s.tutor);
-    console.log(`Found ${candidates.length} candidates for assignment ${assignment._id}, ranking with AI...`);
-    const { tutors, aiUsed, aiError } = await rankTutorsWithAI(assignment, candidates, 8);
-    console.log(`Notifying ${tutors.length} top-ranked tutors (AI used: ${aiUsed})`);
+    const tutors = scored.slice(0, 8).map(s => s.tutor);
+    console.log(`Notifying ${tutors.length} top-ranked tutors for assignment ${assignment._id} (deterministic)`);
 
     const { sent, failed } = await sendWaveToTutors(assignment, tutors, 1, botUsername);
 
@@ -190,7 +191,8 @@ async function notifyMatchedTutors(assignment, botUsername) {
       candidates: candidatesFromScored(scored, tutors.map(t => t._id)),
     });
 
-    return { sent, failed, aiUsed, aiError };
+    // aiUsed/aiError kept in the shape for callers that log them; always false now (re-rank retired).
+    return { sent, failed, aiUsed: false, aiError: null };
   } catch (error) {
     console.error('Error notifying matched tutors:', error);
     return { sent: 0, failed: 0, aiUsed: false, aiError: null };

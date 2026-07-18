@@ -9,6 +9,7 @@ import { draftParentMessage, buildWaMeButton, waMeLink } from '../utils/parentMe
 import { checkInAction, recordCheckInNoReply, CHECKIN_DUE_MS, CHECKIN_REPING_MS } from '../utils/checkInOutcome.js';
 import { checkInButtonRows } from '../utils/checkInButtons.js';
 import { runTutorStatsMaterialization } from '../utils/materializeTutorStats.js';
+import { runProfileExtractionSweep } from '../utils/profileExtractor.js';
 import { notifyOwner, opsButtonRow } from '../utils/ownerAlert.js';
 import { formatAssignmentForChannel } from '../utils/channelFormat.js';
 import { shortlistDecided, shortlistedContacts } from '../../../packages/shared/utils/outreachState.js';
@@ -609,6 +610,14 @@ export default async function handler(req, res) {
         await runTutorStatsMaterialization(now);
       } catch (err) {
         console.error('Tutor-stats materialization failed:', err.message);
+      }
+      // Grade a small batch of new/stale tutor profiles via LLM extraction (Phase 9). Self-guarded
+      // (Meta doc) to run at most every ~10 min, bounded to a few Gemini calls, and in this
+      // post-response block so it never delays the tick. Best-effort — logs and swallows its own errors.
+      try {
+        await runProfileExtractionSweep(now);
+      } catch (err) {
+        console.error('Profile extraction sweep failed:', err.message);
       }
     })());
 

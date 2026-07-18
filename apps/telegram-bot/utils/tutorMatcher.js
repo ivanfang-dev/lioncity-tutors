@@ -266,20 +266,36 @@ function responsivenessFactor(tutor) {
 
 // The ranking policy version — bumped whenever WEIGHTS or the scoring logic below change, so the
 // Recommendation decision log (Phase 6) can segment analyses by ranker version. Start at v1.
-const POLICY_VERSION = '2026.07-v1';
+// Bumped for Phase 9 Step B: the quality term now uses the extracted qualityGrade instead of
+// commitmentScore, and wave 1 no longer runs the query-time Gemini re-rank — a ranking-logic change
+// the decision log should be able to segment on.
+const POLICY_VERSION = '2026.07-v2';
 
 // Blended 0..1 quality score for ordering the affordable pool, then scaled down for tutors who
 // chronically ignore outreach — PLUS the component breakdown behind it. Internal: returns
 // { score, components } so the Recommendation log (Phase 6) can record WHY a tutor ranked where they
 // did without re-deriving it. `coverageFactor` is applied by the caller (it needs requestedFields),
 // so it is not part of `components` here — runMatch/buildFeatureSnapshot fold it in.
-function scoreTutorComponents(tutor, fit) {
+// The profile-quality term in every quality blend (Phase 9 Step B): a tutor's extracted
+// qualityGrade/5 (holistic, evidence-based) when present, else commitmentScore (length-based and
+// gameable) as the fallback for tutors not yet extracted. One helper so scoreTutorComponents and
+// shortlistScore stay in lockstep — the roadmap's "replace commitmentScore with qualityGrade".
+function qualitySignal(tutor) {
+  const grade = tutor.profileFeatures?.qualityGrade;
+  return grade != null ? grade / 5 : commitmentScore(tutor);
+}
+
+function scoreTutorComponents(tutor, fit, { useQualityGrade = true } = {}) {
   const experienceRank = EXPERIENCE_RANK[tutor.yearsOfExperience] || 0; // 0..5
   const commitment = commitmentScore(tutor);
+  // Phase 9 Step B: qualitySignal now drives the quality term in production (useQualityGrade defaults
+  // true). The flag remains so the comparison script can still reproduce the pre-swap commitment-only
+  // ranking (useQualityGrade:false) for retrospective audits.
+  const qualityTerm = useQualityGrade ? qualitySignal(tutor) : commitment;
   const responsiveness = responsivenessFactor(tutor);
   const quality =
     WEIGHTS.experience * (experienceRank / 5) +
-    WEIGHTS.commitment * commitment +
+    WEIGHTS.commitment * qualityTerm +
     WEIGHTS.budget * fit.comfort;
   return {
     score: quality * responsiveness,
@@ -311,7 +327,7 @@ function buildFeatureSnapshot(tutor, assignment, quotedRate = null) {
   return {
     ...components,
     coverageFactor: coverageFactor(tutor, requestedFields, levelCategory),
-    qualityGrade: null,
+    qualityGrade: tutor.profileFeatures?.qualityGrade ?? null, // Phase 9: real grade, was hardcoded null
   };
 }
 
@@ -380,7 +396,7 @@ function shortlistScore(tutor, assignment, quotedRate = null) {
   const experience = (EXPERIENCE_RANK[tutor.yearsOfExperience] || 0) / 5;
   const quality =
     WEIGHTS.experience * experience +
-    WEIGHTS.commitment * commitmentScore(tutor) +
+    WEIGHTS.commitment * qualitySignal(tutor) + // Phase 9: same quality swap as scoreTutorComponents
     WEIGHTS.budget * fit.comfort;
   return quality * coverageFactor(tutor, requestedFields, levelCategory);
 }
@@ -508,7 +524,8 @@ const MAX_CANDIDATE_FETCH = 300;
 
 const CANDIDATE_FIELDS =
   'fullName contactNumber telegramId telegramStale tutorType yearsOfExperience highestEducation ' +
-  'introduction teachingExperience trackRecord hourlyRate availableTimeSlots responseStats teachingLevels createdAt';
+  'introduction teachingExperience trackRecord hourlyRate availableTimeSlots responseStats teachingLevels createdAt ' +
+  'profileFeatures'; // Phase 9: qualityGrade feeds the quality signal in scoring (Step B)
 
 // Find the best `poolSize` tutors matching the assignment's level+subject, location, and tutor
 // type — quality-ranked, ready to hand to the AI re-ranker.
@@ -516,7 +533,7 @@ const CANDIDATE_FIELDS =
 // `withStats` turns on the attrition funnel (see findMatchingTutorsWithStats) at the cost of one
 // countDocuments per DB-side filter, so it stays OFF for outreach and is opted into by the ops
 // console's diagnosis. `model` is injectable for tests.
-async function runMatch(assignment, poolSize, { withStats = false, model = Tutor } = {}) {
+async function runMatch(assignment, poolSize, { withStats = false, model = Tutor, useQualityGrade = true } = {}) {
   const { unmappable, stages, requestedFields, levelCategory } = buildFilterStages(assignment);
 
   if (unmappable) {
@@ -553,9 +570,9 @@ async function runMatch(assignment, poolSize, { withStats = false, model = Tutor
 
   const ranked = kept
     .map(({ tutor, fit }) => {
-      const { score, components } = scoreTutorComponents(tutor, fit);
+      const { score, components } = scoreTutorComponents(tutor, fit, { useQualityGrade });
       const cov = coverageFactor(tutor, requestedFields, levelCategory);
-      return { tutor, score: score * cov, components: { ...components, coverageFactor: cov, qualityGrade: null } };
+      return { tutor, score: score * cov, components: { ...components, coverageFactor: cov, qualityGrade: tutor.profileFeatures?.qualityGrade ?? null } };
     })
     .sort((a, b) => b.score - a.score);
 
@@ -596,8 +613,8 @@ async function findMatchingTutors(assignment, poolSize = 40) {
 // best-first. Powers the Recommendation decision log (Phase 6) at the wave-1 and escalation write
 // points — they need the ranks/scores/features, not just the tutor docs. `components` already folds
 // in coverageFactor and a null qualityGrade, matching Recommendation.featureSnapshot.
-async function findMatchingTutorsScored(assignment, poolSize = 40) {
-  const { scored } = await runMatch(assignment, poolSize);
+async function findMatchingTutorsScored(assignment, poolSize = 40, options = {}) {
+  const { scored } = await runMatch(assignment, poolSize, options);
   return scored;
 }
 

@@ -7,6 +7,7 @@ import RateValidator from '../utils/RateValidator.js';
 import ErrorHandler from '../utils/ErrorHandler.js';
 import { notifyMatchedTutors, escalateAssignment } from '../utils/tutorNotifier.js';
 import { budgetCalibration } from '../utils/tutorMatcher.js';
+import { runExtractionForTutor } from '../utils/profileExtractor.js';
 import { recordTutorReplyByTutorId } from '../utils/recordTutorReply.js';
 import { declineReasonKeyboard, recordDeclineReason } from '../utils/declineReason.js';
 import { recordQuotedRate } from '../utils/rateCapture.js';
@@ -2431,6 +2432,20 @@ async function handleEmailEdit(bot, chatId, text, userSessions, Tutor) {
   }
 }
 
+// After a tutor edits a profile TEXT field, re-run LLM extraction (Phase 9) so their qualityGrade
+// reflects the new text — the write-time hook for edits (the tick sweep covers registrations). Runs
+// in the background via waitUntil so it never delays the edit confirmation. On failure we invalidate
+// the stored modelVersion so the sweep re-tries, rather than leaving a grade derived from the old text.
+function reextractProfile(tutor, TutorModel) {
+  waitUntil(
+    runExtractionForTutor(tutor)
+      .then(features => {
+        if (!features) return TutorModel.updateOne({ _id: tutor._id }, { $unset: { 'profileFeatures.modelVersion': 1 } });
+      })
+      .catch(err => console.warn('Profile re-extraction failed:', err.message))
+  );
+}
+
 async function handleIntroductionEdit(bot, chatId, text, userSessions, Tutor) {
   try {
     const session = userSessions[chatId];
@@ -2442,7 +2457,8 @@ async function handleIntroductionEdit(bot, chatId, text, userSessions, Tutor) {
     
     tutor.introduction = text.trim();
     await tutor.save();
-    
+    reextractProfile(tutor, Tutor);
+
     session.state = ApplicationStates.IDLE;
     return await safeSend(bot, chatId, '✅ Introduction updated successfully!', {
       reply_markup: getPersonalInfoMenu(tutor)
@@ -2464,7 +2480,8 @@ async function handleTeachingExperienceEdit(bot, chatId, text, userSessions, Tut
     
     tutor.teachingExperience = text.trim();
     await tutor.save();
-    
+    reextractProfile(tutor, Tutor);
+
     session.state = ApplicationStates.IDLE;
     return await safeSend(bot, chatId, '✅ Teaching experience updated successfully!', {
       reply_markup: getPersonalInfoMenu(tutor)
@@ -2486,7 +2503,8 @@ async function handleTrackRecordEdit(bot, chatId, text, userSessions, Tutor) {
     
     tutor.trackRecord = text.trim();
     await tutor.save();
-    
+    reextractProfile(tutor, Tutor);
+
     session.state = ApplicationStates.IDLE;
     return await safeSend(bot, chatId, '✅ Track record updated successfully!', {
       reply_markup: getPersonalInfoMenu(tutor)

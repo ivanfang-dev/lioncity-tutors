@@ -375,6 +375,32 @@ const tutorSchema = new mongoose.Schema({
     computedAt: { type: Date },
   },
 
+  // Write-time LLM profile extraction (roadmap Phase 9): a structured, deterministic read of the
+  // free-text profile fields (introduction / teachingExperience / trackRecord), produced ONCE by a
+  // Gemini call at registration/edit time instead of re-read on every assignment at query time.
+  //   qualityGrade    — 1–5 holistic profile quality; replaces the gameable commitmentScore in
+  //                     ranking (Phase 9 Step B) when present, falling back to it otherwise.
+  //   qualityReason   — one-line justification, surfaced in owner alerts / the ops console.
+  //   subjectsClaimed — subjects the profile actually evidences teaching, with the supporting text.
+  //   seniority       — coarse experience band, independent of the self-reported yearsOfExperience.
+  //   redFlags        — short phrases the operator should double-check (vague claims, inconsistencies).
+  //   modelVersion    — the extractor version that produced this, so a bump forces re-extraction.
+  //   extractedAt     — when it was produced (also drives staleness vs a later profile edit).
+  // Absent until the extractor first runs for a tutor; never written by a full-doc .save() (async).
+  profileFeatures: {
+    extractedAt: { type: Date },
+    modelVersion: { type: String },
+    qualityGrade: { type: Number },
+    qualityReason: { type: String },
+    subjectsClaimed: [{
+      subject: { type: String },
+      level: { type: String },
+      evidence: { type: String },
+    }],
+    seniority: { type: String, enum: ['undergrad', 'early', 'experienced', 'veteran'] },
+    redFlags: [{ type: String }],
+  },
+
   // Form metadata
   formType: String
 }, { timestamps: true });
