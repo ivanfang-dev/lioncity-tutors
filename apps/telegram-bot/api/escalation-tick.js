@@ -4,6 +4,7 @@ import { Assignment, Tutor } from '../../../packages/shared/server-exports.js';
 import { escalateAssignment, remindNonResponders } from '../utils/tutorNotifier.js';
 import { shortlistScore, shortlistReason } from '../utils/tutorMatcher.js';
 import { holdTransition } from '../utils/recordTutorReply.js';
+import { draftParentMessage, buildWaMeButton, waMeLink } from '../utils/parentMessage.js';
 import { notifyOwner } from '../utils/ownerAlert.js';
 import { formatAssignmentForChannel } from '../utils/channelFormat.js';
 
@@ -34,6 +35,42 @@ const SHORTLIST_SIZE = INTERESTED_TARGET;
 // Bound how many hold windows one tick releases, so the owner-alert fan-out stays inside the
 // function's time budget (each release = a Tutor query + one owner Telegram message).
 const MAX_RELEASE_PER_TICK = Number(process.env.OUTREACH_MAX_RELEASE_PER_TICK) || 5;
+
+// Parent-silence follow-up: after the shortlist is handed to the owner, nudge once at this age
+// if no pick/reject was recorded, then flag for manual follow-up (and stop nagging) at 48h.
+const PARENT_NUDGE_AFTER_MS = Number(process.env.PARENT_NUDGE_AFTER_MS) || 24 * 60 * 60 * 1000; // 24h
+const PARENT_FLAG_AFTER_MS = Number(process.env.PARENT_FLAG_AFTER_MS) || 48 * 60 * 60 * 1000; // 48h
+const MAX_NUDGE_PER_TICK = Number(process.env.OUTREACH_MAX_NUDGE_PER_TICK) || 5;
+
+// Pure decision for the parent-silence follow-up: 'nudge' (24h, once), 'flag' (48h, once), or
+// null. `now` injected for testing. Self-contained: returns null the moment an outcome is
+// recorded (pick → status Filled or parentPickedAt; reject → parentRejectedAt on a shortlisted
+// contact) so a race with the owner's tap can't nag after a decision.
+export function parentSilenceAction(assignment, now = new Date(), {
+  nudgeAfterMs = PARENT_NUDGE_AFTER_MS,
+  flagAfterMs = PARENT_FLAG_AFTER_MS,
+} = {}) {
+  const o = assignment.outreach || {};
+  if (!o.shortlistReleasedAt) return null;      // no shortlist handed over yet
+  if (o.parentSilenceEscalatedAt) return null;  // already flagged — done nagging
+  if (assignment.status === 'Filled') return null;
+
+  // "Decided" only counts outcomes from the CURRENT release cycle: a reject → resume →
+  // re-release leaves stale rejected contacts (still carrying shortlistRank + parentRejectedAt)
+  // from the prior shortlist, which must not suppress the new shortlist's nudge. Scope by
+  // timestamp against shortlistReleasedAt.
+  const releasedAt = new Date(o.shortlistReleasedAt);
+  const decided = (o.contacts || []).some(c =>
+    (c.parentPickedAt && new Date(c.parentPickedAt) >= releasedAt) ||
+    (c.shortlistRank != null && c.parentRejectedAt && new Date(c.parentRejectedAt) >= releasedAt)
+  );
+  if (decided) return null;
+
+  const elapsed = now - releasedAt;
+  if (elapsed >= flagAfterMs) return 'flag';
+  if (elapsed >= nudgeAfterMs && !o.parentNudgedAt) return 'nudge';
+  return null;
+}
 
 let isConnected = false;
 async function connectToDatabase() {
@@ -140,20 +177,32 @@ async function releaseOneShortlist(assignment) {
     return;
   }
 
-  // Stamp shortlistRank 1..N on the winners AND fulfil in one atomic update. arrayFilters
-  // address each winner by tutorId. Never .save(): a legacy subject/level would fail
-  // re-validation, and a stale contact array could clobber a reply that landed mid-release.
-  const set = { 'outreach.status': 'Fulfilled' };
+  // Stamp shortlistRank 1..N on the winners, record the release time (starts the parent-
+  // silence clock), AND fulfil — one atomic update. arrayFilters address each winner by
+  // tutorId. Never .save(): a legacy subject/level would fail re-validation, and a stale
+  // contact array could clobber a reply that landed mid-release.
+  const releasedAt = new Date();
+  const set = { 'outreach.status': 'Fulfilled', 'outreach.shortlistReleasedAt': releasedAt };
   const arrayFilters = [];
   ranked.forEach((r, i) => {
     set[`outreach.contacts.$[c${i}].shortlistRank`] = i + 1;
     arrayFilters.push({ [`c${i}.tutorId`]: r.tutor._id });
   });
-  await Assignment.updateOne({ _id: assignment._id }, { $set: set }, { arrayFilters });
+  // Clear the parent-silence gates so a re-released shortlist (after a reject → resume) starts a
+  // fresh 24h/48h cycle rather than inheriting the prior cycle's nudged/flagged state. No-op on
+  // a first release.
+  await Assignment.updateOne(
+    { _id: assignment._id },
+    { $set: set, $unset: { 'outreach.parentNudgedAt': '', 'outreach.parentSilenceEscalatedAt': '' } },
+    { arrayFilters }
+  );
 
   // Mirror the release into the in-memory doc so the owner alert (pendingParentTutorIds +
   // the rich card) sees the ranks and the Fulfilled status.
   assignment.outreach.status = 'Fulfilled';
+  assignment.outreach.shortlistReleasedAt = releasedAt;
+  assignment.outreach.parentNudgedAt = undefined;
+  assignment.outreach.parentSilenceEscalatedAt = undefined;
   ranked.forEach((r, i) => {
     const c = assignment.outreach.contacts.find(cc => cc.tutorId?.toString() === r.tutor._id.toString());
     if (c) c.shortlistRank = i + 1;
@@ -162,38 +211,61 @@ async function releaseOneShortlist(assignment) {
   await alertOwnerShortlistReady(assignment, ranked);
 }
 
-// Alert the owner that a ranked shortlist is ready to relay: a rich card with the top 3,
-// a one-line "why" per tutor (experience/type + rate-vs-budget), and the one-tap "Send all"
-// button. (Phase 2 upgrades this into the full drafted parent message.)
-async function alertOwnerShortlistReady(assignment, ranked) {
-  let replyMarkup;
-  if (assignment.parentContact) {
-    const pendingCount = assignment.pendingParentTutorIds().length;
-    if (pendingCount > 0) {
-      replyMarkup = {
-        inline_keyboard: [[{
-          text: pendingCount === 1 ? '📤 Send profile to parent' : `📤 Send all ${pendingCount} profiles to parent`,
-          callback_data: `sendallprof_${assignment._id}`
-        }]]
-      };
-    }
-  }
+// Outcome-capture buttons for a released shortlist: one "Picked #N" per ranked tutor, plus
+// "Rejected all" and "No reply yet". Reused by the release alert AND the 24h silence nudge so
+// both record through the same handlers (setwinner_/rejectall_/parentnoreply_ in handlers.js
+// — one source of truth). `shortlisted` = [{ tutorId, tutorName, shortlistRank }].
+function buildOutcomeButtons(assignmentId, shortlisted) {
+  const rows = shortlisted
+    .slice()
+    .sort((a, b) => (a.shortlistRank ?? Infinity) - (b.shortlistRank ?? Infinity))
+    .map(s => ([{
+      text: `✅ Parent picked #${s.shortlistRank} — ${s.tutorName || 'Tutor'}`,
+      callback_data: `setwinner_${assignmentId}_${s.tutorId}`
+    }]));
+  rows.push([{ text: '❌ Parent rejected all', callback_data: `rejectall_${assignmentId}` }]);
+  rows.push([{ text: '🕓 No reply yet', callback_data: `parentnoreply_${assignmentId}` }]);
+  return rows;
+}
 
+// Alert the owner that a ranked shortlist is ready to relay: a rich card with the top 3, a
+// one-line "why" per tutor (experience/type + rate-vs-budget), the drafted parent message
+// behind a "Send via WhatsApp" wa.me button (paste-block fallback when the draft is too long
+// for a button URL), and the outcome-capture buttons.
+async function alertOwnerShortlistReady(assignment, ranked) {
   const medals = ['🥇', '🥈', '🥉'];
   const cards = ranked.map((r, i) => {
     const medal = medals[i] || `${i + 1}.`;
     return `${medal} *${r.tutor.fullName || 'Tutor'}*\n    ${shortlistReason(r.tutor, assignment)}`;
   });
 
-  await notifyOwner(
+  let text =
     `🎯 *Shortlist ready* — *${assignment.title}*\n` +
     `Picked the best ${ranked.length} of ${assignment.viableInterestedCount()} interested tutor(s):\n\n` +
-    cards.join('\n\n') +
-    (assignment.parentContact
-      ? `\n\nTap below to forward the ${ranked.length} profile(s) to the parent.`
-      : `\n\n⚠️ No parent contact on this assignment — relay unavailable.`),
-    replyMarkup
-  );
+    cards.join('\n\n');
+
+  const rows = [];
+
+  if (assignment.parentContact) {
+    // Draft the parent-facing message and offer it as a one-tap "open WhatsApp with the draft
+    // pre-filled" button. Best-effort: any drafting failure falls back to a template inside
+    // draftParentMessage; a too-long draft returns no button, so we paste it into the body.
+    const draft = await draftParentMessage('shortlist', { assignment, tutors: ranked.map(r => r.tutor) });
+    const waButton = buildWaMeButton(assignment.parentContact, draft, '📤 Send via WhatsApp');
+    if (waButton) {
+      rows.push([waButton]);
+    } else {
+      text += `\n\n📋 *Draft too long for a button — open [WhatsApp](${waMeLink(assignment.parentContact)}) with ${assignment.parentContact} and paste:*\n\n${draft}`;
+    }
+
+    rows.push(...buildOutcomeButtons(assignment._id, ranked.map((r, i) => ({
+      tutorId: r.tutor._id, tutorName: r.tutor.fullName, shortlistRank: i + 1
+    }))));
+  } else {
+    text += `\n\n⚠️ No parent contact on this assignment — relay unavailable.`;
+  }
+
+  await notifyOwner(text, rows.length ? { inline_keyboard: rows } : undefined, { disableWebPagePreview: true });
 }
 
 // Release every hold window whose timer has elapsed. Bounded per tick. Runs every tick
@@ -210,6 +282,60 @@ async function releaseHoldingShortlists(now) {
       console.log(`Released shortlist for ${assignment._id}`);
     } catch (err) {
       console.error(`Shortlist release failed for ${assignment._id}:`, err.message);
+    }
+  }
+}
+
+// Ping the owner about a parent who's gone quiet on a released shortlist: a nudge (24h) carries
+// a drafted reminder behind a wa.me button, a flag (48h) just marks it for manual follow-up.
+// Both re-show the outcome-capture buttons so the owner can still record the result from here.
+async function alertOwnerParentSilent(assignment, kind) {
+  const shortlisted = (assignment.outreach?.contacts || [])
+    .filter(c => c.shortlistRank != null && !c.parentRejectedAt)
+    .map(c => ({ tutorId: c.tutorId, tutorName: c.tutorName, shortlistRank: c.shortlistRank }));
+
+  const rows = [];
+  let text;
+  if (kind === 'nudge') {
+    text = `⏳ *Parent quiet* — no pick/reject on *${assignment.title}* ~24h after you got the shortlist.\nNudge them?`;
+    if (assignment.parentContact) {
+      const draft = await draftParentMessage('nudge', { assignment });
+      const btn = buildWaMeButton(assignment.parentContact, draft, '📤 Send nudge via WhatsApp');
+      if (btn) rows.push([btn]);
+      else text += `\n\n📋 Open [WhatsApp](${waMeLink(assignment.parentContact)}) with ${assignment.parentContact} and paste:\n\n${draft}`;
+    }
+  } else {
+    text = `🚩 *Parent silent ~48h* on *${assignment.title}* — flagged for manual follow-up. No more auto-reminders.`;
+  }
+  if (assignment.parentContact && shortlisted.length) {
+    rows.push(...buildOutcomeButtons(assignment._id, shortlisted));
+  }
+  await notifyOwner(text, rows.length ? { inline_keyboard: rows } : undefined, { disableWebPagePreview: true });
+}
+
+// Follow up on parents who've gone silent since a shortlist was handed over. Runs every tick,
+// bounded per run. Nudges once at 24h, flags at 48h; parentSilenceAction gates both so nothing
+// is nagged twice or after the owner records an outcome.
+async function nudgeSilentParents(now) {
+  const cutoff = new Date(now.getTime() - PARENT_NUDGE_AFTER_MS);
+  const candidates = await Assignment.find({
+    status: 'Open',
+    'outreach.status': 'Fulfilled',
+    'outreach.shortlistReleasedAt': { $lte: cutoff },
+    'outreach.parentSilenceEscalatedAt': { $exists: false }
+  }).limit(MAX_NUDGE_PER_TICK);
+
+  for (const assignment of candidates) {
+    const action = parentSilenceAction(assignment, now);
+    if (!action) continue;
+    try {
+      // Record the gate FIRST so a slow owner-alert can't cause a double-nudge on the next tick.
+      const field = action === 'nudge' ? 'outreach.parentNudgedAt' : 'outreach.parentSilenceEscalatedAt';
+      await Assignment.updateOne({ _id: assignment._id }, { $set: { [field]: now } });
+      await alertOwnerParentSilent(assignment, action);
+      console.log(`Parent-silence ${action} for ${assignment._id}`);
+    } catch (err) {
+      console.error(`Parent silence follow-up failed for ${assignment._id}:`, err.message);
     }
   }
 }
@@ -312,6 +438,12 @@ export default async function handler(req, res) {
         await releaseHoldingShortlists(now);
       } catch (err) {
         console.error('Shortlist release failed:', err.message);
+      }
+      // Follow up on parents who've gone silent on a shortlist (24h nudge, 48h flag).
+      try {
+        await nudgeSilentParents(now);
+      } catch (err) {
+        console.error('Parent silence follow-up failed:', err.message);
       }
       try {
         await closeStaleAssignments(now);

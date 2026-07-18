@@ -10,6 +10,10 @@ import { recordTutorReplyByTutorId } from '../utils/recordTutorReply.js';
 import { sendWhatsApp } from '../utils/whatsappSender.js';
 import { getTutorNameByNumber } from '../utils/tutorLookup.js';
 import { SINGAPORE_LOCATIONS } from '../utils/locations.js';
+import { getLevelCategory } from '../utils/tutorMatcher.js';
+import { draftParentMessage, buildWaMeButton } from '../utils/parentMessage.js';
+import { Placement } from '../../../packages/shared/server-exports.js';
+import mongoose from 'mongoose';
 import { waitUntil } from '@vercel/functions';
 
 /* global process */
@@ -1726,6 +1730,22 @@ async function confirmPostAssignment(bot, chatId, userSessions, Assignment, chan
       }
     });
 
+    // Parent expectation blurb: hand the owner a paste-ready "we're searching, ~6h" message to
+    // forward so the parent knows profiles are coming. Owner-in-the-loop — never messaged
+    // directly (Repo facts). Only when we have a parent number; best-effort (never blocks posting).
+    if (savedAssignment.parentContact) {
+      try {
+        const blurb = await draftParentMessage('expectation', { assignment: savedAssignment });
+        const waButton = buildWaMeButton(savedAssignment.parentContact, blurb, '📤 Send to parent via WhatsApp');
+        await safeSend(bot, chatId,
+          `💬 *Let the parent know we're on it* — forward this ${waButton ? '(tap below)' : `(open WhatsApp with ${savedAssignment.parentContact} and paste)`}:\n\n${blurb}`,
+          { parse_mode: 'Markdown', disable_web_page_preview: true,
+            reply_markup: waButton ? { inline_keyboard: [[waButton]] } : undefined });
+      } catch (blurbErr) {
+        console.warn('Expectation blurb failed:', blurbErr.message);
+      }
+    }
+
     // Register the notification work with Vercel directly so the function stays alive
     // after the webhook response is sent, without blocking on it.
     waitUntil(
@@ -2995,18 +3015,41 @@ async function handleCallbackQuery(
       const winnerName = (assignment.outreach?.contacts || [])
         .find(c => c.tutorId?.toString() === tutorId)?.tutorName || 'the tutor';
       try {
+        const now = new Date();
+        const tutorOid = new mongoose.Types.ObjectId(tutorId);
         // Targeted update (never .save(): legacy subject/level would fail validation). Mark Filled,
-        // record who won, and stop outreach so no further waves go out.
+        // record who won, stamp the winning contact's parentPickedAt, and stop outreach.
         await Assignment.updateOne(
           { _id: assignment._id },
           { $set: {
             status: 'Filled',
             matchedTutorId: tutorId,
-            filledAt: new Date(),
-            'outreach.status': 'Fulfilled'
-          } }
+            filledAt: now,
+            'outreach.status': 'Fulfilled',
+            'outreach.contacts.$[c].parentPickedAt': now
+          } },
+          { arrayFilters: [{ 'c.tutorId': tutorOid }] }
         );
         assignment.status = 'Filled'; // for the channel re-render below
+
+        // Record the Placement — the ground-truth match row the day-30 check-in (Phase 5) and
+        // future ranking work train against. Upsert keyed on (assignment, tutor) so a double-tap
+        // can't duplicate it; best-effort (a Placement failure must not block marking Filled).
+        try {
+          const tutorDoc = await Tutor.findById(tutorId).select('hourlyRate').lean();
+          const agreedRate = tutorDoc?.hourlyRate?.[getLevelCategory(assignment.level)]
+            || tutorDoc?.hourlyRate?.secondary || assignment.rate;
+          await Placement.updateOne(
+            { assignmentId: assignment._id, tutorId: tutorOid },
+            { $setOnInsert: {
+                parentContact: assignment.parentContact,
+                filledAt: now, agreedRate, status: 'active'
+              } },
+            { upsert: true }
+          );
+        } catch (placementErr) {
+          console.error('Failed to record Placement:', placementErr.message);
+        }
 
         await bot.answerCallbackQuery(callbackQuery.id, { text: '✅ Marked filled' });
 
@@ -3033,6 +3076,103 @@ async function handleCallbackQuery(
         await bot.answerCallbackQuery(callbackQuery.id, { text: 'Something went wrong — try again.' });
       }
       return;
+    }
+
+    // Parent passed on the whole shortlist — ask WHY (feeds shortlist presentation + pricing).
+    if (data.startsWith('rejectall_')) {
+      if (!isAdmin(userId, ADMIN_USERS)) {
+        return await bot.answerCallbackQuery(callbackQuery.id, { text: 'Not authorized.' });
+      }
+      const assignmentId = data.replace('rejectall_', '');
+      await bot.answerCallbackQuery(callbackQuery.id);
+      await safeSend(bot, chatId,
+        `Why did the parent pass on the shortlist? (helps us find better matches — we'll then message fresh tutors)`,
+        { reply_markup: { inline_keyboard: [
+          [{ text: '💲 Rate too high', callback_data: `rejreason_${assignmentId}_rate` }],
+          [{ text: '📄 Profiles not a fit', callback_data: `rejreason_${assignmentId}_profiles` }],
+          [{ text: '🗓️ Timing / availability', callback_data: `rejreason_${assignmentId}_timing` }],
+          [{ text: '❔ Other', callback_data: `rejreason_${assignmentId}_other` }]
+        ] } });
+      return;
+    }
+
+    // Record the reject reason on the shortlisted tutors and resume outreach for fresh ones —
+    // same "find more" engine as findmore_, plus the captured reason. Rejected tutors stop
+    // counting toward the target (viableInterestedCount) and stay in contactedTutorIds (never
+    // re-messaged). callback_data is rejreason_<assignmentId>_<reason>; reason is the last segment.
+    if (data.startsWith('rejreason_')) {
+      if (!isAdmin(userId, ADMIN_USERS)) {
+        return await bot.answerCallbackQuery(callbackQuery.id, { text: 'Not authorized.' });
+      }
+      const rest = data.replace('rejreason_', '');
+      const cut = rest.lastIndexOf('_');
+      const assignmentId = rest.slice(0, cut);
+      const reason = rest.slice(cut + 1);
+      const assignment = await Assignment.findById(assignmentId);
+      if (!assignment) {
+        return await bot.answerCallbackQuery(callbackQuery.id, { text: 'Assignment not found.' });
+      }
+      const now = new Date();
+      const rejectedCount = (assignment.outreach?.contacts || [])
+        .filter(c => c.status === 'Interested' && c.shortlistRank != null && !c.parentRejectedAt).length;
+      try {
+        // Targeted update (never .save(): a legacy subject/level would fail validation). Reject the
+        // shortlisted tutors with the reason, and reset the outreach clock so the 4h timeout counts
+        // from now. Reopen in case auto-close already fired.
+        await Assignment.updateOne(
+          { _id: assignment._id },
+          { $set: {
+              'outreach.contacts.$[c].parentRejectedAt': now,
+              'outreach.contacts.$[c].parentRejectReason': reason,
+              'outreach.status': 'Active',
+              'outreach.startedAt': now,
+              'outreach.lastWaveAt': now,
+              status: 'Open'
+            } },
+          { arrayFilters: [{ 'c.status': 'Interested', 'c.shortlistRank': { $exists: true }, 'c.parentRejectedAt': { $exists: false } }] }
+        );
+        // Mirror the reset in memory so the immediate escalateAssignment sees Active state.
+        assignment.outreach.status = 'Active';
+        assignment.outreach.startedAt = now;
+        assignment.outreach.lastWaveAt = now;
+        assignment.status = 'Open';
+
+        await bot.answerCallbackQuery(callbackQuery.id, { text: '🔄 Finding more tutors…' });
+
+        // Fire one fresh wave immediately (speed is the differentiator). The 30-min scheduler
+        // cadence continues afterward (the wave re-stamps lastWaveAt).
+        waitUntil((async () => {
+          try {
+            const result = await escalateAssignment(assignment, BOT_USERNAME, { waveSize: 6 });
+            if (result.exhausted) {
+              await safeSend(bot, chatId,
+                `📭 *No fresh matching tutors left* for *${assignment.title}* — you've contacted everyone in the pool. You'll need to follow up manually.`,
+                { parse_mode: 'Markdown' });
+            } else {
+              await safeSend(bot, chatId,
+                `🔄 *Resuming outreach* for *${assignment.title}* — reason logged: _${reason}_. Messaging more tutors` +
+                (rejectedCount ? ` (the ${rejectedCount} shown to the parent ${rejectedCount === 1 ? 'is' : 'are'} excluded).` : '.'),
+                { parse_mode: 'Markdown' });
+            }
+          } catch (err) {
+            console.error('reject-reason escalation failed:', err.message);
+            await safeSend(bot, chatId, '❌ Something went wrong resuming outreach — try again.');
+          }
+        })());
+      } catch (err) {
+        console.error('Failed to record reject reason / resume outreach:', err.message);
+        await bot.answerCallbackQuery(callbackQuery.id, { text: 'Something went wrong — try again.' });
+      }
+      return;
+    }
+
+    // Owner acknowledges the parent hasn't replied yet — no state change; the tick's 24h/48h
+    // silence follow-up handles reminders off shortlistReleasedAt.
+    if (data.startsWith('parentnoreply_')) {
+      if (!isAdmin(userId, ADMIN_USERS)) {
+        return await bot.answerCallbackQuery(callbackQuery.id, { text: 'Not authorized.' });
+      }
+      return await bot.answerCallbackQuery(callbackQuery.id, { text: "Noted — I'll remind you if it stays quiet." });
     }
 
     if (data.trim() === 'admin_post_assignment') {
