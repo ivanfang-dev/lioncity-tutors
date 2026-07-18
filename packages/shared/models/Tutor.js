@@ -401,6 +401,12 @@ const tutorSchema = new mongoose.Schema({
     redFlags: [{ type: String }],
   },
 
+  // Profile-improvement nudge (roadmap Phase 9 follow-on): when we sent this tutor the ONE Telegram
+  // DM suggesting they add concrete results to a weak profile (qualityGrade ≤ 2). Top-level, NOT
+  // inside profileFeatures, so a later re-extraction (which overwrites profileFeatures) can't wipe it
+  // and re-trigger the nudge. Absent = never nudged.
+  profileNudgedAt: { type: Date },
+
   // Form metadata
   formType: String
 }, { timestamps: true });

@@ -95,6 +95,23 @@ export async function sendAssignmentDM(tutor, assignment) {
   });
 }
 
+// One FREE profile-improvement nudge (roadmap Phase 9 follow-on): a tutor with a weak extracted
+// profile (qualityGrade ≤ 2) gets a single Telegram DM suggesting they add concrete results. The
+// button routes into the existing track-record edit flow ('edit_track_record'), which on save
+// re-extracts their profile (Phase 9) — so acting on the nudge can lift their ranking automatically.
+// Telegram-only, no WhatsApp spend. Throws on failure so the caller can log it.
+export async function sendProfileNudgeDM(tutor) {
+  if (!tutor.telegramId) throw new Error('tutor has no telegramId');
+
+  await postToTelegram('sendMessage', {
+    chat_id: tutor.telegramId,
+    text: "Hi! A quick tip: tutors whose profiles show CONCRETE results — specific grade improvements, schools taught, years of experience — get shortlisted far more often than those with a short or general profile. If you'd like more assignment matches, add your track record below and we'll update your profile. 👇",
+    reply_markup: {
+      inline_keyboard: [[{ text: '✏️ Add my track record', callback_data: 'edit_track_record' }]]
+    }
+  });
+}
+
 // One FREE reactivation DM to a tutor we've auto-paused for dormancy (roadmap Phase 10 step 3): many
 // unanswered messages and no confirmed activity in months. One tap ('reactivate', handled in
 // handlers.js) clears pausedAt and puts them back in the pool. Telegram-only — no WhatsApp spend.

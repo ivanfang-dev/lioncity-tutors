@@ -13,6 +13,7 @@ import { runProfileExtractionSweep } from '../utils/profileExtractor.js';
 import { isNightSG, activeElapsedMs } from '../utils/outreachSchedule.js';
 import { computeWaveSize, trailingInterestRate } from '../utils/waveSizing.js';
 import { runDormancySweep } from '../utils/dormancy.js';
+import { runProfileNudgeSweep } from '../utils/profileNudge.js';
 import { loadCappedTutorIds } from '../utils/exposureCaps.js';
 import { notifyOwner, opsButtonRow } from '../utils/ownerAlert.js';
 import { formatAssignmentForChannel } from '../utils/channelFormat.js';
@@ -646,6 +647,13 @@ export default async function handler(req, res) {
         if (!isNightSG(now)) await runDormancySweep(now);
       } catch (err) {
         console.error('Dormancy sweep failed:', err.message);
+      }
+      // Nudge weak-profile tutors (qualityGrade ≤ 2) to add their track record — ONE Telegram DM each
+      // (Phase 9 follow-on). Bounded, daytime-only, Telegram-only. Best-effort.
+      try {
+        if (!isNightSG(now)) await runProfileNudgeSweep(now);
+      } catch (err) {
+        console.error('Profile nudge sweep failed:', err.message);
       }
     })());
 
