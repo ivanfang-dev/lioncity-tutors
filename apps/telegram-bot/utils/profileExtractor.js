@@ -1,4 +1,4 @@
-import { GoogleGenAI } from '@google/genai';
+import { GoogleGenAI, Type } from '@google/genai';
 import { Tutor, Meta } from '../../../packages/shared/server-exports.js';
 
 // Write-time LLM profile extraction (roadmap Phase 9). ONE Gemini call turns a tutor's free-text
@@ -19,6 +19,34 @@ const SENIORITY = new Set(['undergrad', 'early', 'experienced', 'veteran']);
 const INTRO_LIMIT = 1200;
 const EXPERIENCE_LIMIT = 1200;
 const TRACK_LIMIT = 1000;
+
+// Constrained decoding. `responseMimeType: 'application/json'` alone is only an instruction — the
+// model can and does emit syntactically invalid JSON under it (observed in the wild: a dropped `}`
+// between subjectsClaimed elements, which parseJson can't recover, so the tutor got no features).
+// A responseSchema constrains generation at the grammar level, so the bytes are valid JSON by
+// construction. validateExtraction still runs after: this guarantees SYNTAX, not sane VALUES.
+export const RESPONSE_SCHEMA = {
+  type: Type.OBJECT,
+  properties: {
+    qualityGrade: { type: Type.INTEGER },
+    qualityReason: { type: Type.STRING },
+    subjectsClaimed: {
+      type: Type.ARRAY,
+      items: {
+        type: Type.OBJECT,
+        properties: {
+          subject: { type: Type.STRING },
+          level: { type: Type.STRING },
+          evidence: { type: Type.STRING },
+        },
+        required: ['subject', 'level', 'evidence'],
+      },
+    },
+    seniority: { type: Type.STRING, enum: [...SENIORITY] },
+    redFlags: { type: Type.ARRAY, items: { type: Type.STRING } },
+  },
+  required: ['qualityGrade', 'qualityReason', 'subjectsClaimed', 'seniority', 'redFlags'],
+};
 
 let _client = null;
 function client() {
@@ -134,12 +162,19 @@ export async function extractProfileFeatures(tutor) {
     const res = await client().models.generateContent({
       model: GEMINI_MODEL,
       contents: buildPrompt(tutor),
-      config: { responseMimeType: 'application/json', temperature: 0 },
+      config: { responseMimeType: 'application/json', responseSchema: RESPONSE_SCHEMA, temperature: 0 },
     });
     const text = (res.text || '').trim();
     const json = parseJson(text);
     if (!json) {
-      console.warn('profileExtractor: unparseable response', { tutorId: tutor._id, sample: text.slice(0, 120) });
+      // Should be unreachable now that decoding is schema-constrained — log enough to tell a real
+      // malformed body apart from a truncated one (MAX_TOKENS) if it ever fires again.
+      console.warn('profileExtractor: unparseable response', {
+        tutorId: tutor._id,
+        finishReason: res.candidates?.[0]?.finishReason,
+        length: text.length,
+        sample: text.slice(0, 120),
+      });
       return null;
     }
     const validated = validateExtraction(json);

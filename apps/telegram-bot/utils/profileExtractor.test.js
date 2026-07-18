@@ -1,5 +1,5 @@
 import { describe, test, expect } from '@jest/globals';
-import { validateExtraction, parseJson, hasExtractableText } from './profileExtractor.js';
+import { validateExtraction, parseJson, hasExtractableText, RESPONSE_SCHEMA } from './profileExtractor.js';
 
 // The extractor stores NOTHING on a malformed response (roadmap Phase 9), so these strict-validation
 // tests are the guard that a bad Gemini reply can never reach ranking.
@@ -82,6 +82,46 @@ describe('parseJson', () => {
     expect(parseJson('not json at all')).toBeNull();
     expect(parseJson('')).toBeNull();
     expect(parseJson(null)).toBeNull();
+  });
+});
+
+// Regression: gemini-2.5-flash under responseMimeType alone returned this body for a real tutor —
+// the `}` closing the first subjectsClaimed element is missing, so the whole extraction was dropped.
+// parseJson cannot recover it (the brace-block fallback re-extracts the same broken text), which is
+// why generation is now schema-constrained. This documents the shape that motivated RESPONSE_SCHEMA.
+describe('malformed model output that motivated RESPONSE_SCHEMA', () => {
+  const malformed = `{
+  "qualityGrade": 4,
+  "qualityReason": "Specific achievements, though formal experience is limited.",
+  "subjectsClaimed": [
+    {
+      "subject": "General Paper",
+      "level": "JC",
+      "evidence": "Achieved A grade in General Paper"
+    ,
+    {
+      "subject": "Economics",
+      "level": "JC (H1)",
+      "evidence": "Helped students improve from D to B"
+    }
+  ],
+  "seniority": "undergrad",
+  "redFlags": []
+}`;
+
+  test('parseJson returns null rather than throwing or half-parsing', () => {
+    expect(parseJson(malformed)).toBeNull();
+  });
+
+  test('schema covers every key validateExtraction requires, with a matching seniority enum', () => {
+    for (const key of Object.keys(valid)) {
+      expect(RESPONSE_SCHEMA.properties).toHaveProperty(key);
+      expect(RESPONSE_SCHEMA.required).toContain(key);
+    }
+    // A schema enum that drifts from SENIORITY would let the model emit a value validateExtraction
+    // then rejects — silently costing the tutor their features.
+    expect([...RESPONSE_SCHEMA.properties.seniority.enum].sort())
+      .toEqual(['early', 'experienced', 'undergrad', 'veteran']);
   });
 });
 
