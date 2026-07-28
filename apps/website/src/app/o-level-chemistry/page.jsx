@@ -1,7 +1,7 @@
 import { MATCH_TIME } from '@/data/promises';
 export const metadata = {
-  title: 'O Level Chemistry Guide 2026: Complete Study Strategy for Singapore Students | LionCity Tutors',
-  description: 'Ultimate O Level Chemistry preparation guide for Singapore students. Expert strategies, practical techniques, and proven tips to score A1 in O Level Chemistry 2026.',
+  title: 'O-Level Chemistry Guide 2026 | LionCity Tutors',
+  description: 'O-Level Chemistry guide for Singapore students — physical, organic and inorganic chemistry, with the mole calculations and practical technique that earn an A1.',
   keywords: [
     'O Level Chemistry 2026',
     'O Level Chemistry Singapore',
@@ -24,17 +24,21 @@ export const metadata = {
 };
 
 import TableOfContents from '@/components/TableOfContents';
+import GuideSchema from '@/components/seo/GuideSchema';
 import {
   GuideHeader, SectionHeading, GuideCard, TopicCard, GuideTimeline, KeyTakeaways, GuideCTA, ICON_STROKE,
+  RelatedGuides, ExamTimetable,
 } from '@/components/guide';
 import {
   FileText, CalendarClock, Atom, Gem, Hexagon, Beaker, Target,
   TriangleAlert, CalendarDays, BookOpen, GraduationCap, Users,
-  Hourglass, HeartHandshake, Compass, Flag, ListChecks,
+  Hourglass, HeartHandshake, Compass, Flag, ListChecks, HelpCircle,
 } from 'lucide-react';
+import { O_LEVEL_CHEMISTRY_FAQS } from './faqs.mjs';
 
 const tableOfContents = [
   { id: 'structure', label: 'Exam & paper structure' },
+  { id: 'exam-dates', label: '2026 exam timetable' },
   { id: 'timeline', label: '12-month study timeline' },
   { id: 'physical', label: 'Physical chemistry' },
   { id: 'inorganic', label: 'Inorganic chemistry' },
@@ -49,6 +53,7 @@ const tableOfContents = [
   { id: 'final-months', label: 'Final two months' },
   { id: 'exam-day', label: 'Mental prep & exam day' },
   { id: 'post-exam', label: 'After the exam' },
+  { id: 'faq', label: 'Frequently asked questions' },
   { id: 'conclusion', label: 'Conclusion' },
 ];
 
@@ -106,6 +111,15 @@ Preferred days & timing: `;
 
   return (
     <>
+    <GuideSchema
+      slug="o-level-chemistry"
+      course={{
+        name: 'O-Level Chemistry Tuition',
+        description: 'One-to-one O-Level Chemistry tuition in Singapore, covering the full 6092 syllabus and the Paper 3 practical.',
+        educationalLevel: 'GCE O-Level',
+      }}
+      faqs={O_LEVEL_CHEMISTRY_FAQS}
+    />
     <main className="mx-auto max-w-6xl px-4 sm:px-6 py-12 sm:py-16">
       <div className="mx-auto max-w-2xl lg:max-w-none lg:grid lg:grid-cols-[minmax(0,42rem)_15rem] lg:justify-center lg:gap-12">
         {/* Article column */}
@@ -174,6 +188,15 @@ Preferred days & timing: `;
                   </div>
                 </div>
               </GuideCard>
+            </section>
+
+            <section id="exam-dates" className="scroll-mt-24">
+              <SectionHeading icon={CalendarDays}>2026 O-Level Chemistry Exam Timetable</SectionHeading>
+              <ExamTimetable
+                examSlug="o-level"
+                subjectSlugs={['chemistry']}
+                caption="Official 2026 SEAB dates for O-Level Chemistry."
+              />
             </section>
 
             <section id="timeline" className="scroll-mt-24">
@@ -542,6 +565,18 @@ Preferred days & timing: `;
               </GuideCard>
             </section>
 
+            <section id="faq" className="scroll-mt-24">
+              <SectionHeading icon={HelpCircle}>Frequently Asked Questions</SectionHeading>
+              <div className="space-y-6">
+                {O_LEVEL_CHEMISTRY_FAQS.map((faq) => (
+                  <div key={faq.question}>
+                    <h3 className="text-lg font-semibold text-gray-900">{faq.question}</h3>
+                    <p className="mt-2 text-gray-700">{faq.answer}</p>
+                  </div>
+                ))}
+              </div>
+            </section>
+
             <section id="conclusion" className="scroll-mt-24">
               <SectionHeading icon={Flag}>Conclusion: Your O Level Chemistry Success Journey</SectionHeading>
               <p className="text-pretty">
@@ -556,6 +591,8 @@ Preferred days & timing: `;
                 </p>
               </div>
             </section>
+
+            <RelatedGuides slug="o-level-chemistry" />
 
             {/* Conversion block */}
             <GuideCTA

@@ -1,10 +1,12 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import combinedscienceImage from "../../../public/combined-chemistry-biology.webp"
+import GuideSchema from '@/components/seo/GuideSchema';
+import { RelatedGuides, ExamTimetable } from '@/components/guide';
 
 export const metadata = {
-  title: 'N Level Combined Science 2026: Complete Guide to All Three Combinations | LionCity Tutors',
-  description: 'Master N Level Combined Science with our comprehensive Singapore-focused guide. Physics-Chemistry, Physics-Biology, Chemistry-Biology combinations, local case studies, and proven exam techniques.',
+  title: 'O-Level Combined Science Guide 2026 | LionCity Tutors',
+  description: 'Compare the three O-Level Combined Science pairings — Physics/Chemistry, Physics/Biology and Chemistry/Biology — with paper structure and study plan for each.',
   keywords: [
     'N Level Combined Science Singapore',
     'Combined Science study guide 2026',
@@ -28,6 +30,14 @@ export const metadata = {
 export default function CombinedScienceOverview() {
   return (
     <>
+    <GuideSchema
+      slug="combined-science-overview"
+      course={{
+        name: 'O-Level Combined Science Tuition',
+        description: 'One-to-one O-Level Combined Science tuition in Singapore, across all three pairings — Physics/Chemistry (5086), Physics/Biology (5087) and Chemistry/Biology (5088).',
+        educationalLevel: 'GCE O-Level',
+      }}
+    />
     <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
@@ -159,6 +169,15 @@ export default function CombinedScienceOverview() {
               </div>
             </div>
           </div>
+        </section>
+
+        <section>
+          <h2 className="text-2xl font-semibold text-blue-700 mb-4">📅 2026 Exam Timetable (All Combinations)</h2>
+          <ExamTimetable
+            examSlug="o-level"
+            subjectSlugs={['combined-science-phy-chem', 'combined-science-phy-bio', 'combined-science-chem-bio']}
+            caption="Official 2026 SEAB dates for O-Level Combined Science."
+          />
         </section>
 
         <section className="bg-green-50 p-6 rounded-lg">
@@ -484,6 +503,8 @@ export default function CombinedScienceOverview() {
             </div>
           </div>
         </div>
+        <RelatedGuides slug="combined-science-overview" />
+
         <section className="bg-gradient-to-r from-primary to-primary/90 text-white py-12 px-6 sm:px-8 rounded-2xl text-center space-y-4 shadow-xl">
           <h2 className="text-2xl sm:text-3xl font-bold text-white">Ready to Excel in Combined Science?</h2>
           <p className="text-base sm:text-lg max-w-2xl mx-auto text-white/80">

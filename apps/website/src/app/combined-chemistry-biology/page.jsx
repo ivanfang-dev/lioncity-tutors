@@ -1,12 +1,13 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import chembioImage from "../../../public/combined-chemistry-biology.webp";
+import GuideSchema from '@/components/seo/GuideSchema';
+import { RelatedGuides, ExamTimetable } from '@/components/guide';
 
 export const metadata = {
-  title:
-    'Combined Chemistry + Biology: Master N Level Combined Science (N(A)) — Matter & Life Integrated | LionCity Tutors',
+  title: 'Combined Chemistry & Biology Guide | LionCity Tutors',
   description:
-    'Comprehensive N(A) Combined Chemistry–Biology guide for Secondary 4 students in Singapore. Accurate syllabi, integration strategies, sample questions, practical tips, and exam-focused techniques to secure strong O-Level results.',
+    'O-Level Combined Science (Chemistry/Biology, 5088) guide for Singapore students — syllabus topics, paper structure and the technique that lifts marks in both.',
   keywords: [
     'Combined Chemistry Biology Singapore',
     'N Level Chemistry Biology integration',
@@ -30,6 +31,14 @@ export const metadata = {
 export default function CombinedChemBioNA() {
   return (
     <>
+      <GuideSchema
+        slug="combined-chemistry-biology"
+        course={{
+          name: 'Combined Chemistry/Biology Tuition',
+          description: 'One-to-one O-Level Combined Science (Chemistry/Biology, 5088) tuition in Singapore.',
+          educationalLevel: 'GCE O-Level',
+        }}
+      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
@@ -148,6 +157,15 @@ export default function CombinedChemBioNA() {
                 <p className="mb-0"><strong>Structured answers:</strong> Always define key terms, show simple calculations with units, and link chemistry and biology when required.</p>
               </div>
             </div>
+          </section>
+
+          <section>
+            <h2 className="text-2xl font-semibold text-blue-700 mb-4">📅 2026 Exam Timetable</h2>
+            <ExamTimetable
+              examSlug="o-level"
+              subjectSlugs={['combined-science-chem-bio']}
+              caption="Official 2026 SEAB dates for O-Level Combined Science (Chemistry/Biology)."
+            />
           </section>
 
           <section className="bg-violet-50 p-6 rounded-xl">
@@ -459,6 +477,8 @@ export default function CombinedChemBioNA() {
                 </div>
             </div>
           </section>
+            <RelatedGuides slug="combined-chemistry-biology" />
+
             <section className="bg-gradient-to-r from-primary to-primary/90 text-white py-12 px-6 sm:px-8 rounded-2xl text-center space-y-4 shadow-xl">
             <h2 className="text-2xl sm:text-3xl font-bold text-white">Ready to Excel in Combined Chemistry/Biology?</h2>
             <p className="text-base sm:text-lg max-w-2xl mx-auto text-white/80">

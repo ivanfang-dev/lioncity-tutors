@@ -22,8 +22,8 @@ const articleSchema = {
 };
 
 export const metadata = {
-  title: 'O Level Biology Guide 2026: Complete Study Strategy for Singapore Students | LionCity Tutors',
-  description: 'Ultimate O Level Biology preparation guide for Singapore students. Expert strategies, practical techniques, and proven tips to score A1 in O Level Biology 2026.',
+  title: 'O-Level Biology Guide 2026 | LionCity Tutors',
+  description: 'O-Level Biology guide for Singapore students — cell biology, physiology, genetics and ecology explained, with the practical-paper technique that earns an A1.',
   keywords: [
     'O Level Biology 2026',
     'O Level Biology Singapore',
@@ -46,8 +46,10 @@ export const metadata = {
 };
 
 import TableOfContents from '@/components/TableOfContents';
+import GuideSchema from '@/components/seo/GuideSchema';
 import {
   GuideHeader, SectionHeading, GuideCard, TopicCard, GuideTimeline, KeyTakeaways, GuideCTA, ICON_STROKE,
+  RelatedGuides, ExamTimetable,
 } from '@/components/guide';
 import {
   FileText, CalendarClock, Microscope, HeartPulse, Dna, Leaf, Brain, Target,
@@ -57,6 +59,7 @@ import {
 
 const tableOfContents = [
   { id: 'structure', label: 'Exam & paper structure' },
+  { id: 'exam-dates', label: '2026 exam timetable' },
   { id: 'timeline', label: '12-month study timeline' },
   { id: 'cell-biology', label: 'Cell biology & molecules' },
   { id: 'physiology', label: 'Human physiology' },
@@ -130,6 +133,14 @@ Preferred days & timing: `;
 
   return (
     <>
+    <GuideSchema
+      slug="o-level-biology"
+      course={{
+        name: 'O-Level Biology Tuition',
+        description: 'One-to-one O-Level Biology tuition in Singapore, covering the full 6093 syllabus and the Paper 3 practical.',
+        educationalLevel: 'GCE O-Level',
+      }}
+    />
     <script
       type="application/ld+json"
       dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
@@ -202,6 +213,15 @@ Preferred days & timing: `;
                   </div>
                 </div>
               </GuideCard>
+            </section>
+
+            <section id="exam-dates" className="scroll-mt-24">
+              <SectionHeading icon={CalendarDays}>2026 O-Level Biology Exam Timetable</SectionHeading>
+              <ExamTimetable
+                examSlug="o-level"
+                subjectSlugs={['biology']}
+                caption="Official 2026 SEAB dates for O-Level Biology."
+              />
             </section>
 
             <section id="timeline" className="scroll-mt-24">
@@ -626,6 +646,8 @@ Preferred days & timing: `;
                 </p>
               </div>
             </section>
+
+            <RelatedGuides slug="o-level-biology" />
 
             {/* Conversion block */}
             <GuideCTA

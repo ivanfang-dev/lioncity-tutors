@@ -1,12 +1,13 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import physbioImage from "../../../public/combined-physics-biology.webp";
+import GuideSchema from '@/components/seo/GuideSchema';
+import { RelatedGuides, ExamTimetable } from '@/components/guide';
 
 export const metadata = {
-  title:
-    'Combined Physics + Biology: Master N Level Combined Science (N(A)) with Life-in-Motion Integration | LionCity Tutors',
+  title: 'Combined Physics & Biology Guide | LionCity Tutors',
   description:
-    'Excel in N Level Combined Physics-Biology (Sec 4 N(A)). Singapore-focused guide aligning Physics and Biology topics: forces, energy, waves, EM spectrum, electricity, radioactivity with cells, diffusion, human/plant transport, respiration, nutrition, and infectious disease. Practical exam strategies and local applications.',
+    'O-Level Combined Science (Physics/Biology, 5087) guide for Singapore students — syllabus topics, paper structure and the technique that lifts marks in both.',
   keywords: [
     'Combined Science Physics Biology Singapore',
     'N Level Combined Science N(A) Physics Biology',
@@ -31,6 +32,14 @@ export const metadata = {
 export default function CombinedPhysicsBiology() {
   return (
     <>
+      <GuideSchema
+        slug="combined-physics-biology"
+        course={{
+          name: 'Combined Physics/Biology Tuition',
+          description: 'One-to-one O-Level Combined Science (Physics/Biology, 5087) tuition in Singapore.',
+          educationalLevel: 'GCE O-Level',
+        }}
+      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
@@ -166,6 +175,16 @@ export default function CombinedPhysicsBiology() {
                 <p className="mb-0"><strong>Calculator hygiene:</strong> For physics calculations, show units; for biology, define processes (e.g., diffusion/osmosis) before applying.</p>
               </div>
             </div>
+          </section>
+
+          {/* 2026 EXAM TIMETABLE */}
+          <section>
+            <h2 className="text-2xl font-semibold text-blue-700 mb-4">📅 2026 Exam Timetable</h2>
+            <ExamTimetable
+              examSlug="o-level"
+              subjectSlugs={['combined-science-phy-bio']}
+              caption="Official 2026 SEAB dates for O-Level Combined Science (Physics/Biology)."
+            />
           </section>
 
           {/* INTEGRATION PATTERNS */}
@@ -432,6 +451,8 @@ export default function CombinedPhysicsBiology() {
               </div>
             </div>
           </div>
+          <RelatedGuides slug="combined-physics-biology" />
+
           <section className="bg-gradient-to-r from-primary to-primary/90 text-white py-12 px-6 sm:px-8 rounded-2xl text-center space-y-4 shadow-xl">
           <h2 className="text-2xl sm:text-3xl font-bold text-white">Ready to Excel in Combined Physics/Biology?</h2>
           <p className="text-base sm:text-lg max-w-2xl mx-auto text-white/80">
