@@ -27,7 +27,7 @@ export default function FocusAndConcentration() {
     <>
       <main className="px-4 py-12 max-w-3xl mx-auto">
         <h1 className="text-3xl font-bold text-blue-800 mb-4">Focus is a Muscle: A Parent's Guide to Training Your Child's Concentration</h1>
-        <p className="text-sm text-gray-500 mb-8">Posted on September 15, 2025 • 10 min read</p>
+        <p className="text-sm text-gray-500 mb-8">Updated July 8, 2026 • 10 min read</p>
 
         <article className="space-y-8 text-gray-700 leading-relaxed">
           <p className="text-lg font-medium text-gray-800">

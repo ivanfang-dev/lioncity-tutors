@@ -1,11 +1,12 @@
+import { MATCH_TIME } from '@/data/promises';
 export const metadata = {
-  title: 'A Level Math Guide 2025: Complete H1 & H2 Mathematics Strategy for Singapore Students | LionCity Tutors',
-  description: 'Ultimate A Level Mathematics preparation guide for Singapore students. Expert strategies for H1 & H2 Math, proven techniques to excel in Cambridge A Level Math 2025.',
+  title: 'A Level Math Guide 2026: Complete H1 & H2 Mathematics Strategy for Singapore Students | LionCity Tutors',
+  description: 'Ultimate A Level Mathematics preparation guide for Singapore students. Expert strategies for H1 & H2 Math, proven techniques to excel in Cambridge A Level Math 2026.',
   keywords: [
-    "A Level Math 2025", "H1 Mathematics Singapore", "H2 Mathematics Singapore", "Cambridge A Level Math guide", "A Level Math preparation", "JC Math tuition Singapore", "A Level Math revision techniques", "Singapore A Level Mathematics"
+    "A Level Math 2026", "H1 Mathematics Singapore", "H2 Mathematics Singapore", "Cambridge A Level Math guide", "A Level Math preparation", "JC Math tuition Singapore", "A Level Math revision techniques", "Singapore A Level Mathematics"
   ],
   openGraph: {
-    title: 'A Level Math Guide 2025: Complete H1 & H2 Mathematics Strategy for Singapore Students | LionCity Tutors',
+    title: 'A Level Math Guide 2026: Complete H1 & H2 Mathematics Strategy for Singapore Students | LionCity Tutors',
     description: 'Comprehensive A Level Mathematics guide with proven strategies to help Singapore JC students achieve A grades in H1 & H2 Mathematics.',
     url: 'https://www.lioncitytutors.com/a-level-math',
     type: 'article',
@@ -100,16 +101,16 @@ Preferred days & timing: `;
         {/* Article column */}
         <div>
           <GuideHeader
-            title="A Level Math Guide 2025: Master H1 & H2 Mathematics for University Success"
+            title="A Level Math Guide 2026: Master H1 & H2 Mathematics for University Success"
             author="By the LionCity Tutors Mathematics Team"
-            meta="Updated June 14, 2025 · 18 min read"
+            meta="Updated June 8, 2026 · 18 min read"
             imageSrc="/math-tuition.webp"
             imageAlt="Handwritten calculus and equations — the pure maths and statistics at the heart of A Level Mathematics."
           />
 
           <article className="space-y-12 text-gray-700 leading-relaxed">
             <p className="text-lg text-gray-800 leading-relaxed text-pretty">
-              A Level Mathematics is the gateway to Singapore&rsquo;s top universities and competitive courses like Medicine, Engineering, and Economics. With H1 and H2 Mathematics offering different levels of mathematical rigor, strategic preparation is crucial for achieving A grades. This comprehensive guide provides proven strategies for A Level Math excellence in 2025.
+              A Level Mathematics is the gateway to Singapore&rsquo;s top universities and competitive courses like Medicine, Engineering, and Economics. With H1 and H2 Mathematics offering different levels of mathematical rigor, strategic preparation is crucial for achieving A grades. This comprehensive guide provides proven strategies for A Level Math excellence in 2026.
             </p>
 
             {/* Key takeaways */}
@@ -517,7 +518,7 @@ Preferred days & timing: `;
             {/* Conversion block */}
             <GuideCTA
               title="Excel in A Level Mathematics with expert guidance"
-              description="Tell us your child’s level and goals. We hand-match a vetted, MOE-familiar H1 or H2 Math tutor — usually within hours — and parents never pay an agency fee."
+              description={`Tell us your child’s level and goals. We hand-match a vetted, MOE-familiar H1 or H2 Math tutor — usually within ${MATCH_TIME} — and parents never pay an agency fee.`}
               buttonText="Get expert A Level Math support"
               whatsappHref={whatsappHref}
             />

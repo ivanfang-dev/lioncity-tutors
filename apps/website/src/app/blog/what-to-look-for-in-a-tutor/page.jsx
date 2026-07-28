@@ -26,7 +26,7 @@ export default function WhatToLookForInATutor() {
     <>
     <main className="px-4 py-12 max-w-3xl mx-auto">
       <h1 className="text-3xl font-bold text-blue-800 mb-4">What to Look for in a Private Tutor: A Singapore Parent's Complete Guide</h1>
-      <p className="text-sm text-gray-500 mb-8">Posted on May 25, 2025 • 6 min read</p>
+      <p className="text-sm text-gray-500 mb-8">Updated May 12, 2026 • 6 min read</p>
 
       <article className="space-y-6 text-gray-700 leading-relaxed">
         <p className="text-lg font-medium text-gray-800">

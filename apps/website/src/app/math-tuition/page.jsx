@@ -1,3 +1,4 @@
+import { MATCH_TIME } from '@/data/promises';
 import React from "react";
 import Link from 'next/link';
 import Image from 'next/image';
@@ -7,7 +8,7 @@ import { GuideCTA } from "@/components/guide";
 
 export const metadata = {
   title: 'Best Math Tuition Singapore | PSLE, O Level, A Level Math Tutors | Lion City Tutors',
-  description: 'Find the best math tutors in Singapore for PSLE, O Level, A Level & JC H2 Math. Free matching service with handpicked private tutors. Results guaranteed within 24 hours. Expert tutors for E Math, A Math, H2 Math, and more.',
+  description: `Find the best math tutors in Singapore for PSLE, O Level, A Level & JC H2 Math. Free matching service with handpicked private tutors. Results guaranteed within ${MATCH_TIME}. Expert tutors for E Math, A Math, H2 Math, and more.`,
   keywords: [
     'math tuition Singapore',
     'PSLE math tutor',
@@ -41,7 +42,7 @@ export const metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Best Math Tuition Singapore | Expert Math Tutors',
-    description: 'Find qualified math tutors for PSLE, O Level & A Level. Free matching service with handpicked tutors. Expert in E Math, A Math, and H2 Math. Results within 24 hours.',
+    description: `Find qualified math tutors for PSLE, O Level & A Level. Free matching service with handpicked tutors. Expert in E Math, A Math, and H2 Math. Results within ${MATCH_TIME}.`,
   },
   alternates: {
     canonical: 'https://www.lioncitytutors.com/math-tuition',

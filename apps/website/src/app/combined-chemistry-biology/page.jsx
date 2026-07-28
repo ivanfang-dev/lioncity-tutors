@@ -41,7 +41,7 @@ export default function CombinedChemBioNA() {
         <div className="flex items-center space-x-4 mb-8">
           <div>
             <p className="font-semibold text-gray-800">By Victor, Combined Chemistry/Biology Tutor</p>
-            <p className="text-sm text-gray-500">Updated August 26, 2025 • N(A) Combined Science • 20+ min read</p>
+            <p className="text-sm text-gray-500">Updated July 2, 2026 • N(A) Combined Science • 20+ min read</p>
           </div>
         </div>
 
@@ -519,7 +519,9 @@ const articleSchema = {
     name: 'Victor',
     jobTitle: 'Chemistry–Biology Tutor',
     worksFor: { "@type": "Organization", name: 'LionCity Tutors' }
-  }
+  },
+  datePublished: '2026-03-26',
+  dateModified: '2026-07-02',
 };
 
 const faqSchema = {

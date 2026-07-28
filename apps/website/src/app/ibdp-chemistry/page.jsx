@@ -1,8 +1,9 @@
+import { MATCH_TIME } from '@/data/promises';
 export const metadata = {
-  title: 'IBDP Chemistry Guide 2025: Complete Study Strategy for Singapore Students | LionCity Tutors',
-  description: 'Ultimate IBDP Chemistry preparation guide for Singapore students. Expert strategies, practical techniques, and proven tips to score 7 in IBDP Chemistry 2025.',
+  title: 'IBDP Chemistry Guide 2026: Complete Study Strategy for Singapore Students | LionCity Tutors',
+  description: 'Ultimate IBDP Chemistry preparation guide for Singapore students. Expert strategies, practical techniques, and proven tips to score 7 in IBDP Chemistry 2026.',
   keywords: [
-    'IBDP Chemistry 2025',
+    'IBDP Chemistry 2026',
     'IB Chemistry Singapore',
     'International Baccalaureate Chemistry guide',
     'IBDP Chemistry preparation',
@@ -12,7 +13,7 @@ export const metadata = {
     'IBDP Chemistry syllabus'
   ],
   openGraph: {
-    title: 'IBDP Chemistry Guide 2025: Complete Study Strategy for Singapore Students',
+    title: 'IBDP Chemistry Guide 2026: Complete Study Strategy for Singapore Students',
     description: 'Comprehensive IBDP Chemistry guide with proven strategies to help Singapore students achieve level 7 in IBDP Chemistry.',
     url: 'https://www.lioncitytutors.com/ibdp-chemistry',
     type: 'article',
@@ -109,16 +110,16 @@ Preferred days & timing: `;
         {/* Article column */}
         <div>
           <GuideHeader
-            title="IBDP Chemistry Guide 2025: Master Physical, Organic & Inorganic Chemistry"
+            title="IBDP Chemistry Guide 2026: Master Physical, Organic & Inorganic Chemistry"
             author="By the LionCity Tutors Chemistry Team"
-            meta="Updated June 14, 2025 · 18 min read"
+            meta="Updated June 21, 2026 · 18 min read"
             imageSrc="/chemistry.webp"
             imageAlt="Laboratory glassware and reagents — the hands-on craft at the heart of IBDP Chemistry."
           />
 
           <article className="space-y-12 text-gray-700 leading-relaxed">
             <p className="text-lg text-gray-800 leading-relaxed text-pretty">
-              IBDP Chemistry is one of the most challenging and rewarding subjects in the International Baccalaureate Diploma Programme. With its comprehensive coverage of physical, organic, and inorganic chemistry, IBDP Chemistry demands both theoretical understanding and practical application skills. This detailed guide provides proven strategies for achieving level 7 in IBDP Chemistry 2025.
+              IBDP Chemistry is one of the most challenging and rewarding subjects in the International Baccalaureate Diploma Programme. With its comprehensive coverage of physical, organic, and inorganic chemistry, IBDP Chemistry demands both theoretical understanding and practical application skills. This detailed guide provides proven strategies for achieving level 7 in IBDP Chemistry 2026.
             </p>
 
             {/* Key takeaways */}
@@ -544,7 +545,7 @@ Preferred days & timing: `;
             {/* Conversion block */}
             <GuideCTA
               title="Find your IBDP Chemistry tutor"
-              description="Tell us your child’s level and goals. We hand-match a vetted, MOE-familiar IBDP Chemistry tutor — usually within hours — and parents never pay an agency fee."
+              description={`Tell us your child’s level and goals. We hand-match a vetted, MOE-familiar IBDP Chemistry tutor — usually within ${MATCH_TIME} — and parents never pay an agency fee.`}
               buttonText="Find your IBDP Chemistry tutor"
               whatsappHref={whatsappHref}
             />

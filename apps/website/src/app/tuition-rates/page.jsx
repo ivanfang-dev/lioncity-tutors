@@ -1,5 +1,6 @@
 "use client";
 
+import { MATCH_TIME } from '@/data/promises';
 import React, { useRef } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -197,7 +198,7 @@ export default function TuitionRatesPage() {
                       Ready to Find The Perfect Tutor?
                   </h2>
                   <p className="text-center text-text-default/80 mb-10 text-lg">
-                      Get matched with qualified tutors in 24 hours. Just fill out the details below.
+                      Get matched with qualified tutors in {MATCH_TIME}. Just fill out the details below.
                   </p>
                   <div className="bg-background-card rounded-xl shadow-lg p-8 border border-border">
                     {status.submitted ? (

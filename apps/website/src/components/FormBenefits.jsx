@@ -1,8 +1,9 @@
+import { MATCH_TIME } from '@/data/promises';
 import React from "react";
 import { CheckCircle } from "lucide-react";
 
 // Shared reassurance row shown above the tutor request form.
-const BENEFITS = ["Matched within 24 hours", "No hidden fees, ever"];
+const BENEFITS = [`Matched within ${MATCH_TIME}`, "No hidden fees, ever"];
 
 export default function FormBenefits() {
     return (

@@ -1,5 +1,6 @@
 "use client";
 
+import { MATCH_TIME } from '@/data/promises';
 import { useRef } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -106,9 +107,9 @@ export default function PSLEMath() {
           {/* Article column */}
           <div>
             <GuideHeader
-              title="PSLE Maths Guide 2025: Master Primary School Mathematics"
+              title="PSLE Maths Guide 2026: Master Primary School Mathematics"
               author="By the LionCity Tutors Mathematics Team"
-              meta="Updated June 14, 2025 · 12 min read"
+              meta="Updated May 5, 2026 · 12 min read"
               imageSrc="/math-tuition.webp"
               imageAlt="Handwritten working and equations — the problem-solving at the heart of PSLE Mathematics."
             />
@@ -392,7 +393,7 @@ export default function PSLEMath() {
               Ready to Find The Perfect Tutor?
             </h2>
             <p className="text-center text-text-default/80 mb-10 text-lg">
-              Get matched with qualified tutors in 24 hours. Just fill out the details below.
+              Get matched with qualified tutors in {MATCH_TIME}. Just fill out the details below.
             </p>
 
             <FormBenefits />

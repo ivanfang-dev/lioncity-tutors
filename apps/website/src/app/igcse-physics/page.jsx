@@ -1,8 +1,9 @@
+import { MATCH_TIME } from '@/data/promises';
 export const metadata = {
-  title: 'IGCSE Physics Guide 2025: Complete Study Strategy for Singapore Students | LionCity Tutors',
-  description: 'Ultimate IGCSE Physics preparation guide for Singapore students. Expert strategies, practical techniques, and proven tips to score A* in IGCSE Physics 2025.',
+  title: 'IGCSE Physics Guide 2026: Complete Study Strategy for Singapore Students | LionCity Tutors',
+  description: 'Ultimate IGCSE Physics preparation guide for Singapore students. Expert strategies, practical techniques, and proven tips to score A* in IGCSE Physics 2026.',
   keywords: [
-    'IGCSE Physics 2025',
+    'IGCSE Physics 2026',
     'IGCSE Physics Singapore',
     'Cambridge IGCSE Physics guide',
     'IGCSE Physics preparation',
@@ -12,7 +13,7 @@ export const metadata = {
     'IGCSE Physics syllabus'
   ],
   openGraph: {
-    title: 'IGCSE Physics Guide 2025: Complete Study Strategy for Singapore Students',
+    title: 'IGCSE Physics Guide 2026: Complete Study Strategy for Singapore Students',
     description: 'Comprehensive IGCSE Physics guide with proven strategies to help Singapore students achieve A* grades in Cambridge IGCSE Physics.',
     url: 'https://www.lioncitytutors.com/igcse-physics',
     type: 'article',
@@ -110,16 +111,16 @@ Preferred days & timing: `;
         {/* Article column */}
         <div>
           <GuideHeader
-            title="IGCSE Physics Guide 2025: Master Mechanics, Waves & Modern Physics"
+            title="IGCSE Physics Guide 2026: Master Mechanics, Waves & Modern Physics"
             author="By the LionCity Tutors Physics Team"
-            meta="Updated June 14, 2025 · 18 min read"
+            meta="Updated June 15, 2026 · 18 min read"
             imageSrc="/physics.webp"
             imageAlt="Trails of light in motion — the mechanics, waves and electricity at the heart of IGCSE Physics."
           />
 
           <article className="space-y-12 text-gray-700 leading-relaxed">
             <p className="text-lg text-gray-800 leading-relaxed text-pretty">
-              IGCSE Physics is a fundamental subject that builds the foundation for advanced physics studies. With its comprehensive coverage of mechanics, waves, electricity, and modern physics, IGCSE Physics develops both theoretical understanding and practical skills. This detailed guide provides proven strategies for achieving A* grades in IGCSE Physics 2025.
+              IGCSE Physics is a fundamental subject that builds the foundation for advanced physics studies. With its comprehensive coverage of mechanics, waves, electricity, and modern physics, IGCSE Physics develops both theoretical understanding and practical skills. This detailed guide provides proven strategies for achieving A* grades in IGCSE Physics 2026.
             </p>
 
             {/* Key takeaways */}
@@ -559,7 +560,7 @@ Preferred days & timing: `;
             {/* Conversion block */}
             <GuideCTA
               title="Find your IGCSE Physics tutor"
-              description="Tell us your child’s level and goals. We hand-match a vetted, MOE-familiar IGCSE Physics tutor — usually within hours — and parents never pay an agency fee."
+              description={`Tell us your child’s level and goals. We hand-match a vetted, MOE-familiar IGCSE Physics tutor — usually within ${MATCH_TIME} — and parents never pay an agency fee.`}
               buttonText="Find your IGCSE Physics tutor"
               whatsappHref={whatsappHref}
             />

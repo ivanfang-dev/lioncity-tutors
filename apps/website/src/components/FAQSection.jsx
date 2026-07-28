@@ -1,3 +1,4 @@
+import { MATCH_TIME } from '@/data/promises';
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown } from "lucide-react";
@@ -10,7 +11,7 @@ const faqs = [
   },
   {
     question: "How quickly will I receive tutor profiles?",
-    answer: "We typically send you tutor profiles within 24 hours of your request. Our team works 7 days a week to ensure fast matching."
+    answer: `We typically send you tutor profiles within ${MATCH_TIME} of your request. Our team works 7 days a week to ensure fast matching.`
   },
   {
     question: "What qualifications do your tutors have?",

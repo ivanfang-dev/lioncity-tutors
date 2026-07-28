@@ -1,8 +1,9 @@
+import { MATCH_TIME } from '@/data/promises';
 export const metadata = {
-  title: 'O Level Math Guide 2025: Complete Preparation Strategy for Singapore Students | LionCity Tutors',
-  description: 'Ultimate O Level Mathematics preparation guide for Singapore students. Expert strategies, practice techniques, and proven tips to score A1 in O Level Math 2025.',
+  title: 'O Level Math Guide 2026: Complete Preparation Strategy for Singapore Students | LionCity Tutors',
+  description: 'Ultimate O Level Mathematics preparation guide for Singapore students. Expert strategies, practice techniques, and proven tips to score A1 in O Level Math 2026.',
   keywords: [
-    'O Level Math 2025',
+    'O Level Math 2026',
     'O Level Mathematics Singapore',
     'GCE O Level Math guide',
     'Additional Math preparation',
@@ -11,7 +12,7 @@ export const metadata = {
     'Math revision techniques'
   ],
   openGraph: {
-    title: 'O Level Math Guide 2025: Complete Preparation Strategy for Singapore Students',
+    title: 'O Level Math Guide 2026: Complete Preparation Strategy for Singapore Students',
     description: 'Comprehensive O Level Mathematics guide with proven strategies to help Singapore students achieve A1 grades in both Elementary and Additional Mathematics.',
     url: 'https://www.lioncitytutors.com/o-level-math',
     type: 'article',
@@ -106,16 +107,16 @@ Preferred days & timing: `;
         {/* Article column */}
         <div>
           <GuideHeader
-            title="O Level Math Guide 2025: Master Elementary & Additional Mathematics"
+            title="O Level Math Guide 2026: Master Elementary & Additional Mathematics"
             author="By the LionCity Tutors Mathematics Team"
-            meta="Updated June 14, 2025 · 15 min read"
+            meta="Updated June 1, 2026 · 15 min read"
             imageSrc="/math-tuition.webp"
             imageAlt="Handwritten equations and working — the algebra, calculus and trigonometry at the heart of O Level Mathematics."
           />
 
           <article className="space-y-12 text-gray-700 leading-relaxed">
             <p className="text-lg text-gray-800 leading-relaxed text-pretty">
-              O Level Mathematics remains one of the most critical subjects for Singapore students, directly impacting polytechnic and JC admissions. With both Elementary Mathematics and Additional Mathematics offering different pathways, strategic preparation is essential for achieving A1 grades. This comprehensive guide provides proven strategies for O Level Math success in 2025.
+              O Level Mathematics remains one of the most critical subjects for Singapore students, directly impacting polytechnic and JC admissions. With both Elementary Mathematics and Additional Mathematics offering different pathways, strategic preparation is essential for achieving A1 grades. This comprehensive guide provides proven strategies for O Level Math success in 2026.
             </p>
 
             {/* Key takeaways */}
@@ -518,7 +519,7 @@ Preferred days & timing: `;
             {/* Conversion block */}
             <GuideCTA
               title="Achieve your O Level Math A1 goals with expert guidance"
-              description="Tell us your child’s level and goals. We hand-match a vetted, MOE-familiar O Level Math tutor — usually within hours — and parents never pay an agency fee."
+              description={`Tell us your child’s level and goals. We hand-match a vetted, MOE-familiar O Level Math tutor — usually within ${MATCH_TIME} — and parents never pay an agency fee.`}
               buttonText="Get expert O Level Math support"
               whatsappHref={whatsappHref}
             />

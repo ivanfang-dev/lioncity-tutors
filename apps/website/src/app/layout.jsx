@@ -10,6 +10,7 @@ const inter = Inter({
 });
 import { Toaster } from 'sonner';
 import Navbar from '../components/Navbar';
+import SiteChrome from '../components/SiteChrome';
 import Footer from './Footer';
 import Whatsapp from './Whatsapp';
 
@@ -62,10 +63,9 @@ export default function RootLayout({ children }) {
       />
       <body>
         <Toaster />
-        <Navbar />
-        <main>{children}</main>
-        <Footer />
-        <Whatsapp />
+        <SiteChrome navbar={<Navbar />} footer={<Footer />} whatsapp={<Whatsapp />}>
+          {children}
+        </SiteChrome>
       </body>
     </html>
   );

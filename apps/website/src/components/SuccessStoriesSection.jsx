@@ -1,14 +1,29 @@
-import React, { useEffect, useRef, useState } from "react";
-import { motion, animate } from "framer-motion";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { motion, animate, useReducedMotion } from "framer-motion";
 import { Star, TrendingUp, Award, Quote } from "lucide-react";
 
-// Helper component for animating numbers - CORRECTED VERSION
+// Runs before paint on the client, but falls back to useEffect during SSR so React
+// doesn't warn about useLayoutEffect on the server.
+const useIsomorphicLayoutEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect;
+
+// Helper component for animating numbers.
+// Seeded with the FINAL value so the server-rendered HTML shows the real figure to
+// crawlers and no-JS visitors. Only once JS runs do we drop to 0 (before paint) and
+// count up when the element scrolls into view — so a stat that is never scrolled to
+// still reads correctly instead of being stuck at 0.
 const Counter = ({ end, duration = 2, suffix = "", decimals = 0 }) => {
-  const [count, setCount] = useState(0);
+  const [count, setCount] = useState(end);
   const ref = useRef(null);
   const hasAnimated = useRef(false);
+  const prefersReducedMotion = useReducedMotion();
+
+  useIsomorphicLayoutEffect(() => {
+    if (prefersReducedMotion) return;
+    setCount(0);
+  }, [end, prefersReducedMotion]);
 
   useEffect(() => {
+    if (prefersReducedMotion) return;
     const element = ref.current;
     if (!element) return;
 
@@ -34,7 +49,7 @@ const Counter = ({ end, duration = 2, suffix = "", decimals = 0 }) => {
 
     observer.observe(element);
     return () => observer.disconnect();
-  }, [end, duration, decimals]);
+  }, [end, duration, decimals, prefersReducedMotion]);
 
   return (
     <span ref={ref}>

@@ -1,8 +1,9 @@
+import { MATCH_TIME } from '@/data/promises';
 export const metadata = {
-  title: 'IGCSE Chemistry Guide 2025: Complete Study Strategy for Singapore Students | LionCity Tutors',
-  description: 'Ultimate IGCSE Chemistry preparation guide for Singapore students. Expert strategies, practical techniques, and proven tips to score A* in IGCSE Chemistry 2025.',
+  title: 'IGCSE Chemistry Guide 2026: Complete Study Strategy for Singapore Students | LionCity Tutors',
+  description: 'Ultimate IGCSE Chemistry preparation guide for Singapore students. Expert strategies, practical techniques, and proven tips to score A* in IGCSE Chemistry 2026.',
   keywords: [
-    'IGCSE Chemistry 2025',
+    'IGCSE Chemistry 2026',
     'IGCSE Chemistry Singapore',
     'CIE Chemistry',
     'Edexcel Chemistry',
@@ -13,7 +14,7 @@ export const metadata = {
     'IGCSE Chemistry syllabus'
   ],
   openGraph: {
-    title: 'IGCSE Chemistry Guide 2025: Complete Study Strategy for Singapore Students',
+    title: 'IGCSE Chemistry Guide 2026: Complete Study Strategy for Singapore Students',
     description: 'Comprehensive IGCSE Chemistry guide with proven strategies to help Singapore students achieve A* grades in IGCSE Chemistry.',
     url: 'https://www.lioncitytutors.com/igcse-chemistry',
     type: 'article',
@@ -112,16 +113,16 @@ Preferred days & timing: `;
         {/* Article column */}
         <div>
           <GuideHeader
-            title="IGCSE Chemistry Guide 2025: Master Atomic Structure, Bonding & Reactions"
+            title="IGCSE Chemistry Guide 2026: Master Atomic Structure, Bonding & Reactions"
             author="By the LionCity Tutors Chemistry Team"
-            meta="Updated June 14, 2025 · 18 min read"
+            meta="Updated June 14, 2026 · 18 min read"
             imageSrc="/chemistry.webp"
             imageAlt="Laboratory glassware and reagents — the hands-on craft at the heart of IGCSE Chemistry."
           />
 
           <article className="space-y-12 text-gray-700 leading-relaxed">
             <p className="text-lg text-gray-800 leading-relaxed text-pretty">
-              IGCSE Chemistry is one of the most fundamental and rewarding subjects in the International General Certificate of Secondary Education curriculum. With its comprehensive coverage of atomic structure, chemical bonding, and reactions, IGCSE Chemistry demands both theoretical understanding and practical application skills. This detailed guide provides proven strategies for achieving A* grades in IGCSE Chemistry 2025.
+              IGCSE Chemistry is one of the most fundamental and rewarding subjects in the International General Certificate of Secondary Education curriculum. With its comprehensive coverage of atomic structure, chemical bonding, and reactions, IGCSE Chemistry demands both theoretical understanding and practical application skills. This detailed guide provides proven strategies for achieving A* grades in IGCSE Chemistry 2026.
             </p>
 
             {/* Key takeaways */}
@@ -579,7 +580,7 @@ Preferred days & timing: `;
             {/* Conversion block */}
             <GuideCTA
               title="Find your IGCSE Chemistry tutor"
-              description="Tell us your child’s level and goals. We hand-match a vetted, MOE-familiar IGCSE Chemistry tutor — usually within hours — and parents never pay an agency fee."
+              description={`Tell us your child’s level and goals. We hand-match a vetted, MOE-familiar IGCSE Chemistry tutor — usually within ${MATCH_TIME} — and parents never pay an agency fee.`}
               buttonText="Find your IGCSE Chemistry tutor"
               whatsappHref={whatsappHref}
             />

@@ -300,7 +300,7 @@ export default function PSLEPreparationGuideClient() {
       <header className="bg-background-card border-b">
         <div className="container mx-auto px-6 py-16 md:py-24 text-center">
           <h1 className="text-4xl md:text-6xl font-extrabold text-primary leading-tight tracking-tighter">
-            The Ultimate Parent’s Guide to PSLE Preparation (2025)
+            The Ultimate Parent’s Guide to PSLE Preparation (2026)
           </h1>
           <p className="mt-4 text-lg md:text-xl text-text-default/80 max-w-3xl mx-auto">
             A complete, strategic roadmap to navigate the syllabus, support your child emotionally, and unlock their full potential for the PSLE.

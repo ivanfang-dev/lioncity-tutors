@@ -1,9 +1,10 @@
+import { MATCH_TIME } from '@/data/promises';
 export const metadata = {
-  title: 'A Level H2 Physics Guide 2025: Complete Study Strategy for Singapore Students | LionCity Tutors',
-  description: 'Ultimate A Level H2 Physics preparation guide for Singapore students. Expert strategies, practical techniques, and proven tips to score A in H2 Physics 2025.',
-  keywords: ["A Level H2 Physics 2025", "H2 Physics Singapore", "GCE A Level Physics guide", "A Level Physics preparation", "H2 Physics study tips", "A Level Physics tuition Singapore", "Physics revision techniques", "H2 Physics syllabus"],
+  title: 'A Level H2 Physics Guide 2026: Complete Study Strategy for Singapore Students | LionCity Tutors',
+  description: 'Ultimate A Level H2 Physics preparation guide for Singapore students. Expert strategies, practical techniques, and proven tips to score A in H2 Physics 2026.',
+  keywords: ["A Level H2 Physics 2026", "H2 Physics Singapore", "GCE A Level Physics guide", "A Level Physics preparation", "H2 Physics study tips", "A Level Physics tuition Singapore", "Physics revision techniques", "H2 Physics syllabus"],
   openGraph: {
-    title: 'A Level H2 Physics Guide 2025: Complete Study Strategy for Singapore Students | LionCity Tutors',
+    title: 'A Level H2 Physics Guide 2026: Complete Study Strategy for Singapore Students | LionCity Tutors',
     description: 'Comprehensive A Level H2 Physics guide with proven strategies to help Singapore students achieve A grades in GCE A Level Physics.',
     url: 'https://www.lioncitytutors.com/a-level-physics',
     type: 'article',
@@ -103,16 +104,16 @@ Preferred days & timing: `;
         {/* Article column */}
         <div>
           <GuideHeader
-            title="A Level H2 Physics Guide 2025: Master Mechanics, Waves & Modern Physics"
+            title="A Level H2 Physics Guide 2026: Master Mechanics, Waves & Modern Physics"
             author="By the LionCity Tutors Physics Team"
-            meta="Updated June 14, 2025 · 18 min read"
+            meta="Updated June 12, 2026 · 18 min read"
             imageSrc="/physics.webp"
             imageAlt="Trails of light in motion — the mechanics, waves and modern physics at the heart of H2 Physics."
           />
 
           <article className="space-y-12 text-gray-700 leading-relaxed">
             <p className="text-lg text-gray-800 leading-relaxed text-pretty">
-              A Level H2 Physics is one of the most challenging and rewarding subjects in the Singapore GCE A Level curriculum. With its comprehensive coverage of mechanics, waves, electricity, and modern physics, H2 Physics demands both theoretical understanding and practical application skills. This detailed guide provides proven strategies for achieving A grades in H2 Physics 2025.
+              A Level H2 Physics is one of the most challenging and rewarding subjects in the Singapore GCE A Level curriculum. With its comprehensive coverage of mechanics, waves, electricity, and modern physics, H2 Physics demands both theoretical understanding and practical application skills. This detailed guide provides proven strategies for achieving A grades in H2 Physics 2026.
             </p>
 
             {/* Key takeaways */}
@@ -616,7 +617,7 @@ Preferred days & timing: `;
             {/* Conversion block */}
             <GuideCTA
               title="Find your H2 Physics tutor"
-              description="Tell us your child’s level and goals. We hand-match a vetted, MOE-familiar H2 Physics tutor — usually within hours — and parents never pay an agency fee."
+              description={`Tell us your child’s level and goals. We hand-match a vetted, MOE-familiar H2 Physics tutor — usually within ${MATCH_TIME} — and parents never pay an agency fee.`}
               buttonText="Find your H2 Physics tutor"
               whatsappHref={whatsappHref}
             />

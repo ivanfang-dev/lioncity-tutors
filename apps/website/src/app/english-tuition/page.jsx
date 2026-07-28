@@ -1,3 +1,4 @@
+import { MATCH_HOURS, MATCH_TIME } from '@/data/promises';
 import React from "react";
 import Link from 'next/link';
 import Image from 'next/image';
@@ -10,7 +11,7 @@ import { GuideCTA } from "@/components/guide";
 
 const pageMetadata = {
   title: 'Expert English Tuition Singapore | PSLE, O & A Level Tutors',
-  description: 'Unlock your child\'s potential with Singapore\'s top English tutors for PSLE, O-Level, and A-Level. Lion City Tutors offers a free, 24-hour matching service for qualified home tutors.',
+  description: `Unlock your child's potential with Singapore's top English tutors for PSLE, O-Level, and A-Level. Lion City Tutors offers a free, ${MATCH_HOURS}-hour matching service for qualified home tutors.`,
   keywords: [
     'English tuition Singapore', 'PSLE English tutor', 'O level English tuition', 'A level English tutor',
     'H1 GP tuition', 'JC English tutor', 'private English tutor Singapore', 'home tuition English',
@@ -27,7 +28,7 @@ const faqData = [
   },
   {
     question: "How quickly can we start the first lesson?",
-    answer: "Our matching service is fast and efficient. After you submit a request, we typically find a suitable and qualified English tutor for you to review within 24 hours. The first lesson can often be arranged within a few days, depending on your and the tutor's availability."
+    answer: `Our matching service is fast and efficient. After you submit a request, we typically find a suitable and qualified English tutor for you to review within ${MATCH_TIME}. The first lesson can often be arranged within a few days, depending on your and the tutor's availability.`
   },
   {
     question: "What are the typical rates for English tuition?",
@@ -121,7 +122,7 @@ export default function EnglishTuitionPage() {
         <section className="text-center space-y-4">
           <h1 className="text-4xl md:text-5xl font-bold text-blue-800">Expert English Tuition in Singapore for PSLE, O & A Levels</h1>
           <p className="text-lg text-gray-700 max-w-3xl mx-auto">
-            Struggling with composition, comprehension, or GP essays? Lion City Tutors connects you with <strong className="text-blue-700">MOE-trained teachers and top-tier tutors</strong> who deliver results. Get your ideal tutor match in 24 hours—<strong className="text-emerald-600">it's fast and completely free.</strong>
+            Struggling with composition, comprehension, or GP essays? Lion City Tutors connects you with <strong className="text-blue-700">MOE-trained teachers and top-tier tutors</strong> who deliver results. Get your ideal tutor match in {MATCH_TIME}—<strong className="text-emerald-600">it's fast and completely free.</strong>
           </p>
           <div className="my-8 relative w-full max-w-3xl mx-auto aspect-video overflow-hidden rounded-xl shadow-lg">
             <Image

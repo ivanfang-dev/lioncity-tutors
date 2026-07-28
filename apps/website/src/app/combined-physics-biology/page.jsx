@@ -11,7 +11,7 @@ export const metadata = {
     'Combined Science Physics Biology Singapore',
     'N Level Combined Science N(A) Physics Biology',
     'Sec 4 N(A) Physics Biology syllabus',
-    'N Level Physics Biology integration 2025',
+    'N Level Physics Biology integration 2026',
     'Singapore Physics Biology exam strategies',
     'Combined Science life and motion connections',
     'LionCity Tutors Combined Science'
@@ -48,7 +48,7 @@ export default function CombinedPhysicsBiology() {
         <div className="flex items-center space-x-4 mb-8">
           <div>
             <p className="font-semibold text-gray-800">By Sarah Goh, Combined Physics–Biology Tutor</p>
-            <p className="text-sm text-gray-500">Updated August 26, 2025 • N(A) Integration Guide • 16 min read</p>
+            <p className="text-sm text-gray-500">Updated June 28, 2026 • N(A) Integration Guide • 16 min read</p>
           </div>
         </div>
 
@@ -495,7 +495,9 @@ const articleSchema = {
     name: 'Sarah Goh',
     jobTitle: 'Combined Physics–Biology Tutor',
     worksFor: { "@type": "Organization", name: 'LionCity Tutors' }
-  }
+  },
+  datePublished: '2026-03-21',
+  dateModified: '2026-06-28',
 };
 
 const faqSchema = {

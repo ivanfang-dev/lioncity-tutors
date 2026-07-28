@@ -37,7 +37,7 @@ export default function ImproveEnglishComposition() {
             5 Signs Your Child is Struggling with English Composition (and How to Help)
           </h1>
           <p className="text-md text-gray-500 mt-4">
-            Published on: September 15, 2025
+            Updated May 3, 2026
           </p>
         </header>
 

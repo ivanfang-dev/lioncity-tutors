@@ -1,5 +1,6 @@
 "use client";
 
+import { MATCH_TIME } from '@/data/promises';
 import React, { useRef } from "react";
 import Link from 'next/link';
 import Image from 'next/image';
@@ -483,7 +484,7 @@ export default function PrimarySchoolTuition() {
         <section className="text-center space-y-6 bg-gradient-to-r from-primary to-primary/90 text-white py-14 px-8 rounded-2xl shadow-xl">
           <h2 className="text-3xl md:text-4xl font-bold text-white">Start Your Journey To PSLE Success Today</h2>
           <p className="text-white/80 text-lg max-w-2xl mx-auto">
-            Experience the difference with our handpicked tutors. We'll match you within 24 hours.
+            Experience the difference with our handpicked tutors. We'll match you within {MATCH_TIME}.
           </p>
           <div className="inline-block">
             <Button

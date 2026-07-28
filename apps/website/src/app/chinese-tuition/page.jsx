@@ -1,3 +1,4 @@
+import { MATCH_TIME } from '@/data/promises';
 import React from "react";
 import Link from 'next/link';
 import Image from 'next/image';
@@ -7,7 +8,7 @@ import { GuideCTA } from "@/components/guide";
 
 export const metadata = {
   title: 'Best Chinese Tuition Singapore | PSLE, O Level, A Level Chinese Tutors | Lion City Tutors',
-  description: 'Find the best Chinese tutors in Singapore for PSLE, O Level, A Level & JC H1 Chinese. Free matching service with handpicked private tutors. Results guaranteed within 24 hours.',
+  description: `Find the best Chinese tutors in Singapore for PSLE, O Level, A Level & JC H1 Chinese. Free matching service with handpicked private tutors. Results guaranteed within ${MATCH_TIME}.`,
   keywords: [
     'Chinese tuition Singapore',
     'PSLE Chinese tutor',
@@ -35,7 +36,7 @@ export const metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Best Chinese Tuition Singapore | Expert Chinese Tutors',
-    description: 'Find qualified Chinese tutors for PSLE, O Level & A Level. Free matching service with handpicked tutors. Results within 24 hours.',
+    description: `Find qualified Chinese tutors for PSLE, O Level & A Level. Free matching service with handpicked tutors. Results within ${MATCH_TIME}.`,
   },
   alternates: {
     canonical: 'https://www.lioncitytutors.com/chinese-tuition',
@@ -172,7 +173,7 @@ export default function ChineseTuition() {
             <Card className="border-l-4 border-l-blue-500 shadow-lg hover:shadow-xl transition-shadow duration-200">
               <CardContent className="p-6">
                 <h3 className="font-bold text-lg text-blue-700">Quick Matching (8h)</h3>
-                <p className="text-gray-600 mt-2">Get matched with qualified Chinese tutors within 24 hours, ensuring your child can start improving their language skills immediately.</p>
+                <p className="text-gray-600 mt-2">Get matched with qualified Chinese tutors within {MATCH_TIME}, ensuring your child can start improving their language skills immediately.</p>
               </CardContent>
             </Card>
             <Card className="border-l-4 border-l-purple-500 shadow-lg hover:shadow-xl transition-shadow duration-200">

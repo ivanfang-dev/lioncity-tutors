@@ -1,5 +1,6 @@
 "use client";
 
+import { MATCH_TIME } from '@/data/promises';
 import { useRef } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -107,9 +108,9 @@ export default function PSLEEnglish() {
           {/* Article column */}
           <div>
             <GuideHeader
-              title="PSLE English Guide 2025: Master Primary School English"
+              title="PSLE English Guide 2026: Master Primary School English"
               author="By the LionCity Tutors English Team"
-              meta="Updated June 14, 2025 · 15 min read"
+              meta="Updated May 6, 2026 · 15 min read"
               imageSrc="/english-tuition.webp"
               imageAlt="A child reading and writing at a desk — the language skills across all four PSLE English papers."
             />
@@ -437,7 +438,7 @@ export default function PSLEEnglish() {
               Ready to Find The Perfect Tutor?
             </h2>
             <p className="text-center text-text-default/80 mb-10 text-lg">
-              Get matched with qualified tutors in 24 hours. Just fill out the details below.
+              Get matched with qualified tutors in {MATCH_TIME}. Just fill out the details below.
             </p>
 
             <FormBenefits />

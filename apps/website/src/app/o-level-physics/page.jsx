@@ -1,8 +1,9 @@
+import { MATCH_TIME } from '@/data/promises';
 export const metadata = {
-  title: 'O Level Physics Guide 2025: Complete Study Strategy for Singapore Students | LionCity Tutors',
-  description: 'Ultimate O Level Physics preparation guide for Singapore students. Expert strategies, practical techniques, and proven tips to score A1 in O Level Physics 2025.',
+  title: 'O Level Physics Guide 2026: Complete Study Strategy for Singapore Students | LionCity Tutors',
+  description: 'Ultimate O Level Physics preparation guide for Singapore students. Expert strategies, practical techniques, and proven tips to score A1 in O Level Physics 2026.',
   keywords: [
-    'O Level Physics 2025',
+    'O Level Physics 2026',
     'O Level Physics Singapore',
     'GCE O Level Physics guide',
     'O Level Physics preparation',
@@ -11,7 +12,7 @@ export const metadata = {
     'Physics revision techniques'
   ],
   openGraph: {
-    title: 'O Level Physics Guide 2025: Complete Study Strategy for Singapore Students',
+    title: 'O Level Physics Guide 2026: Complete Study Strategy for Singapore Students',
     description: 'Comprehensive O Level Physics guide with proven strategies to help Singapore students achieve A1 grades in GCE O Level Physics.',
     url: 'https://www.lioncitytutors.com/o-level-physics',
     type: 'article',
@@ -109,16 +110,16 @@ Preferred days & timing: `;
         {/* Article column */}
         <div>
           <GuideHeader
-            title="O Level Physics Guide 2025: Master Mechanics, Waves & Electricity"
+            title="O Level Physics Guide 2026: Master Mechanics, Waves & Electricity"
             author="By the LionCity Tutors Physics Team"
-            meta="Updated June 14, 2025 · 15 min read"
+            meta="Updated May 22, 2026 · 15 min read"
             imageSrc="/o-level-physics.webp"
             imageAlt="Apparatus on a lab bench — the mechanics, waves and electricity at the heart of O Level Physics."
           />
 
           <article className="space-y-12 text-gray-700 leading-relaxed">
             <p className="text-lg text-gray-800 leading-relaxed text-pretty">
-              O Level Physics is a fundamental subject that builds the foundation for further studies in science and engineering. With its focus on mechanics, waves, electricity, and modern physics, O Level Physics requires both theoretical understanding and practical application skills. This comprehensive guide provides proven strategies for achieving A1 grades in O Level Physics 2025.
+              O Level Physics is a fundamental subject that builds the foundation for further studies in science and engineering. With its focus on mechanics, waves, electricity, and modern physics, O Level Physics requires both theoretical understanding and practical application skills. This comprehensive guide provides proven strategies for achieving A1 grades in O Level Physics 2026.
             </p>
 
             {/* Key takeaways */}
@@ -560,7 +561,7 @@ Preferred days & timing: `;
             {/* Conversion block */}
             <GuideCTA
               title="Find your O Level Physics tutor"
-              description="Tell us your child’s level and goals. We hand-match a vetted, MOE-familiar O Level Physics tutor — usually within hours — and parents never pay an agency fee."
+              description={`Tell us your child’s level and goals. We hand-match a vetted, MOE-familiar O Level Physics tutor — usually within ${MATCH_TIME} — and parents never pay an agency fee.`}
               buttonText="Find your O Level Physics tutor"
               whatsappHref={whatsappHref}
             />

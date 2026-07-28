@@ -1,5 +1,6 @@
 "use client";
 
+import { MATCH_TIME } from '@/data/promises';
 import React, { useRef } from "react";
 import Link from 'next/link';
 import { Button } from "@/components/ui/button";
@@ -430,7 +431,7 @@ export default function NLevelTuition() {
         <section className="text-center space-y-6 bg-accent text-white p-12 rounded-2xl shadow-xl">
             <h2 className="text-3xl md:text-4xl font-bold text-white">Start Your Journey To N-Level Success Today</h2>
             <p className="text-text-inverse/80 text-lg max-w-2xl mx-auto">
-                Experience the difference with our handpicked tutors. We'll match you within 24 hours.
+                Experience the difference with our handpicked tutors. We'll match you within {MATCH_TIME}.
             </p>
             <div className="pt-4">
                 <Button 

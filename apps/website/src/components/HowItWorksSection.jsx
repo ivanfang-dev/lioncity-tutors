@@ -1,5 +1,6 @@
 'use client';
 
+import { MATCH_TIME } from '@/data/promises';
 import React, { useRef } from 'react';
 import { gsap } from "gsap";
 import { SplitText } from "gsap/SplitText";
@@ -36,9 +37,9 @@ export default function HowItWorksSection({ formRef }) {
     { 
       number: "02", 
       title: "Receive Curated Profiles", 
-      description: "Within 24 hours, we send you a shortlist of 2-3 highly qualified tutors whose experience and teaching style are a perfect match.", 
+      description: `Within ${MATCH_TIME}, we send you a shortlist of 2-3 highly qualified tutors whose experience and teaching style are a perfect match.`, 
       highlight: {
-        before: "Within 24 hours, we send you a shortlist of 2-3 ",
+        before: `Within ${MATCH_TIME}, we send you a shortlist of 2-3 `,
         text: "highly qualified tutors",
         after: " whose experience and teaching style are a perfect match."
       },

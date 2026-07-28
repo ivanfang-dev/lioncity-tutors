@@ -3,11 +3,11 @@ import Image from 'next/image';
 import combinedscienceImage from "../../../public/combined-chemistry-biology.webp"
 
 export const metadata = {
-  title: 'N Level Combined Science 2025: Complete Guide to All Three Combinations | LionCity Tutors',
+  title: 'N Level Combined Science 2026: Complete Guide to All Three Combinations | LionCity Tutors',
   description: 'Master N Level Combined Science with our comprehensive Singapore-focused guide. Physics-Chemistry, Physics-Biology, Chemistry-Biology combinations, local case studies, and proven exam techniques.',
   keywords: [
     'N Level Combined Science Singapore',
-    'Combined Science study guide 2025',
+    'Combined Science study guide 2026',
     'Singapore Combined Science exam tips',
     '5105 5106 5107 Science',
     'N Level Combined Science tuition',
@@ -15,7 +15,7 @@ export const metadata = {
     'Singapore science education'
   ],
   openGraph: {
-    title: 'N Level Combined Science 2025: Complete Singapore Success Guide',
+    title: 'N Level Combined Science 2026: Complete Singapore Success Guide',
     description: 'Master all three N Level Combined Science combinations. Physics-Chemistry, Physics-Biology, Chemistry-Biology strategies with Singapore examples.',
     url: 'https://www.lioncitytutors.com/combined-science-overview',
     type: 'article',
@@ -35,11 +35,11 @@ export default function CombinedScienceOverview() {
 
     <main className="px-4 py-12 max-w-4xl mx-auto">
 
-      <h1 className="text-4xl font-bold text-blue-800 mb-4">N Level Combined Science 2025: Your Complete Guide to All Three Combinations</h1>
+      <h1 className="text-4xl font-bold text-blue-800 mb-4">N Level Combined Science 2026: Your Complete Guide to All Three Combinations</h1>
       <div className="flex items-center space-x-4 mb-8">
           <div>
             <p className="font-semibold text-gray-800">By Marcus Wong, Combined Science Tutor</p>
-            <p className="text-sm text-gray-500">Updated August 26, 2025 • Comprehensive guide to all combinations • 15 min read</p>
+            <p className="text-sm text-gray-500">Updated June 24, 2026 • Comprehensive guide to all combinations • 15 min read</p>
           </div>
         </div>
 
@@ -507,7 +507,7 @@ export default function CombinedScienceOverview() {
 const articleSchema = {
   "@context": "https://schema.org",
   "@type": "Article",
-  "headline": "N Level Combined Science 2025: Your Complete Guide to All Three Combinations",
+  "headline": "N Level Combined Science 2026: Your Complete Guide to All Three Combinations",
   "description": "Master N Level Combined Science with our comprehensive Singapore-focused guide. Physics-Chemistry, Physics-Biology, Chemistry-Biology combinations, local case studies, and proven exam techniques.",
   "author": {
     "@type": "Person",
@@ -523,8 +523,8 @@ const articleSchema = {
     "name": "LionCity Tutors",
     "url": "https://www.lioncitytutors.com"
   },
-  "datePublished": "2025-08-26",
-  "dateModified": "2025-08-26",
+  "datePublished": "2026-03-16",
+  "dateModified": "2026-06-24",
   "mainEntityOfPage": {
     "@type": "WebPage",
     "@id": "https://www.lioncitytutors.com/combined-science-overview"
@@ -532,7 +532,7 @@ const articleSchema = {
   "articleSection": "Education",
   "keywords": [
     "N Level Combined Science Singapore",
-    "Combined Science study guide 2025", 
+    "Combined Science study guide 2026", 
     "Singapore Combined Science exam tips",
     "5105 5106 5107 Science",
     "N Level Combined Science tuition",

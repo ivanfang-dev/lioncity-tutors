@@ -1,7 +1,8 @@
+import { MATCH_TIME } from '@/data/promises';
 const articleSchema = {
   '@context': 'https://schema.org',
   '@type': 'Article',
-  'headline': 'O Level Biology Guide 2025: Complete Study Strategy for Singapore Students',
+  'headline': 'O Level Biology Guide 2026: Complete Study Strategy for Singapore Students',
   'description': 'Comprehensive O Level Biology preparation guide for Singapore students, covering the syllabus, exam papers, study techniques, and practical skills.',
   'image': 'https://www.lioncitytutors.com/o-level-biology.webp',
   'author': {
@@ -16,15 +17,15 @@ const articleSchema = {
       'url': 'https://www.lioncitytutors.com/favicon.png',
     },
   },
-  'datePublished': '2025-06-14',
-  'dateModified': '2025-08-26',
+  'datePublished': '2026-02-05',
+  'dateModified': '2026-05-26',
 };
 
 export const metadata = {
-  title: 'O Level Biology Guide 2025: Complete Study Strategy for Singapore Students | LionCity Tutors',
-  description: 'Ultimate O Level Biology preparation guide for Singapore students. Expert strategies, practical techniques, and proven tips to score A1 in O Level Biology 2025.',
+  title: 'O Level Biology Guide 2026: Complete Study Strategy for Singapore Students | LionCity Tutors',
+  description: 'Ultimate O Level Biology preparation guide for Singapore students. Expert strategies, practical techniques, and proven tips to score A1 in O Level Biology 2026.',
   keywords: [
-    'O Level Biology 2025',
+    'O Level Biology 2026',
     'O Level Biology Singapore',
     'GCE O Level Biology guide',
     'O Level Biology preparation',
@@ -34,7 +35,7 @@ export const metadata = {
     'O Level Biology syllabus'
   ],
   openGraph: {
-    title: 'O Level Biology Guide 2025: Complete Study Strategy for Singapore Students',
+    title: 'O Level Biology Guide 2026: Complete Study Strategy for Singapore Students',
     description: 'Comprehensive O Level Biology guide with proven strategies to help Singapore students achieve A1 grades in GCE O Level Biology.',
     url: 'https://www.lioncitytutors.com/o-level-biology',
     type: 'article',
@@ -138,16 +139,16 @@ Preferred days & timing: `;
         {/* Article column */}
         <div>
           <GuideHeader
-            title="O Level Biology Guide 2025: Master Cells, Human Systems & Ecology"
+            title="O Level Biology Guide 2026: Master Cells, Human Systems & Ecology"
             author="By the LionCity Tutors Biology Team"
-            meta="Updated August 26, 2025 · 15 min read"
+            meta="Updated May 26, 2026 · 15 min read"
             imageSrc="/o-level-biology.webp"
             imageAlt="A biology study session — the cells, systems and ecosystems at the heart of O Level Biology."
           />
 
           <article className="space-y-12 text-gray-700 leading-relaxed">
             <p className="text-lg text-gray-800 leading-relaxed text-pretty">
-              O Level Biology rewards students who understand processes rather than memorise facts. With its coverage of cell biology, human physiology, genetics, and ecology, it demands both clear theoretical understanding and solid practical skills. This detailed guide provides proven strategies for achieving A1 grades in O Level Biology 2025.
+              O Level Biology rewards students who understand processes rather than memorise facts. With its coverage of cell biology, human physiology, genetics, and ecology, it demands both clear theoretical understanding and solid practical skills. This detailed guide provides proven strategies for achieving A1 grades in O Level Biology 2026.
             </p>
 
             {/* Key takeaways */}
@@ -629,7 +630,7 @@ Preferred days & timing: `;
             {/* Conversion block */}
             <GuideCTA
               title="Find your O Level Biology tutor"
-              description="Tell us your child’s level and goals. We hand-match a vetted, MOE-familiar O Level Biology tutor — usually within hours — and parents never pay an agency fee."
+              description={`Tell us your child’s level and goals. We hand-match a vetted, MOE-familiar O Level Biology tutor — usually within ${MATCH_TIME} — and parents never pay an agency fee.`}
               buttonText="Find your O Level Biology tutor"
               whatsappHref={whatsappHref}
             />

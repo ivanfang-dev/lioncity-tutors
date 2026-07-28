@@ -1,11 +1,12 @@
+import { MATCH_TIME } from '@/data/promises';
 export const metadata = {
-  title: "A Level H2 Biology Guide 2025: Complete Study Strategy for Singapore Students | LionCity Tutors",
-  description: "Ultimate A Level H2 Biology preparation guide for Singapore students. Expert strategies, practical techniques, and proven tips to score A in H2 Biology 2025.",
+  title: "A Level H2 Biology Guide 2026: Complete Study Strategy for Singapore Students | LionCity Tutors",
+  description: "Ultimate A Level H2 Biology preparation guide for Singapore students. Expert strategies, practical techniques, and proven tips to score A in H2 Biology 2026.",
   keywords: [
-    "A Level H2 Biology 2025", "H2 Biology Singapore", "GCE A Level Biology guide", "A Level Biology preparation", "H2 Biology study tips", "A Level Biology tuition Singapore", "Biology revision techniques", "H2 Biology syllabus"
+    "A Level H2 Biology 2026", "H2 Biology Singapore", "GCE A Level Biology guide", "A Level Biology preparation", "H2 Biology study tips", "A Level Biology tuition Singapore", "Biology revision techniques", "H2 Biology syllabus"
   ],
   openGraph: {
-    title: "A Level H2 Biology Guide 2025: Complete Study Strategy for Singapore Students",
+    title: "A Level H2 Biology Guide 2026: Complete Study Strategy for Singapore Students",
     description: "Comprehensive A Level H2 Biology guide with proven strategies to help Singapore students achieve A grades in GCE A Level Biology.",
     type: "article",
     url: "https://www.lioncitytutors.com/a-level-biology",
@@ -105,16 +106,16 @@ Preferred days & timing: `;
         {/* Article column */}
         <div>
           <GuideHeader
-            title="A Level H2 Biology Guide 2025: Master Cell Biology, Genetics & Ecology"
+            title="A Level H2 Biology Guide 2026: Master Cell Biology, Genetics & Ecology"
             author="By the LionCity Tutors Biology Team"
-            meta="Updated June 14, 2025 · 18 min read"
+            meta="Updated June 11, 2026 · 18 min read"
             imageSrc="/biology.webp"
             imageAlt="A blue-toned DNA double helix — the molecular biology at the heart of H2 Biology."
           />
 
           <article className="space-y-12 text-gray-700 leading-relaxed">
             <p className="text-lg text-gray-800 leading-relaxed text-pretty">
-              A Level H2 Biology is one of the most challenging and rewarding subjects in the Singapore GCE A Level curriculum. With its comprehensive coverage of cell biology, genetics, ecology, and human physiology, H2 Biology demands both theoretical understanding and practical application skills. This detailed guide provides proven strategies for achieving A grades in H2 Biology 2025.
+              A Level H2 Biology is one of the most challenging and rewarding subjects in the Singapore GCE A Level curriculum. With its comprehensive coverage of cell biology, genetics, ecology, and human physiology, H2 Biology demands both theoretical understanding and practical application skills. This detailed guide provides proven strategies for achieving A grades in H2 Biology 2026.
             </p>
 
             {/* Key takeaways */}
@@ -607,7 +608,7 @@ Preferred days & timing: `;
             {/* Conversion block */}
             <GuideCTA
               title="Find your H2 Biology tutor"
-              description="Tell us your child’s level and goals. We hand-match a vetted, MOE-familiar H2 Biology tutor — usually within hours — and parents never pay an agency fee."
+              description={`Tell us your child’s level and goals. We hand-match a vetted, MOE-familiar H2 Biology tutor — usually within ${MATCH_TIME} — and parents never pay an agency fee.`}
               buttonText="Find your H2 Biology tutor"
               whatsappHref={whatsappHref}
             />

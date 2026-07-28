@@ -1,8 +1,9 @@
+import { MATCH_TIME } from '@/data/promises';
 export const metadata = {
-  title: 'IGCSE Biology Guide 2025: Complete Study Strategy for Singapore Students | LionCity Tutors',
-  description: 'Ultimate IGCSE Biology preparation guide for Singapore students. Expert strategies, practical techniques, and proven tips to score A* in IGCSE Biology 2025.',
+  title: 'IGCSE Biology Guide 2026: Complete Study Strategy for Singapore Students | LionCity Tutors',
+  description: 'Ultimate IGCSE Biology preparation guide for Singapore students. Expert strategies, practical techniques, and proven tips to score A* in IGCSE Biology 2026.',
   keywords: [
-    'IGCSE Biology 2025',
+    'IGCSE Biology 2026',
     'IGCSE Biology Singapore',
     'Cambridge IGCSE Biology guide',
     'IGCSE Biology preparation',
@@ -12,7 +13,7 @@ export const metadata = {
     'IGCSE Biology syllabus'
   ],
   openGraph: {
-    title: 'IGCSE Biology Guide 2025: Complete Study Strategy for Singapore Students',
+    title: 'IGCSE Biology Guide 2026: Complete Study Strategy for Singapore Students',
     description: 'Comprehensive IGCSE Biology guide with proven strategies to help Singapore students achieve A* grades in Cambridge IGCSE Biology.',
     url: 'https://www.lioncitytutors.com/igcse-biology',
     type: 'article',
@@ -110,16 +111,16 @@ Preferred days & timing: `;
         {/* Article column */}
         <div>
           <GuideHeader
-            title="IGCSE Biology Guide 2025: Master Cell Biology, Genetics & Ecology"
+            title="IGCSE Biology Guide 2026: Master Cell Biology, Genetics & Ecology"
             author="By the LionCity Tutors Biology Team"
-            meta="Updated June 14, 2025 · 18 min read"
+            meta="Updated June 18, 2026 · 18 min read"
             imageSrc="/biology.webp"
             imageAlt="A blue-toned DNA double helix — the molecular biology at the heart of IGCSE Biology."
           />
 
           <article className="space-y-12 text-gray-700 leading-relaxed">
             <p className="text-lg text-gray-800 leading-relaxed text-pretty">
-              IGCSE Biology is one of the most challenging and rewarding subjects in the Cambridge IGCSE curriculum. With its comprehensive coverage of cell biology, genetics, ecology, and human physiology, IGCSE Biology demands both theoretical understanding and practical application skills. This detailed guide provides proven strategies for achieving A* grades in IGCSE Biology 2025.
+              IGCSE Biology is one of the most challenging and rewarding subjects in the Cambridge IGCSE curriculum. With its comprehensive coverage of cell biology, genetics, ecology, and human physiology, IGCSE Biology demands both theoretical understanding and practical application skills. This detailed guide provides proven strategies for achieving A* grades in IGCSE Biology 2026.
             </p>
 
             {/* Key takeaways */}
@@ -561,7 +562,7 @@ Preferred days & timing: `;
             {/* Conversion block */}
             <GuideCTA
               title="Find your IGCSE Biology tutor"
-              description="Tell us your child’s level and goals. We hand-match a vetted, MOE-familiar IGCSE Biology tutor — usually within hours — and parents never pay an agency fee."
+              description={`Tell us your child’s level and goals. We hand-match a vetted, MOE-familiar IGCSE Biology tutor — usually within ${MATCH_TIME} — and parents never pay an agency fee.`}
               buttonText="Find your IGCSE Biology tutor"
               whatsappHref={whatsappHref}
             />

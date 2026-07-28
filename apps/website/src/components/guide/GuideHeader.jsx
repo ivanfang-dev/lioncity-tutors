@@ -7,7 +7,7 @@ import Image from 'next/image';
  *
  * @param {import('react').ReactNode} title
  * @param {string} author - e.g. "By the LionCity Tutors Chemistry Team"
- * @param {string} meta - e.g. "Updated June 14, 2025 · 18 min read"
+ * @param {string} meta - e.g. "Updated July 26, 2026 · 18 min read"
  * @param {string} [imageSrc]
  * @param {string} [imageAlt]
  */

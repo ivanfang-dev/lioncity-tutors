@@ -1,3 +1,4 @@
+import { MATCH_TIME } from '@/data/promises';
 // app/page.jsx
 export const metadata = {
   title: 'LionCity Tutors – MOE-Certified PSLE, O-Level & JC Tutors',
@@ -28,7 +29,7 @@ export const metadata = {
     type: 'website',
     url: 'https://www.lioncitytutors.com/',
     title: "Singapore's #1 Home Tuition Agency | LionCity Tutors",
-    description: "Connect with MOE-certified tutors for PSLE, O-Level & A-Level. Free for parents, matched in 24 hours.",
+    description: `Connect with MOE-certified tutors for PSLE, O-Level & A-Level. Free for parents, matched in ${MATCH_TIME}.`,
     images: [
       {
         url: 'https://www.lioncitytutors.com/final.png',
@@ -206,7 +207,7 @@ export default function HomePage(props) {
                   "name": "How quickly will I receive tutor profiles?",
                   "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "We typically send you tutor profiles within 24 hours of your request. Our team works 7 days a week to ensure fast matching."
+                    "text": `We typically send you tutor profiles within ${MATCH_TIME} of your request. Our team works 7 days a week to ensure fast matching.`
                   }
                 },
                 {

@@ -8,7 +8,7 @@ export const metadata = {
   keywords: [
     'Combined Science Chemistry Physics Singapore',
     'N Level Chemistry Physics integration',
-    'Combined Science Chemistry Physics 2025',
+    'Combined Science Chemistry Physics 2026',
     'Singapore Chemistry Physics exam strategies',
     'N Level Combined Science study guide',
     'Chemistry Physics molecular connections',
@@ -39,7 +39,7 @@ export default function CombinedChemistryPhysics() {
         <div className="flex items-center space-x-4 mb-8">
           <div>
             <p className="font-semibold text-gray-800">By David Lim, Combined Chemistry-Physics Tutor</p>
-            <p className="text-sm text-gray-500">Updated August 26, 2025 • Advanced Integration Guide • 18 min read</p>
+            <p className="text-sm text-gray-500">Updated July 1, 2026 • Advanced Integration Guide • 18 min read</p>
           </div>
         </div>
 
@@ -544,5 +544,7 @@ const articleSchema = {
       "@type": "Organization",
       "name": "LionCity Tutors"
         }
-    }
+    },
+  "datePublished": "2026-03-23",
+  "dateModified": "2026-07-01"
 }

@@ -1,4 +1,5 @@
 'use client';
+import { MATCH_TIME } from '@/data/promises';
 import React from 'react';
 import { Star, Award, Clock, Shield } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -13,7 +14,7 @@ export default function ReviewStrip() {
     {
       icon: Clock,
       title: "Fast Matching",
-      subtitle: "Profiles sent in 8 hours"
+      subtitle: `Profiles sent in ${MATCH_TIME}`
     },
     {
       icon: Shield,

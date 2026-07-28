@@ -1,9 +1,10 @@
+import { MATCH_TIME } from '@/data/promises';
 export const metadata = {
-  title: 'A Level H2 Chemistry Guide 2025: Complete Study Strategy for Singapore Students | LionCity Tutors',
-  description: 'Ultimate A Level H2 Chemistry preparation guide for Singapore students. Expert strategies, practical techniques, and proven tips to score A in H2 Chemistry 2025.',
-  keywords: ["A Level H2 Chemistry 2025", "H2 Chemistry Singapore", "GCE A Level Chemistry guide", "A Level Chemistry preparation", "H2 Chemistry study tips", "A Level Chemistry tuition Singapore", "Chemistry revision techniques", "H2 Chemistry syllabus"],
+  title: 'A Level H2 Chemistry Guide 2026: Complete Study Strategy for Singapore Students | LionCity Tutors',
+  description: 'Ultimate A Level H2 Chemistry preparation guide for Singapore students. Expert strategies, practical techniques, and proven tips to score A in H2 Chemistry 2026.',
+  keywords: ["A Level H2 Chemistry 2026", "H2 Chemistry Singapore", "GCE A Level Chemistry guide", "A Level Chemistry preparation", "H2 Chemistry study tips", "A Level Chemistry tuition Singapore", "Chemistry revision techniques", "H2 Chemistry syllabus"],
   openGraph: {
-    title: 'A Level H2 Chemistry Guide 2025: Complete Study Strategy for Singapore Students | LionCity Tutors',
+    title: 'A Level H2 Chemistry Guide 2026: Complete Study Strategy for Singapore Students | LionCity Tutors',
     description: 'Comprehensive A Level H2 Chemistry guide with proven strategies to help Singapore students achieve A grades in GCE A Level Chemistry.',
     url: 'https://www.lioncitytutors.com/a-level-chemistry',
     type: 'article',
@@ -102,16 +103,16 @@ Preferred days & timing: `;
         {/* Article column */}
         <div>
           <GuideHeader
-            title="A Level H2 Chemistry Guide 2025: Master Physical, Organic & Inorganic Chemistry"
+            title="A Level H2 Chemistry Guide 2026: Master Physical, Organic & Inorganic Chemistry"
             author="By the LionCity Tutors Chemistry Team"
-            meta="Updated June 14, 2025 · 18 min read"
+            meta="Updated June 4, 2026 · 18 min read"
             imageSrc="/chemistry.webp"
             imageAlt="Laboratory glassware and reagents — the hands-on craft at the heart of H2 Chemistry."
           />
 
           <article className="space-y-12 text-gray-700 leading-relaxed">
             <p className="text-lg text-gray-800 leading-relaxed text-pretty">
-              A Level H2 Chemistry is one of the most challenging and rewarding subjects in the Singapore GCE A Level curriculum. With its comprehensive coverage of physical, organic, and inorganic chemistry, H2 Chemistry demands both theoretical understanding and practical application skills. This detailed guide provides proven strategies for achieving A grades in H2 Chemistry 2025.
+              A Level H2 Chemistry is one of the most challenging and rewarding subjects in the Singapore GCE A Level curriculum. With its comprehensive coverage of physical, organic, and inorganic chemistry, H2 Chemistry demands both theoretical understanding and practical application skills. This detailed guide provides proven strategies for achieving A grades in H2 Chemistry 2026.
             </p>
 
             {/* Key takeaways */}
@@ -620,7 +621,7 @@ Preferred days & timing: `;
             {/* Conversion block */}
             <GuideCTA
               title="Find your H2 Chemistry tutor"
-              description="Tell us your child’s level and goals. We hand-match a vetted, MOE-familiar H2 Chemistry tutor — usually within hours — and parents never pay an agency fee."
+              description={`Tell us your child’s level and goals. We hand-match a vetted, MOE-familiar H2 Chemistry tutor — usually within ${MATCH_TIME} — and parents never pay an agency fee.`}
               buttonText="Find your H2 Chemistry tutor"
               whatsappHref={whatsappHref}
             />

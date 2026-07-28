@@ -224,7 +224,7 @@ const ALevelPrepClient = () => {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="text-5xl md:text-6xl font-extrabold text-white mb-4 tracking-tight"
           >
-            Conquer the A-Levels in 2025
+            Conquer the A-Levels in 2026
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 20 }}

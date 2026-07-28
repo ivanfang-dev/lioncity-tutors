@@ -1,3 +1,4 @@
+import { MATCH_TIME } from '@/data/promises';
 import React from "react";
 import Link from 'next/link';
 import Image from 'next/image';
@@ -7,7 +8,7 @@ import { GuideCTA } from "@/components/guide";
 
 export const metadata = {
   title: 'Best Economics Tuition Singapore | H1, H2, IB Economics Tutors | Lion City Tutors',
-  description: 'Find the best economics tutors in Singapore for H1, H2, IB SL & HL Economics. Free matching service with handpicked private tutors. Results guaranteed within 24 hours.',
+  description: `Find the best economics tutors in Singapore for H1, H2, IB SL & HL Economics. Free matching service with handpicked private tutors. Results guaranteed within ${MATCH_TIME}.`,
   keywords: [
     'economics tuition Singapore',
     'H1 economics tutor',
@@ -35,7 +36,7 @@ export const metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Best Economics Tuition Singapore | Expert Economics Tutors',
-    description: 'Find qualified economics tutors for H1, H2 & IB Economics. Free matching service with handpicked tutors. Results within 24 hours.',
+    description: `Find qualified economics tutors for H1, H2 & IB Economics. Free matching service with handpicked tutors. Results within ${MATCH_TIME}.`,
   },
   alternates: {
     canonical: 'https://www.lioncitytutors.com/economics-tuition',

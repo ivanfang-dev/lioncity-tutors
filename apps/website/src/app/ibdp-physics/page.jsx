@@ -1,8 +1,9 @@
+import { MATCH_TIME } from '@/data/promises';
 export const metadata = {
-  title: 'IBDP Physics Guide 2025: Complete Study Strategy for Singapore Students | LionCity Tutors',
-  description: 'Ultimate IBDP Physics preparation guide for Singapore students. Expert strategies, practical techniques, and proven tips to score 7 in IBDP Physics 2025.',
+  title: 'IBDP Physics Guide 2026: Complete Study Strategy for Singapore Students | LionCity Tutors',
+  description: 'Ultimate IBDP Physics preparation guide for Singapore students. Expert strategies, practical techniques, and proven tips to score 7 in IBDP Physics 2026.',
   keywords: [
-    'IBDP Physics 2025',
+    'IBDP Physics 2026',
     'IB Physics Singapore',
     'International Baccalaureate Physics guide',
     'IBDP Physics preparation',
@@ -12,7 +13,7 @@ export const metadata = {
     'IBDP Physics syllabus'
   ],
   openGraph: {
-    title: 'IBDP Physics Guide 2025: Complete Study Strategy for Singapore Students',
+    title: 'IBDP Physics Guide 2026: Complete Study Strategy for Singapore Students',
     description: 'Comprehensive IBDP Physics guide with proven strategies to help Singapore students achieve level 7 in IBDP Physics.',
     url: 'https://www.lioncitytutors.com/ibdp-physics',
     type: 'article',
@@ -111,16 +112,16 @@ Preferred days & timing: `;
         {/* Article column */}
         <div>
           <GuideHeader
-            title="IBDP Physics Guide 2025: Master Mechanics, Waves & Modern Physics"
+            title="IBDP Physics Guide 2026: Master Mechanics, Waves & Modern Physics"
             author="By the LionCity Tutors Physics Team"
-            meta="Updated June 14, 2025 · 18 min read"
+            meta="Updated June 22, 2026 · 18 min read"
             imageSrc="/physics.webp"
             imageAlt="Trails of light in motion — the mechanics, waves and modern physics at the heart of IBDP Physics."
           />
 
           <article className="space-y-12 text-gray-700 leading-relaxed">
             <p className="text-lg text-gray-800 leading-relaxed text-pretty">
-              IBDP Physics is one of the most challenging and rewarding subjects in the International Baccalaureate Diploma Programme. With its comprehensive coverage of mechanics, waves, electricity, and modern physics, IBDP Physics demands both theoretical understanding and practical application skills. This detailed guide provides proven strategies for achieving level 7 in IBDP Physics 2025.
+              IBDP Physics is one of the most challenging and rewarding subjects in the International Baccalaureate Diploma Programme. With its comprehensive coverage of mechanics, waves, electricity, and modern physics, IBDP Physics demands both theoretical understanding and practical application skills. This detailed guide provides proven strategies for achieving level 7 in IBDP Physics 2026.
             </p>
 
             {/* Key takeaways */}
@@ -602,7 +603,7 @@ Preferred days & timing: `;
             {/* Conversion block */}
             <GuideCTA
               title="Find your IBDP Physics tutor"
-              description="Tell us your child’s level and goals. We hand-match a vetted, MOE-familiar IBDP Physics tutor — usually within hours — and parents never pay an agency fee."
+              description={`Tell us your child’s level and goals. We hand-match a vetted, MOE-familiar IBDP Physics tutor — usually within ${MATCH_TIME} — and parents never pay an agency fee.`}
               buttonText="Find your IBDP Physics tutor"
               whatsappHref={whatsappHref}
             />

@@ -1,11 +1,12 @@
+import { MATCH_TIME } from '@/data/promises';
 export const metadata = {
-  title: 'A Level General Paper Guide 2025: Complete GP Strategy for Singapore JC Students | LionCity Tutors',
-  description: 'Ultimate A Level General Paper (GP) preparation guide for Singapore JC students. Expert strategies for essay and comprehension, critical thinking, and proven techniques to excel in Cambridge A Level GP 2025.',
+  title: 'A Level General Paper Guide 2026: Complete GP Strategy for Singapore JC Students | LionCity Tutors',
+  description: 'Ultimate A Level General Paper (GP) preparation guide for Singapore JC students. Expert strategies for essay and comprehension, critical thinking, and proven techniques to excel in Cambridge A Level GP 2026.',
   keywords: [
-    'A Level General Paper 2025', 'A Level GP Singapore', 'Cambridge A Level GP guide', 'General Paper essay strategies', 'GP comprehension techniques', 'JC GP tuition Singapore', 'GP current affairs', 'Singapore A Level General Paper'
+    'A Level General Paper 2026', 'A Level GP Singapore', 'Cambridge A Level GP guide', 'General Paper essay strategies', 'GP comprehension techniques', 'JC GP tuition Singapore', 'GP current affairs', 'Singapore A Level General Paper'
   ],
   openGraph: {
-    title: 'A Level General Paper Guide 2025: Complete GP Strategy for Singapore JC Students | LionCity Tutors',
+    title: 'A Level General Paper Guide 2026: Complete GP Strategy for Singapore JC Students | LionCity Tutors',
     description: 'Comprehensive A Level General Paper guide with proven strategies to help Singapore JC students achieve A grades in GP essays and comprehension.',
     url: 'https://www.lioncitytutors.com/a-level-general-paper',
     type: 'article',
@@ -100,16 +101,16 @@ Preferred days & timing: `;
         {/* Article column */}
         <div>
           <GuideHeader
-            title="A Level General Paper Guide 2025: Master Essay & Comprehension for University Success"
+            title="A Level General Paper Guide 2026: Master Essay & Comprehension for University Success"
             author="By the LionCity Tutors General Paper Team"
-            meta="Updated June 14, 2025 · 18 min read"
+            meta="Updated June 5, 2026 · 18 min read"
             imageSrc="/english-tuition.webp"
             imageAlt="A student writing at a desk — the essay craft and wide reading at the heart of General Paper."
           />
 
           <article className="space-y-12 text-gray-700 leading-relaxed">
             <p className="text-lg text-gray-800 leading-relaxed text-pretty">
-              A Level General Paper (GP) is a critical subject for Singapore JC students, developing essential skills in argumentation, critical thinking, and global awareness. Excelling in GP opens doors to top university courses and demonstrates your ability to think, write, and analyze at a high level. This comprehensive guide provides proven strategies for A Level GP excellence in 2025.
+              A Level General Paper (GP) is a critical subject for Singapore JC students, developing essential skills in argumentation, critical thinking, and global awareness. Excelling in GP opens doors to top university courses and demonstrates your ability to think, write, and analyze at a high level. This comprehensive guide provides proven strategies for A Level GP excellence in 2026.
             </p>
 
             {/* Key takeaways */}
@@ -431,7 +432,7 @@ Preferred days & timing: `;
             {/* Conversion block */}
             <GuideCTA
               title="Achieve your A Level GP goals with expert guidance"
-              description="Tell us your child’s level and goals. We hand-match a vetted, MOE-familiar General Paper tutor — usually within hours — and parents never pay an agency fee."
+              description={`Tell us your child’s level and goals. We hand-match a vetted, MOE-familiar General Paper tutor — usually within ${MATCH_TIME} — and parents never pay an agency fee.`}
               buttonText="Get expert A Level GP support"
               whatsappHref={whatsappHref}
             />

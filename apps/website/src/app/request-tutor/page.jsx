@@ -1,5 +1,6 @@
 "use client";
 
+import { MATCH_TIME } from '@/data/promises';
 import React, { Suspense, useEffect, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Info, CheckCircle, Loader2 } from "lucide-react";
@@ -133,7 +134,7 @@ function RequestForTutorContent(){
                     <div className="text-green-500 mt-1">✓</div>
                     <div>
                       <h4 className="font-semibold text-blue-600">Fast Response</h4>
-                      <p className="text-sm text-gray-600">Tutor profiles within 24 hours</p>
+                      <p className="text-sm text-gray-600">Tutor profiles within {MATCH_TIME}</p>
                     </div>
                   </div>
                 </div>

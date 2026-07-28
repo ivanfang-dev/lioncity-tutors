@@ -1,9 +1,10 @@
 'use client';
-import React, { useState, useEffect, useRef } from "react";
+import { MATCH_HOURS, MATCH_TIME, TUTOR_COUNT_LABEL, TUTOR_COUNT_NUM } from '@/data/promises';
+import React, { useState, useEffect, useLayoutEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { motion, useScroll, useTransform, useAnimation } from "framer-motion";
+import { motion, useScroll, useTransform, useAnimation, useReducedMotion } from "framer-motion";
 import Image from 'next/image';
 import UniqueFeaturesSection from "@/components/UniqueFeaturesSection";
 import { Step1, Step2, Step3 } from "@/components/FormSteps";
@@ -48,19 +49,36 @@ const HowitWorksSection = dynamic(
   }
 );
 
+// Runs before paint on the client, but falls back to useEffect during SSR so React
+// doesn't warn about useLayoutEffect on the server.
+const useIsomorphicLayoutEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect;
+
+// The count-up starts from the FINAL value, not from zero: the server-rendered HTML
+// (and any crawler or no-JS visitor) must show the real figure. The reset to 0 happens
+// in a layout effect, before the browser paints, so the animation is still seen.
 const Counter = ({ end, duration = 2.5, suffix = "", decimals = 0 }) => {
-  const [count, setCount] = useState(0);
-  useEffect(() => {
+  const [count, setCount] = useState(end);
+  const prefersReducedMotion = useReducedMotion();
+
+  useIsomorphicLayoutEffect(() => {
+    if (prefersReducedMotion) {
+      setCount(end);
+      return;
+    }
+    setCount(0);
+    let frame;
     let startTime = null;
     const animate = (currentTime) => {
       if (!startTime) startTime = currentTime;
       const progress = Math.min((currentTime - startTime) / (duration * 1000), 1);
       const currentValue = progress * end;
       setCount(decimals > 0 ? Number(currentValue.toFixed(decimals)) : Math.floor(currentValue));
-      if (progress < 1) requestAnimationFrame(animate);
+      if (progress < 1) frame = requestAnimationFrame(animate);
     };
-    requestAnimationFrame(animate);
-  }, [end, duration, decimals]);
+    frame = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(frame);
+  }, [end, duration, decimals, prefersReducedMotion]);
+
   return <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }}>{count}{suffix}</motion.span>;
 };
 
@@ -192,7 +210,7 @@ Preferred days & timing: `;
                   className="text-lg sm:text-xl text-gray-600 leading-relaxed mb-8 max-w-xl mx-auto lg:mx-0"
                 >
                   Vetted, MOE-familiar tutors matched by hand — {' '}
-                  <span className="font-semibold text-gray-900">within eight hours</span>. And parents never pay an agency fee.
+                  <span className="font-semibold text-gray-900">within {MATCH_TIME}</span>. And parents never pay an agency fee.
                 </motion.p>
 
                 <motion.div
@@ -244,7 +262,7 @@ Preferred days & timing: `;
                   <span className="text-gray-300">|</span>
                   <div className="flex items-center gap-1.5">
                     <Users className="w-4 h-4 text-primary" />
-                    <span className="font-medium">300+ vetted tutors</span>
+                    <span className="font-medium">{TUTOR_COUNT_LABEL}</span>
                   </div>
                 </motion.div>
               </motion.div>
@@ -283,8 +301,8 @@ Preferred days & timing: `;
             >
               {[
                 { icon: TrendingUp, end: 100, suffix: "+", label: "Successful Matches", sub: "Last 3 months" },
-                { icon: Users, end: 300, suffix: "+", label: "Qualified Tutors", sub: "Vetted professionals" },
-                { icon: Clock, end: 8, suffix: "h", label: "Response Time", sub: "Average match time" },
+                { icon: Users, end: TUTOR_COUNT_NUM, suffix: "+", label: "Qualified Tutors", sub: "Vetted professionals" },
+                { icon: Clock, end: MATCH_HOURS, suffix: "h", label: "Response Time", sub: "Average match time" },
                 { icon: Star, end: 4.8, suffix: "/5", label: "Client Rating", sub: "From happy parents", decimals: 1 }
               ].map((stat, i) => {
                 const Icon = stat.icon;
@@ -396,7 +414,7 @@ Preferred days & timing: `;
             Ready to Find The Perfect Tutor?
         </h2>
         <p className="text-center text-gray-600 mb-10 text-lg">
-            Get matched with qualified tutors in 24 hours. Just fill out the details below.
+            Get matched with qualified tutors in {MATCH_TIME}. Just fill out the details below.
         </p>
         
         {/* Benefits */}
@@ -528,7 +546,7 @@ Preferred days & timing: `;
               Ready to Find the Perfect Tutor?
             </h2>
             <p className="mb-8 text-white/80 text-lg">
-              Get 3 qualified tutor profiles in 24 hours — absolutely free.
+              Get 3 qualified tutor profiles in {MATCH_TIME} — absolutely free.
             </p>
             <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
               <Button

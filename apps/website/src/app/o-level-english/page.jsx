@@ -1,8 +1,9 @@
+import { MATCH_TIME } from '@/data/promises';
 export const metadata = {
-  title: 'O Level English Guide 2025: Complete Preparation Strategy for Singapore Students | LionCity Tutors',
-  description: 'Ultimate O Level English preparation guide for Singapore students. Expert strategies, language skills, and proven tips to score A1 in O Level English 2025.',
+  title: 'O Level English Guide 2026: Complete Preparation Strategy for Singapore Students | LionCity Tutors',
+  description: 'Ultimate O Level English preparation guide for Singapore students. Expert strategies, language skills, and proven tips to score A1 in O Level English 2026.',
   keywords: [
-    'O Level English 2025',
+    'O Level English 2026',
     'O Level English Singapore',
     'GCE O Level English guide',
     'English Language preparation',
@@ -11,7 +12,7 @@ export const metadata = {
     'English revision techniques'
   ],
   openGraph: {
-    title: 'O Level English Guide 2025: Complete Preparation Strategy for Singapore Students',
+    title: 'O Level English Guide 2026: Complete Preparation Strategy for Singapore Students',
     description: 'Comprehensive O Level English guide with proven strategies to help Singapore students achieve A1 grades in both Language and Literature components.',
     url: 'https://www.lioncitytutors.com/o-level-english',
     type: 'article',
@@ -106,16 +107,16 @@ Preferred days & timing: `;
         {/* Article column */}
         <div>
           <GuideHeader
-            title="O Level English Guide 2025: Master Language & Literature"
+            title="O Level English Guide 2026: Master Language & Literature"
             author="By the LionCity Tutors English Team"
-            meta="Updated June 14, 2025 · 15 min read"
+            meta="Updated May 19, 2026 · 15 min read"
             imageSrc="/english-tuition.webp"
             imageAlt="A student writing at a desk — the language and literature skills at the heart of O Level English."
           />
 
           <article className="space-y-12 text-gray-700 leading-relaxed">
             <p className="text-lg text-gray-800 leading-relaxed text-pretty">
-              O Level English is a fundamental subject that opens doors to higher education and career opportunities in Singapore. With both Language and Literature components testing different skills, strategic preparation is essential for achieving A1 grades. This comprehensive guide provides proven strategies for O Level English success in 2025.
+              O Level English is a fundamental subject that opens doors to higher education and career opportunities in Singapore. With both Language and Literature components testing different skills, strategic preparation is essential for achieving A1 grades. This comprehensive guide provides proven strategies for O Level English success in 2026.
             </p>
 
             {/* Key takeaways */}
@@ -501,7 +502,7 @@ Preferred days & timing: `;
             {/* Conversion block */}
             <GuideCTA
               title="Achieve your O Level English A1 goals with expert guidance"
-              description="Tell us your child’s level and goals. We hand-match a vetted, MOE-familiar O Level English tutor — usually within hours — and parents never pay an agency fee."
+              description={`Tell us your child’s level and goals. We hand-match a vetted, MOE-familiar O Level English tutor — usually within ${MATCH_TIME} — and parents never pay an agency fee.`}
               buttonText="Get expert O Level English support"
               whatsappHref={whatsappHref}
             />

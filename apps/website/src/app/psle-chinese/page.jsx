@@ -1,5 +1,6 @@
 "use client";
 
+import { MATCH_TIME } from '@/data/promises';
 import { useRef } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -106,9 +107,9 @@ export default function PSLEChinese() {
           {/* Article column */}
           <div>
             <GuideHeader
-              title="PSLE Chinese Guide 2025: Master Primary School Chinese"
+              title="PSLE Chinese Guide 2026: Master Primary School Chinese"
               author="By the LionCity Tutors Chinese Team"
-              meta="Updated June 14, 2025 · 12 min read"
+              meta="Updated May 13, 2026 · 12 min read"
               imageSrc="/chinese-tuition_optimized.webp"
               imageAlt="A child practising Chinese characters — the language skills across all three PSLE Chinese papers."
             />
@@ -410,7 +411,7 @@ export default function PSLEChinese() {
               Ready to Find The Perfect Tutor?
             </h2>
             <p className="text-center text-text-default/80 mb-10 text-lg">
-              Get matched with qualified tutors in 24 hours. Just fill out the details below.
+              Get matched with qualified tutors in {MATCH_TIME}. Just fill out the details below.
             </p>
 
             <FormBenefits />

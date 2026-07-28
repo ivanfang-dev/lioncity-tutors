@@ -1,5 +1,6 @@
 "use client";
 
+import { MATCH_TIME } from '@/data/promises';
 import React, { useRef } from "react";
 import Link from 'next/link';
 import { motion } from "framer-motion";
@@ -529,7 +530,7 @@ export default function OLevelTuition() {
           <section className="text-center space-y-6 bg-gradient-to-r from-primary to-primary/90 text-white py-14 px-8 rounded-2xl shadow-xl">
             <h2 className="text-3xl md:text-4xl font-bold text-white">Start Your Journey To O-Level Success Today</h2>
             <p className="text-white/80 text-lg max-w-2xl mx-auto">
-              Experience the difference with our handpicked tutors. We&apos;ll match you within 24 hours.
+              Experience the difference with our handpicked tutors. We&apos;ll match you within {MATCH_TIME}.
             </p>
             <Button
               onClick={() => formRef.current?.scrollIntoView({ behavior: 'smooth' })}

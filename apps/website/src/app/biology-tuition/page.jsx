@@ -62,8 +62,8 @@ const articleSchema = {
       "url": "https://www.lioncitytutors.com/logo.png"
     }
   },
-  "datePublished": "2023-01-01",
-  "dateModified": "2025-08-26"
+  "datePublished": "2026-04-04",
+  "dateModified": "2026-07-12"
 };
 
 const faqSchema = {

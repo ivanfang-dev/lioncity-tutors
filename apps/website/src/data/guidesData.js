@@ -62,7 +62,7 @@ export const guidesData = [
   // --- O-LEVEL GUIDES ---
   {
     level: "O-Level",
-    title: "O-Level Preparation Guide (2025)",
+    title: "O-Level Preparation Guide (2026)",
     description: "A complete study plan covering all GCE O-Level subjects, with proven strategies and revision techniques.",
     href: "/blog/o-level-preparation-guide",
     icon: "🎯",
@@ -106,7 +106,7 @@ export const guidesData = [
   // --- A-LEVEL GUIDES ---
    {
     level: "A-Level",
-    title: "A-Level Preparation Guide (2025)",
+    title: "A-Level Preparation Guide (2026)",
     description: "Your strategic roadmap for JC success, with study schedules and expert tips for the A-Level examinations.",
     href: "/blog/a-level-preparation-guide",
     icon: "🎯",

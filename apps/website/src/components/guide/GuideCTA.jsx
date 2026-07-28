@@ -1,3 +1,4 @@
+import { MATCH_TIME, TUTOR_COUNT_LABEL } from '@/data/promises';
 import Link from 'next/link';
 import { Users, Clock, Wallet } from 'lucide-react';
 import { ICON_STROKE } from './constants';
@@ -31,11 +32,11 @@ export default function GuideCTA({
       <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 mb-8 text-sm text-gray-600">
         <span className="inline-flex items-center gap-1.5">
           <Users className="h-4 w-4 text-primary" strokeWidth={ICON_STROKE} aria-hidden="true" />
-          300+ vetted tutors
+          {TUTOR_COUNT_LABEL}
         </span>
         <span className="inline-flex items-center gap-1.5">
           <Clock className="h-4 w-4 text-primary" strokeWidth={ICON_STROKE} aria-hidden="true" />
-          Matched in ~8 hours
+          Matched in {MATCH_TIME}
         </span>
         <span className="inline-flex items-center gap-1.5">
           <Wallet className="h-4 w-4 text-primary" strokeWidth={ICON_STROKE} aria-hidden="true" />
