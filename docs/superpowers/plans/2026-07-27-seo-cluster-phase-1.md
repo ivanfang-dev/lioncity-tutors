@@ -1047,7 +1047,7 @@ describe('course schema', () => {
       description: 'One-to-one O-Level Physics tuition in Singapore.',
       educationalLevel: 'GCE O-Level',
     });
-    assert.equal(schema['@type'], 'EducationalOccupationalProgram');
+    assert.equal(schema['@type'], 'Course');
     assert.equal(schema.name, 'O-Level Physics Tuition');
     assert.equal(schema.educationalLevel, 'GCE O-Level');
     assert.equal(schema.url, `${SITE}/o-level-physics`);
@@ -1127,7 +1127,9 @@ export function buildCourseSchema({ slug, name, description, educationalLevel })
   if (!page) return null;
   return {
     '@context': 'https://schema.org',
-    '@type': 'EducationalOccupationalProgram',
+    // Course is a CreativeWork subtype, so it validly carries educationalLevel.
+    // EducationalOccupationalProgram descends from Intangible and does NOT.
+    '@type': 'Course',
     name,
     description,
     educationalLevel,

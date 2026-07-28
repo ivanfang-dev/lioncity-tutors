@@ -112,7 +112,7 @@ established design system rather than introducing a competing style.
 | `BreadcrumbList` | every page in a cluster |
 | `Article` | the four exam prep guides |
 | `FAQPage` | any page carrying an FAQ block |
-| `EducationalOccupationalProgram` | subject pages |
+| `Course` | subject pages |
 
 ### Cluster map
 
