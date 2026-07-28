@@ -4,7 +4,60 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { BookOpen, Target, Calendar, Brain, Heart, CheckCircle, AlertTriangle, ArrowRight, GraduationCap, Users, Calculator, PenTool, Lightbulb, TrendingUp, ShieldCheck, ListChecks, Clock, BookCopy } from 'lucide-react';
+import { BookOpen, Target, Calendar, Brain, Heart, CheckCircle, AlertTriangle, GraduationCap, Users, Calculator, PenTool, Lightbulb, TrendingUp, ShieldCheck, ListChecks, Clock, CalendarClock, Milestone, HelpCircle } from 'lucide-react';
+import { RelatedGuides, ExamTimetable, GuideTimeline } from '@/components/guide';
+import { O_LEVEL_FAQS } from './faqs.mjs';
+
+const sec3ToSec4 = [
+  {
+    title: 'Sec 3 Term 1–2 · Foundation',
+    points: [
+      'Lock in subject combination and confirm which subjects count toward L1R5',
+      'Build the A-Math and Chemistry foundations that Sec 4 assumes',
+      'Fix note-taking and filing habits now — Sec 4 offers no time for it',
+    ],
+  },
+  {
+    title: 'Sec 3 Term 3–4 · Consolidation',
+    points: [
+      'Start topical past-paper practice on completed topics',
+      'Identify the two weakest topics per subject and address them while there is slack',
+      'Sit end-of-year exams as a diagnostic rather than a verdict',
+    ],
+  },
+  {
+    title: 'Sec 4 Term 1 · Syllabus completion',
+    points: [
+      'Finish remaining syllabus content by the end of term',
+      'Begin weekly timed sections, not yet full papers',
+      'Book any needed tuition now — availability tightens sharply after March',
+    ],
+  },
+  {
+    title: 'Sec 4 Term 2 · Full-paper practice',
+    points: [
+      'Move to complete papers under exam timing',
+      'Mark against the official SEAB mark scheme and log every method mark lost',
+      'Prepare Mother Tongue papers — they are sat on 2 June, before everything else',
+    ],
+  },
+  {
+    title: 'Sec 4 Term 3 · Prelims and orals',
+    points: [
+      'Sit prelims as a rehearsal for pacing, not as a predictor of the final grade',
+      'English and Mother Tongue orals fall in July — practise aloud, not silently',
+      'Rebuild the revision plan around whatever prelims exposed',
+    ],
+  },
+  {
+    title: 'Sec 4 Term 4 · Final run',
+    points: [
+      'Science practicals come first: Chemistry 30 Sep, Physics 5 Oct, Biology 13 Oct',
+      'Written papers begin 15 October and run to 10 November',
+      'Taper new content two weeks out and shift entirely to past papers and rest',
+    ],
+  },
+];
 
 const TableOfContents = () => (
   <aside className="hidden lg:block w-64 xl:w-72">
@@ -12,6 +65,8 @@ const TableOfContents = () => (
       <h4 className="font-bold text-sm tracking-wide uppercase text-foreground">On This Page</h4>
       <nav className="flex flex-col space-y-2 text-sm">
         <Link href="#system" className="text-muted-foreground hover:text-primary transition-colors">Understanding the O-Level System</Link>
+        <Link href="#timetable" className="text-muted-foreground hover:text-primary transition-colors">2026 O-Level exam timetable</Link>
+        <Link href="#sec3-sec4-timeline" className="text-muted-foreground hover:text-primary transition-colors">Sec 3 to Sec 4 timeline</Link>
         <Link href="#timeline" className="text-muted-foreground hover:text-primary transition-colors">The 24-Month Roadmap</Link>
         <Link href="#strategies" className="text-muted-foreground hover:text-primary transition-colors">Subject-Specific Strategies</Link>
         <Link href="#techniques" className="text-muted-foreground hover:text-primary transition-colors">Science-Backed Study Techniques</Link>
@@ -19,12 +74,12 @@ const TableOfContents = () => (
         <Link href="#pitfalls" className="text-muted-foreground hover:text-primary transition-colors">Common Pitfalls to Avoid</Link>
         <Link href="#study-plan" className="text-muted-foreground hover:text-primary transition-colors">Creating a Personal Study Plan</Link>
         <Link href="#resources" className="text-muted-foreground hover:text-primary transition-colors">Essential Resources & Tools</Link>
-        {/* NEW LINK ADDED HERE */}
-        <Link href="#guides" className="text-muted-foreground hover:text-primary transition-colors">In-Depth Subject Guides</Link>
+        <Link href="#related-o-level-prep" className="text-muted-foreground hover:text-primary transition-colors">In-depth O-Level subject guides</Link>
         <Link href="#well-being" className="text-muted-foreground hover:text-primary transition-colors">Managing Stress & Well-being</Link>
         <Link href="#pathways" className="text-muted-foreground hover:text-primary transition-colors">Post-O-Level Pathways</Link>
         <Link href="#tuition" className="text-muted-foreground hover:text-primary transition-colors">When to Consider Tuition</Link>
         <Link href="#countdown" className="text-muted-foreground hover:text-primary transition-colors">The Final 60-Day Countdown</Link>
+        <Link href="#faq" className="text-muted-foreground hover:text-primary transition-colors">O-Level FAQs</Link>
       </nav>
     </div>
   </aside>
@@ -90,6 +145,32 @@ export default function OLevelPrepGuideClient() {
                                 </ul>
                             </div>
                         </div>
+                    </CardContent>
+                </Card>
+            </section>
+
+            {/* SECTION: 2026 O-Level Exam Timetable */}
+            <section id="timetable" aria-labelledby="timetable-heading">
+                <h2 id="timetable-heading" className="text-3xl font-bold mb-6 border-l-4 border-primary pl-4 flex items-center"><CalendarClock className="mr-3 h-8 w-8" />When are the 2026 O-Level exams?</h2>
+                <p className="text-lg text-muted-foreground mb-6">
+                  {O_LEVEL_FAQS[0].answer}
+                </p>
+                <Card className="shadow-md">
+                    <CardContent className="pt-6">
+                        <ExamTimetable examSlug="o-level" caption="Official 2026 GCE O-Level timetable, as published by SEAB." />
+                    </CardContent>
+                </Card>
+            </section>
+
+            {/* SECTION: Sec 3 to Sec 4 timeline */}
+            <section id="sec3-sec4-timeline" aria-labelledby="sec3-sec4-timeline-heading">
+                <h2 id="sec3-sec4-timeline-heading" className="text-3xl font-bold mb-6 border-l-4 border-primary pl-4 flex items-center"><Milestone className="mr-3 h-8 w-8" />What should I be doing from Sec 3 to Sec 4?</h2>
+                <p className="text-lg text-muted-foreground mb-8">
+                  From Sec 3 to Sec 4, O-Level preparation moves through six phases: locking in your subject combination, consolidating weak topics before Sec 4 begins, finishing the syllabus, then shifting to full timed papers, prelims, and a final run built around the SEAB exam dates below.
+                </p>
+                <Card className="shadow-md">
+                    <CardContent className="pt-6">
+                        <GuideTimeline items={sec3ToSec4} />
                     </CardContent>
                 </Card>
             </section>
@@ -391,37 +472,7 @@ export default function OLevelPrepGuideClient() {
                 </div>
             </section>
             
-            {/* NEW SECTION: Study Guides */}
-            <section id="guides" aria-labelledby="guides-heading">
-                <h2 id="guides-heading" className="text-3xl font-bold mb-8 border-l-4 border-primary pl-4 flex items-center"><BookCopy className="mr-3 h-8 w-8" />In-Depth O-Level Subject Guides</h2>
-                <p className="text-lg text-muted-foreground mb-6">
-                  Dive deeper into specific subjects with our comprehensive guides. Each one is crafted by experienced educators to provide targeted strategies and syllabus coverage to help you excel.
-                </p>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {[
-                    { title: "O-Level Physics Guide", desc: "Master key concepts, formulas, and practical skills for success.", href: "/o-level-physics" },
-                    { title: "O-Level Chemistry Guide", desc: "Comprehensive coverage of chemical concepts and practical skills.", href: "/o-level-chemistry" },
-                    { title: "O-Level Biology Guide", desc: "In-depth understanding of biological systems and processes.", href: "/o-level-biology" },
-                    { title: "O-Level Math Guide", desc: "Master E-Math and A-Math concepts with step-by-step guidance.", href: "/o-level-math" },
-                    { title: "O-Level English Guide", desc: "Strategies for acing essays, comprehension, and oral exams.", href: "/o-level-english" },
-                    { title: "Combined Science Guide", desc: "Integrated tips for mastering Physics, Chemistry, and Biology.", href: "/combined-science-overview" }
-                  ].map((guide) => (
-                    <Link key={guide.title} href={guide.href} className="block group">
-                      <Card className="h-full hover:shadow-xl transition-all duration-300 hover:-translate-y-1 hover:border-primary">
-                        <CardHeader>
-                          <CardTitle className="flex items-center justify-between">
-                            {guide.title}
-                            <ArrowRight className="h-5 w-5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0" />
-                          </CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                          <p className="text-sm text-muted-foreground">{guide.desc}</p>
-                        </CardContent>
-                      </Card>
-                    </Link>
-                  ))}
-                </div>
-            </section>
+            <RelatedGuides slug="o-level-prep" heading="In-depth O-Level subject guides" showHub={false} />
 
             {/* SECTION: Managing Stress and Maintaining Well-being */}
             <section id="well-being" aria-labelledby="well-being-heading">
@@ -543,7 +594,20 @@ export default function OLevelPrepGuideClient() {
                     </CardContent>
                 </Card>
             </section>
-            
+
+            {/* SECTION: FAQ */}
+            <section id="faq" aria-labelledby="faq-heading">
+                <h2 id="faq-heading" className="text-3xl font-bold mb-8 border-l-4 border-primary pl-4 flex items-center"><HelpCircle className="mr-3 h-8 w-8" />O-Level FAQs</h2>
+                <div className="space-y-6">
+                  {O_LEVEL_FAQS.map((faq) => (
+                    <div key={faq.question}>
+                      <h3 className="text-xl font-semibold text-foreground">{faq.question}</h3>
+                      <p className="mt-2 text-muted-foreground">{faq.answer}</p>
+                    </div>
+                  ))}
+                </div>
+            </section>
+
             {/* FINAL CTA */}
             <section id="final-cta" aria-labelledby="cta-heading">
                 <div className="bg-muted/40 rounded-lg shadow-xl p-8 md:p-12 text-center border">

@@ -11,6 +11,8 @@ import FormStepper from "@/components/FormStepper";
 import useTuitionRequestForm from "@/components/useTuitionRequestForm";
 import FormBenefits from "@/components/FormBenefits";
 import { CheckCircle } from "lucide-react";
+import GuideSchema from '@/components/seo/GuideSchema';
+import { RelatedGuides } from '@/components/guide';
 
 // Validation logic for form steps
 
@@ -46,6 +48,14 @@ export default function OLevelTuition() {
 
     return (
       <>
+        <GuideSchema
+          slug="o-level-tuition"
+          course={{
+            name: 'O-Level Tuition',
+            description: 'Hand-matched, vetted O-Level tutors in Singapore across all subjects and streams — parents never pay an agency fee.',
+            educationalLevel: 'GCE O-Level',
+          }}
+        />
         <div className="p-6 max-w-5xl mx-auto space-y-12">
           {/* Section 1: Headline */}
           <section className="text-center space-y-4">
@@ -526,6 +536,8 @@ export default function OLevelTuition() {
             </div>
           </section>
   
+          <RelatedGuides slug="o-level-tuition" />
+
           {/* Section 10: Final CTA */}
           <section className="text-center space-y-6 bg-gradient-to-r from-primary to-primary/90 text-white py-14 px-8 rounded-2xl shadow-xl">
             <h2 className="text-3xl md:text-4xl font-bold text-white">Start Your Journey To O-Level Success Today</h2>

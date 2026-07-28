@@ -50,3 +50,5 @@ lighthouse-audit-summary.md
 lighthouse-report.report.
 lighthouse-report.report.json
 improvements.md
+# Superpowers design docs, plans and briefs — carried manually, not via git
+docs/superpowers/

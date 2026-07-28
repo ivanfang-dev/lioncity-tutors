@@ -1,7 +1,7 @@
 import { MATCH_TIME } from '@/data/promises';
 export const metadata = {
-  title: 'O Level Math Guide 2026: Complete Preparation Strategy for Singapore Students | LionCity Tutors',
-  description: 'Ultimate O Level Mathematics preparation guide for Singapore students. Expert strategies, practice techniques, and proven tips to score A1 in O Level Math 2026.',
+  title: 'O-Level Maths Guide 2026 | LionCity Tutors',
+  description: 'O-Level E-Math and A-Math guide for Singapore students — topic strategy, a revision timeline, and the exam technique that turns understanding into an A1.',
   keywords: [
     'O Level Math 2026',
     'O Level Mathematics Singapore',
@@ -23,17 +23,21 @@ export const metadata = {
 };
 
 import TableOfContents from '@/components/TableOfContents';
+import GuideSchema from '@/components/seo/GuideSchema';
 import {
   GuideHeader, SectionHeading, GuideCard, TopicCard, GuideTimeline, KeyTakeaways, GuideCTA, ICON_STROKE,
+  RelatedGuides, ExamTimetable,
 } from '@/components/guide';
 import {
   FileText, CalendarClock, Calculator, Sigma, Brain, Target,
   TriangleAlert, CalendarDays, BookOpen, Lightbulb, GraduationCap, Users,
-  Hourglass, ListChecks,
+  Hourglass, ListChecks, HelpCircle,
 } from 'lucide-react';
+import { O_LEVEL_MATH_FAQS } from './faqs.mjs';
 
 const tableOfContents = [
   { id: 'structure', label: 'Exam & subject structure' },
+  { id: 'exam-dates', label: '2026 exam timetable' },
   { id: 'timeline', label: '18-month study timeline' },
   { id: 'e-math', label: 'Elementary Math (E Math)' },
   { id: 'a-math', label: 'Additional Math (A Math)' },
@@ -46,6 +50,7 @@ const tableOfContents = [
   { id: 'pathways', label: 'Future pathways' },
   { id: 'tuition', label: 'When to consider tuition' },
   { id: 'final-months', label: 'Final month' },
+  { id: 'faq', label: 'Frequently asked questions' },
 ];
 
 const timeline = [
@@ -102,6 +107,15 @@ Preferred days & timing: `;
 
   return (
     <>
+    <GuideSchema
+      slug="o-level-math"
+      course={{
+        name: 'O-Level Maths Tuition',
+        description: 'One-to-one O-Level Mathematics tuition in Singapore, covering both E-Math (4052) and A-Math (4049).',
+        educationalLevel: 'GCE O-Level',
+      }}
+      faqs={O_LEVEL_MATH_FAQS}
+    />
     <main className="mx-auto max-w-6xl px-4 sm:px-6 py-12 sm:py-16">
       <div className="mx-auto max-w-2xl lg:max-w-none lg:grid lg:grid-cols-[minmax(0,42rem)_15rem] lg:justify-center lg:gap-12">
         {/* Article column */}
@@ -173,6 +187,15 @@ Preferred days & timing: `;
                   </div>
                 </div>
               </GuideCard>
+            </section>
+
+            <section id="exam-dates" className="scroll-mt-24">
+              <SectionHeading icon={CalendarDays}>2026 O-Level Maths Exam Timetable</SectionHeading>
+              <ExamTimetable
+                examSlug="o-level"
+                subjectSlugs={['math', 'additional-math']}
+                caption="Official 2026 SEAB dates for E-Math and A-Math."
+              />
             </section>
 
             <section id="timeline" className="scroll-mt-24">
@@ -515,6 +538,20 @@ Preferred days & timing: `;
                 </div>
               </GuideCard>
             </section>
+
+            <section id="faq" className="scroll-mt-24">
+              <SectionHeading icon={HelpCircle}>Frequently Asked Questions</SectionHeading>
+              <div className="space-y-6">
+                {O_LEVEL_MATH_FAQS.map((faq) => (
+                  <div key={faq.question}>
+                    <h3 className="text-lg font-semibold text-gray-900">{faq.question}</h3>
+                    <p className="mt-2 text-gray-700">{faq.answer}</p>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            <RelatedGuides slug="o-level-math" />
 
             {/* Conversion block */}
             <GuideCTA

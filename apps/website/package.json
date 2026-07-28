@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "build:debug": "NEXT_DEBUG_BUILD=true next build"
+    "build:debug": "NEXT_DEBUG_BUILD=true next build",
+    "test": "node --test 'src/**/*.test.mjs'"
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",

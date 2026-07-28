@@ -1,7 +1,7 @@
 import { MATCH_TIME } from '@/data/promises';
 export const metadata = {
-  title: 'O Level English Guide 2026: Complete Preparation Strategy for Singapore Students | LionCity Tutors',
-  description: 'Ultimate O Level English preparation guide for Singapore students. Expert strategies, language skills, and proven tips to score A1 in O Level English 2026.',
+  title: 'O-Level English Guide 2026 | LionCity Tutors',
+  description: 'O-Level English Language and Literature guide for Singapore students — paper-by-paper strategy, a study timeline, and the techniques that earn an A1 in 2026.',
   keywords: [
     'O Level English 2026',
     'O Level English Singapore',
@@ -23,8 +23,10 @@ export const metadata = {
 };
 
 import TableOfContents from '@/components/TableOfContents';
+import GuideSchema from '@/components/seo/GuideSchema';
 import {
   GuideHeader, SectionHeading, GuideCard, TopicCard, GuideTimeline, KeyTakeaways, GuideCTA, ICON_STROKE,
+  RelatedGuides, ExamTimetable,
 } from '@/components/guide';
 import {
   FileText, CalendarClock, PenLine, BookOpenText, Brain, Target,
@@ -34,6 +36,7 @@ import {
 
 const tableOfContents = [
   { id: 'structure', label: 'Exam & component structure' },
+  { id: 'exam-dates', label: '2026 exam timetable' },
   { id: 'timeline', label: '18-month study timeline' },
   { id: 'language', label: 'English Language (1128)' },
   { id: 'literature', label: 'English Literature (2065)' },
@@ -102,6 +105,14 @@ Preferred days & timing: `;
 
   return (
     <>
+    <GuideSchema
+      slug="o-level-english"
+      course={{
+        name: 'O-Level English Tuition',
+        description: 'One-to-one O-Level English tuition in Singapore, covering the Language paper (1184) and optional Literature (2065).',
+        educationalLevel: 'GCE O-Level',
+      }}
+    />
     <main className="mx-auto max-w-6xl px-4 sm:px-6 py-12 sm:py-16">
       <div className="mx-auto max-w-2xl lg:max-w-none lg:grid lg:grid-cols-[minmax(0,42rem)_15rem] lg:justify-center lg:gap-12">
         {/* Article column */}
@@ -173,6 +184,15 @@ Preferred days & timing: `;
                   </div>
                 </div>
               </GuideCard>
+            </section>
+
+            <section id="exam-dates" className="scroll-mt-24">
+              <SectionHeading icon={CalendarDays}>2026 O-Level English Exam Timetable</SectionHeading>
+              <ExamTimetable
+                examSlug="o-level"
+                subjectSlugs={['english']}
+                caption="Official 2026 SEAB dates for O-Level English."
+              />
             </section>
 
             <section id="timeline" className="scroll-mt-24">
@@ -498,6 +518,8 @@ Preferred days & timing: `;
                 </div>
               </GuideCard>
             </section>
+
+            <RelatedGuides slug="o-level-english" />
 
             {/* Conversion block */}
             <GuideCTA

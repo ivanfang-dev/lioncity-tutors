@@ -9,4 +9,6 @@ export { default as TopicCard } from './TopicCard';
 export { default as GuideTimeline } from './GuideTimeline';
 export { default as KeyTakeaways } from './KeyTakeaways';
 export { default as GuideCTA } from './GuideCTA';
+export { default as RelatedGuides } from './RelatedGuides';
+export { default as ExamTimetable } from './ExamTimetable';
 export { ICON_STROKE } from './constants';
