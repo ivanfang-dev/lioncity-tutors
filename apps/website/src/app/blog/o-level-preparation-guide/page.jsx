@@ -5,7 +5,7 @@ import { O_LEVEL_FAQS } from './faqs.mjs';
 export const metadata = {
   title: 'O-Level Preparation Guide 2026: Complete Study Plan',
   description:
-    'Full GCE O-Level prep guide for 2026 — the official exam timetable, subject-by-subject strategies, a term-by-term plan, and the mistakes that cost students an A1.',
+    'Full GCE O-Level prep guide for 2026 — official exam timetable, subject-by-subject strategies, a term-by-term plan, and the mistakes that cost students an A1.',
   keywords: [
     'O Level preparation 2026', 'O Level timetable 2026', 'GCE O Level Singapore',
     'O Level study guide', 'L1R5 calculation', 'how to score A1 O Level',
