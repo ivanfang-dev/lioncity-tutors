@@ -1,12 +1,10 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import chemphysImage from "../../../public/combined-chemistry-physics.webp"
-import GuideSchema from '@/components/seo/GuideSchema';
-import { RelatedGuides, ExamTimetable } from '@/components/guide';
 
 export const metadata = {
-  title: 'Combined Chemistry & Physics Guide | LionCity Tutors',
-  description: 'O-Level Combined Science (Chemistry/Physics, 5086) guide for Singapore students — paper structure, topic priorities and the exam technique for both subjects.',
+  title: 'Combined Chemistry + Physics: Master N Level Combined Science with Advanced Integration Techniques | LionCity Tutors',
+  description: 'Excel in N Level Combined Chemistry-Physics with our Singapore-focused guide. Advanced integration strategies, molecular-atomic connections, Singapore applications, and proven A1 techniques.',
   keywords: [
     'Combined Science Chemistry Physics Singapore',
     'N Level Chemistry Physics integration',
@@ -30,14 +28,6 @@ export const metadata = {
 export default function CombinedChemistryPhysics() {
   return (
     <>
-      <GuideSchema
-        slug="combined-chemistry-physics"
-        course={{
-          name: 'Combined Chemistry/Physics Tuition',
-          description: 'One-to-one O-Level Combined Science (Chemistry/Physics, 5086) tuition in Singapore.',
-          educationalLevel: 'GCE O-Level',
-        }}
-      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
@@ -180,15 +170,6 @@ export default function CombinedChemistryPhysics() {
                 If stuck on integration questions, think about atomic/molecular behavior first, then apply physics principles.
               </div>
             </div>
-          </section>
-
-          <section>
-            <h2 className="text-2xl font-semibold text-blue-700 mb-4">📅 2026 Exam Timetable</h2>
-            <ExamTimetable
-              examSlug="o-level"
-              subjectSlugs={['combined-science-phy-chem']}
-              caption="Official 2026 SEAB dates for O-Level Combined Science (Chemistry/Physics)."
-            />
           </section>
 
           <section className="bg-violet-50 p-6 rounded-xl">
@@ -530,8 +511,6 @@ export default function CombinedChemistryPhysics() {
             </div>
         </div>
         </div>
-        <RelatedGuides slug="combined-chemistry-physics" />
-
         <section className="bg-gradient-to-r from-primary to-primary/90 text-white py-12 px-6 sm:px-8 rounded-2xl text-center space-y-4 shadow-xl">
           <h2 className="text-2xl sm:text-3xl font-bold text-white">Ready to Excel in Combined Chemistry/Physics?</h2>
           <p className="text-base sm:text-lg max-w-2xl mx-auto text-white/80">
