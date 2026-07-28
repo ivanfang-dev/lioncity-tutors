@@ -43,12 +43,15 @@ The factual foundation. Every timetable section on every page reads from this on
 In the `"scripts"` block, add:
 
 ```json
-"test": "node --test src/"
+"test": "node --test 'src/**/*.test.mjs'"
 ```
 
-Node's test runner discovers `*.test.mjs` recursively under the given directory. A
-directory argument is used rather than a glob so the behaviour does not depend on
-shell expansion.
+The pattern is single-quoted so the shell passes it through literally and Node
+expands it internally, discovering `*.test.mjs` recursively.
+
+**Do not use a bare directory argument** (`node --test src/`). Verified on Node
+22.20: it treats the path as a module to execute and fails with
+`Cannot find module '.../src'`.
 
 - [ ] **Step 2: Write the failing test**
 
