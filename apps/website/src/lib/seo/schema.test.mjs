@@ -69,7 +69,7 @@ describe('course schema', () => {
       description: 'One-to-one O-Level Physics tuition in Singapore.',
       educationalLevel: 'GCE O-Level',
     });
-    assert.equal(schema['@type'], 'EducationalOccupationalProgram');
+    assert.equal(schema['@type'], 'Course');
     assert.equal(schema.name, 'O-Level Physics Tuition');
     assert.equal(schema.educationalLevel, 'GCE O-Level');
     assert.equal(schema.url, `${SITE}/o-level-physics`);
