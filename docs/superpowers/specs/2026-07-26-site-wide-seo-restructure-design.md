@@ -199,14 +199,17 @@ GCE levels ran 7 – 20 Apr 2026.
 | English Language | 1184 | Oral 13/14/17 Jul; LC 15 Oct 1400–1445h; P1 19 Oct 1330–1520h; P2 19 Oct 1605–1755h |
 | Mathematics (E-Math) | 4052 | P1 21 Oct 1400–1615h; P2 23 Oct 1430–1645h |
 | Additional Mathematics | 4049 | P1 26 Oct 1400–1615h; P2 28 Oct 0800–1015h |
-| Chemistry | 6092 | P2 27 Oct 1400–1545h; P1 6 Nov 0800–0900h |
-| Physics | 6091 | P2 29 Oct 1400–1545h; P1 6 Nov 1430–1530h |
-| Biology | 6093 | P2 30 Oct 0800–0945h; P1 10 Nov 1400–1500h |
+| Chemistry | 6092 | Practical P3 30 Sep (4 shifts); P2 27 Oct 1400–1545h; P1 6 Nov 0800–0900h |
+| Physics | 6091 | Practical P3 5 Oct (4 shifts); P2 29 Oct 1400–1545h; P1 6 Nov 1430–1530h |
+| Biology | 6093 | Practical P3 13 Oct (4 shifts); P2 30 Oct 0800–0945h; P1 10 Nov 1400–1500h |
 | Combined Science (Phy/Chem) | 5086 | P3 27 Oct; P2 29 Oct; P1 10 Nov 0800–0900h |
 | Combined Science (Phy/Bio) | 5087 | P2 29 Oct; P4 30 Oct; P1 10 Nov 0800–0900h |
 | Combined Science (Chem/Bio) | 5088 | P3 27 Oct; P4 30 Oct; P1 10 Nov 0800–0900h |
 
 Mother Tongue written papers: 2 Jun 2026. Mother Tongue LC: 7 Jul 2026.
+
+O-Level science practicals run in four shifts each: 0800–0950h, 1020–1210h,
+1240–1430h and 1500–1650h.
 
 ### A-Level 2026 (core subjects)
 
@@ -215,12 +218,55 @@ Mother Tongue written papers: 2 Jun 2026. Mother Tongue LC: 7 Jul 2026.
 | General Paper | 8881 | P1 2 Nov 0800–0930h; P2 4 Nov 0800–0930h |
 | H2 Mathematics | 9758 | P1 3 Nov 0800–1100h; P2 6 Nov 0800–1100h |
 | H1 Mathematics | 8865 | P1 3 Nov 0800–1100h |
-| H2 Chemistry | 9729 / 9476 | Practical 14 Oct (3 shifts); P2 10 Nov 1400–1600h; P3 12 Nov 0800–1000h |
-| H2 Physics | 9749 / 9478 | Practical 19 Oct (3 shifts); P2 13 Nov 0800–1000h; P3 17 Nov 1400–1600h |
-| H2 Biology | 9744 / 9477 | Practical 22 Oct (3 shifts); P2 18 Nov 0800–1000h |
+| H2 Chemistry | **9476** (9729 legacy) | Practical 14 Oct (3 shifts); P2 10 Nov 1400–1600h; P3 12 Nov 0800–1000h |
+| H2 Physics | **9478** (9749 legacy) | Practical 19 Oct (3 shifts); P2 13 Nov 0800–1000h; P3 17 Nov 1400–1600h |
+| H2 Biology | **9477** (9744 legacy) | Practical 22 Oct (3 shifts); P2 18 Nov 0800–1000h |
 | H2 Economics | 9570 | P1 5 Nov 1400–1630h; P2 16 Nov 0800–1030h |
 | H1 Economics | 8843 | P1 5 Nov 1400–1700h |
 | H2 Further Mathematics | 9649 | P1 16 Nov 1400–1700h |
+
+### A-Level revised science syllabus (2026 transition)
+
+Confirmed against SEAB's 2026 school-candidate syllabus listing: **school candidates
+in 2026 sit the revised syllabuses** — Chemistry 9476, Physics 9478, Biology 9477,
+all marked "[Revised]" with 2025 specimen papers. The legacy codes 9729, 9749 and
+9744 are marked **"Last year of exam in 2026"** and remain only for private and
+repeat candidates.
+
+So 2026 is simultaneously the first examination year of the revised syllabus and the
+final year of the legacy one. That framing is the content angle: a retaker sitting
+legacy papers in 2026 has no further attempt on that syllabus.
+
+Documented changes to carry into the subject pages:
+
+- **All three sciences:** practical paper reduced from 55 to 50 marks; weighting
+  unchanged at 20%.
+- **Chemistry Paper 3:** total reduced from 80 to 75 marks; Section A long
+  structured question reduced from 60 to 55 marks.
+- **Physics 9478:** candidates are expected to plot graphs and perform calculations
+  using spreadsheet software.
+
+Primary sources: SEAB 2026 school-candidate syllabus listing, and the published
+syllabus documents at `seab.gov.sg/files/A Level Syllabus Sch Cddts/2026/` (e.g.
+`9477_y26_sy.pdf`, `9478_y26_sp_2.pdf`, `9476_y26_sp_4.pdf`). Each specific mark
+change must be confirmed against the syllabus PDF before publication rather than
+relying on the secondary summary it was first found in.
+
+### Post-secondary entry (O-Level guide)
+
+Source supplied by the site owner: `honeykidsasia.com/o-level-singapore-guide/`.
+This is a **secondary source**, so every figure taken from it is presented as
+indicative and dated, never as an official cut-off.
+
+JC admission uses **L1R5** (first language plus five relevant subjects); polytechnics
+use **ELR2B2** (English, two relevant, two best). Indicative 2025 JC L1R5 cut-off
+ranges run from 2–5 (arts) and 2–3 (science) at the most competitive institutions to
+roughly 10–15 (arts) and 6–14 (science) at the least.
+
+**From the 2028 cohort, JC admission moves from L1R5 to L1R4** — one fewer relevant
+subject in the aggregate. This is a significant, under-covered change and should be
+verified against MOE primary sources before publication, since the supplied source
+is secondary.
 
 ## Phasing
 
@@ -248,16 +294,26 @@ Long-tail capture only.
 - Post-deploy: re-export GSC after ~4 weeks and compare position and CTR for the
   twelve striking-distance queries listed above.
 
-## Items to confirm
+## Items resolved
 
-1. **A-Level revised syllabus codes.** The 2026 calendar lists both legacy and
-   revised science codes (Chemistry 9729 and 9476, Physics 9749 and 9478, Biology
-   9744 and 9477). Which cohort sits which paper should be confirmed before the
-   content states it — this is a genuine content opportunity if competitors have
-   not covered the transition, but it must be correct.
-2. **O-Level science practical dates.** Not yet extracted; needed for the subject
-   page timetables. Will pull from the same PDF during implementation.
-3. **Grade boundaries and L1R5 figures.** SEAB does not publish grade boundaries.
-   Any figures used must be described as typical or indicative, never as official.
-4. **Post-secondary entry scores.** The existing O-Level guide cites cut-off point
-   ranges; these should be re-checked against current MOE JAE data before reuse.
+1. **A-Level revised syllabus codes** — resolved against SEAB. School candidates sit
+   9476 / 9478 / 9477 in 2026; legacy codes have their final examination in 2026.
+   See the transition section above.
+2. **O-Level science practical dates** — extracted. Chemistry 30 Sep, Physics 5 Oct,
+   Biology 13 Oct, four shifts each.
+3. **Post-secondary entry scores** — source supplied by the site owner and recorded
+   above, treated as indicative.
+
+## Items still open
+
+1. **Verify the revised-syllabus mark changes against the SEAB syllabus PDFs.** The
+   55→50 practical and 80→75 Chemistry Paper 3 figures came from a secondary
+   summary. They are specific and checkable, and specific wrong numbers are worse
+   than no numbers.
+2. **Verify the L1R5 → L1R4 change from the 2028 cohort against MOE.** Currently
+   sourced from a secondary site.
+3. **Grade boundaries.** SEAB does not publish these. Any figure used is described
+   as typical or indicative, never official. Applies to figures already present in
+   the existing O-Level guide, which should be re-checked while editing.
+4. **JC cut-off points are dated 2025 and institution-specific.** They must be
+   labelled with their year in the content, since they shift annually.
