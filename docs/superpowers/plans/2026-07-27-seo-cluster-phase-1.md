@@ -1612,6 +1612,42 @@ targeted FAQs to ten pages that previously had zero internal links."
 
 ---
 
+### Task 7b: Dual-level Combined Science (amendment)
+
+Added mid-execution. Task 7 surfaced that the four Combined Science pages are
+**N-Level** content (codes 5105–5107, heavy N(A) references) while the registry
+placed them under the O-Level hub — a spec error. SEAB confirms both code sets are
+real: 5086–5088 are O-Level, 5105–5107 are N-Level.
+
+Because `/combined-science-overview` is the site's third-best page (2,901
+impressions, position 15.1) and ranks for `combined science o level`, the site owner
+chose to **cover both levels on each page and link them from both hubs** rather than
+pick one.
+
+This requires a registry capability that does not exist yet: a spoke belonging to
+more than one hub.
+
+**Design:** `hub` stays the single *primary* hub and remains the source of the
+breadcrumb trail and the RelatedGuides "up" link — a page must have exactly one
+canonical parent. A new optional `alsoIn: string[]` lists additional hubs that
+should surface the page. Reciprocity is then: a spoke must appear in its primary
+hub's `spokes` array, and in the `spokes` array of every hub named in `alsoIn`.
+
+For the four Combined Science pages the primary hub stays `o-level-prep` (larger
+demand, and the O-Level material becomes the lead content); `alsoIn` is
+`['n-level-prep']`.
+
+**N-Level Combined Science 2026 dates** (from the SEAB N-Level calendar; papers are
+numbered by component — P1/P2 Physics, P3/P4 Chemistry, P5/P6 Biology):
+
+| Component | Date | Time |
+| --- | --- | --- |
+| Physics (P1, P2) | 6 Oct 2026 | 0800–0915h |
+| Chemistry (P3, P4) | 8 Oct 2026 | 0800–0915h |
+| Biology (P5, P6) | 12 Oct 2026 | 0800–0915h |
+
+Syllabus codes: 5105 Phy/Chem, 5106 Phy/Bio, 5107 Chem/Bio.
+
 ### Task 8: A-Level cluster, including the revised syllabus content
 
 The differentiated content. 2026 is simultaneously the first examination year of the revised science syllabuses and the final year of the legacy ones.
