@@ -130,7 +130,7 @@ Preferred days & timing: `;
             {/* Key takeaways */}
             <KeyTakeaways
               items={[
-                <>GP is two papers &mdash; Essay (8807/01) and Comprehension (8807/02), each <span className="tabular-nums">50</span> marks over <span className="tabular-nums">1h 30m</span>.</>,
+                <>GP is two papers &mdash; Essay (8881/01) and Comprehension (8881/02), each <span className="tabular-nums">50</span> marks over <span className="tabular-nums">1h 30m</span>.</>,
                 <>A steady JC1&rarr;JC2 timeline built on wide reading and regular writing beats last-minute cramming.</>,
                 <>Essays are marked as much on argument, structure and language as on content &mdash; plan before you write, and back every point with a real example.</>,
                 <>Struggling to move from description to analysis, or to find examples, is the usual signal that targeted tuition will help.</>,
@@ -161,18 +161,18 @@ Preferred days & timing: `;
                 <h4 className="font-semibold text-gray-900 mb-4">A Level GP Papers Breakdown</h4>
                 <div className="space-y-5">
                   <div>
-                    <h5 className="font-semibold text-gray-900">Paper 1: Essay (8807/01)</h5>
+                    <h5 className="font-semibold text-gray-900">Paper 1: Essay (8881/01)</h5>
                     <ul className="list-disc ml-5 mt-1.5 space-y-1 text-sm text-gray-700">
-                      <li>Choose 1 out of 12 questions</li>
-                      <li>Topics span current affairs, science, technology, environment, media, culture, and more</li>
-                      <li>Marked for argument, content, organization, language</li>
+                      <li>Choose 1 out of 8 questions, writing 500&ndash;800 words</li>
+                      <li>Topics span society and culture, economics, politics, the arts and humanities, science and technology, and the environment</li>
+                      <li>Marked for content (30 marks) and language (20 marks)</li>
                       <li>1 hour 30 minutes, 50 marks</li>
                     </ul>
                   </div>
                   <div>
-                    <h5 className="font-semibold text-gray-900">Paper 2: Comprehension (8807/02)</h5>
+                    <h5 className="font-semibold text-gray-900">Paper 2: Comprehension (8881/02)</h5>
                     <ul className="list-disc ml-5 mt-1.5 space-y-1 text-sm text-gray-700">
-                      <li>1 passage with short-answer, summary, and application questions</li>
+                      <li>Three passages (about 1,200 words total) allowing for comparative analysis, with short-answer, summary, and application questions</li>
                       <li>Tests understanding, inference, summary, and critical response</li>
                       <li>1 hour 30 minutes, 50 marks</li>
                     </ul>

@@ -244,6 +244,7 @@ export const EXAM_CALENDAR_2026 = {
           { label: 'Paper 4 (Practical)', date: '2026-10-14', note: 'Three shifts, 0800–1700h' },
           { label: 'Paper 2', date: '2026-11-10', time: '1400–1600h' },
           { label: 'Paper 3', date: '2026-11-12', time: '0800–1000h' },
+          { label: 'Paper 1', date: '2026-11-23', time: '1400–1500h' },
         ],
       },
       {
@@ -255,6 +256,7 @@ export const EXAM_CALENDAR_2026 = {
           { label: 'Paper 4 (Practical)', date: '2026-10-19', note: 'Three shifts, 0800–1700h' },
           { label: 'Paper 2', date: '2026-11-13', time: '0800–1000h' },
           { label: 'Paper 3', date: '2026-11-17', time: '1400–1600h' },
+          { label: 'Paper 1', date: '2026-11-27', time: '0800–0900h' },
         ],
       },
       {
@@ -265,6 +267,8 @@ export const EXAM_CALENDAR_2026 = {
         papers: [
           { label: 'Paper 4 (Practical)', date: '2026-10-22', note: 'Three shifts, 0800–1700h' },
           { label: 'Paper 2', date: '2026-11-18', time: '0800–1000h' },
+          { label: 'Paper 3', date: '2026-11-20', time: '1430–1630h' },
+          { label: 'Paper 1', date: '2026-11-26', time: '1400–1500h' },
         ],
       },
       {
