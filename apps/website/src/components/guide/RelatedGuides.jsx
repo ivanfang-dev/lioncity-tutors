@@ -1,13 +1,15 @@
 import Link from 'next/link';
 import { ArrowUpRight, Compass } from 'lucide-react';
-import { getHubFor, getSiblings, getPage } from '@/lib/seo/links.mjs';
+import { getHubsFor, getSiblings, getPage } from '@/lib/seo/links.mjs';
 import { ICON_STROKE } from './constants';
 
 /**
  * Reciprocal cluster links, derived entirely from the SEO registry.
  *
  * Anchor text comes from the registry rather than the call site so the same
- * page is described consistently everywhere it is linked.
+ * page is described consistently everywhere it is linked. A page can surface
+ * more than one hub (see getHubsFor) — e.g. a page that is both an O-Level
+ * and N-Level spoke gets one card per hub.
  *
  * @param {string} slug - registry slug of the page rendering this block
  * @param {string} [heading]
@@ -17,11 +19,10 @@ export default function RelatedGuides({ slug, heading = 'Continue your revision'
   const page = getPage(slug);
   if (!page) return null;
 
-  const hub = getHubFor(slug);
+  // A hub never links to itself, so drop it from its own list of hub cards.
+  const hubs = getHubsFor(slug).filter((hub) => hub.slug !== slug);
   const siblings = getSiblings(slug);
-  if (!hub && siblings.length === 0) return null;
-
-  const isHub = hub && hub.slug === slug;
+  if (hubs.length === 0 && siblings.length === 0) return null;
 
   return (
     <section aria-labelledby={`related-${slug}`} className="mt-16 border-t border-gray-100 pt-10">
@@ -30,23 +31,28 @@ export default function RelatedGuides({ slug, heading = 'Continue your revision'
         {heading}
       </h2>
 
-      {showHub && hub && !isHub ? (
-        <Link
-          href={hub.url}
-          className="group mb-6 flex items-start justify-between gap-4 rounded-xl border border-[#0474BA]/20 bg-[#0474BA]/5 p-5 transition-colors hover:border-[#0474BA]/50"
-        >
-          <span>
-            <span className="block font-semibold text-[#0474BA]">{hub.anchor}</span>
-            <span className="mt-1 block text-sm text-gray-600">
-              Timetable, subject choices and the full revision plan in one place.
-            </span>
-          </span>
-          <ArrowUpRight
-            className="mt-1 h-5 w-5 shrink-0 text-[#0474BA] transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-            strokeWidth={ICON_STROKE}
-            aria-hidden="true"
-          />
-        </Link>
+      {showHub && hubs.length > 0 ? (
+        <div className="mb-6 space-y-4">
+          {hubs.map((hub) => (
+            <Link
+              key={hub.slug}
+              href={hub.url}
+              className="group flex items-start justify-between gap-4 rounded-xl border border-[#0474BA]/20 bg-[#0474BA]/5 p-5 transition-colors hover:border-[#0474BA]/50"
+            >
+              <span>
+                <span className="block font-semibold text-[#0474BA]">{hub.anchor}</span>
+                <span className="mt-1 block text-sm text-gray-600">
+                  Timetable, subject choices and the full revision plan in one place.
+                </span>
+              </span>
+              <ArrowUpRight
+                className="mt-1 h-5 w-5 shrink-0 text-[#0474BA] transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                strokeWidth={ICON_STROKE}
+                aria-hidden="true"
+              />
+            </Link>
+          ))}
+        </div>
       ) : null}
 
       <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2">

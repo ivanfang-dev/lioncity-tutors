@@ -527,7 +527,7 @@ export default function CombinedScienceOverview() {
           </p>
 
           <div className="grid md:grid-cols-3 gap-4 max-w-4xl mx-auto">
-            <Link href="/combined-physics-chemistry" className="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+            <Link href="/combined-chemistry-physics" className="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow">
               <h3 className="font-semibold text-blue-700 mb-2">Combined Chemistry/Physics</h3>
               <p className="text-sm text-gray-600">For future engineers and technologists</p>
             </Link>
@@ -566,15 +566,6 @@ export default function CombinedScienceOverview() {
           </div>
         </div>
         <RelatedGuides slug="combined-science-overview" />
-
-        <div className="flex flex-wrap justify-center gap-3 text-sm">
-          <Link href="/blog/o-level-preparation-guide" className="font-semibold text-[#0474BA] hover:underline">
-            Full O-Level Preparation Guide →
-          </Link>
-          <Link href="/blog/n-level-preparation-guide" className="font-semibold text-[#F17720] hover:underline">
-            Full N-Level Preparation Guide →
-          </Link>
-        </div>
 
         <section className="bg-gradient-to-r from-primary to-primary/90 text-white py-12 px-6 sm:px-8 rounded-2xl text-center space-y-4 shadow-xl">
           <h2 className="text-2xl sm:text-3xl font-bold text-white">Ready to Excel in Combined Science?</h2>

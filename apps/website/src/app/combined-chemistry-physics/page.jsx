@@ -584,15 +584,6 @@ export default function CombinedChemistryPhysics() {
         </div>
         <RelatedGuides slug="combined-chemistry-physics" />
 
-        <div className="flex flex-wrap justify-center gap-3 text-sm">
-          <Link href="/blog/o-level-preparation-guide" className="font-semibold text-[#0474BA] hover:underline">
-            Full O-Level Preparation Guide →
-          </Link>
-          <Link href="/blog/n-level-preparation-guide" className="font-semibold text-[#F17720] hover:underline">
-            Full N-Level Preparation Guide →
-          </Link>
-        </div>
-
         <section className="bg-gradient-to-r from-primary to-primary/90 text-white py-12 px-6 sm:px-8 rounded-2xl text-center space-y-4 shadow-xl">
           <h2 className="text-2xl sm:text-3xl font-bold text-white">Ready to Excel in Combined Chemistry/Physics?</h2>
           <p className="text-base sm:text-lg max-w-2xl mx-auto text-white/80">
