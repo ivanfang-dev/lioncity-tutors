@@ -1,6 +1,6 @@
 export const metadata = {
-  title: 'PSLE Math Guide 2026: Complete Preparation Strategy for Singapore Students | LionCity Tutors',
-  description: 'Ultimate PSLE Math preparation guide for Singapore students. Expert strategies, practice techniques, and proven tips to score A* in PSLE Math 2026.',
+  title: 'PSLE Math Guide 2026: Heuristics & Exam Timetable',
+  description: 'PSLE Mathematics guide for Singapore parents — the 2026 exam timetable, heuristics like model drawing, and the AL1–AL8 scoring system explained clearly.',
   keywords: [
     'PSLE Math 2026',
     'PSLE Math Singapore',
@@ -13,8 +13,8 @@ export const metadata = {
     'PSLE heuristics'
   ],
   openGraph: {
-    title: 'PSLE Math Guide 2026: Complete Preparation Strategy for Singapore Students',
-    description: 'Comprehensive PSLE Math guide with proven strategies to help Singapore students achieve A* grades in PSLE Math.',
+    title: 'PSLE Math Guide 2026: Heuristics & Exam Timetable',
+    description: 'The official 2026 PSLE Maths exam timetable, heuristics like model drawing, and the AL1–AL8 scoring system explained for Singapore parents.',
     type: 'article',
     url: 'https://www.lioncitytutors.com/psle-math',
   },

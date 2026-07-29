@@ -131,7 +131,7 @@ export default function PSLEScience() {
 
               <KeyTakeaways
                 items={[
-                  <>PSLE Science is one paper of two booklets &mdash; Booklet A (<span className="tabular-nums">30</span> MCQs, 56 marks) and Booklet B (open-ended, 44 marks) &mdash; graded on the AL1&ndash;AL8 scale.</>,
+                  <>PSLE Science is one paper of two booklets &mdash; Booklet A (multiple-choice, 56 marks) and Booklet B (open-ended, 44 marks) &mdash; graded on the AL1&ndash;AL8 scale.</>,
                   <>The syllabus is built on five themes: diversity, cycles, systems, energy and interactions.</>,
                   <>Open-ended marks are won with structure and keywords &mdash; a clear claim, the evidence, and the reasoning that links them.</>,
                   <>If your child knows the facts but keeps losing marks on open-ended answers, that&rsquo;s the usual signal targeted help pays off.</>,
@@ -164,19 +164,22 @@ export default function PSLEScience() {
                     <div>
                       <h5 className="font-semibold text-gray-900">Booklet A &mdash; 56 marks</h5>
                       <ul className="list-disc ml-5 mt-1.5 space-y-1 text-sm text-gray-700">
-                        <li>30 multiple-choice questions</li>
+                        <li>Multiple-choice questions</li>
                         <li>Tests knowledge and understanding of concepts</li>
                       </ul>
                     </div>
                     <div>
                       <h5 className="font-semibold text-gray-900">Booklet B &mdash; 44 marks</h5>
                       <ul className="list-disc ml-5 mt-1.5 space-y-1 text-sm text-gray-700">
-                        <li>Around 12–13 open-ended questions</li>
+                        <li>A set of open-ended questions</li>
                         <li>Tests application of concepts and process skills</li>
                         <li>Where most of the technique marks are won or lost</li>
                       </ul>
                     </div>
                   </div>
+                  <p className="text-xs text-gray-500 pt-3">
+                    The 2026 syllabus is a revised format per SEAB &mdash; exact question counts are not yet confirmed against an official published source, so they are left out here. The paper duration above is the official SEAB time.
+                  </p>
                 </GuideCard>
               </section>
 

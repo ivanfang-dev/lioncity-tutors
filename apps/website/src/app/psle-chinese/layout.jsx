@@ -1,10 +1,11 @@
 export const metadata = {
-  title: 'PSLE Chinese Guide 2026: Complete Preparation Strategy for Singapore Students | LionCity Tutors',
-  description: 'Ultimate PSLE Chinese preparation guide for Singapore students. Expert strategies, practice techniques, and proven tips to score A* in PSLE Chinese 2026.',
+  title: 'PSLE Chinese Guide 2026: Marks, Timetable & Tips',
+  description: 'PSLE Chinese guide for Singapore parents — exactly how marks are broken down across three papers, the 2026 exam timetable, and composition and oral strategy.',
   keywords: [
     'PSLE Chinese 2026',
     'PSLE Chinese Singapore',
     'PSLE Chinese guide',
+    'PSLE Chinese marks breakdown',
     'Primary 6 Chinese preparation',
     'PSLE Chinese study tips',
     'PSLE Chinese tuition Singapore',
@@ -14,8 +15,8 @@ export const metadata = {
     '华文会考'
   ],
   openGraph: {
-    title: 'PSLE Chinese Guide 2026: Complete Preparation Strategy for Singapore Students',
-    description: 'Comprehensive PSLE Chinese guide with proven strategies to help Singapore students achieve A* grades in PSLE Chinese.',
+    title: 'PSLE Chinese Guide 2026: Marks, Timetable & Tips',
+    description: 'How PSLE Chinese marks are broken down across three papers, the official 2026 exam timetable, and composition and oral strategy.',
     type: 'article',
     url: 'https://www.lioncitytutors.com/psle-chinese',
   },

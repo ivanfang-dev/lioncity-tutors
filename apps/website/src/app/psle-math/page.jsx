@@ -132,7 +132,7 @@ export default function PSLEMath() {
 
               <KeyTakeaways
                 items={[
-                  <>PSLE Maths is two equally-weighted papers &mdash; Paper 1 (no calculator, <span className="tabular-nums">50</span> marks) and Paper 2 (calculator allowed, <span className="tabular-nums">50</span> marks) &mdash; graded on the AL1&ndash;AL8 scale.</>,
+                  <>PSLE Maths is two papers &mdash; Paper 1 (no calculator) and Paper 2 (calculator allowed) &mdash; worth <span className="tabular-nums">100</span> marks combined and graded on the AL1&ndash;AL8 scale.</>,
                   <>Most lost marks come from careless slips and misread questions, not gaps in knowledge &mdash; checking work is itself a scoring skill.</>,
                   <>Heuristics like model drawing and working backwards are what turn hard word problems into method marks.</>,
                   <>If your child understands topics alone but freezes on multi-step problems, that&rsquo;s the usual signal targeted help pays off.</>,
@@ -163,7 +163,7 @@ export default function PSLEMath() {
                   <h4 className="font-semibold text-gray-900 mb-4">PSLE Maths papers breakdown</h4>
                   <div className="space-y-5">
                     <div>
-                      <h5 className="font-semibold text-gray-900">Paper 1 &mdash; 50 marks, 1 hour 10 minutes (no calculator)</h5>
+                      <h5 className="font-semibold text-gray-900">Paper 1 &mdash; 1 hour 10 minutes (no calculator)</h5>
                       <ul className="list-disc ml-5 mt-1.5 space-y-1 text-sm text-gray-700">
                         <li>Booklet A: multiple-choice questions</li>
                         <li>Booklet B: short-answer questions</li>
@@ -171,13 +171,16 @@ export default function PSLEMath() {
                       </ul>
                     </div>
                     <div>
-                      <h5 className="font-semibold text-gray-900">Paper 2 &mdash; 50 marks, 1 hour 20 minutes (calculator allowed)</h5>
+                      <h5 className="font-semibold text-gray-900">Paper 2 &mdash; 1 hour 20 minutes (calculator allowed)</h5>
                       <ul className="list-disc ml-5 mt-1.5 space-y-1 text-sm text-gray-700">
                         <li>Short-answer and longer structured questions</li>
                         <li>Rewards problem-solving, heuristics and clear working</li>
                         <li>Method marks are awarded for correct steps</li>
                       </ul>
                     </div>
+                    <p className="text-xs text-gray-500 pt-1">
+                      The 2026 syllabus is a revised format per SEAB &mdash; the exact Paper 1/2 mark split is not yet confirmed against an official published source, so it is left out here. Paper timings above are the official SEAB dates.
+                    </p>
                   </div>
                 </GuideCard>
               </section>

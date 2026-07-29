@@ -1,6 +1,6 @@
 export const metadata = {
-  title: 'PSLE English Guide 2026: Complete Preparation Strategy for Singapore Students | LionCity Tutors',
-  description: 'Ultimate PSLE English preparation guide for Singapore students. Expert strategies, practice techniques, and proven tips to score A* in PSLE English 2026.',
+  title: 'PSLE English Guide 2026: Papers, Timetable & Tips',
+  description: 'PSLE English guide for Singapore parents — the 2026 exam timetable across all four papers, composition and oral strategy, and the AL1–AL8 scoring system.',
   keywords: [
     'PSLE English 2026',
     'PSLE English Singapore',
@@ -13,8 +13,8 @@ export const metadata = {
     'PSLE comprehension'
   ],
   openGraph: {
-    title: 'PSLE English Guide 2026: Complete Preparation Strategy for Singapore Students',
-    description: 'Comprehensive PSLE English guide with proven strategies to help Singapore students achieve A* grades in PSLE English.',
+    title: 'PSLE English Guide 2026: Papers, Timetable & Tips',
+    description: 'The official 2026 PSLE English exam timetable across all four papers, composition and oral strategy, for Singapore parents.',
     type: 'article',
     url: 'https://www.lioncitytutors.com/psle-english',
   },

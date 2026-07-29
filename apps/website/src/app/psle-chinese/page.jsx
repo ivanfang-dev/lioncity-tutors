@@ -43,9 +43,12 @@ const tableOfContents = [
 const PSLE_CHINESE_FAQS = [
   {
     // exact phrasing targets "psle chinese marks breakdown" (pos 10.5, page one, 0 clicks)
+    // Figures are attributed, not asserted as bare fact: SEAB's own PDF was unreachable
+    // (CloudFront-blocked) when this was written, so the split below is cross-checked
+    // against tuition-industry sources only, not a primary SEAB document.
     question: 'How are PSLE Chinese marks broken down?',
     answer:
-      'PSLE Chinese is marked out of 200 across three papers: Paper 1 Writing is 40 marks, Paper 2 Language Use & Comprehension is 90 marks, and Paper 3 combines Oral Communication (50 marks) with Listening Comprehension (20 marks) for 70 marks. Papers 1 and 2 together carry 65% of the total.',
+      "Tuition-industry guides put PSLE Chinese marks at roughly 200 across three papers: about 40 for Paper 1 Writing, about 90 for Paper 2 Language Use & Comprehension, and about 70 for Paper 3 (Oral 50 plus Listening 20). SEAB's official syllabus document is the definitive source for exact current weightings.",
   },
 ];
 
@@ -147,7 +150,7 @@ export default function PSLEChinese() {
 
               <KeyTakeaways
                 items={[
-                  <>PSLE Chinese is examined over three papers for <span className="tabular-nums">200</span> marks &mdash; Writing, Language Use &amp; Comprehension, and Oral &amp; Listening &mdash; graded on the AL1&ndash;AL8 scale.</>,
+                  <>PSLE Chinese is examined over three papers &mdash; Writing, Language Use &amp; Comprehension, and Oral &amp; Listening &mdash; graded on the AL1&ndash;AL8 scale.</>,
                   <>Daily reading and speaking build vocabulary and fluency faster than rote memorisation.</>,
                   <>Composition marks come from planning and a bank of good phrases &mdash; used naturally, not stuffed in.</>,
                   <>If your child freezes in oral or struggles with comprehension, that&rsquo;s the usual signal targeted help pays off.</>,
@@ -172,30 +175,30 @@ export default function PSLEChinese() {
               <section id="structure" className="scroll-mt-24">
                 <SectionHeading icon={FileText}>Understanding the PSLE Chinese papers</SectionHeading>
                 <p className="text-pretty">
-                  PSLE Chinese is set over three papers worth 200 marks in total, assessing writing, language use, comprehension, listening and speaking. Each subject is now graded by Achievement Level (AL1 to AL8), where AL1 is the top band.
+                  PSLE Chinese is set over three papers assessing writing, language use, comprehension, listening and speaking. Each subject is now graded by Achievement Level (AL1 to AL8), where AL1 is the top band. See the FAQ below for the current per-paper mark weightings.
                 </p>
                 <GuideCard className="mt-4">
                   <h4 className="font-semibold text-gray-900 mb-4">PSLE Chinese papers breakdown</h4>
                   <div className="space-y-5">
                     <div>
-                      <h5 className="font-semibold text-gray-900">Paper 1: Writing &mdash; 40 marks</h5>
+                      <h5 className="font-semibold text-gray-900">Paper 1: Writing</h5>
                       <ul className="list-disc ml-5 mt-1.5 space-y-1 text-sm text-gray-700">
                         <li>Composition writing on a given topic</li>
                         <li>Tests vocabulary, sentence structure and organisation</li>
                       </ul>
                     </div>
                     <div>
-                      <h5 className="font-semibold text-gray-900">Paper 2: Language Use &amp; Comprehension &mdash; 90 marks</h5>
+                      <h5 className="font-semibold text-gray-900">Paper 2: Language Use &amp; Comprehension</h5>
                       <ul className="list-disc ml-5 mt-1.5 space-y-1 text-sm text-gray-700">
                         <li>Multiple-choice questions on language use</li>
                         <li>Comprehension passages with varied question types</li>
                       </ul>
                     </div>
                     <div>
-                      <h5 className="font-semibold text-gray-900">Paper 3: Oral &amp; Listening Comprehension &mdash; 70 marks</h5>
+                      <h5 className="font-semibold text-gray-900">Paper 3: Oral &amp; Listening Comprehension</h5>
                       <ul className="list-disc ml-5 mt-1.5 space-y-1 text-sm text-gray-700">
-                        <li>Reading aloud and a video-based conversation (Oral, 50 marks)</li>
-                        <li>Listening comprehension based on audio clips (20 marks)</li>
+                        <li>Reading aloud and a video-based conversation</li>
+                        <li>Listening comprehension based on audio clips</li>
                       </ul>
                     </div>
                   </div>
