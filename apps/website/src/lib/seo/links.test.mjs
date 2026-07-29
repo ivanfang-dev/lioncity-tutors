@@ -4,7 +4,7 @@ import { existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { HUBS, SPOKES } from './clusters.mjs';
-import { getPage, getHubFor, getSiblings, getBreadcrumbs, allSlugs } from './links.mjs';
+import { getPage, getHubFor, getHubsFor, getSiblings, getBreadcrumbs, allSlugs } from './links.mjs';
 
 const appDir = join(dirname(fileURLToPath(import.meta.url)), '..', '..', 'app');
 
@@ -28,8 +28,31 @@ describe('cluster registry integrity', () => {
     for (const hub of Object.values(HUBS)) {
       for (const slug of hub.spokes) {
         assert.ok(SPOKES[slug], `hub ${hub.slug} lists unknown spoke ${slug}`);
-        assert.equal(SPOKES[slug].hub, hub.slug, `${slug} does not point back to ${hub.slug}`);
+        const spoke = SPOKES[slug];
+        const linked = spoke.hub === hub.slug || (spoke.alsoIn ?? []).includes(hub.slug);
+        assert.ok(linked, `${slug} does not point back to ${hub.slug}`);
       }
+    }
+  });
+
+  test('link reciprocity: every alsoIn hub lists the spoke too', () => {
+    for (const spoke of Object.values(SPOKES)) {
+      for (const hubSlug of spoke.alsoIn ?? []) {
+        assert.ok(HUBS[hubSlug], `${spoke.slug} names missing alsoIn hub ${hubSlug}`);
+        assert.ok(
+          HUBS[hubSlug].spokes.includes(spoke.slug),
+          `alsoIn hub ${hubSlug} does not list spoke ${spoke.slug}`,
+        );
+      }
+    }
+  });
+
+  test('a spoke never lists its primary hub in alsoIn', () => {
+    for (const spoke of Object.values(SPOKES)) {
+      assert.ok(
+        !(spoke.alsoIn ?? []).includes(spoke.hub),
+        `${spoke.slug} repeats its primary hub in alsoIn`,
+      );
     }
   });
 
@@ -99,5 +122,18 @@ describe('link helpers', () => {
     assert.equal(getHubFor('not-a-page'), undefined);
     assert.deepEqual(getSiblings('not-a-page'), []);
     assert.deepEqual(getBreadcrumbs('not-a-page'), []);
+  });
+
+  test('getHubsFor returns primary hub plus alsoIn hubs', () => {
+    const hubs = getHubsFor('combined-science-overview').map((h) => h.slug);
+    assert.deepEqual(hubs, ['o-level-prep', 'n-level-prep']);
+  });
+
+  test('getHubsFor returns a single hub for a normal spoke', () => {
+    assert.deepEqual(getHubsFor('o-level-physics').map((h) => h.slug), ['o-level-prep']);
+  });
+
+  test('getHubsFor returns [] for an unknown slug', () => {
+    assert.deepEqual(getHubsFor('not-a-page'), []);
   });
 });

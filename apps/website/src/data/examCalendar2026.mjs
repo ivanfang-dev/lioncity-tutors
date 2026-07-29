@@ -174,7 +174,35 @@ export const EXAM_CALENDAR_2026 = {
     label: 'GCE N-Level',
     examWindow: { start: '2026-07-13', end: '2026-10-13' },
     resultsWindow: { start: '2026-12-17', end: '2026-12-21' },
-    subjects: [],
+    subjects: [
+      {
+        slug: 'combined-science-phy-chem',
+        name: 'Combined Science (Physics/Chemistry)',
+        code: '5105',
+        papers: [
+          { label: 'Papers 1 & 2 (Physics)', date: '2026-10-06', time: '0800–0915h' },
+          { label: 'Papers 3 & 4 (Chemistry)', date: '2026-10-08', time: '0800–0915h' },
+        ],
+      },
+      {
+        slug: 'combined-science-phy-bio',
+        name: 'Combined Science (Physics/Biology)',
+        code: '5106',
+        papers: [
+          { label: 'Papers 1 & 2 (Physics)', date: '2026-10-06', time: '0800–0915h' },
+          { label: 'Papers 5 & 6 (Biology)', date: '2026-10-12', time: '0800–0915h' },
+        ],
+      },
+      {
+        slug: 'combined-science-chem-bio',
+        name: 'Combined Science (Chemistry/Biology)',
+        code: '5107',
+        papers: [
+          { label: 'Papers 3 & 4 (Chemistry)', date: '2026-10-08', time: '0800–0915h' },
+          { label: 'Papers 5 & 6 (Biology)', date: '2026-10-12', time: '0800–0915h' },
+        ],
+      },
+    ],
   },
 
   'a-level': {

@@ -1,14 +1,16 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import chembioImage from "../../../public/combined-chemistry-biology.webp";
+import GuideSchema from '@/components/seo/GuideSchema';
+import { RelatedGuides, ExamTimetable } from '@/components/guide';
 
 export const metadata = {
-  title:
-    'Combined Chemistry + Biology: Master N Level Combined Science (N(A)) — Matter & Life Integrated | LionCity Tutors',
+  title: 'Combined Chemistry/Biology 2026: O & N-Level Guide',
   description:
-    'Comprehensive N(A) Combined Chemistry–Biology guide for Secondary 4 students in Singapore. Accurate syllabi, integration strategies, sample questions, practical tips, and exam-focused techniques to secure strong O-Level results.',
+    'Combined Chemistry/Biology guide for Singapore students. O-Level 5088 and N-Level 5107 syllabus — topics, paper structure and exam technique for both levels.',
   keywords: [
     'Combined Chemistry Biology Singapore',
+    'O Level Combined Science 5088',
     'N Level Chemistry Biology integration',
     'Combined Science N(A) Chemistry Biology',
     'Sec 4 N(A) Combined Science guide',
@@ -16,9 +18,9 @@ export const metadata = {
     'LionCity Tutors chemistry biology'
   ],
   openGraph: {
-    title: 'Combined Chemistry + Biology (N(A)) — Matter & Life Integrated',
+    title: 'Combined Chemistry + Biology — O-Level & N-Level, Matter & Life Integrated',
     description:
-      'Master Chemical reactions and Biological processes for N(A) Combined Science. Practical examples, exam strategies, and Singapore contexts.',
+      'Master Chemical reactions and Biological processes for Combined Science, at O-Level (5088) and N-Level (5107). Practical examples, exam strategies, and Singapore contexts.',
     url: 'https://www.lioncitytutors.com/combined-chemistry-biology',
     type: 'article'
   },
@@ -30,26 +32,34 @@ export const metadata = {
 export default function CombinedChemBioNA() {
   return (
     <>
+      <GuideSchema
+        slug="combined-chemistry-biology"
+        course={{
+          name: 'Combined Chemistry/Biology Tuition',
+          description: 'One-to-one Combined Science (Chemistry/Biology) tuition in Singapore, at O-Level (syllabus 5088) and N-Level (syllabus 5107).',
+          educationalLevel: 'GCE O-Level and N-Level',
+        }}
+      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
       />
 
       <main className="px-4 py-12 max-w-4xl mx-auto">
-        <h1 className="text-4xl font-bold text-indigo-800 mb-4">Combined Chemistry/Biology N(A): Matter & Life — Integrated Mastery</h1>
+        <h1 className="text-4xl font-bold text-indigo-800 mb-4">Combined Chemistry/Biology: Matter &amp; Life — O-Level &amp; N-Level Mastery</h1>
 
         <div className="flex items-center space-x-4 mb-8">
           <div>
             <p className="font-semibold text-gray-800">By Victor, Combined Chemistry/Biology Tutor</p>
-            <p className="text-sm text-gray-500">Updated July 2, 2026 • N(A) Combined Science • 20+ min read</p>
+            <p className="text-sm text-gray-500">Updated July 2, 2026 • O-Level &amp; N-Level Combined Science • 20+ min read</p>
           </div>
         </div>
 
         <div className="bg-gradient-to-r from-indigo-50 to-purple-50 p-6 rounded-xl mb-8 border-l-4 border-indigo-400">
           <h3 className="text-lg font-bold text-indigo-800 mb-2">🔬 Matter & Life — Why this pairing works</h3>
           <p className="text-indigo-700">
-            Combined Chemistry–Biology is all about <span className="font-bold">how chemical reactions power life</span>. In Sec 4 N(A), you will link chemical equations, reaction energy and rates, and the chemistry of molecules to biological processes like respiration,
-            digestion and photosynthesis. This guide focuses on exactly what's tested in N(A) — accurate topics, clear examples, and exam-winning structures.
+            Combined Chemistry–Biology is all about <span className="font-bold">how chemical reactions power life</span>. You will link chemical equations, reaction energy and rates, and the chemistry of molecules to biological processes like respiration,
+            digestion and photosynthesis. This guide covers the N(A) syllabus (5107) in detail below, plus what changes for the O-Level version (5088) — accurate topics, clear examples, and exam-winning structures for both.
           </p>
         </div>
 
@@ -126,10 +136,10 @@ export default function CombinedChemBioNA() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold text-indigo-700 mb-4">🧪 Assessment Overview & Exam Rhythm</h2>
+            <h2 className="text-2xl font-semibold text-indigo-700 mb-4">🧪 N-Level (5107) Assessment Overview & Exam Rhythm</h2>
 
             <div className="bg-indigo-50 p-5 rounded-lg mb-4">
-              <h3 className="font-semibold text-indigo-800 mb-3">Paper Structure (general guide)</h3>
+              <h3 className="font-semibold text-indigo-800 mb-3">Paper Structure (N-Level general guide)</h3>
               <div className="bg-white p-4 rounded-lg text-sm">
                 <ul className="space-y-2">
                   <li>• Each subject typically has a multiple-choice (MCQ) paper and a structured paper.</li>
@@ -146,6 +156,66 @@ export default function CombinedChemBioNA() {
                 <p className="mb-2"><strong>Order:</strong> Begin with your stronger subject’s MCQ → its Structured paper → then the other subject’s MCQ and Structured.</p>
                 <p className="mb-2"><strong>MCQ pacing:</strong> target 1–1.5 minutes per question, flag and return if unsure.</p>
                 <p className="mb-0"><strong>Structured answers:</strong> Always define key terms, show simple calculations with units, and link chemistry and biology when required.</p>
+              </div>
+            </div>
+          </section>
+
+          <section className="bg-sky-50 p-6 rounded-lg border-l-4 border-[#0474BA]">
+            <h2 className="text-2xl font-semibold text-[#0474BA] mb-4">❓ What is O-Level Combined Chemistry/Biology?</h2>
+            <p className="mb-4">
+              O-Level Combined Chemistry/Biology (syllabus 5088) is sat by Secondary 4 Express-stream students, not
+              N(A) students. It shares one multiple-choice paper across Chemistry and Biology, then a separate
+              structured paper for each subject — unlike N-Level 5107, where each subject has its own full
+              MCQ-plus-structured pair.
+            </p>
+            <div className="bg-white p-5 rounded-lg">
+              <h4 className="font-semibold text-[#0474BA] mb-3">O-Level 5088 paper structure:</h4>
+              <div className="overflow-x-auto">
+                <table className="w-full bg-white rounded-lg shadow-sm">
+                  <thead className="bg-sky-100">
+                    <tr className="text-sm">
+                      <th className="p-3 text-left font-semibold">Paper</th>
+                      <th className="p-3 text-left font-semibold">Content</th>
+                    </tr>
+                  </thead>
+                  <tbody className="text-sm">
+                    <tr className="border-b">
+                      <td className="p-3 font-semibold text-purple-700">Paper 1</td>
+                      <td className="p-3">MCQ, shared across Chemistry and Biology</td>
+                    </tr>
+                    <tr className="border-b">
+                      <td className="p-3 font-semibold text-orange-700">Paper 3</td>
+                      <td className="p-3">Chemistry, structured</td>
+                    </tr>
+                    <tr>
+                      <td className="p-3 font-semibold text-green-700">Paper 4</td>
+                      <td className="p-3">Biology, structured</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <p className="text-xs text-gray-500 mt-3">Who sits it: Secondary 4 Express-stream students taking the GCE O-Level exam.</p>
+            </div>
+          </section>
+
+          <section>
+            <h2 className="text-2xl font-semibold text-blue-700 mb-4">📅 2026 Exam Timetables — Both Levels</h2>
+            <div className="space-y-6">
+              <div>
+                <h3 className="font-semibold text-[#0474BA] mb-2">O-Level Combined Chemistry/Biology</h3>
+                <ExamTimetable
+                  examSlug="o-level"
+                  subjectSlugs={['combined-science-chem-bio']}
+                  caption="Official 2026 SEAB dates — O-Level Combined Science (Chemistry/Biology), syllabus 5088."
+                />
+              </div>
+              <div>
+                <h3 className="font-semibold text-[#F17720] mb-2">N-Level Combined Chemistry/Biology</h3>
+                <ExamTimetable
+                  examSlug="n-level"
+                  subjectSlugs={['combined-science-chem-bio']}
+                  caption="Official 2026 SEAB dates — N-Level Combined Science (Chemistry/Biology), syllabus 5107."
+                />
               </div>
             </div>
           </section>
@@ -398,7 +468,7 @@ export default function CombinedChemBioNA() {
           <section className="bg-gradient-to-r from-indigo-50 to-purple-50 p-8 rounded-xl text-center">
             <h2 className="text-3xl font-bold text-indigo-800 mb-4">🚀 Your Chemistry–Biology Mastery Plan</h2>
             <p className="text-lg text-gray-700 mb-6 max-w-3xl mx-auto">
-              Combine clear chemical explanations with accurate biological terms. Practise integrated questions weekly, simulate timed papers, and use local examples to score higher in your N(A) Combined Science papers.
+              Combine clear chemical explanations with accurate biological terms. Practise integrated questions weekly, simulate timed papers, and use local examples to score higher in your O-Level or N(A) Combined Science papers.
             </p>
 
             <div className="bg-white p-6 rounded-lg shadow-md max-w-2xl mx-auto">
@@ -434,7 +504,7 @@ export default function CombinedChemBioNA() {
           </section>
 
           <section className="bg-emerald-800 text-white p-6 rounded-xl mt-8">
-            <h3 className="text-lg font-semibold mb-2">🔬 Check out similar N-Level resources</h3>
+            <h3 className="text-lg font-semibold mb-2">🔬 Check out related Combined Science guides</h3>
             <p className="text-sm">Explore our curated guides to deepen your understanding and excel in your studies.</p>
             <div className="mt-4 pt-4 border-t border-emerald-700">
                 <div className="grid grid-cols-3 gap-6 text-center">
@@ -459,6 +529,17 @@ export default function CombinedChemBioNA() {
                 </div>
             </div>
           </section>
+            <RelatedGuides slug="combined-chemistry-biology" />
+
+            <div className="flex flex-wrap justify-center gap-3 text-sm">
+              <Link href="/blog/o-level-preparation-guide" className="font-semibold text-[#0474BA] hover:underline">
+                Full O-Level Preparation Guide →
+              </Link>
+              <Link href="/blog/n-level-preparation-guide" className="font-semibold text-[#F17720] hover:underline">
+                Full N-Level Preparation Guide →
+              </Link>
+            </div>
+
             <section className="bg-gradient-to-r from-primary to-primary/90 text-white py-12 px-6 sm:px-8 rounded-2xl text-center space-y-4 shadow-xl">
             <h2 className="text-2xl sm:text-3xl font-bold text-white">Ready to Excel in Combined Chemistry/Biology?</h2>
             <p className="text-base sm:text-lg max-w-2xl mx-auto text-white/80">
@@ -511,9 +592,9 @@ const articleSchema = {
   "@context": "https://schema.org",
   "@type": "Article",
   headline:
-    'Combined Chemistry + Biology (N(A)): Master N Level Combined Science — Matter & Life Integrated',
+    'Combined Chemistry + Biology: O-Level (5088) & N-Level (5107) — Matter & Life Integrated',
   description:
-    'Comprehensive N(A) Combined Chemistry–Biology guide for Secondary 4 students in Singapore. Accurate syllabi, integration strategies, sample questions, practical tips, and exam-focused techniques to secure strong O-Level results.',
+    'Comprehensive Combined Chemistry–Biology guide for Secondary 4 students in Singapore, covering both O-Level and N(A). Accurate syllabi, integration strategies, sample questions, practical tips, and exam-focused techniques.',
   author: {
     "@type": "Person",
     name: 'Victor',

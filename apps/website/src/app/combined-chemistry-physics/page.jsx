@@ -1,22 +1,25 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import chemphysImage from "../../../public/combined-chemistry-physics.webp"
+import GuideSchema from '@/components/seo/GuideSchema';
+import { RelatedGuides, ExamTimetable } from '@/components/guide';
 
 export const metadata = {
-  title: 'Combined Chemistry + Physics: Master N Level Combined Science with Advanced Integration Techniques | LionCity Tutors',
-  description: 'Excel in N Level Combined Chemistry-Physics with our Singapore-focused guide. Advanced integration strategies, molecular-atomic connections, Singapore applications, and proven A1 techniques.',
+  title: 'Combined Physics/Chemistry 2026: O & N-Level Guide',
+  description: 'Combined Chemistry/Physics guide for Singapore students. O-Level 5086 and N-Level 5105 syllabus — topics, paper structure and exam technique for both levels.',
   keywords: [
     'Combined Science Chemistry Physics Singapore',
+    'O Level Combined Science 5086',
     'N Level Chemistry Physics integration',
     'Combined Science Chemistry Physics 2026',
     'Singapore Chemistry Physics exam strategies',
-    'N Level Combined Science study guide',
+    'Combined Science study guide',
     'Chemistry Physics molecular connections',
     'Singapore science education integration'
   ],
   openGraph: {
-    title: 'Combined Chemistry + Physics: Singapore Success Through Integration',
-    description: 'Master the molecular-atomic bridge in N Level Combined Chemistry/Physics. Advanced integration strategies for Chemistry-Physics excellence.',
+    title: 'Combined Chemistry + Physics: O-Level & N-Level Guide',
+    description: 'Master the molecular-atomic bridge in Combined Chemistry/Physics, at both O-Level (5086) and N-Level (5105). Advanced integration strategies for excellence.',
     url: 'https://www.lioncitytutors.com/combined-chemistry-physics',
     type: 'article',
   },
@@ -28,27 +31,35 @@ export const metadata = {
 export default function CombinedChemistryPhysics() {
   return (
     <>
+      <GuideSchema
+        slug="combined-chemistry-physics"
+        course={{
+          name: 'Combined Chemistry/Physics Tuition',
+          description: 'One-to-one Combined Science (Chemistry/Physics) tuition in Singapore, at O-Level (syllabus 5086) and N-Level (syllabus 5105).',
+          educationalLevel: 'GCE O-Level and N-Level',
+        }}
+      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
       />
 
       <main className="px-4 py-12 max-w-4xl mx-auto">
-        <h1 className="text-4xl font-bold text-indigo-800 mb-4">Combined Chemistry + Physics: Master your N Level Science</h1>
-        
+        <h1 className="text-4xl font-bold text-indigo-800 mb-4">Combined Chemistry + Physics: O-Level &amp; N-Level Science, Mastered</h1>
+
         <div className="flex items-center space-x-4 mb-8">
           <div>
             <p className="font-semibold text-gray-800">By David Lim, Combined Chemistry-Physics Tutor</p>
-            <p className="text-sm text-gray-500">Updated July 1, 2026 • Advanced Integration Guide • 18 min read</p>
+            <p className="text-sm text-gray-500">Updated July 1, 2026 • Advanced Integration Guide, both levels • 18 min read</p>
           </div>
         </div>
 
         <div className="bg-gradient-to-r from-purple-50 to-indigo-50 p-6 rounded-xl mb-8 border-l-4 border-indigo-400">
           <h3 className="text-lg font-bold text-indigo-800 mb-2">⚛️ The Molecular-Atomic Bridge</h3>
           <p className="text-indigo-700">
-            Combined Chemistry-Physics isn't two separate subjects—it's the <span className="font-bold">science of matter in motion</span>. 
-            This comprehensive guide reveals how to leverage atomic structure to understand energy transformations, 
-            creating a unified approach that Singapore's top students use to achieve A1 results.
+            Combined Chemistry-Physics isn't two separate subjects—it's the <span className="font-bold">science of matter in motion</span>.
+            This comprehensive guide reveals how to leverage atomic structure to understand energy transformations,
+            creating a unified approach that Singapore's top students use to achieve A1 results, at both O-Level and N-Level.
           </p>
         </div>
 
@@ -68,7 +79,7 @@ export default function CombinedChemistryPhysics() {
           <section className="bg-emerald-50 p-6 rounded-lg border-l-4 border-emerald-400">
             <h2 className="text-2xl font-semibold text-emerald-800 mb-3">🎯 Why Combined Chemistry/Physics is Singapore's Engineering Gateway</h2>
             <p className="mb-4">
-              Among the three N Level Combined Science combinations, Combined Chemistry/Physics offers the most direct
+              Among the three Combined Science combinations, Combined Chemistry/Physics offers the most direct
               pathway to Singapore's thriving engineering and technology sectors. Unlike other combinations, Combined
               Chemistry/Physics integrates the fundamental building blocks of matter with the forces that govern their behavior.
             </p>
@@ -109,7 +120,7 @@ export default function CombinedChemistryPhysics() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold text-blue-700 mb-4">🔬 Complete Combined Chemistry/Physics Assessment Breakdown</h2>
+            <h2 className="text-2xl font-semibold text-blue-700 mb-4">🔬 N-Level (5105) Assessment Breakdown</h2>
 
             <div className="bg-blue-50 p-5 rounded-lg mb-4">
               <h3 className="font-semibold text-blue-800 mb-3">📋 Paper Structure & Timing Strategy</h3>
@@ -166,8 +177,68 @@ export default function CombinedChemistryPhysics() {
                 when to move between papers and how to leverage cross-subject thinking.
               </p>
               <div className="bg-yellow-50 p-3 rounded">
-                <strong>Pro Strategy:</strong> Start with your stronger subject's MCQ, then tackle structured questions. 
+                <strong>Pro Strategy:</strong> Start with your stronger subject's MCQ, then tackle structured questions.
                 If stuck on integration questions, think about atomic/molecular behavior first, then apply physics principles.
+              </div>
+            </div>
+          </section>
+
+          <section className="bg-sky-50 p-6 rounded-lg border-l-4 border-[#0474BA]">
+            <h2 className="text-2xl font-semibold text-[#0474BA] mb-4">❓ What is O-Level Combined Chemistry/Physics?</h2>
+            <p className="mb-4">
+              O-Level Combined Chemistry/Physics (syllabus 5086) is sat by Secondary 4 Express-stream students, not
+              N(A) students. It shares one multiple-choice paper across Chemistry and Physics, then a separate
+              structured paper for each subject — unlike N-Level 5105, where each subject has its own full
+              MCQ-plus-structured pair.
+            </p>
+            <div className="bg-white p-5 rounded-lg">
+              <h4 className="font-semibold text-[#0474BA] mb-3">O-Level 5086 paper structure:</h4>
+              <div className="overflow-x-auto">
+                <table className="w-full bg-white rounded-lg shadow-sm">
+                  <thead className="bg-sky-100">
+                    <tr className="text-sm">
+                      <th className="p-3 text-left font-semibold">Paper</th>
+                      <th className="p-3 text-left font-semibold">Content</th>
+                    </tr>
+                  </thead>
+                  <tbody className="text-sm">
+                    <tr className="border-b">
+                      <td className="p-3 font-semibold text-purple-700">Paper 1</td>
+                      <td className="p-3">MCQ, shared across Physics and Chemistry</td>
+                    </tr>
+                    <tr className="border-b">
+                      <td className="p-3 font-semibold text-orange-700">Paper 2</td>
+                      <td className="p-3">Physics, structured</td>
+                    </tr>
+                    <tr>
+                      <td className="p-3 font-semibold text-orange-700">Paper 3</td>
+                      <td className="p-3">Chemistry, structured</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <p className="text-xs text-gray-500 mt-3">Who sits it: Secondary 4 Express-stream students taking the GCE O-Level exam.</p>
+            </div>
+          </section>
+
+          <section>
+            <h2 className="text-2xl font-semibold text-blue-700 mb-4">📅 2026 Exam Timetables — Both Levels</h2>
+            <div className="space-y-6">
+              <div>
+                <h3 className="font-semibold text-[#0474BA] mb-2">O-Level Combined Chemistry/Physics</h3>
+                <ExamTimetable
+                  examSlug="o-level"
+                  subjectSlugs={['combined-science-phy-chem']}
+                  caption="Official 2026 SEAB dates — O-Level Combined Science (Physics/Chemistry), syllabus 5086."
+                />
+              </div>
+              <div>
+                <h3 className="font-semibold text-[#F17720] mb-2">N-Level Combined Chemistry/Physics</h3>
+                <ExamTimetable
+                  examSlug="n-level"
+                  subjectSlugs={['combined-science-phy-chem']}
+                  caption="Official 2026 SEAB dates — N-Level Combined Science (Physics/Chemistry), syllabus 5105."
+                />
               </div>
             </div>
           </section>
@@ -454,7 +525,7 @@ export default function CombinedChemistryPhysics() {
             <h2 className="text-3xl font-bold text-indigo-800 mb-4">🚀 Your Combined Chemistry/Physics Mastery Journey</h2>
             
             <p className="text-lg text-gray-700 mb-6 max-w-3xl mx-auto">
-              Combined Chemistry/Physics Chemistry-Physics represents the pinnacle of N Level science integration. By mastering the 
+              Combined Chemistry/Physics Chemistry-Physics represents the pinnacle of Combined Science integration, at O-Level and N-Level. By mastering the
               molecular-atomic bridge and Singapore applications, you're not just preparing for exams—you're 
               building the foundation for Singapore's next generation of engineers and innovators.
             </p>
@@ -486,7 +557,7 @@ export default function CombinedChemistryPhysics() {
 
          
         <div className="bg-indigo-800 text-white p-6 rounded-xl mt-8">
-        <h3 className="text-lg font-semibold mb-2">🔬 Check out similar N-Level resources</h3>
+        <h3 className="text-lg font-semibold mb-2">🔬 Check out related Combined Science guides</h3>
         <p className="text-sm">Explore our curated guides to deepen your understanding and excel in your studies.</p>
         <div className="mt-4 pt-4 border-t border-indigo-700">
             <div className="grid grid-cols-3 gap-6 text-center">
@@ -511,6 +582,17 @@ export default function CombinedChemistryPhysics() {
             </div>
         </div>
         </div>
+        <RelatedGuides slug="combined-chemistry-physics" />
+
+        <div className="flex flex-wrap justify-center gap-3 text-sm">
+          <Link href="/blog/o-level-preparation-guide" className="font-semibold text-[#0474BA] hover:underline">
+            Full O-Level Preparation Guide →
+          </Link>
+          <Link href="/blog/n-level-preparation-guide" className="font-semibold text-[#F17720] hover:underline">
+            Full N-Level Preparation Guide →
+          </Link>
+        </div>
+
         <section className="bg-gradient-to-r from-primary to-primary/90 text-white py-12 px-6 sm:px-8 rounded-2xl text-center space-y-4 shadow-xl">
           <h2 className="text-2xl sm:text-3xl font-bold text-white">Ready to Excel in Combined Chemistry/Physics?</h2>
           <p className="text-base sm:text-lg max-w-2xl mx-auto text-white/80">
@@ -534,8 +616,8 @@ export default function CombinedChemistryPhysics() {
 const articleSchema = {
   "@context": "https://schema.org",
   "@type": "Article",
-  "headline": "Combined Chemistry + Physics: Master N Level Combined Science with Advanced Integration Techniques",
-  "description": "Excel in N Level Combined Chemistry-Physics with our Singapore-focused guide. Advanced integration strategies, molecular-atomic connections, Singapore applications, and proven A1 techniques.",
+  "headline": "Combined Chemistry + Physics: O-Level & N-Level Guide with Advanced Integration Techniques",
+  "description": "Excel in Combined Chemistry-Physics with our Singapore-focused guide, covering O-Level (5086) and N-Level (5105). Advanced integration strategies, molecular-atomic connections, Singapore applications, and proven A1 techniques.",
   "author": {
     "@type": "Person",
     "name": "David Lim",
