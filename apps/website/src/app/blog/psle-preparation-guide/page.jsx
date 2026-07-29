@@ -1,14 +1,19 @@
 // This is now a Server Component (no 'use client')
 
+import GuideSchema from '@/components/seo/GuideSchema';
 import PSLEPreparationGuideClient from './client'; // Adjust the path if you name it differently
+import { PSLE_FAQS } from './faqs.mjs';
 
 // === CRITICAL SEO METADATA ===
 export const metadata = {
-  title: 'The Ultimate Parent’s Guide to PSLE Preparation (2026) | LionCity Tutors',
-  description: 'A complete, strategic roadmap for Singapore parents to navigate the PSLE syllabus, support their child emotionally, and unlock their full potential in 2026.',
+  title: 'PSLE Preparation Guide 2026: Timetable & Study Plan',
+  description:
+    'Complete PSLE 2026 guide — official oral, listening and written exam dates, subject-by-subject strategies, and an AL scoring explainer for Singapore parents.',
   keywords: [
     'PSLE preparation guide',
     'PSLE 2026',
+    'PSLE timetable 2026',
+    'psle preparation',
     'Singapore PSLE',
     'AL scoring system',
     'PSLE tips for parents',
@@ -17,8 +22,8 @@ export const metadata = {
     'how to prepare for PSLE'
   ],
   openGraph: {
-    title: 'The Ultimate Parent’s Guide to PSLE Preparation (2026) | LionCity Tutors',
-    description: 'A complete roadmap for parents to navigate the PSLE syllabus, support their child emotionally, and unlock their full potential.',
+    title: 'PSLE Preparation Guide 2026: Timetable & Study Plan',
+    description: 'The official 2026 PSLE timetable, subject-by-subject strategies and an AL scoring explainer for Singapore parents.',
     url: 'https://www.lioncitytutors.com/blog/psle-preparation-guide',
     type: 'article',
   },
@@ -31,6 +36,19 @@ export const metadata = {
 // This page component now just renders the client component
 export default function PSLEPreparationGuidePage() {
   return (
-    <PSLEPreparationGuideClient />
+    <>
+      <GuideSchema
+        slug="psle-prep"
+        article={{
+          headline: 'PSLE Preparation Guide 2026: Timetable & Study Plan',
+          description:
+            'The official 2026 PSLE timetable, subject-by-subject strategies and an AL scoring explainer for Singapore parents.',
+          datePublished: '2026-01-15',
+          dateModified: '2026-07-28',
+        }}
+        faqs={PSLE_FAQS}
+      />
+      <PSLEPreparationGuideClient />
+    </>
   );
 }

@@ -11,8 +11,8 @@ import FormStepper from "@/components/FormStepper";
 import useTuitionRequestForm from "@/components/useTuitionRequestForm";
 import FormBenefits from "@/components/FormBenefits";
 import { CheckCircle } from "lucide-react";
-
-
+import GuideSchema from '@/components/seo/GuideSchema';
+import { RelatedGuides } from '@/components/guide';
 
 export default function PrimarySchoolTuition() {
   const formRef = useRef(null);
@@ -46,6 +46,14 @@ export default function PrimarySchoolTuition() {
 
   return (
     <>
+      <GuideSchema
+        slug="primary-school-tuition"
+        course={{
+          name: 'Primary School Tuition',
+          description: 'Hand-matched, vetted primary school tutors in Singapore from P1 through to PSLE — parents never pay an agency fee.',
+          educationalLevel: 'Primary',
+        }}
+      />
       <div className="p-6 max-w-5xl mx-auto space-y-12">
         {/* Section 1: Headline */}
         <section className="text-center space-y-4">
@@ -479,6 +487,8 @@ export default function PrimarySchoolTuition() {
             </div>
           </div>
         </section>
+
+        <RelatedGuides slug="primary-school-tuition" />
 
         {/* Section 10: Final CTA */}
         <section className="text-center space-y-6 bg-gradient-to-r from-primary to-primary/90 text-white py-14 px-8 rounded-2xl shadow-xl">

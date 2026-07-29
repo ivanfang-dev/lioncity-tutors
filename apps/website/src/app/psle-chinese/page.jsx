@@ -10,16 +10,19 @@ import FormBenefits from "@/components/FormBenefits";
 import useTuitionRequestForm from "@/components/useTuitionRequestForm";
 import { CheckCircle } from "lucide-react";
 import TableOfContents from "@/components/TableOfContents";
+import GuideSchema from '@/components/seo/GuideSchema';
 import {
   GuideHeader, SectionHeading, GuideCard, TopicCard, GuideTimeline, KeyTakeaways, ICON_STROKE,
+  RelatedGuides, ExamTimetable,
 } from "@/components/guide";
 import {
   FileText, CalendarClock, PenLine, BookOpenText, Mic, Brain, Target,
-  TriangleAlert, CalendarDays, BookOpen, Users, ListChecks,
+  TriangleAlert, CalendarDays, BookOpen, Users, ListChecks, HelpCircle,
 } from "lucide-react";
 
 const tableOfContents = [
   { id: "structure", label: "Exam & paper structure" },
+  { id: "exam-dates", label: "2026 exam timetable" },
   { id: "timeline", label: "12-month study plan" },
   { id: "writing", label: "Writing" },
   { id: "comprehension", label: "Comprehension" },
@@ -30,6 +33,20 @@ const tableOfContents = [
   { id: "schedule", label: "Weekly study schedule" },
   { id: "resources", label: "Essential resources" },
   { id: "tuition", label: "When to consider tuition" },
+  { id: "faq", label: "PSLE Chinese FAQs" },
+];
+
+/**
+ * FAQ content for this page. Rendered as visible text AND emitted as
+ * FAQPage JSON-LD via GuideSchema — both read from this one array.
+ */
+const PSLE_CHINESE_FAQS = [
+  {
+    // exact phrasing targets "psle chinese marks breakdown" (pos 10.5, page one, 0 clicks)
+    question: 'How are PSLE Chinese marks broken down?',
+    answer:
+      'PSLE Chinese is marked out of 200 across three papers: Paper 1 Writing is 40 marks, Paper 2 Language Use & Comprehension is 90 marks, and Paper 3 combines Oral Communication (50 marks) with Listening Comprehension (20 marks) for 70 marks. Papers 1 and 2 together carry 65% of the total.',
+  },
 ];
 
 const timeline = [
@@ -102,6 +119,15 @@ export default function PSLEChinese() {
 
   return (
     <>
+      <GuideSchema
+        slug="psle-chinese"
+        course={{
+          name: 'PSLE Chinese Tuition',
+          description: 'One-to-one PSLE Chinese tuition in Singapore, covering composition, comprehension and oral technique across all three papers.',
+          educationalLevel: 'PSLE',
+        }}
+        faqs={PSLE_CHINESE_FAQS}
+      />
       <main className="mx-auto max-w-6xl px-4 sm:px-6 py-12 sm:py-16">
         <div className="mx-auto max-w-2xl lg:max-w-none lg:grid lg:grid-cols-[minmax(0,42rem)_15rem] lg:justify-center lg:gap-12">
           {/* Article column */}
@@ -121,7 +147,7 @@ export default function PSLEChinese() {
 
               <KeyTakeaways
                 items={[
-                  <>PSLE Chinese is examined over three papers &mdash; Writing, Language Use &amp; Comprehension, and Oral &amp; Listening &mdash; graded on the AL1&ndash;AL8 scale.</>,
+                  <>PSLE Chinese is examined over three papers for <span className="tabular-nums">200</span> marks &mdash; Writing, Language Use &amp; Comprehension, and Oral &amp; Listening &mdash; graded on the AL1&ndash;AL8 scale.</>,
                   <>Daily reading and speaking build vocabulary and fluency faster than rote memorisation.</>,
                   <>Composition marks come from planning and a bank of good phrases &mdash; used naturally, not stuffed in.</>,
                   <>If your child freezes in oral or struggles with comprehension, that&rsquo;s the usual signal targeted help pays off.</>,
@@ -146,34 +172,43 @@ export default function PSLEChinese() {
               <section id="structure" className="scroll-mt-24">
                 <SectionHeading icon={FileText}>Understanding the PSLE Chinese papers</SectionHeading>
                 <p className="text-pretty">
-                  PSLE Chinese is set over three papers assessing writing, language use, comprehension, listening and speaking. Each subject is now graded by Achievement Level (AL1 to AL8), where AL1 is the top band.
+                  PSLE Chinese is set over three papers worth 200 marks in total, assessing writing, language use, comprehension, listening and speaking. Each subject is now graded by Achievement Level (AL1 to AL8), where AL1 is the top band.
                 </p>
                 <GuideCard className="mt-4">
                   <h4 className="font-semibold text-gray-900 mb-4">PSLE Chinese papers breakdown</h4>
                   <div className="space-y-5">
                     <div>
-                      <h5 className="font-semibold text-gray-900">Paper 1: Writing</h5>
+                      <h5 className="font-semibold text-gray-900">Paper 1: Writing &mdash; 40 marks</h5>
                       <ul className="list-disc ml-5 mt-1.5 space-y-1 text-sm text-gray-700">
                         <li>Composition writing on a given topic</li>
                         <li>Tests vocabulary, sentence structure and organisation</li>
                       </ul>
                     </div>
                     <div>
-                      <h5 className="font-semibold text-gray-900">Paper 2: Language Use &amp; Comprehension</h5>
+                      <h5 className="font-semibold text-gray-900">Paper 2: Language Use &amp; Comprehension &mdash; 90 marks</h5>
                       <ul className="list-disc ml-5 mt-1.5 space-y-1 text-sm text-gray-700">
                         <li>Multiple-choice questions on language use</li>
                         <li>Comprehension passages with varied question types</li>
                       </ul>
                     </div>
                     <div>
-                      <h5 className="font-semibold text-gray-900">Paper 3: Oral &amp; Listening Comprehension</h5>
+                      <h5 className="font-semibold text-gray-900">Paper 3: Oral &amp; Listening Comprehension &mdash; 70 marks</h5>
                       <ul className="list-disc ml-5 mt-1.5 space-y-1 text-sm text-gray-700">
-                        <li>Reading aloud and a video-based conversation</li>
-                        <li>Listening comprehension based on audio clips</li>
+                        <li>Reading aloud and a video-based conversation (Oral, 50 marks)</li>
+                        <li>Listening comprehension based on audio clips (20 marks)</li>
                       </ul>
                     </div>
                   </div>
                 </GuideCard>
+              </section>
+
+              <section id="exam-dates" className="scroll-mt-24">
+                <SectionHeading icon={CalendarDays}>2026 PSLE Chinese exam timetable</SectionHeading>
+                <ExamTimetable
+                  examSlug="psle"
+                  subjectSlugs={['mother-tongue']}
+                  caption="Official 2026 SEAB dates for Mother Tongue Languages, which include Chinese."
+                />
               </section>
 
               <section id="timeline" className="scroll-mt-24">
@@ -385,6 +420,20 @@ export default function PSLEChinese() {
                   <p className="text-sm"><strong className="text-gray-900">Choose PSLE Chinese tutors who:</strong> are strong native or near-native speakers, know the current syllabus and AL scoring, teach composition and oral technique rather than rote drilling, and make learning Chinese engaging for a primary-aged child.</p>
                 </GuideCard>
               </section>
+
+              <section id="faq" className="scroll-mt-24">
+                <SectionHeading icon={HelpCircle}>PSLE Chinese FAQs</SectionHeading>
+                <div className="space-y-6">
+                  {PSLE_CHINESE_FAQS.map((faq) => (
+                    <div key={faq.question}>
+                      <h3 className="text-lg font-semibold text-gray-900">{faq.question}</h3>
+                      <p className="mt-2 text-gray-700">{faq.answer}</p>
+                    </div>
+                  ))}
+                </div>
+              </section>
+
+              <RelatedGuides slug="psle-chinese" />
             </article>
           </div>
 

@@ -10,8 +10,10 @@ import useTuitionRequestForm from "@/components/useTuitionRequestForm";
 import FormBenefits from "@/components/FormBenefits";
 import { CheckCircle } from "lucide-react";
 import TableOfContents from "@/components/TableOfContents";
+import GuideSchema from '@/components/seo/GuideSchema';
 import {
   GuideHeader, SectionHeading, GuideCard, TopicCard, GuideTimeline, KeyTakeaways, ICON_STROKE,
+  RelatedGuides, ExamTimetable,
 } from "@/components/guide";
 import {
   FileText, CalendarClock, Calculator, Shapes, BarChart3, Brain, Target,
@@ -20,6 +22,7 @@ import {
 
 const tableOfContents = [
   { id: "structure", label: "Exam & paper structure" },
+  { id: "exam-dates", label: "2026 exam timetable" },
   { id: "timeline", label: "12-month study plan" },
   { id: "numbers", label: "Numbers & algebra" },
   { id: "geometry", label: "Geometry & measurement" },
@@ -102,6 +105,14 @@ export default function PSLEMath() {
 
   return (
     <>
+      <GuideSchema
+        slug="psle-math"
+        course={{
+          name: 'PSLE Mathematics Tuition',
+          description: 'One-to-one PSLE Mathematics tuition in Singapore, covering heuristics, model drawing and Paper 1 & 2 technique.',
+          educationalLevel: 'PSLE',
+        }}
+      />
       <main className="mx-auto max-w-6xl px-4 sm:px-6 py-12 sm:py-16">
         <div className="mx-auto max-w-2xl lg:max-w-none lg:grid lg:grid-cols-[minmax(0,42rem)_15rem] lg:justify-center lg:gap-12">
           {/* Article column */}
@@ -121,7 +132,7 @@ export default function PSLEMath() {
 
               <KeyTakeaways
                 items={[
-                  <>PSLE Maths is two papers &mdash; Paper 1 (no calculator, <span className="tabular-nums">45</span> marks) and Paper 2 (calculator allowed, <span className="tabular-nums">55</span> marks) &mdash; graded on the AL1&ndash;AL8 scale.</>,
+                  <>PSLE Maths is two equally-weighted papers &mdash; Paper 1 (no calculator, <span className="tabular-nums">50</span> marks) and Paper 2 (calculator allowed, <span className="tabular-nums">50</span> marks) &mdash; graded on the AL1&ndash;AL8 scale.</>,
                   <>Most lost marks come from careless slips and misread questions, not gaps in knowledge &mdash; checking work is itself a scoring skill.</>,
                   <>Heuristics like model drawing and working backwards are what turn hard word problems into method marks.</>,
                   <>If your child understands topics alone but freezes on multi-step problems, that&rsquo;s the usual signal targeted help pays off.</>,
@@ -152,15 +163,15 @@ export default function PSLEMath() {
                   <h4 className="font-semibold text-gray-900 mb-4">PSLE Maths papers breakdown</h4>
                   <div className="space-y-5">
                     <div>
-                      <h5 className="font-semibold text-gray-900">Paper 1 &mdash; 45 marks, 1 hour (no calculator)</h5>
+                      <h5 className="font-semibold text-gray-900">Paper 1 &mdash; 50 marks, 1 hour 10 minutes (no calculator)</h5>
                       <ul className="list-disc ml-5 mt-1.5 space-y-1 text-sm text-gray-700">
-                        <li>Booklet A: 15 multiple-choice questions (20 marks)</li>
-                        <li>Booklet B: 15 short-answer questions (25 marks)</li>
+                        <li>Booklet A: multiple-choice questions</li>
+                        <li>Booklet B: short-answer questions</li>
                         <li>Tests core concepts and mental computation</li>
                       </ul>
                     </div>
                     <div>
-                      <h5 className="font-semibold text-gray-900">Paper 2 &mdash; 55 marks, 1 hour 30 minutes (calculator allowed)</h5>
+                      <h5 className="font-semibold text-gray-900">Paper 2 &mdash; 50 marks, 1 hour 20 minutes (calculator allowed)</h5>
                       <ul className="list-disc ml-5 mt-1.5 space-y-1 text-sm text-gray-700">
                         <li>Short-answer and longer structured questions</li>
                         <li>Rewards problem-solving, heuristics and clear working</li>
@@ -169,6 +180,15 @@ export default function PSLEMath() {
                     </div>
                   </div>
                 </GuideCard>
+              </section>
+
+              <section id="exam-dates" className="scroll-mt-24">
+                <SectionHeading icon={CalendarDays}>2026 PSLE Maths exam timetable</SectionHeading>
+                <ExamTimetable
+                  examSlug="psle"
+                  subjectSlugs={['math']}
+                  caption="Official 2026 SEAB dates for PSLE Mathematics."
+                />
               </section>
 
               <section id="timeline" className="scroll-mt-24">
@@ -367,6 +387,8 @@ export default function PSLEMath() {
                   <p className="text-sm"><strong className="text-gray-900">Choose PSLE Maths tutors who:</strong> know the current syllabus and AL scoring, teach heuristics and clear presentation rather than just answers, spot recurring error patterns, and keep a primary-aged child engaged and confident.</p>
                 </GuideCard>
               </section>
+
+              <RelatedGuides slug="psle-math" />
             </article>
           </div>
 

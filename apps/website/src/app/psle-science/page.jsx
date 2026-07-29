@@ -10,8 +10,10 @@ import useTuitionRequestForm from "@/components/useTuitionRequestForm";
 import FormBenefits from "@/components/FormBenefits";
 import { CheckCircle } from "lucide-react";
 import TableOfContents from "@/components/TableOfContents";
+import GuideSchema from '@/components/seo/GuideSchema';
 import {
   GuideHeader, SectionHeading, GuideCard, TopicCard, GuideTimeline, KeyTakeaways, ICON_STROKE,
+  RelatedGuides, ExamTimetable,
 } from "@/components/guide";
 import {
   FileText, CalendarClock, FlaskConical, Search, Brain, Target,
@@ -20,6 +22,7 @@ import {
 
 const tableOfContents = [
   { id: "structure", label: "Exam & paper structure" },
+  { id: "exam-dates", label: "2026 exam timetable" },
   { id: "timeline", label: "12-month study plan" },
   { id: "themes", label: "The five syllabus themes" },
   { id: "process-skills", label: "Process skills & answering" },
@@ -101,6 +104,14 @@ export default function PSLEScience() {
 
   return (
     <>
+      <GuideSchema
+        slug="psle-science"
+        course={{
+          name: 'PSLE Science Tuition',
+          description: 'One-to-one PSLE Science tuition in Singapore, covering the five syllabus themes and open-ended answering technique.',
+          educationalLevel: 'PSLE',
+        }}
+      />
       <main className="mx-auto max-w-6xl px-4 sm:px-6 py-12 sm:py-16">
         <div className="mx-auto max-w-2xl lg:max-w-none lg:grid lg:grid-cols-[minmax(0,42rem)_15rem] lg:justify-center lg:gap-12">
           {/* Article column */}
@@ -120,7 +131,7 @@ export default function PSLEScience() {
 
               <KeyTakeaways
                 items={[
-                  <>PSLE Science is one paper of two booklets &mdash; Booklet A (<span className="tabular-nums">28</span> MCQs, 56 marks) and Booklet B (open-ended, 44 marks) &mdash; graded on the AL1&ndash;AL8 scale.</>,
+                  <>PSLE Science is one paper of two booklets &mdash; Booklet A (<span className="tabular-nums">30</span> MCQs, 56 marks) and Booklet B (open-ended, 44 marks) &mdash; graded on the AL1&ndash;AL8 scale.</>,
                   <>The syllabus is built on five themes: diversity, cycles, systems, energy and interactions.</>,
                   <>Open-ended marks are won with structure and keywords &mdash; a clear claim, the evidence, and the reasoning that links them.</>,
                   <>If your child knows the facts but keeps losing marks on open-ended answers, that&rsquo;s the usual signal targeted help pays off.</>,
@@ -153,7 +164,7 @@ export default function PSLEScience() {
                     <div>
                       <h5 className="font-semibold text-gray-900">Booklet A &mdash; 56 marks</h5>
                       <ul className="list-disc ml-5 mt-1.5 space-y-1 text-sm text-gray-700">
-                        <li>28 multiple-choice questions</li>
+                        <li>30 multiple-choice questions</li>
                         <li>Tests knowledge and understanding of concepts</li>
                       </ul>
                     </div>
@@ -167,6 +178,15 @@ export default function PSLEScience() {
                     </div>
                   </div>
                 </GuideCard>
+              </section>
+
+              <section id="exam-dates" className="scroll-mt-24">
+                <SectionHeading icon={CalendarDays}>2026 PSLE Science exam timetable</SectionHeading>
+                <ExamTimetable
+                  examSlug="psle"
+                  subjectSlugs={['science']}
+                  caption="Official 2026 SEAB date for PSLE Science."
+                />
               </section>
 
               <section id="timeline" className="scroll-mt-24">
@@ -197,7 +217,7 @@ export default function PSLEScience() {
                   />
                   <TopicCard
                     title="Systems"
-                    chips={["Plant System", "Human Systems", "Cell", "Electrical System"]}
+                    chips={["Plant System", "Human Systems", "Electrical System"]}
                     points={[
                       "Relate each part of the plant and human systems to its function",
                       "Build and reason about simple and parallel electrical circuits",
@@ -389,6 +409,8 @@ export default function PSLEScience() {
                   <p className="text-sm"><strong className="text-gray-900">Choose PSLE Science tutors who:</strong> know the current five-theme syllabus, teach Claim–Evidence–Reasoning and precise keywords, mark open-ended answers rigorously, and keep a curious primary-aged child engaged.</p>
                 </GuideCard>
               </section>
+
+              <RelatedGuides slug="psle-science" />
             </article>
           </div>
 
