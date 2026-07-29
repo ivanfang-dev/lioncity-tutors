@@ -1,12 +1,12 @@
 import { MATCH_TIME } from '@/data/promises';
 export const metadata = {
-  title: "A Level H2 Biology Guide 2026: Complete Study Strategy for Singapore Students | LionCity Tutors",
-  description: "Ultimate A Level H2 Biology preparation guide for Singapore students. Expert strategies, practical techniques, and proven tips to score A in H2 Biology 2026.",
+  title: "A-Level H2 Biology Guide 2026 (9477) | LionCity Tutors",
+  description: "H2 Biology (9477) guide for Singapore JC students — the revised 2026 syllabus, cell biology through ecology, and the technique that scores an A grade.",
   keywords: [
-    "A Level H2 Biology 2026", "H2 Biology Singapore", "GCE A Level Biology guide", "A Level Biology preparation", "H2 Biology study tips", "A Level Biology tuition Singapore", "Biology revision techniques", "H2 Biology syllabus"
+    "A Level H2 Biology 2026", "H2 Biology Singapore", "GCE A Level Biology guide", "A Level Biology preparation", "H2 Biology study tips", "A Level Biology tuition Singapore", "Biology revision techniques", "H2 Biology syllabus", "9477 syllabus"
   ],
   openGraph: {
-    title: "A Level H2 Biology Guide 2026: Complete Study Strategy for Singapore Students",
+    title: "A-Level H2 Biology Guide 2026 (9477) | LionCity Tutors",
     description: "Comprehensive A Level H2 Biology guide with proven strategies to help Singapore students achieve A grades in GCE A Level Biology.",
     type: "article",
     url: "https://www.lioncitytutors.com/a-level-biology",
@@ -17,17 +17,24 @@ export const metadata = {
 };
 
 import TableOfContents from '@/components/TableOfContents';
+import GuideSchema from '@/components/seo/GuideSchema';
 import {
   GuideHeader, SectionHeading, GuideCard, TopicCard, GuideTimeline, KeyTakeaways, GuideCTA, ICON_STROKE,
+  RelatedGuides, ExamTimetable,
 } from '@/components/guide';
+import { getHubFor } from '@/lib/seo/links.mjs';
 import {
   FileText, CalendarClock, Microscope, Dna, HeartPulse, Leaf, Brain, Target,
   TriangleAlert, CalendarDays, BookOpen, FlaskConical, GraduationCap, Users,
-  Hourglass, HeartHandshake, Compass, Flag, ListChecks,
+  Hourglass, HeartHandshake, Compass, Flag, ListChecks, RefreshCw,
 } from 'lucide-react';
+
+const aLevelHub = getHubFor('a-level-biology');
 
 const tableOfContents = [
   { id: 'structure', label: 'Exam & paper structure' },
+  { id: 'exam-dates', label: '2026 exam timetable' },
+  { id: 'revised-syllabus', label: 'What changed for 2026 (9477)' },
   { id: 'timeline', label: '24-month study timeline' },
   { id: 'cell-biology', label: 'Cell biology' },
   { id: 'genetics', label: 'Genetics & molecular biology' },
@@ -101,6 +108,14 @@ Preferred days & timing: `;
 
   return (
     <>
+    <GuideSchema
+      slug="a-level-biology"
+      course={{
+        name: 'A-Level H2 Biology Tuition',
+        description: 'One-to-one H2 Biology tuition in Singapore, covering the revised 9477 syllabus and Paper 4 practical.',
+        educationalLevel: 'GCE A-Level',
+      }}
+    />
     <main className="mx-auto max-w-6xl px-4 sm:px-6 py-12 sm:py-16">
       <div className="mx-auto max-w-2xl lg:max-w-none lg:grid lg:grid-cols-[minmax(0,42rem)_15rem] lg:justify-center lg:gap-12">
         {/* Article column */}
@@ -179,6 +194,30 @@ Preferred days & timing: `;
                     </ul>
                   </div>
                 </div>
+              </GuideCard>
+            </section>
+
+            <section id="exam-dates" className="scroll-mt-24">
+              <SectionHeading icon={CalendarDays}>2026 H2 Biology Exam Timetable</SectionHeading>
+              <ExamTimetable
+                examSlug="a-level"
+                subjectSlugs={['h2-biology']}
+                caption="Official 2026 SEAB dates for H2 Biology (9477)."
+              />
+            </section>
+
+            <section id="revised-syllabus" className="scroll-mt-24">
+              <SectionHeading icon={RefreshCw}>What changed for the 2026 syllabus (9477)?</SectionHeading>
+              <GuideCard>
+                <p className="text-sm text-gray-700">
+                  H2 Biology moved to the revised 9477 syllabus for the 2026 examination — the final year the legacy 9744 syllabus is offered, for private and repeat candidates only. See the{' '}
+                  {aLevelHub ? (
+                    <a href={`${aLevelHub.url}#revised-syllabus`} className="font-semibold text-primary hover:underline">
+                      {aLevelHub.anchor}
+                    </a>
+                  ) : 'A-Level preparation guide'}
+                  {' '}for the full mark-scheme changes and what legacy-syllabus retakers need to know.
+                </p>
               </GuideCard>
             </section>
 
@@ -604,6 +643,8 @@ Preferred days & timing: `;
                 </p>
               </div>
             </section>
+
+            <RelatedGuides slug="a-level-biology" />
 
             {/* Conversion block */}
             <GuideCTA

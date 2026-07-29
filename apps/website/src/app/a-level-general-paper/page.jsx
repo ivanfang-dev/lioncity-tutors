@@ -1,12 +1,12 @@
 import { MATCH_TIME } from '@/data/promises';
 export const metadata = {
-  title: 'A Level General Paper Guide 2026: Complete GP Strategy for Singapore JC Students | LionCity Tutors',
-  description: 'Ultimate A Level General Paper (GP) preparation guide for Singapore JC students. Expert strategies for essay and comprehension, critical thinking, and proven techniques to excel in Cambridge A Level GP 2026.',
+  title: 'A-Level General Paper Guide 2026 | LionCity Tutors',
+  description: 'A-Level General Paper guide for Singapore JC students — Paper 1 essay and Paper 2 comprehension technique, the 2026 exam dates, and common GP mistakes to avoid.',
   keywords: [
-    'A Level General Paper 2026', 'A Level GP Singapore', 'Cambridge A Level GP guide', 'General Paper essay strategies', 'GP comprehension techniques', 'JC GP tuition Singapore', 'GP current affairs', 'Singapore A Level General Paper'
+    'A Level General Paper 2026', 'A Level GP Singapore', 'Cambridge A Level GP guide', 'General Paper essay strategies', 'GP comprehension techniques', 'JC GP tuition Singapore', 'GP current affairs', 'Singapore A Level General Paper', 'a level gp paper 1'
   ],
   openGraph: {
-    title: 'A Level General Paper Guide 2026: Complete GP Strategy for Singapore JC Students | LionCity Tutors',
+    title: 'A-Level General Paper Guide 2026 | LionCity Tutors',
     description: 'Comprehensive A Level General Paper guide with proven strategies to help Singapore JC students achieve A grades in GP essays and comprehension.',
     url: 'https://www.lioncitytutors.com/a-level-general-paper',
     type: 'article',
@@ -17,17 +17,21 @@ export const metadata = {
 };
 
 import TableOfContents from '@/components/TableOfContents';
+import GuideSchema from '@/components/seo/GuideSchema';
 import {
   GuideHeader, SectionHeading, GuideCard, TopicCard, GuideTimeline, KeyTakeaways, GuideCTA, ICON_STROKE,
+  RelatedGuides, ExamTimetable,
 } from '@/components/guide';
 import {
   FileText, CalendarClock, PenLine, BookOpenText, Brain, Target,
   TriangleAlert, CalendarDays, BookOpen, Lightbulb, GraduationCap, Users,
-  Hourglass, ListChecks,
+  Hourglass, ListChecks, HelpCircle,
 } from 'lucide-react';
+import { A_LEVEL_GENERAL_PAPER_FAQS } from './faqs.mjs';
 
 const tableOfContents = [
   { id: 'structure', label: 'Exam & paper structure' },
+  { id: 'exam-dates', label: '2026 exam timetable' },
   { id: 'timeline', label: '24-month study timeline' },
   { id: 'essay', label: 'Essay (Paper 1)' },
   { id: 'comprehension', label: 'Comprehension (Paper 2)' },
@@ -40,6 +44,7 @@ const tableOfContents = [
   { id: 'pathways', label: 'University pathways' },
   { id: 'tuition', label: 'When to consider tuition' },
   { id: 'final-months', label: 'Final month' },
+  { id: 'faq', label: 'Frequently asked questions' },
 ];
 
 const timeline = [
@@ -96,6 +101,15 @@ Preferred days & timing: `;
 
   return (
     <>
+    <GuideSchema
+      slug="a-level-general-paper"
+      course={{
+        name: 'A-Level General Paper Tuition',
+        description: 'One-to-one General Paper tuition in Singapore, covering Paper 1 essay and Paper 2 comprehension technique.',
+        educationalLevel: 'GCE A-Level',
+      }}
+      faqs={A_LEVEL_GENERAL_PAPER_FAQS}
+    />
     <main className="mx-auto max-w-6xl px-4 sm:px-6 py-12 sm:py-16">
       <div className="mx-auto max-w-2xl lg:max-w-none lg:grid lg:grid-cols-[minmax(0,42rem)_15rem] lg:justify-center lg:gap-12">
         {/* Article column */}
@@ -165,6 +179,15 @@ Preferred days & timing: `;
                   </div>
                 </div>
               </GuideCard>
+            </section>
+
+            <section id="exam-dates" className="scroll-mt-24">
+              <SectionHeading icon={CalendarDays}>2026 General Paper Exam Timetable</SectionHeading>
+              <ExamTimetable
+                examSlug="a-level"
+                subjectSlugs={['general-paper']}
+                caption="Official 2026 SEAB dates for General Paper (8881)."
+              />
             </section>
 
             <section id="timeline" className="scroll-mt-24">
@@ -428,6 +451,20 @@ Preferred days & timing: `;
                 </div>
               </GuideCard>
             </section>
+
+            <section id="faq" className="scroll-mt-24">
+              <SectionHeading icon={HelpCircle}>Frequently Asked Questions</SectionHeading>
+              <div className="space-y-6">
+                {A_LEVEL_GENERAL_PAPER_FAQS.map((faq) => (
+                  <div key={faq.question}>
+                    <h3 className="text-lg font-semibold text-gray-900">{faq.question}</h3>
+                    <p className="mt-2 text-gray-700">{faq.answer}</p>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            <RelatedGuides slug="a-level-general-paper" />
 
             {/* Conversion block */}
             <GuideCTA

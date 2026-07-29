@@ -11,6 +11,8 @@ import FormStepper from "@/components/FormStepper";
 import useTuitionRequestForm from "@/components/useTuitionRequestForm";
 import FormBenefits from "@/components/FormBenefits";
 import { CheckCircle } from "lucide-react"; // Imported for consistency in the success message
+import GuideSchema from '@/components/seo/GuideSchema';
+import { RelatedGuides } from '@/components/guide';
 
 export default function JCTuition() {
   const formRef = useRef(null);
@@ -45,6 +47,14 @@ export default function JCTuition() {
 
   return (
     <>
+      <GuideSchema
+        slug="jc-tuition"
+        course={{
+          name: 'JC Tuition',
+          description: 'Hand-matched, vetted JC tutors in Singapore across all H1/H2 subjects and streams — parents never pay an agency fee.',
+          educationalLevel: 'GCE A-Level',
+        }}
+      />
       <div className="p-6 max-w-5xl mx-auto space-y-12">
         {/* Section 1: Headline */}
         <section className="text-center space-y-4">
@@ -988,60 +998,7 @@ export default function JCTuition() {
 
         {/* Section 5: A-Level Study Guides */}
         <section className="bg-gradient-to-br from-blue-50 to-indigo-50 p-12 rounded-2xl">
-          <h2 className="text-2xl md:text-3xl font-semibold mb-8 text-primary text-center">Comprehensive A-Level Study Guides</h2>
-          <p className="text-gray-600 text-center max-w-3xl mx-auto mb-8">
-            Access our detailed subject-specific guides to help you excel in your A-Level journey. Each guide is crafted by experienced educators to provide comprehensive coverage of the syllabus.
-          </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <Link href="/a-level-physics" className="block">
-              <Card className="h-full hover:shadow-xl transition-all duration-300 hover:-translate-y-2 hover:scale-[1.02] cursor-pointer">
-                <CardContent className="p-6">
-                  <h3 className="font-bold text-xl text-primary mb-2">A-Level Physics Guide</h3>
-                  <p className="text-gray-600">Master key concepts, formulas, and practical skills for A-Level Physics success.</p>
-                </CardContent>
-              </Card>
-            </Link>
-            <Link href="/a-level-chemistry" className="block">
-              <Card className="h-full hover:shadow-xl transition-all duration-300 hover:-translate-y-2 hover:scale-[1.02] cursor-pointer">
-                <CardContent className="p-6">
-                  <h3 className="font-bold text-xl text-primary mb-2">A-Level Chemistry Guide</h3>
-                  <p className="text-gray-600">Comprehensive coverage of H1/H2 chemistry concepts.</p>
-                </CardContent>
-              </Card>
-            </Link>
-            <Link href="/a-level-biology" className="block">
-              <Card className="h-full hover:shadow-xl transition-all duration-300 hover:-translate-y-2 hover:scale-[1.02] cursor-pointer">
-                <CardContent className="p-6">
-                  <h3 className="font-bold text-xl text-primary mb-2">A-Level Biology Guide</h3>
-                  <p className="text-gray-600">In-depth understanding of biological systems and processes.</p>
-                </CardContent>
-              </Card>
-            </Link>
-            <Link href="/a-level-math" className="block">
-              <Card className="h-full hover:shadow-xl transition-all duration-300 hover:-translate-y-2 hover:scale-[1.02] cursor-pointer">
-                <CardContent className="p-6">
-                  <h3 className="font-bold text-xl text-primary mb-2">A-Level Math Guide</h3>
-                  <p className="text-gray-600">Master calculus, statistics, and mathematical concepts.</p>
-                </CardContent>
-              </Card>
-            </Link>
-            <Link href="/a-level-general-paper" className="block">
-              <Card className="h-full hover:shadow-xl transition-all duration-300 hover:-translate-y-2 hover:scale-[1.02] cursor-pointer">
-                <CardContent className="p-6">
-                  <h3 className="font-bold text-xl text-primary mb-2">A-Level General Paper Guide</h3>
-                  <p className="text-gray-600">Learn how to tackle essays and comprehension with ease.</p>
-                </CardContent>
-              </Card>
-            </Link>
-            <Link href="/blog/a-level-preparation-guide" className="block">
-              <Card className="h-full hover:shadow-xl transition-all duration-300 hover:-translate-y-2 hover:scale-[1.02] cursor-pointer">
-                <CardContent className="p-6">
-                  <h3 className="font-bold text-xl text-primary mb-2">A-Level Preparation Guide</h3>
-                  <p className="text-gray-600">Essential tips and strategies for A-Level success.</p>
-                </CardContent>
-              </Card>
-            </Link>
-          </div>
+          <RelatedGuides slug="jc-tuition" heading="Comprehensive A-Level Study Guides" />
         </section>
 
         {/* Section 5: Success Stories */}
