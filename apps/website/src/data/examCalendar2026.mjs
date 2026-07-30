@@ -175,6 +175,58 @@ export const EXAM_CALENDAR_2026 = {
     examWindow: { start: '2026-07-13', end: '2026-10-13' },
     resultsWindow: { start: '2026-12-17', end: '2026-12-21' },
     subjects: [
+      // N(A) and N(T) are separate tracks with distinct syllabus codes and
+      // distinct papers, so they are modelled as separate subjects rather than
+      // merged. Never present an N(A) date to an N(T) candidate.
+      {
+        slug: 'english-na',
+        name: 'English Language N(A) — Syllabus A',
+        code: '1190',
+        papers: [
+          { label: 'Oral', date: '2026-07-13', note: 'Also held 17 July' },
+          { label: 'Paper 1 (Writing)', date: '2026-09-14', time: '0800–0950h' },
+          { label: 'Paper 2 (Comprehension)', date: '2026-09-14', time: '1035–1225h' },
+          { label: 'Paper 3 (Listening)', date: '2026-09-15', time: '1400–1445h' },
+        ],
+      },
+      {
+        slug: 'english-nt',
+        name: 'English Language N(T) — Syllabus T',
+        code: '1195',
+        papers: [
+          { label: 'Oral', date: '2026-07-14', note: 'Also held 17 July' },
+          { label: 'Paper 1 (Writing)', date: '2026-09-14', time: '0800–0920h' },
+          { label: 'Paper 2 (Comprehension)', date: '2026-09-14', time: '1035–1155h' },
+          { label: 'Paper 3 (Listening)', date: '2026-09-16', time: '1400–1445h' },
+        ],
+      },
+      {
+        slug: 'math-na',
+        name: 'Mathematics N(A) — Syllabus A',
+        code: '4045',
+        papers: [
+          { label: 'Paper 1', date: '2026-10-05', time: '0800–1000h' },
+          { label: 'Paper 2', date: '2026-10-07', time: '0800–1000h' },
+        ],
+      },
+      {
+        slug: 'math-nt',
+        name: 'Mathematics N(T) — Syllabus T',
+        code: '4046',
+        papers: [
+          { label: 'Paper 1', date: '2026-10-06', time: '1400–1530h' },
+          { label: 'Paper 2', date: '2026-10-09', time: '0800–0930h' },
+        ],
+      },
+      {
+        slug: 'chinese',
+        name: 'Chinese Language',
+        code: '1196',
+        papers: [
+          { label: 'Oral', date: '2026-07-14', note: 'Also held 15 and 16 July' },
+          { label: 'Paper 1', date: '2026-09-17', time: '0800–1000h' },
+        ],
+      },
       {
         slug: 'combined-science-phy-chem',
         name: 'Combined Science (Physics/Chemistry)',

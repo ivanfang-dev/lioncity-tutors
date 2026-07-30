@@ -5,6 +5,8 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { RelatedGuides, ExamTimetable } from '@/components/guide';
+import { N_LEVEL_FAQS } from './faqs.mjs';
 import { 
     ArrowRight, 
     BookOpenCheck, 
@@ -137,23 +139,9 @@ const pathways = [
     }
 ]
 
-const relatedGuides = [
-    {
-        title: "Combined Science Guide",
-        description: "An overview of the Combined Science syllabus, with tips on how to tackle both the Physics and Chemistry components.",
-        link: "/combined-science-overview",
-    },
-    {
-        title: "Combined Chemistry & Physics Deep Dive",
-        description: "A detailed guide focusing specifically on the Chemistry and Physics sections of the Combined Science paper.",
-        link: "/combined-chemistry-physics",
-    },
-    {
-        title: "N-Level Tuition Services",
-        description: "Looking for personalized help? Discover how our specialist N-Level tutors can help you achieve your academic goals.",
-        link: "/secondary-school-tuition/n-level-tuition",
-    }
-]
+// Related guides now come from the SEO cluster registry (src/lib/seo/clusters.mjs)
+// via <RelatedGuides>, so anchor text stays consistent with how every other page
+// links to the same targets. The registry lists five spokes here, not three.
 
 
 const NLevelPrepClient = () => {
@@ -199,6 +187,60 @@ const NLevelPrepClient = () => {
             </motion.div>
           </div>
         </motion.section>
+
+        {/* Definition Section — answers the "n level meaning" queries this page
+            already ranks page-one for. Kept immediately after the hero, and
+            deliberately not animated-in, so the answer is the first thing read. */}
+        <section id="what-is-n-level" className="py-16 px-4 border-b border-gray-100">
+          <div className="max-w-3xl mx-auto">
+            <h2 className="text-3xl md:text-4xl font-bold text-blue-900 mb-4">
+              What does GCE N-Level mean?
+            </h2>
+            <p className="text-lg text-gray-800 leading-relaxed mb-6">
+              GCE N-Level is the Singapore-Cambridge General Certificate of Education
+              Normal Level, sat at the end of Secondary 4 by students in the Normal
+              course. It runs in two tracks: Normal (Academic), which leads to a fifth
+              year and the O-Level, and Normal (Technical), which leads to ITE.
+            </p>
+            <div className="grid sm:grid-cols-2 gap-6">
+              <div className="rounded-xl border border-gray-200 p-5">
+                <h3 className="font-semibold text-blue-900 mb-2">Normal (Academic) — N(A)</h3>
+                <p className="text-gray-700 text-sm leading-relaxed">
+                  Sits Syllabus A papers. Students who do well enough progress to
+                  Secondary 5 and the O-Level, or take the Polytechnic Foundation
+                  Programme instead.
+                </p>
+              </div>
+              <div className="rounded-xl border border-gray-200 p-5">
+                <h3 className="font-semibold text-blue-900 mb-2">Normal (Technical) — N(T)</h3>
+                <p className="text-gray-700 text-sm leading-relaxed">
+                  Sits Syllabus T papers, which are more practically oriented. Students
+                  typically progress to a Nitec course at ITE, and can move on to a
+                  polytechnic diploma from there.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* 2026 Timetable Section — all dates read from examCalendar2026.mjs */}
+        <section id="timetable" className="py-16 px-4 bg-gray-50">
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-3xl md:text-4xl font-bold text-blue-900 mb-4">
+              When are the 2026 N-Level exams?
+            </h2>
+            <p className="text-lg text-gray-800 leading-relaxed mb-8">
+              The 2026 GCE N-Level examinations run from 13 July to 13 October 2026.
+              Oral examinations come first in July, written papers begin on 14 September,
+              and the last papers are sat on 13 October. Results are released between
+              17 and 21 December 2026.
+            </p>
+            <ExamTimetable
+              examSlug="n-level"
+              caption="Official 2026 GCE N-Level timetable, as published by SEAB. N(A) and N(T) sit different papers — check the syllabus code against your own track."
+            />
+          </div>
+        </section>
 
         {/* Introduction Section */}
         <motion.section
@@ -492,42 +534,34 @@ const NLevelPrepClient = () => {
             </div>
         </section>
                     
-        {/* NEW: Related Guides Section */}
-        <section className="py-20 px-4 bg-white">
-            <div className="max-w-6xl mx-auto">
-                <div className="text-center mb-16">
-                    <h2 className="text-4xl font-bold text-blue-900 mb-4">Explore Our Other Guides</h2>
-                    <p className="text-lg text-gray-600 max-w-3xl mx-auto">Continue your learning journey with our other specialized resources designed for Secondary School students.</p>
+        {/* FAQ Section — rendered as plain text, never behind a disclosure widget,
+            so the answers are present in the server-rendered HTML. Same array
+            feeds the FAQPage JSON-LD in page.jsx. */}
+        <section id="faq" className="py-16 px-4 bg-gray-50">
+          <div className="max-w-3xl mx-auto">
+            <h2 className="text-3xl md:text-4xl font-bold text-blue-900 mb-8">
+              N-Level questions, answered
+            </h2>
+            <div className="space-y-8">
+              {N_LEVEL_FAQS.map((faq) => (
+                <div key={faq.question}>
+                  <h3 className="text-xl font-semibold text-blue-900 mb-2">{faq.question}</h3>
+                  <p className="text-gray-800 leading-relaxed">{faq.answer}</p>
                 </div>
-                <div className="grid md:grid-cols-3 gap-8">
-                    {relatedGuides.map((guide, index) => (
-                        <motion.div
-                            key={index}
-                            initial={{ opacity: 0, y: 50 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true, amount: 0.5 }}
-                            transition={{ duration: 0.5, delay: index * 0.1 }}
-                        >
-                            <Card className="h-full shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-lg overflow-hidden flex flex-col group">
-                                <CardHeader>
-                                    <div className="flex items-center space-x-4 text-blue-600">
-                                        <FileText className="h-8 w-8"/>
-                                        <CardTitle className="text-xl font-bold">{guide.title}</CardTitle>
-                                    </div>
-                                </CardHeader>
-                                <CardContent className="p-6 flex-grow flex flex-col">
-                                    <p className="text-gray-700 mb-4 flex-grow">{guide.description}</p>
-                                    <Link href={guide.link} passHref>
-                                        <Button variant="outline" className="w-full mt-auto group-hover:bg-blue-600 group-hover:text-white transition-colors duration-300">
-                                            Read More <ArrowRight className="ml-2 h-4 w-4" />
-                                        </Button>
-                                    </Link>
-                                </CardContent>
-                            </Card>
-                        </motion.div>
-                    ))}
-                </div>
+              ))}
             </div>
+          </div>
+        </section>
+
+        {/* Cluster links, from the SEO registry */}
+        <section className="py-16 px-4 bg-white">
+          <div className="max-w-3xl mx-auto">
+            <RelatedGuides
+              slug="n-level-prep"
+              heading="Explore our other guides"
+              showHub={false}
+            />
+          </div>
         </section>
 
         {/* Call to Action Section */}

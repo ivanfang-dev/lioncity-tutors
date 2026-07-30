@@ -10,6 +10,8 @@ import FormStepper from "@/components/FormStepper";
 import useTuitionRequestForm from "@/components/useTuitionRequestForm";
 import FormBenefits from "@/components/FormBenefits";
 import { CheckCircle } from "lucide-react";
+import GuideSchema from "@/components/seo/GuideSchema";
+import { RelatedGuides } from "@/components/guide";
 
 // Validation logic for form steps
 
@@ -45,6 +47,15 @@ export default function NLevelTuition() {
 
   return (
     <>
+      <GuideSchema
+        slug="n-level-tuition"
+        course={{
+          name: 'N-Level Tuition Singapore',
+          description:
+            'One-to-one N-Level tuition in Singapore for Normal (Academic) and Normal (Technical) students, covering English, Mathematics and Combined Science.',
+          educationalLevel: 'GCE N-Level',
+        }}
+      />
       <div className="p-6 max-w-5xl mx-auto space-y-12">
         {/* Section 1: Headline */}
         <section className="text-center space-y-4">
@@ -280,42 +291,10 @@ export default function NLevelTuition() {
           </div>
         </section>
 
-        {/* Section 4: N-Level Study Tips */}
-        <section className="bg-gradient-to-br from-blue-50 to-indigo-50 p-12 rounded-2xl">
-          <h2 className="text-2xl md:text-3xl font-semibold mb-8 text-primary text-center">N-Level Study Tips & Resources</h2>
-          <p className="text-gray-600 text-center max-w-3xl mx-auto mb-8">
-            Access our curated tips and resources to help you excel in your N-Level journey. Each resource is crafted by experienced educators to provide comprehensive coverage of the syllabus.
-          </p>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <Link href="/blog/n-level-preparation-guide" className="block group">
-              <Card className="h-full hover:shadow-xl transition-all duration-300 hover:-translate-y-2 hover:scale-[1.02] cursor-pointer border-2 border-transparent group-hover:border-indigo-500">
-                <CardContent className="p-6 relative">
-                  <h3 className="font-bold text-xl text-primary mb-2 group-hover:text-primary">N-Level Preparation Guide</h3>
-                  <p className="text-gray-600">Essential tips and strategies for N-Level success.</p>
-                </CardContent>
-              </Card>
-            </Link>
-
-            <Link href="/combined-science-overview" className="block group">
-              <Card className="h-full hover:shadow-xl transition-all duration-300 hover:-translate-y-2 hover:scale-[1.02] cursor-pointer border-2 border-transparent group-hover:border-indigo-500">
-                <CardContent className="p-6 relative">
-                  <h3 className="font-bold text-xl text-primary mb-2 group-hover:text-primary">Combined Science Overview</h3>
-                  <p className="text-gray-600">Complete Guide to All Three Combinations of Combined Science</p>
-                </CardContent>
-              </Card>
-            </Link>
-
-            <Link href="/combined-chemistry-physics" className="block group">
-              <Card className="h-full hover:shadow-xl transition-all duration-300 hover:-translate-y-2 hover:scale-[1.02] cursor-pointer border-2 border-transparent group-hover:border-indigo-500">
-                <CardContent className="p-6 relative">
-                  <h3 className="font-bold text-xl text-primary mb-2 group-hover:text-primary">Combined Chem/Physics Guide</h3>
-                  <p className="text-gray-600">Excel in N Level Combined Chemistry/Physics.</p>
-                </CardContent>
-              </Card>
-            </Link>
-          </div>
-        </section>
+        {/* Section 4 (guides and resources) is now rendered by <RelatedGuides>
+            further down, which sources all five cluster spokes and their anchor
+            text from src/lib/seo/clusters.mjs. The previous hardcoded three-card
+            grid covered only three of them and duplicated those links. */}
 
         {/* Section 5: Teaching Methods */}
         <section>
@@ -426,6 +405,9 @@ export default function NLevelTuition() {
             </div>
           </div>
         </section>
+
+        {/* Cluster links, from the SEO registry */}
+        <RelatedGuides slug="n-level-tuition" heading="N-Level guides and resources" />
 
         {/* Section 10: Final CTA - UPDATED */}
         <section className="text-center space-y-6 bg-accent text-white p-12 rounded-2xl shadow-xl">

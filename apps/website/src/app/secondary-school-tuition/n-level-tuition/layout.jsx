@@ -1,26 +1,28 @@
 export const metadata = {
-    title: 'N Level Tuition Singapore | #1 N Level Home Tutors Singapore | Lion City Tutors',
-    description: 'Expert N Level tuition in Singapore for Sec 1-5 students. Comprehensive N-Level preparation with experienced tutors. Science and Arts stream support.',
+    title: 'N-Level Tuition Singapore | N(A) and N(T) Home Tutors',
+    description: 'N-Level tuition in Singapore for N(A) and N(T) students — hand-matched tutors for English, Maths and Combined Science, plus the official 2026 exam dates.',
     keywords: [
-      'secondary school tuition Singapore',
-      'O-Level preparation',
-      'secondary school tutor',
-      'Sec 1-4 tuition',
-      'O-Level math tuition',
-      'O-Level science tuition',
-      'O-Level English tuition',
-      'secondary school homework help'
+      'N Level tuition Singapore',
+      'N Level home tutor',
+      'N(A) tuition',
+      'N(T) tuition',
+      'Normal Academic tuition',
+      'Normal Technical tuition',
+      'N Level Maths tuition',
+      'N Level English tuition',
+      'Combined Science tuition',
+      'Sec 4 N Level tuition'
     ],
     openGraph: {
-      title: 'N Level Tuition Singapore | #1 N Level Home Tutors Singapore | Lion City Tutors',
-      description: 'Expert N Level tuition in Singapore for Sec 1-5 students. Comprehensive N-Level preparation with experienced tutors.',
+      title: 'N-Level Tuition Singapore | N(A) and N(T) Home Tutors',
+      description: 'N-Level tuition in Singapore for N(A) and N(T) students, with hand-matched tutors for English, Maths and Combined Science.',
       url: 'https://www.lioncitytutors.com/secondary-school-tuition/n-level-tuition',
       type: 'website',
     },
     twitter: {
       card: 'summary_large_image',
-      title: 'N Level Tuition Singapore | #1 N Level Home Tutors Singapore | Lion City Tutors',
-      description: 'Expert N Level tuition in Singapore for Sec 1-5 students. Comprehensive N-Level preparation with experienced tutors.',
+      title: 'N-Level Tuition Singapore | N(A) and N(T) Home Tutors',
+      description: 'N-Level tuition in Singapore for N(A) and N(T) students, with hand-matched tutors for English, Maths and Combined Science.',
     },
     alternates: {
       canonical: 'https://www.lioncitytutors.com/secondary-school-tuition/n-level-tuition',
