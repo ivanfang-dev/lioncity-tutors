@@ -5,17 +5,17 @@ import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { 
-    ArrowRight, 
-    BookOpenCheck, 
-    Calendar, 
-    ShieldCheck, 
-    Zap, 
-    Flag, 
-    AlertTriangle, 
-    XCircle, 
-    Heart, 
-    Brain, 
+import {
+    ArrowRight,
+    BookOpenCheck,
+    Calendar,
+    ShieldCheck,
+    Zap,
+    Flag,
+    AlertTriangle,
+    XCircle,
+    Heart,
+    Brain,
     Moon,
     GraduationCap,
     Briefcase,
@@ -23,9 +23,13 @@ import {
     Check,
     ClipboardCheck,
     Bell,
-    FileText,
-    Target
+    Target,
+    CalendarClock,
+    RefreshCw,
+    HelpCircle,
 } from 'lucide-react';
+import { RelatedGuides, ExamTimetable } from '@/components/guide';
+import { A_LEVEL_FAQS } from './faqs.mjs';
 
 // Data for sections, tailored for A-Levels
 const subjectData = {
@@ -170,39 +174,26 @@ const pathways = [
     }
 ]
 
-const relatedGuides = [
-    {
-        title: "General Paper (GP) Strategies",
-        description: "Explore advanced techniques for crafting compelling essays and acing the Application Question in the H1 General Paper.",
-        link: "/a-level-general-paper",
-    },
-    {
-        title: "H2 Chemistry Guide",
-        description: "A deep dive into the H2 Chemistry syllabus, with a focus on challenging topics like Organic Chemistry and Electrochemistry.",
-        link: "/a-level-chemistry",
-    },
-    {
-        title: "H2 Physics Guide",
-        description: "A deep dive into the H2 Physics syllabus, with a focus on challenging topics like Mechanics and Electromagnetism.",
-        link: "/a-level-physics",
-    },
-    {
-        title: "H2 Biology Guide",
-        description: "A deep dive into the H2 Biology syllabus, with a focus on challenging topics like Cell Biology and Genetics.",
-        link: "/a-level-biology",
-    },
-    {
-        title: "H2 Mathematics Guide",
-        description: "A deep dive into the H2 Mathematics syllabus, with a focus on challenging topics like Calculus and Linear Algebra.",
-        link: "/a-level-mathematics",
-    },
-    {
-        title: "A-Level Tuition Services",
-        description: "Find out how our specialist A-Level tutors can provide the targeted guidance needed to excel in this demanding examination.",
-        link: "/jc-tuition",
-    }
-]
-
+const revisedSyllabusRows = [
+  {
+    subject: 'H2 Chemistry',
+    legacy: '9729',
+    revised: '9476',
+    whatChanged: 'Practical paper: 55 → 50 marks (still 20% weighting). Paper 3: 80 → 75 marks, with Section A 60 → 55 marks.',
+  },
+  {
+    subject: 'H2 Physics',
+    legacy: '9749',
+    revised: '9478',
+    whatChanged: 'Practical paper: 55 → 50 marks (still 20% weighting). Candidates now process and analyse data using spreadsheet software.',
+  },
+  {
+    subject: 'H2 Biology',
+    legacy: '9744',
+    revised: '9477',
+    whatChanged: 'Practical paper: 55 → 50 marks (still 20% weighting).',
+  },
+];
 
 const ALevelPrepClient = () => {
   return (
@@ -278,6 +269,69 @@ const ALevelPrepClient = () => {
             </Card>
           </div>
         </motion.section>
+
+        {/* 2026 A-Level Exam Timetable */}
+        <section id="exam-timetable" className="py-20 px-4 bg-gray-50">
+          <div className="max-w-5xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-4xl font-bold text-indigo-900 mb-4 flex items-center justify-center gap-3">
+                <CalendarClock className="h-9 w-9 text-[#0474BA]" aria-hidden="true" />
+                {A_LEVEL_FAQS[0].question}
+              </h2>
+              <p className="text-lg text-gray-600 max-w-3xl mx-auto">{A_LEVEL_FAQS[0].answer}</p>
+            </div>
+            <Card className="bg-white p-4 sm:p-8 rounded-xl shadow-md">
+              <CardContent className="pt-2">
+                <ExamTimetable examSlug="a-level" caption="Official 2026 GCE A-Level timetable, as published by SEAB." />
+              </CardContent>
+            </Card>
+          </div>
+        </section>
+
+        {/* Revised 2026 A-Level Science Syllabuses */}
+        <section id="revised-syllabus" className="py-20 px-4 bg-white">
+          <div className="max-w-5xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-4xl font-bold text-indigo-900 mb-4 flex items-center justify-center gap-3">
+                <RefreshCw className="h-9 w-9 text-[#F17720]" aria-hidden="true" />
+                What changed in the 2026 A-Level science syllabuses?
+              </h2>
+              <p className="text-lg text-gray-600 max-w-3xl mx-auto">{A_LEVEL_FAQS[2].answer}</p>
+            </div>
+
+            <Card className="bg-white rounded-xl shadow-md border overflow-hidden mb-8">
+              <div className="overflow-x-auto">
+                <table className="w-full min-w-[36rem] border-collapse text-left text-sm">
+                  <thead>
+                    <tr className="border-b-2 border-gray-200 text-gray-900 bg-gray-50">
+                      <th scope="col" className="py-3 px-4 font-semibold">Subject</th>
+                      <th scope="col" className="py-3 px-4 font-semibold">Legacy code (last exam 2026)</th>
+                      <th scope="col" className="py-3 px-4 font-semibold">Revised code (from 2026)</th>
+                      <th scope="col" className="py-3 px-4 font-semibold">What changed</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {revisedSyllabusRows.map((row) => (
+                      <tr key={row.subject} className="border-b border-gray-100">
+                        <th scope="row" className="py-3 px-4 align-top font-medium text-gray-900">{row.subject}</th>
+                        <td className="py-3 px-4 align-top tabular-nums text-gray-700">{row.legacy}</td>
+                        <td className="py-3 px-4 align-top tabular-nums text-gray-700">{row.revised}</td>
+                        <td className="py-3 px-4 align-top text-gray-700">{row.whatChanged}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </Card>
+
+            <div className="p-6 rounded-xl bg-[#F17720]/10 border-l-4 border-[#F17720] flex items-start gap-4">
+              <AlertTriangle className="h-7 w-7 text-[#F17720] mt-1 flex-shrink-0" aria-hidden="true" />
+              <p className="text-gray-800">
+                <strong className="font-semibold">If you&rsquo;re sitting a legacy paper (9729, 9749 or 9744) in 2026,</strong> this is your final attempt on that syllabus — SEAB will not offer it again. Any resit must be on the revised syllabus (9476, 9478 or 9477) instead.
+              </p>
+            </div>
+          </div>
+        </section>
 
         {/* Subject-Specific Strategies Section */}
         <section className="py-20 px-4 bg-gray-50">
@@ -538,39 +592,31 @@ const ALevelPrepClient = () => {
         {/* Related Guides Section */}
         <section className="py-20 px-4 bg-white">
             <div className="max-w-6xl mx-auto">
-                <div className="text-center mb-16">
-                    <h2 className="text-4xl font-bold text-indigo-900 mb-4">Explore Our Other A-Level Resources</h2>
-                    <p className="text-lg text-gray-600 max-w-3xl mx-auto">Deepen your knowledge with our other specialized guides for Junior College students.</p>
-                </div>
-                <div className="grid md:grid-cols-3 gap-8">
-                    {relatedGuides.map((guide, index) => (
-                        <motion.div
-                            key={index}
-                            initial={{ opacity: 0, y: 50 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true, amount: 0.5 }}
-                            transition={{ duration: 0.5, delay: index * 0.1 }}
-                        >
-                            <Card className="h-full shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-lg overflow-hidden flex flex-col group">
-                                <CardHeader>
-                                    <div className="flex items-center space-x-4 text-indigo-600">
-                                        <FileText className="h-8 w-8"/>
-                                        <CardTitle className="text-xl font-bold">{guide.title}</CardTitle>
-                                    </div>
-                                </CardHeader>
-                                <CardContent className="p-6 flex-grow flex flex-col">
-                                    <p className="text-gray-700 mb-4 flex-grow">{guide.description}</p>
-                                    <Link href={guide.link} passHref>
-                                        <Button variant="outline" className="w-full mt-auto group-hover:bg-indigo-600 group-hover:text-white transition-colors duration-300">
-                                            Read More <ArrowRight className="ml-2 h-4 w-4" />
-                                        </Button>
-                                    </Link>
-                                </CardContent>
-                            </Card>
-                        </motion.div>
-                    ))}
-                </div>
+                <RelatedGuides slug="a-level-prep" heading="Explore Our Other A-Level Resources" showHub={false} />
             </div>
+        </section>
+
+        {/* FAQ Section */}
+        <section id="faq" className="py-20 px-4 bg-gray-50">
+          <div className="max-w-4xl mx-auto">
+            <div className="text-center mb-16">
+              <h2 className="text-4xl font-bold text-indigo-900 mb-4 flex items-center justify-center gap-3">
+                <HelpCircle className="h-9 w-9 text-[#0474BA]" aria-hidden="true" />
+                A-Level FAQs
+              </h2>
+              <p className="text-lg text-gray-600 max-w-3xl mx-auto">Straight answers to the questions JC students and parents ask us most.</p>
+            </div>
+            <div className="space-y-6">
+              {A_LEVEL_FAQS.map((faq) => (
+                <Card key={faq.question} className="bg-white p-6 rounded-xl shadow-sm">
+                  <CardContent className="p-0">
+                    <h3 className="text-xl font-semibold text-gray-900">{faq.question}</h3>
+                    <p className="mt-2 text-gray-700">{faq.answer}</p>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
         </section>
 
         {/* Call to Action Section */}

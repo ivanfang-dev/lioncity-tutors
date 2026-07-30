@@ -10,16 +10,19 @@ import FormBenefits from "@/components/FormBenefits";
 import useTuitionRequestForm from "@/components/useTuitionRequestForm";
 import { CheckCircle } from "lucide-react";
 import TableOfContents from "@/components/TableOfContents";
+import GuideSchema from '@/components/seo/GuideSchema';
 import {
   GuideHeader, SectionHeading, GuideCard, TopicCard, GuideTimeline, KeyTakeaways, ICON_STROKE,
+  RelatedGuides, ExamTimetable,
 } from "@/components/guide";
 import {
   FileText, CalendarClock, PenLine, BookOpenText, Mic, Brain, Target,
-  TriangleAlert, CalendarDays, BookOpen, Users, ListChecks,
+  TriangleAlert, CalendarDays, BookOpen, Users, ListChecks, HelpCircle,
 } from "lucide-react";
 
 const tableOfContents = [
   { id: "structure", label: "Exam & paper structure" },
+  { id: "exam-dates", label: "2026 exam timetable" },
   { id: "timeline", label: "12-month study plan" },
   { id: "writing", label: "Writing" },
   { id: "comprehension", label: "Comprehension" },
@@ -30,6 +33,23 @@ const tableOfContents = [
   { id: "schedule", label: "Weekly study schedule" },
   { id: "resources", label: "Essential resources" },
   { id: "tuition", label: "When to consider tuition" },
+  { id: "faq", label: "PSLE Chinese FAQs" },
+];
+
+/**
+ * FAQ content for this page. Rendered as visible text AND emitted as
+ * FAQPage JSON-LD via GuideSchema — both read from this one array.
+ */
+const PSLE_CHINESE_FAQS = [
+  {
+    // exact phrasing targets "psle chinese marks breakdown" (pos 10.5, page one, 0 clicks)
+    // Figures are attributed, not asserted as bare fact: SEAB's own PDF was unreachable
+    // (CloudFront-blocked) when this was written, so the split below is cross-checked
+    // against tuition-industry sources only, not a primary SEAB document.
+    question: 'How are PSLE Chinese marks broken down?',
+    answer:
+      "Tuition-industry guides put PSLE Chinese marks at roughly 200 across three papers: about 40 for Paper 1 Writing, about 90 for Paper 2 Language Use & Comprehension, and about 70 for Paper 3 (Oral 50 plus Listening 20). SEAB's official syllabus document is the definitive source for exact current weightings.",
+  },
 ];
 
 const timeline = [
@@ -102,6 +122,15 @@ export default function PSLEChinese() {
 
   return (
     <>
+      <GuideSchema
+        slug="psle-chinese"
+        course={{
+          name: 'PSLE Chinese Tuition',
+          description: 'One-to-one PSLE Chinese tuition in Singapore, covering composition, comprehension and oral technique across all three papers.',
+          educationalLevel: 'PSLE',
+        }}
+        faqs={PSLE_CHINESE_FAQS}
+      />
       <main className="mx-auto max-w-6xl px-4 sm:px-6 py-12 sm:py-16">
         <div className="mx-auto max-w-2xl lg:max-w-none lg:grid lg:grid-cols-[minmax(0,42rem)_15rem] lg:justify-center lg:gap-12">
           {/* Article column */}
@@ -146,7 +175,7 @@ export default function PSLEChinese() {
               <section id="structure" className="scroll-mt-24">
                 <SectionHeading icon={FileText}>Understanding the PSLE Chinese papers</SectionHeading>
                 <p className="text-pretty">
-                  PSLE Chinese is set over three papers assessing writing, language use, comprehension, listening and speaking. Each subject is now graded by Achievement Level (AL1 to AL8), where AL1 is the top band.
+                  PSLE Chinese is set over three papers assessing writing, language use, comprehension, listening and speaking. Each subject is now graded by Achievement Level (AL1 to AL8), where AL1 is the top band. See the FAQ below for the current per-paper mark weightings.
                 </p>
                 <GuideCard className="mt-4">
                   <h4 className="font-semibold text-gray-900 mb-4">PSLE Chinese papers breakdown</h4>
@@ -174,6 +203,15 @@ export default function PSLEChinese() {
                     </div>
                   </div>
                 </GuideCard>
+              </section>
+
+              <section id="exam-dates" className="scroll-mt-24">
+                <SectionHeading icon={CalendarDays}>2026 PSLE Chinese exam timetable</SectionHeading>
+                <ExamTimetable
+                  examSlug="psle"
+                  subjectSlugs={['mother-tongue']}
+                  caption="Official 2026 SEAB dates for Mother Tongue Languages, which include Chinese."
+                />
               </section>
 
               <section id="timeline" className="scroll-mt-24">
@@ -385,6 +423,20 @@ export default function PSLEChinese() {
                   <p className="text-sm"><strong className="text-gray-900">Choose PSLE Chinese tutors who:</strong> are strong native or near-native speakers, know the current syllabus and AL scoring, teach composition and oral technique rather than rote drilling, and make learning Chinese engaging for a primary-aged child.</p>
                 </GuideCard>
               </section>
+
+              <section id="faq" className="scroll-mt-24">
+                <SectionHeading icon={HelpCircle}>PSLE Chinese FAQs</SectionHeading>
+                <div className="space-y-6">
+                  {PSLE_CHINESE_FAQS.map((faq) => (
+                    <div key={faq.question}>
+                      <h3 className="text-lg font-semibold text-gray-900">{faq.question}</h3>
+                      <p className="mt-2 text-gray-700">{faq.answer}</p>
+                    </div>
+                  ))}
+                </div>
+              </section>
+
+              <RelatedGuides slug="psle-chinese" />
             </article>
           </div>
 

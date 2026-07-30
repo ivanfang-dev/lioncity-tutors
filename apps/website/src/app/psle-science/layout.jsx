@@ -1,6 +1,6 @@
 export const metadata = {
-  title: 'Complete PSLE Science Guide | Tips, Format & Resources | Lion City Tutors',
-  description: 'Master PSLE Science with our comprehensive guide. Learn about exam format, scoring strategies, and get expert tips for PSLE Science success.',
+  title: 'PSLE Science Guide 2026: Themes, Timetable & Tips',
+  description: 'PSLE Science guide for Singapore parents — the 2026 exam timetable, the five syllabus themes, open-ended answering technique, and AL1–AL8 scoring explained.',
   keywords: [
     'PSLE Science guide',
     'PSLE Science format',
@@ -10,8 +10,8 @@ export const metadata = {
     'PSLE Science scoring'
   ],
   openGraph: {
-    title: 'Complete PSLE Science Guide | Tips, Format & Resources | Lion City Tutors',
-    description: 'Master PSLE Science with our comprehensive guide. Learn about exam format, scoring strategies, and get expert tips for PSLE Science success.',
+    title: 'PSLE Science Guide 2026: Themes, Timetable & Tips',
+    description: 'The official 2026 PSLE Science exam timetable, the five syllabus themes, and open-ended answering technique for Singapore parents.',
     url: 'https://www.lioncitytutors.com/psle-science',
     type: 'article',
   },

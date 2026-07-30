@@ -174,7 +174,87 @@ export const EXAM_CALENDAR_2026 = {
     label: 'GCE N-Level',
     examWindow: { start: '2026-07-13', end: '2026-10-13' },
     resultsWindow: { start: '2026-12-17', end: '2026-12-21' },
-    subjects: [],
+    subjects: [
+      // N(A) and N(T) are separate tracks with distinct syllabus codes and
+      // distinct papers, so they are modelled as separate subjects rather than
+      // merged. Never present an N(A) date to an N(T) candidate.
+      {
+        slug: 'english-na',
+        name: 'English Language N(A) — Syllabus A',
+        code: '1190',
+        papers: [
+          { label: 'Oral', date: '2026-07-13', note: 'Also held 17 July' },
+          { label: 'Paper 1 (Writing)', date: '2026-09-14', time: '0800–0950h' },
+          { label: 'Paper 2 (Comprehension)', date: '2026-09-14', time: '1035–1225h' },
+          { label: 'Paper 3 (Listening)', date: '2026-09-15', time: '1400–1445h' },
+        ],
+      },
+      {
+        slug: 'english-nt',
+        name: 'English Language N(T) — Syllabus T',
+        code: '1195',
+        papers: [
+          { label: 'Oral', date: '2026-07-14', note: 'Also held 17 July' },
+          { label: 'Paper 1 (Writing)', date: '2026-09-14', time: '0800–0920h' },
+          { label: 'Paper 2 (Comprehension)', date: '2026-09-14', time: '1035–1155h' },
+          { label: 'Paper 3 (Listening)', date: '2026-09-16', time: '1400–1445h' },
+        ],
+      },
+      {
+        slug: 'math-na',
+        name: 'Mathematics N(A) — Syllabus A',
+        code: '4045',
+        papers: [
+          { label: 'Paper 1', date: '2026-10-05', time: '0800–1000h' },
+          { label: 'Paper 2', date: '2026-10-07', time: '0800–1000h' },
+        ],
+      },
+      {
+        slug: 'math-nt',
+        name: 'Mathematics N(T) — Syllabus T',
+        code: '4046',
+        papers: [
+          { label: 'Paper 1', date: '2026-10-06', time: '1400–1530h' },
+          { label: 'Paper 2', date: '2026-10-09', time: '0800–0930h' },
+        ],
+      },
+      {
+        slug: 'chinese',
+        name: 'Chinese Language',
+        code: '1196',
+        papers: [
+          { label: 'Oral', date: '2026-07-14', note: 'Also held 15 and 16 July' },
+          { label: 'Paper 1', date: '2026-09-17', time: '0800–1000h' },
+        ],
+      },
+      {
+        slug: 'combined-science-phy-chem',
+        name: 'Combined Science (Physics/Chemistry)',
+        code: '5105',
+        papers: [
+          { label: 'Papers 1 & 2 (Physics)', date: '2026-10-06', time: '0800–0915h' },
+          { label: 'Papers 3 & 4 (Chemistry)', date: '2026-10-08', time: '0800–0915h' },
+        ],
+      },
+      {
+        slug: 'combined-science-phy-bio',
+        name: 'Combined Science (Physics/Biology)',
+        code: '5106',
+        papers: [
+          { label: 'Papers 1 & 2 (Physics)', date: '2026-10-06', time: '0800–0915h' },
+          { label: 'Papers 5 & 6 (Biology)', date: '2026-10-12', time: '0800–0915h' },
+        ],
+      },
+      {
+        slug: 'combined-science-chem-bio',
+        name: 'Combined Science (Chemistry/Biology)',
+        code: '5107',
+        papers: [
+          { label: 'Papers 3 & 4 (Chemistry)', date: '2026-10-08', time: '0800–0915h' },
+          { label: 'Papers 5 & 6 (Biology)', date: '2026-10-12', time: '0800–0915h' },
+        ],
+      },
+    ],
   },
 
   'a-level': {
@@ -216,6 +296,7 @@ export const EXAM_CALENDAR_2026 = {
           { label: 'Paper 4 (Practical)', date: '2026-10-14', note: 'Three shifts, 0800–1700h' },
           { label: 'Paper 2', date: '2026-11-10', time: '1400–1600h' },
           { label: 'Paper 3', date: '2026-11-12', time: '0800–1000h' },
+          { label: 'Paper 1', date: '2026-11-23', time: '1400–1500h' },
         ],
       },
       {
@@ -227,6 +308,7 @@ export const EXAM_CALENDAR_2026 = {
           { label: 'Paper 4 (Practical)', date: '2026-10-19', note: 'Three shifts, 0800–1700h' },
           { label: 'Paper 2', date: '2026-11-13', time: '0800–1000h' },
           { label: 'Paper 3', date: '2026-11-17', time: '1400–1600h' },
+          { label: 'Paper 1', date: '2026-11-27', time: '0800–0900h' },
         ],
       },
       {
@@ -237,6 +319,8 @@ export const EXAM_CALENDAR_2026 = {
         papers: [
           { label: 'Paper 4 (Practical)', date: '2026-10-22', note: 'Three shifts, 0800–1700h' },
           { label: 'Paper 2', date: '2026-11-18', time: '0800–1000h' },
+          { label: 'Paper 3', date: '2026-11-20', time: '1430–1630h' },
+          { label: 'Paper 1', date: '2026-11-26', time: '1400–1500h' },
         ],
       },
       {

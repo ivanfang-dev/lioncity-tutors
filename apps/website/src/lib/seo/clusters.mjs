@@ -33,7 +33,10 @@ export const HUBS = {
     url: '/blog/n-level-preparation-guide',
     title: 'N-Level Preparation Guide',
     anchor: 'complete N-Level preparation guide',
-    spokes: ['n-level-tuition'],
+    spokes: [
+      'n-level-tuition', 'combined-science-overview', 'combined-chemistry-physics',
+      'combined-chemistry-biology', 'combined-physics-biology',
+    ],
   },
   'psle-prep': {
     slug: 'psle-prep',
@@ -47,6 +50,10 @@ export const HUBS = {
     url: '/guides/ib-igcse',
     title: 'IB & IGCSE Guide',
     anchor: 'IB and IGCSE subject guide hub',
+    // Hubs may override the generic description RelatedGuides shows on their
+    // card. The exam-prep hubs are fine with the default; this one is not, since
+    // IB and IGCSE have no single national timetable.
+    blurb: 'How IB Diploma and IGCSE differ from the Singapore national track, subject by subject.',
     spokes: [
       'ibdp-biology', 'ibdp-chemistry', 'ibdp-physics',
       'igcse-biology', 'igcse-chemistry', 'igcse-physics',
@@ -83,23 +90,27 @@ export const SPOKES = {
   },
   'combined-science-overview': {
     slug: 'combined-science-overview', url: '/combined-science-overview', hub: 'o-level-prep',
+    alsoIn: ['n-level-prep'],
     title: 'Combined Science', anchor: 'O-Level Combined Science overview',
-    blurb: 'How the three Combined Science pairings differ, and which to pick.',
+    blurb: 'How the three Combined Science pairings work at both O-Level and N-Level.',
   },
   'combined-chemistry-physics': {
     slug: 'combined-chemistry-physics', url: '/combined-chemistry-physics', hub: 'o-level-prep',
+    alsoIn: ['n-level-prep'],
     title: 'Combined Chemistry/Physics', anchor: 'Combined Science Chemistry and Physics guide',
-    blurb: 'Syllabus 5086 topic coverage and paper structure.',
+    blurb: 'Syllabus 5086 (O-Level) and 5105 (N-Level) topics and paper structure.',
   },
   'combined-chemistry-biology': {
     slug: 'combined-chemistry-biology', url: '/combined-chemistry-biology', hub: 'o-level-prep',
+    alsoIn: ['n-level-prep'],
     title: 'Combined Chemistry/Biology', anchor: 'Combined Science Chemistry and Biology guide',
-    blurb: 'Syllabus 5088 topic coverage and paper structure.',
+    blurb: 'Syllabus 5088 (O-Level) and 5107 (N-Level) topics and paper structure.',
   },
   'combined-physics-biology': {
     slug: 'combined-physics-biology', url: '/combined-physics-biology', hub: 'o-level-prep',
+    alsoIn: ['n-level-prep'],
     title: 'Combined Physics/Biology', anchor: 'Combined Science Physics and Biology guide',
-    blurb: 'Syllabus 5087 topic coverage and paper structure.',
+    blurb: 'Syllabus 5087 (O-Level) and 5106 (N-Level) topics and paper structure.',
   },
   'o-level-tuition': {
     slug: 'o-level-tuition', url: '/secondary-school-tuition/o-level-tuition', hub: 'o-level-prep',

@@ -1,12 +1,12 @@
 import { MATCH_TIME } from '@/data/promises';
 export const metadata = {
-  title: 'A Level Math Guide 2026: Complete H1 & H2 Mathematics Strategy for Singapore Students | LionCity Tutors',
-  description: 'Ultimate A Level Mathematics preparation guide for Singapore students. Expert strategies for H1 & H2 Math, proven techniques to excel in Cambridge A Level Math 2026.',
+  title: 'A-Level Math Guide 2026: H1 & H2 Strategy | LionCity Tutors',
+  description: 'A-Level Mathematics guide for Singapore JC students — H1 (8865) and H2 (9758) topic breakdowns, the 2026 exam timetable, and the technique that earns marks.',
   keywords: [
     "A Level Math 2026", "H1 Mathematics Singapore", "H2 Mathematics Singapore", "Cambridge A Level Math guide", "A Level Math preparation", "JC Math tuition Singapore", "A Level Math revision techniques", "Singapore A Level Mathematics"
   ],
   openGraph: {
-    title: 'A Level Math Guide 2026: Complete H1 & H2 Mathematics Strategy for Singapore Students | LionCity Tutors',
+    title: 'A-Level Math Guide 2026: H1 & H2 Strategy | LionCity Tutors',
     description: 'Comprehensive A Level Mathematics guide with proven strategies to help Singapore JC students achieve A grades in H1 & H2 Mathematics.',
     url: 'https://www.lioncitytutors.com/a-level-math',
     type: 'article',
@@ -17,8 +17,10 @@ export const metadata = {
 };
 
 import TableOfContents from '@/components/TableOfContents';
+import GuideSchema from '@/components/seo/GuideSchema';
 import {
   GuideHeader, SectionHeading, GuideCard, TopicCard, GuideTimeline, KeyTakeaways, GuideCTA, ICON_STROKE,
+  RelatedGuides, ExamTimetable,
 } from '@/components/guide';
 import {
   FileText, CalendarClock, Calculator, Sigma, Brain, Target,
@@ -28,6 +30,7 @@ import {
 
 const tableOfContents = [
   { id: 'structure', label: 'Exam & subject structure' },
+  { id: 'exam-dates', label: '2026 exam timetable' },
   { id: 'timeline', label: '24-month study timeline' },
   { id: 'h1-math', label: 'H1 Mathematics' },
   { id: 'h2-math', label: 'H2 Mathematics' },
@@ -96,6 +99,14 @@ Preferred days & timing: `;
 
   return (
     <>
+    <GuideSchema
+      slug="a-level-math"
+      course={{
+        name: 'A-Level H1/H2 Mathematics Tuition',
+        description: 'One-to-one H1 and H2 Mathematics tuition in Singapore, covering the full 8865 and 9758 syllabuses.',
+        educationalLevel: 'GCE A-Level',
+      }}
+    />
     <main className="mx-auto max-w-6xl px-4 sm:px-6 py-12 sm:py-16">
       <div className="mx-auto max-w-2xl lg:max-w-none lg:grid lg:grid-cols-[minmax(0,42rem)_15rem] lg:justify-center lg:gap-12">
         {/* Article column */}
@@ -168,6 +179,15 @@ Preferred days & timing: `;
                   </div>
                 </div>
               </GuideCard>
+            </section>
+
+            <section id="exam-dates" className="scroll-mt-24">
+              <SectionHeading icon={CalendarDays}>2026 A-Level Math Exam Timetable</SectionHeading>
+              <ExamTimetable
+                examSlug="a-level"
+                subjectSlugs={['h2-math', 'h1-math']}
+                caption="Official 2026 SEAB dates for H1 (8865) and H2 (9758) Mathematics."
+              />
             </section>
 
             <section id="timeline" className="scroll-mt-24">
@@ -514,6 +534,8 @@ Preferred days & timing: `;
                 </div>
               </GuideCard>
             </section>
+
+            <RelatedGuides slug="a-level-math" />
 
             {/* Conversion block */}
             <GuideCTA

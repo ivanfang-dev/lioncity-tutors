@@ -1,10 +1,10 @@
 import { MATCH_TIME } from '@/data/promises';
 export const metadata = {
-  title: 'A Level H2 Physics Guide 2026: Complete Study Strategy for Singapore Students | LionCity Tutors',
-  description: 'Ultimate A Level H2 Physics preparation guide for Singapore students. Expert strategies, practical techniques, and proven tips to score A in H2 Physics 2026.',
-  keywords: ["A Level H2 Physics 2026", "H2 Physics Singapore", "GCE A Level Physics guide", "A Level Physics preparation", "H2 Physics study tips", "A Level Physics tuition Singapore", "Physics revision techniques", "H2 Physics syllabus"],
+  title: 'A-Level H2 Physics Guide 2026 (9478) | LionCity Tutors',
+  description: 'H2 Physics (9478) guide for Singapore JC students — the revised 2026 syllabus, mechanics through modern physics, and the exam technique that scores an A.',
+  keywords: ["A Level H2 Physics 2026", "H2 Physics Singapore", "GCE A Level Physics guide", "A Level Physics preparation", "H2 Physics study tips", "A Level Physics tuition Singapore", "Physics revision techniques", "H2 Physics syllabus", "9478 syllabus"],
   openGraph: {
-    title: 'A Level H2 Physics Guide 2026: Complete Study Strategy for Singapore Students | LionCity Tutors',
+    title: 'A-Level H2 Physics Guide 2026 (9478) | LionCity Tutors',
     description: 'Comprehensive A Level H2 Physics guide with proven strategies to help Singapore students achieve A grades in GCE A Level Physics.',
     url: 'https://www.lioncitytutors.com/a-level-physics',
     type: 'article',
@@ -15,17 +15,24 @@ export const metadata = {
 };
 
 import TableOfContents from '@/components/TableOfContents';
+import GuideSchema from '@/components/seo/GuideSchema';
 import {
   GuideHeader, SectionHeading, GuideCard, TopicCard, GuideTimeline, KeyTakeaways, GuideCTA, ICON_STROKE,
+  RelatedGuides, ExamTimetable,
 } from '@/components/guide';
+import { getHubFor } from '@/lib/seo/links.mjs';
 import {
   FileText, CalendarClock, Gauge, Waves, Zap, Atom, Brain, Target,
   TriangleAlert, CalendarDays, BookOpen, Ruler, GraduationCap, Users,
-  Hourglass, HeartHandshake, Compass, Flag, ListChecks,
+  Hourglass, HeartHandshake, Compass, Flag, ListChecks, RefreshCw,
 } from 'lucide-react';
+
+const aLevelHub = getHubFor('a-level-physics');
 
 const tableOfContents = [
   { id: 'structure', label: 'Exam & paper structure' },
+  { id: 'exam-dates', label: '2026 exam timetable' },
+  { id: 'revised-syllabus', label: 'What changed for 2026 (9478)' },
   { id: 'timeline', label: '24-month study timeline' },
   { id: 'mechanics', label: 'Mechanics' },
   { id: 'waves', label: 'Waves & optics' },
@@ -99,6 +106,14 @@ Preferred days & timing: `;
 
   return (
     <>
+    <GuideSchema
+      slug="a-level-physics"
+      course={{
+        name: 'A-Level H2 Physics Tuition',
+        description: 'One-to-one H2 Physics tuition in Singapore, covering the revised 9478 syllabus and Paper 4 practical.',
+        educationalLevel: 'GCE A-Level',
+      }}
+    />
     <main className="mx-auto max-w-6xl px-4 sm:px-6 py-12 sm:py-16">
       <div className="mx-auto max-w-2xl lg:max-w-none lg:grid lg:grid-cols-[minmax(0,42rem)_15rem] lg:justify-center lg:gap-12">
         {/* Article column */}
@@ -119,7 +134,7 @@ Preferred days & timing: `;
             {/* Key takeaways */}
             <KeyTakeaways
               items={[
-                <>H2 Physics (9749) is examined across three papers &mdash; MCQ (<span className="tabular-nums">15%</span>), structured (<span className="tabular-nums">50%</span>) and free-response (<span className="tabular-nums">35%</span>).</>,
+                <>H2 Physics (9478) is examined across four papers &mdash; MCQ (<span className="tabular-nums">15%</span>), two structured papers (<span className="tabular-nums">30%</span> and <span className="tabular-nums">35%</span>) and the Paper 4 practical (<span className="tabular-nums">20%</span>).</>,
                 <>A steady JC1&rarr;JC2 timeline built on understanding beats last-minute memorisation every time.</>,
                 <>The biggest score lever isn&rsquo;t knowing more &mdash; it&rsquo;s answer technique: correct units, shown working and clear diagrams.</>,
                 <>Struggling with multi-step problem-solving or data-analysis questions is the usual signal that targeted tuition will help.</>,
@@ -144,10 +159,10 @@ Preferred days & timing: `;
             <section id="structure" className="scroll-mt-24">
               <SectionHeading icon={FileText}>Understanding A Level H2 Physics Structure</SectionHeading>
               <p className="text-pretty">
-                Singapore&rsquo;s A Level H2 Physics (Paper 9749) is a comprehensive subject that bridges secondary school physics with university-level concepts, essential for students pursuing engineering, physics, and related science courses.
+                Singapore&rsquo;s A Level H2 Physics (Paper 9478) is a comprehensive subject that bridges secondary school physics with university-level concepts, essential for students pursuing engineering, physics, and related science courses. This is the revised syllabus school candidates sit from 2026 &mdash; see below for what changed from the legacy 9749 syllabus.
               </p>
               <GuideCard className="mt-4">
-                <h4 className="font-semibold text-gray-900 mb-4">H2 Physics Papers Breakdown</h4>
+                <h4 className="font-semibold text-gray-900 mb-4">H2 Physics (9478) Papers Breakdown</h4>
                 <div className="space-y-5">
                   <div>
                     <h5 className="font-semibold text-gray-900">Paper 1: Multiple Choice Questions</h5>
@@ -161,22 +176,55 @@ Preferred days & timing: `;
                   <div>
                     <h5 className="font-semibold text-gray-900">Paper 2: Structured Questions</h5>
                     <ul className="list-disc ml-5 mt-1.5 space-y-1 text-sm text-gray-700">
-                      <li>Variable number of questions worth 100 marks</li>
+                      <li>Variable number of questions worth 75 marks</li>
                       <li>Duration: 2 hours</li>
-                      <li>50% of total H2 Physics grade</li>
+                      <li>30% of total H2 Physics grade</li>
                       <li>Focuses on application and problem-solving</li>
                     </ul>
                   </div>
                   <div>
-                    <h5 className="font-semibold text-gray-900">Paper 3: Free Response Questions</h5>
+                    <h5 className="font-semibold text-gray-900">Paper 3: Longer Structured Questions</h5>
                     <ul className="list-disc ml-5 mt-1.5 space-y-1 text-sm text-gray-700">
-                      <li>Variable number of questions worth 100 marks</li>
-                      <li>Duration: 2 hours 30 minutes</li>
+                      <li>Variable number of questions worth 75 marks</li>
+                      <li>Duration: 2 hours</li>
                       <li>35% of total H2 Physics grade</li>
                       <li>Emphasizes extended responses and synthesis</li>
                     </ul>
                   </div>
+                  <div>
+                    <h5 className="font-semibold text-gray-900">Paper 4: Practical</h5>
+                    <ul className="list-disc ml-5 mt-1.5 space-y-1 text-sm text-gray-700">
+                      <li>50 marks, sat as a separately-dated laboratory exam</li>
+                      <li>Duration: 2 hours 30 minutes</li>
+                      <li>20% of total H2 Physics grade</li>
+                      <li>Tests planning, manipulation, observation and data-analysis skills directly, at the bench</li>
+                    </ul>
+                  </div>
                 </div>
+              </GuideCard>
+            </section>
+
+            <section id="exam-dates" className="scroll-mt-24">
+              <SectionHeading icon={CalendarDays}>2026 H2 Physics Exam Timetable</SectionHeading>
+              <ExamTimetable
+                examSlug="a-level"
+                subjectSlugs={['h2-physics']}
+                caption="Official 2026 SEAB dates for H2 Physics (9478)."
+              />
+            </section>
+
+            <section id="revised-syllabus" className="scroll-mt-24">
+              <SectionHeading icon={RefreshCw}>What changed for the 2026 syllabus (9478)?</SectionHeading>
+              <GuideCard>
+                <p className="text-sm text-gray-700">
+                  H2 Physics moved to the revised 9478 syllabus for the 2026 examination — the final year the legacy 9749 syllabus is offered, for private and repeat candidates only. See the{' '}
+                  {aLevelHub ? (
+                    <a href={`${aLevelHub.url}#revised-syllabus`} className="font-semibold text-primary hover:underline">
+                      {aLevelHub.anchor}
+                    </a>
+                  ) : 'A-Level preparation guide'}
+                  {' '}for the full mark-scheme changes and what legacy-syllabus retakers need to know.
+                </p>
               </GuideCard>
             </section>
 
@@ -464,7 +512,7 @@ Preferred days & timing: `;
             <section id="practical" className="scroll-mt-24">
               <SectionHeading icon={Ruler}>Practical Skills and Laboratory Techniques</SectionHeading>
               <p className="text-pretty">
-                H2 Physics emphasizes practical skills and data analysis abilities that are tested indirectly through written papers:
+                H2 Physics practical skills are examined directly in the separately-dated Paper 4 practical (20% of the grade), and data-analysis ability is also tested indirectly through written-paper questions. Both draw on the same core skills:
               </p>
               <ul className="list-disc ml-6 space-y-2 mt-3 text-gray-700">
                 <li><strong className="text-gray-900">Master Common Techniques:</strong> Measurement, data collection, error analysis, and graph plotting</li>
@@ -613,6 +661,8 @@ Preferred days & timing: `;
                 </p>
               </div>
             </section>
+
+            <RelatedGuides slug="a-level-physics" />
 
             {/* Conversion block */}
             <GuideCTA

@@ -1,6 +1,7 @@
 import { MATCH_TIME } from '@/data/promises';
+import GuideSchema from '@/components/seo/GuideSchema';
 export const metadata = {
-  title: 'IGCSE Biology Guide 2026: Complete Study Strategy for Singapore Students | LionCity Tutors',
+  title: 'IGCSE Biology Guide 2026: Core, Extended & Practical',
   description: 'Ultimate IGCSE Biology preparation guide for Singapore students. Expert strategies, practical techniques, and proven tips to score A* in IGCSE Biology 2026.',
   keywords: [
     'IGCSE Biology 2026',
@@ -26,6 +27,7 @@ export const metadata = {
 import TableOfContents from '@/components/TableOfContents';
 import {
   GuideHeader, SectionHeading, GuideCard, TopicCard, GuideTimeline, KeyTakeaways, GuideCTA, ICON_STROKE,
+  RelatedGuides,
 } from '@/components/guide';
 import {
   FileText, CalendarClock, Microscope, Dna, Leaf, HeartPulse, Target,
@@ -106,6 +108,15 @@ Preferred days & timing: `;
 
   return (
     <>
+      <GuideSchema
+        slug="igcse-biology"
+        course={{
+          name: 'IGCSE Biology Tuition',
+          description:
+            'Cambridge IGCSE Biology tuition in Singapore, covering the core and extended syllabus and the practical paper.',
+          educationalLevel: 'Cambridge IGCSE',
+        }}
+      />
     <main className="mx-auto max-w-6xl px-4 sm:px-6 py-12 sm:py-16">
       <div className="mx-auto max-w-2xl lg:max-w-none lg:grid lg:grid-cols-[minmax(0,42rem)_15rem] lg:justify-center lg:gap-12">
         {/* Article column */}
@@ -560,6 +571,8 @@ Preferred days & timing: `;
             </section>
 
             {/* Conversion block */}
+            <RelatedGuides slug="igcse-biology" />
+
             <GuideCTA
               title="Find your IGCSE Biology tutor"
               description={`Tell us your child’s level and goals. We hand-match a vetted, MOE-familiar IGCSE Biology tutor — usually within ${MATCH_TIME} — and parents never pay an agency fee.`}

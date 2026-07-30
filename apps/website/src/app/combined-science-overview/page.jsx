@@ -1,22 +1,26 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import combinedscienceImage from "../../../public/combined-chemistry-biology.webp"
+import GuideSchema from '@/components/seo/GuideSchema';
+import { RelatedGuides, ExamTimetable } from '@/components/guide';
 
 export const metadata = {
-  title: 'N Level Combined Science 2026: Complete Guide to All Three Combinations | LionCity Tutors',
-  description: 'Master N Level Combined Science with our comprehensive Singapore-focused guide. Physics-Chemistry, Physics-Biology, Chemistry-Biology combinations, local case studies, and proven exam techniques.',
+  title: 'Combined Science Guide 2026: O-Level & N-Level',
+  description: 'Combined Science guide for Singapore students: Physics/Chemistry, Physics/Biology, Chemistry/Biology pairings at O-Level (5086-5088) and N-Level (5105-5107).',
   keywords: [
-    'N Level Combined Science Singapore',
+    'Combined Science Singapore',
+    'O Level Combined Science 2026',
+    'N Level Combined Science 2026',
     'Combined Science study guide 2026',
     'Singapore Combined Science exam tips',
-    '5105 5106 5107 Science',
-    'N Level Combined Science tuition',
+    '5086 5087 5088 5105 5106 5107 Science',
+    'Combined Science tuition',
     'Combined Science revision strategies',
     'Singapore science education'
   ],
   openGraph: {
-    title: 'N Level Combined Science 2026: Complete Singapore Success Guide',
-    description: 'Master all three N Level Combined Science combinations. Physics-Chemistry, Physics-Biology, Chemistry-Biology strategies with Singapore examples.',
+    title: 'Combined Science 2026: O-Level & N-Level Guide',
+    description: 'All three Combined Science combinations at O-Level and N-Level. Physics-Chemistry, Physics-Biology, Chemistry-Biology strategies with Singapore examples.',
     url: 'https://www.lioncitytutors.com/combined-science-overview',
     type: 'article',
   },
@@ -28,6 +32,14 @@ export const metadata = {
 export default function CombinedScienceOverview() {
   return (
     <>
+    <GuideSchema
+      slug="combined-science-overview"
+      course={{
+        name: 'Combined Science Tuition',
+        description: 'One-to-one Combined Science tuition in Singapore, across all three pairings, at both O-Level (5086/5087/5088) and N-Level (5105/5106/5107).',
+        educationalLevel: 'GCE O-Level and N-Level',
+      }}
+    />
     <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
@@ -35,20 +47,20 @@ export default function CombinedScienceOverview() {
 
     <main className="px-4 py-12 max-w-4xl mx-auto">
 
-      <h1 className="text-4xl font-bold text-blue-800 mb-4">N Level Combined Science 2026: Your Complete Guide to All Three Combinations</h1>
+      <h1 className="text-4xl font-bold text-blue-800 mb-4">Combined Science 2026: Your Complete Guide to All Three Combinations at O-Level &amp; N-Level</h1>
       <div className="flex items-center space-x-4 mb-8">
           <div>
             <p className="font-semibold text-gray-800">By Marcus Wong, Combined Science Tutor</p>
-            <p className="text-sm text-gray-500">Updated June 24, 2026 • Comprehensive guide to all combinations • 15 min read</p>
+            <p className="text-sm text-gray-500">Updated June 24, 2026 • Comprehensive guide to all combinations, both levels • 15 min read</p>
           </div>
         </div>
 
         <div className="bg-gradient-to-r from-purple-50 to-blue-50 p-6 rounded-xl mb-8 border-l-4 border-purple-400">
           <h3 className="text-lg font-bold text-purple-800 mb-2">🔬 The Combined Science Advantage</h3>
           <p className="text-purple-700">
-            N Level Combined Science isn't "easier science" - it's <span className="font-bold">integrated science</span>. 
-            This guide reveals how to leverage the connections between different science subjects to achieve 
-            deeper understanding and better exam performance in Singapore's N Level Combined Science.
+            Combined Science isn't "easier science" - it's <span className="font-bold">integrated science</span>.
+            This guide reveals how to leverage the connections between different science subjects to achieve
+            deeper understanding and better exam performance in Singapore's Combined Science, at both O-Level and N-Level.
           </p>
         </div>
 
@@ -68,15 +80,16 @@ export default function CombinedScienceOverview() {
       <article className="space-y-8 text-gray-700 leading-relaxed">
         
         <section className="bg-amber-50 p-6 rounded-lg border-l-4 border-amber-400">
-          <h2 className="text-2xl font-semibold text-amber-800 mb-3">🎯 Understanding N Level Combined Science</h2>
+          <h2 className="text-2xl font-semibold text-amber-800 mb-3">🎯 Understanding Combined Science</h2>
           <p className="mb-4">
-            N Level Combined Science offers three distinct combinations, each designed to provide students 
-            with a solid foundation in two complementary science subjects. Understanding which combination 
-            suits your interests and career goals is crucial for success.
+            Combined Science offers three distinct combinations, each designed to provide students
+            with a solid foundation in two complementary science subjects. It is offered at both O-Level
+            (Secondary 4 Express, syllabus 5086-5088) and N-Level (Secondary 4 N(A), syllabus 5105-5107).
+            Understanding which combination suits your interests and career goals is crucial for success.
           </p>
           
           <div className="bg-white p-4 rounded-lg">
-            <h4 className="font-semibold text-amber-700 mb-3">The Three N Level Combined Science Options:</h4>
+            <h4 className="font-semibold text-amber-700 mb-3">The Three Combined Science Options:</h4>
             <div className="space-y-3">
               <div className="border-l-3 border-blue-400 pl-4">
                 <h5 className="font-semibold text-blue-700">Combined Chemistry/Physics</h5>
@@ -95,8 +108,8 @@ export default function CombinedScienceOverview() {
         </section>
 
         <section>
-          <h2 className="text-2xl font-semibold text-blue-700 mb-4">📋 N Level Combined Science Structure</h2>
-          
+          <h2 className="text-2xl font-semibold text-blue-700 mb-4">📋 N-Level Combined Science Structure (Syllabus 5105-5107)</h2>
+
           <div className="bg-blue-50 p-5 rounded-lg mb-4">
             <h3 className="font-semibold text-blue-800 mb-3">📚 Assessment Overview (All Combinations)</h3>
             
@@ -157,6 +170,74 @@ export default function CombinedScienceOverview() {
                   </ul>
                 </div>
               </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="bg-sky-50 p-6 rounded-lg border-l-4 border-[#0474BA]">
+          <h2 className="text-2xl font-semibold text-[#0474BA] mb-4">❓ What is O-Level Combined Science?</h2>
+          <p className="mb-4">
+            O-Level Combined Science covers the same three pairings — Physics/Chemistry (5086), Physics/Biology (5087)
+            and Chemistry/Biology (5088) — but is sat by Secondary 4 Express-stream students. Each pairing shares one
+            multiple-choice paper across both subjects, plus a separate structured paper per subject, unlike N-Level,
+            where each subject gets its own full paper pair.
+          </p>
+
+          <div className="bg-white p-4 rounded-lg">
+            <h4 className="font-semibold text-[#0474BA] mb-3">O-Level Combined Science paper structure:</h4>
+            <div className="overflow-x-auto">
+              <table className="w-full bg-white rounded-lg shadow-sm">
+                <thead className="bg-sky-100">
+                  <tr className="text-sm">
+                    <th className="p-3 text-left font-semibold">Combination</th>
+                    <th className="p-3 text-left font-semibold">Syllabus code</th>
+                    <th className="p-3 text-left font-semibold">Papers</th>
+                  </tr>
+                </thead>
+                <tbody className="text-sm">
+                  <tr className="border-b">
+                    <td className="p-3 font-semibold text-blue-700">Combined Chemistry/Physics</td>
+                    <td className="p-3">5086</td>
+                    <td className="p-3">Paper 1 (shared MCQ) · Paper 2 (Physics structured) · Paper 3 (Chemistry structured)</td>
+                  </tr>
+                  <tr className="border-b">
+                    <td className="p-3 font-semibold text-green-700">Combined Physics/Biology</td>
+                    <td className="p-3">5087</td>
+                    <td className="p-3">Paper 1 (shared MCQ) · Paper 2 (Physics structured) · Paper 4 (Biology structured)</td>
+                  </tr>
+                  <tr>
+                    <td className="p-3 font-semibold text-purple-700">Combined Chemistry/Biology</td>
+                    <td className="p-3">5088</td>
+                    <td className="p-3">Paper 1 (shared MCQ) · Paper 3 (Chemistry structured) · Paper 4 (Biology structured)</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p className="text-xs text-gray-500 mt-3">
+              Who sits it: Secondary 4 Express-stream students taking the GCE O-Level exam. N(A) students instead sit
+              the N-Level version (5105-5107) covered above, with a fully separate MCQ-plus-structured pair per subject.
+            </p>
+          </div>
+        </section>
+
+        <section>
+          <h2 className="text-2xl font-semibold text-blue-700 mb-4">📅 2026 Exam Timetables — Both Levels (All Combinations)</h2>
+          <div className="space-y-6">
+            <div>
+              <h3 className="font-semibold text-[#0474BA] mb-2">O-Level Combined Science</h3>
+              <ExamTimetable
+                examSlug="o-level"
+                subjectSlugs={['combined-science-phy-chem', 'combined-science-phy-bio', 'combined-science-chem-bio']}
+                caption="Official 2026 SEAB dates — O-Level Combined Science, all three pairings."
+              />
+            </div>
+            <div>
+              <h3 className="font-semibold text-[#F17720] mb-2">N-Level Combined Science</h3>
+              <ExamTimetable
+                examSlug="n-level"
+                subjectSlugs={['combined-science-phy-chem', 'combined-science-phy-bio', 'combined-science-chem-bio']}
+                caption="Official 2026 SEAB dates — N-Level Combined Science, all three pairings."
+              />
             </div>
           </div>
         </section>
@@ -266,7 +347,7 @@ export default function CombinedScienceOverview() {
         <section className="bg-orange-50 p-6 rounded-xl">
           <h2 className="text-2xl font-semibold text-orange-800 mb-4">🇸🇬 Singapore Context in Combined Science</h2>
           <p className="mb-4">
-            All N Level Combined Science papers regularly include Singapore contexts. Understanding local 
+            Combined Science papers, at both O-Level and N-Level, regularly include Singapore contexts. Understanding local
             applications gives you a significant advantage regardless of your combination.
           </p>
 
@@ -348,7 +429,7 @@ export default function CombinedScienceOverview() {
             </div>
 
             <div className="bg-red-50 p-4 rounded-lg border-l-4 border-red-400">
-              <h3 className="font-bold text-red-700 mb-2">🏆 Post-Prelims to N Levels: Mastery Phase</h3>
+              <h3 className="font-bold text-red-700 mb-2">🏆 Post-Prelims to O-Levels/N-Levels: Mastery Phase</h3>
               <ul className="text-sm space-y-1">
                 <li>• Complete past papers under exam conditions</li>
                 <li>• Final review of integration concepts</li>
@@ -440,13 +521,13 @@ export default function CombinedScienceOverview() {
           <h2 className="text-3xl font-bold text-blue-800 mb-4">🚀 Your Combined Science Journey Starts Here</h2>
           
           <p className="text-lg text-gray-700 mb-6 max-w-3xl mx-auto">
-            N Level Combined Science opens doors to diverse career pathways while developing critical thinking 
+            Combined Science, at O-Level and N-Level, opens doors to diverse career pathways while developing critical thinking
             and integration skills. Choose your combination wisely, embrace the connections between subjects, 
             and leverage Singapore contexts for examination success.
           </p>
 
           <div className="grid md:grid-cols-3 gap-4 max-w-4xl mx-auto">
-            <Link href="/combined-physics-chemistry" className="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+            <Link href="/combined-chemistry-physics" className="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow">
               <h3 className="font-semibold text-blue-700 mb-2">Combined Chemistry/Physics</h3>
               <p className="text-sm text-gray-600">For future engineers and technologists</p>
             </Link>
@@ -484,6 +565,8 @@ export default function CombinedScienceOverview() {
             </div>
           </div>
         </div>
+        <RelatedGuides slug="combined-science-overview" />
+
         <section className="bg-gradient-to-r from-primary to-primary/90 text-white py-12 px-6 sm:px-8 rounded-2xl text-center space-y-4 shadow-xl">
           <h2 className="text-2xl sm:text-3xl font-bold text-white">Ready to Excel in Combined Science?</h2>
           <p className="text-base sm:text-lg max-w-2xl mx-auto text-white/80">
@@ -507,8 +590,8 @@ export default function CombinedScienceOverview() {
 const articleSchema = {
   "@context": "https://schema.org",
   "@type": "Article",
-  "headline": "N Level Combined Science 2026: Your Complete Guide to All Three Combinations",
-  "description": "Master N Level Combined Science with our comprehensive Singapore-focused guide. Physics-Chemistry, Physics-Biology, Chemistry-Biology combinations, local case studies, and proven exam techniques.",
+  "headline": "Combined Science 2026: Your Complete Guide to All Three Combinations at O-Level & N-Level",
+  "description": "Master Combined Science with our comprehensive Singapore-focused guide, covering O-Level and N-Level. Physics-Chemistry, Physics-Biology, Chemistry-Biology combinations, local case studies, and proven exam techniques.",
   "author": {
     "@type": "Person",
     "name": "Marcus Wong",
@@ -531,19 +614,19 @@ const articleSchema = {
   },
   "articleSection": "Education",
   "keywords": [
-    "N Level Combined Science Singapore",
-    "Combined Science study guide 2026", 
+    "Combined Science Singapore",
+    "Combined Science study guide 2026",
     "Singapore Combined Science exam tips",
-    "5105 5106 5107 Science",
-    "N Level Combined Science tuition",
+    "5086 5087 5088 5105 5106 5107 Science",
+    "Combined Science tuition",
     "Combined Science revision strategies",
     "Singapore science education"
   ],
   "about": [
     {
       "@type": "Thing",
-      "name": "N Level Combined Science",
-      "description": "Integrated two-subject science combinations for Singapore N Level examinations"
+      "name": "Combined Science",
+      "description": "Integrated two-subject science combinations for Singapore O-Level and N-Level examinations"
     },
     {
       "@type": "Thing", 
@@ -560,7 +643,7 @@ const articleSchema = {
     {
       "@type": "Organization",
       "name": "Singapore Examinations and Assessment Board",
-      "description": "Examination board for Singapore N Level examinations"
+      "description": "Examination board for Singapore O-Level and N-Level examinations"
     }
   ],
   "wordCount": 3500,
@@ -570,8 +653,8 @@ const articleSchema = {
   "interactivityType": "Informational",
   "learningResourceType": "Study Guide",
   "audience": {
-    "@type": "EducationalAudience", 
+    "@type": "EducationalAudience",
     "educationalRole": "Student",
-    "audienceType": "N Level Combined Science Students"
+    "audienceType": "O-Level and N-Level Combined Science Students"
   }
 };

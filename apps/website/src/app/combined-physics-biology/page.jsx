@@ -1,14 +1,16 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import physbioImage from "../../../public/combined-physics-biology.webp";
+import GuideSchema from '@/components/seo/GuideSchema';
+import { RelatedGuides, ExamTimetable } from '@/components/guide';
 
 export const metadata = {
-  title:
-    'Combined Physics + Biology: Master N Level Combined Science (N(A)) with Life-in-Motion Integration | LionCity Tutors',
+  title: 'Combined Physics/Biology 2026: O & N-Level Guide',
   description:
-    'Excel in N Level Combined Physics-Biology (Sec 4 N(A)). Singapore-focused guide aligning Physics and Biology topics: forces, energy, waves, EM spectrum, electricity, radioactivity with cells, diffusion, human/plant transport, respiration, nutrition, and infectious disease. Practical exam strategies and local applications.',
+    'Combined Physics/Biology guide for Singapore students. O-Level 5087 and N-Level 5106 syllabus — topics, paper structure and exam technique for both levels.',
   keywords: [
     'Combined Science Physics Biology Singapore',
+    'O Level Combined Science 5087',
     'N Level Combined Science N(A) Physics Biology',
     'Sec 4 N(A) Physics Biology syllabus',
     'N Level Physics Biology integration 2026',
@@ -17,9 +19,9 @@ export const metadata = {
     'LionCity Tutors Combined Science'
   ],
   openGraph: {
-    title: 'Combined Physics + Biology (N(A)): Singapore Success Through Life–Motion Integration',
+    title: 'Combined Physics + Biology: O-Level & N-Level Life–Motion Integration',
     description:
-      'Master the life–motion bridge in N Level Combined Physics/Biology (Sec 4 N(A)). Integration strategies, topic checklists, and Singapore applications.',
+      'Master the life–motion bridge in Combined Physics/Biology, at O-Level (5087) and N-Level (5106). Integration strategies, topic checklists, and Singapore applications.',
     url: 'https://www.lioncitytutors.com/combined-physics-biology',
     type: 'article'
   },
@@ -31,6 +33,14 @@ export const metadata = {
 export default function CombinedPhysicsBiology() {
   return (
     <>
+      <GuideSchema
+        slug="combined-physics-biology"
+        course={{
+          name: 'Combined Physics/Biology Tuition',
+          description: 'One-to-one Combined Science (Physics/Biology) tuition in Singapore, at O-Level (syllabus 5087) and N-Level (syllabus 5106).',
+          educationalLevel: 'GCE O-Level and N-Level',
+        }}
+      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
@@ -42,20 +52,20 @@ export default function CombinedPhysicsBiology() {
 
       <main className="px-4 py-12 max-w-4xl mx-auto">
         <h1 className="text-4xl font-bold text-emerald-800 mb-4">
-          Combined Physics + Biology (N(A)): Master Your N Level Combined Science
+          Combined Physics + Biology: O-Level &amp; N-Level Mastery
         </h1>
 
         <div className="flex items-center space-x-4 mb-8">
           <div>
             <p className="font-semibold text-gray-800">By Sarah Goh, Combined Physics–Biology Tutor</p>
-            <p className="text-sm text-gray-500">Updated June 28, 2026 • N(A) Integration Guide • 16 min read</p>
+            <p className="text-sm text-gray-500">Updated June 28, 2026 • O-Level &amp; N(A) Integration Guide • 16 min read</p>
           </div>
         </div>
 
         <div className="bg-gradient-to-r from-emerald-50 to-teal-50 p-6 rounded-xl mb-8 border-l-4 border-emerald-400">
           <h3 className="text-lg font-bold text-emerald-800 mb-2">🧬 The Life–in–Motion Bridge</h3>
           <p className="text-emerald-700">
-            Combined Physics–Biology (Sec 4 <span className="font-semibold">N(A)</span>) connects how forces and energy shape living systems. Learn to explain biological
+            Combined Physics–Biology, at both O-Level and Sec 4 <span className="font-semibold">N(A)</span>, connects how forces and energy shape living systems. Learn to explain biological
             processes with physics ideas like pressure, heat transfer, waves and electricity — the exact integration
             examiners love in Combined Science.
           </p>
@@ -64,7 +74,7 @@ export default function CombinedPhysicsBiology() {
         <div className="my-8 relative w-full max-w-3xl mx-auto aspect-video overflow-hidden rounded-xl shadow-lg">
           <Image
             src={physbioImage}
-            alt="Singapore students studying biomechanics, diffusion and thermoregulation for N Level Combined Physics-Biology"
+            alt="Singapore students studying biomechanics, diffusion and thermoregulation for O-Level and N-Level Combined Physics-Biology"
             className="object-cover"
             placeholder="blur"
             priority
@@ -74,12 +84,12 @@ export default function CombinedPhysicsBiology() {
         <article className="space-y-8 text-gray-700 leading-relaxed">
           {/* WHY THIS COMBINATION */}
           <section className="bg-emerald-50 p-6 rounded-lg border-l-4 border-emerald-400">
-            <h2 className="text-2xl font-semibold text-emerald-800 mb-3">🎯 Why Physics + Biology (N(A))</h2>
+            <h2 className="text-2xl font-semibold text-emerald-800 mb-3">🎯 Why Physics + Biology</h2>
             <p className="mb-4">
               Among Combined Science options, Physics–Biology suits students interested in healthcare, sports science,
               environmental technology, and public health. You will learn to analyse <span className="font-semibold">living functions using physics</span> —
-              from blood pressure and ventilation to plant transport and light in photosynthesis (core ideas remain within
-              the <span className="font-semibold">N(A) Combined Science</span> scope).
+              from blood pressure and ventilation to plant transport and light in photosynthesis. This page covers
+              the topic scope for both the <span className="font-semibold">O-Level (5087)</span> and <span className="font-semibold">N(A) Combined Science (5106)</span> syllabuses.
             </p>
             <div className="bg-white p-5 rounded-lg">
               <h4 className="font-semibold text-emerald-700 mb-3">Pathways This Builds:</h4>
@@ -138,16 +148,17 @@ export default function CombinedPhysicsBiology() {
             </div>
 
             <p className="text-xs text-gray-500 mt-3">
-              Note: This page is written specifically for <span className="font-semibold">Combined Science, Sec 4 N(A)</span>, not the Express syllabus.
+              Note: The topic lists above are for <span className="font-semibold">Combined Science, Sec 4 N(A) (syllabus 5106)</span>. The O-Level
+              (Express, syllabus 5087) topic scope and paper structure are covered below.
             </p>
           </section>
 
           {/* ASSESSMENT OVERVIEW */}
           <section>
-            <h2 className="text-2xl font-semibold text-indigo-700 mb-4">🧪 Assessment Overview & Study Rhythm</h2>
+            <h2 className="text-2xl font-semibold text-indigo-700 mb-4">🧪 N-Level (5106) Assessment Overview & Study Rhythm</h2>
 
             <div className="bg-indigo-50 p-5 rounded-lg mb-4">
-              <h3 className="font-semibold text-indigo-800 mb-3">Paper Structure (Combined Science)</h3>
+              <h3 className="font-semibold text-indigo-800 mb-3">Paper Structure (N-Level Combined Science)</h3>
               <div className="bg-white p-4 rounded-lg text-sm">
                 <ul className="space-y-2">
                   <li>• Each discipline has an <span className="font-semibold">MCQ paper</span> and a <span className="font-semibold">Structured paper</span>.</li>
@@ -164,6 +175,68 @@ export default function CombinedPhysicsBiology() {
                 <p className="mb-2"><strong>Order:</strong> Start with your stronger subject’s MCQ → switch to its Structured → move to the other subject’s MCQ → finish with Structured.</p>
                 <p className="mb-2"><strong>Checkpoints:</strong> Mark uncertain MCQs, return only if time allows. For Structured, write formula/definition first, then substitute values or key terms.</p>
                 <p className="mb-0"><strong>Calculator hygiene:</strong> For physics calculations, show units; for biology, define processes (e.g., diffusion/osmosis) before applying.</p>
+              </div>
+            </div>
+          </section>
+
+          {/* O-LEVEL SECTION */}
+          <section className="bg-sky-50 p-6 rounded-lg border-l-4 border-[#0474BA]">
+            <h2 className="text-2xl font-semibold text-[#0474BA] mb-4">❓ What is O-Level Combined Physics/Biology?</h2>
+            <p className="mb-4">
+              O-Level Combined Physics/Biology (syllabus 5087) is sat by Secondary 4 Express-stream students, not
+              N(A) students. It shares one multiple-choice paper across Physics and Biology, then a separate
+              structured paper for each subject — unlike N-Level 5106, where each subject has its own full
+              MCQ-plus-structured pair.
+            </p>
+            <div className="bg-white p-5 rounded-lg">
+              <h4 className="font-semibold text-[#0474BA] mb-3">O-Level 5087 paper structure:</h4>
+              <div className="overflow-x-auto">
+                <table className="w-full bg-white rounded-lg shadow-sm">
+                  <thead className="bg-sky-100">
+                    <tr className="text-sm">
+                      <th className="p-3 text-left font-semibold">Paper</th>
+                      <th className="p-3 text-left font-semibold">Content</th>
+                    </tr>
+                  </thead>
+                  <tbody className="text-sm">
+                    <tr className="border-b">
+                      <td className="p-3 font-semibold text-purple-700">Paper 1</td>
+                      <td className="p-3">MCQ, shared across Physics and Biology</td>
+                    </tr>
+                    <tr className="border-b">
+                      <td className="p-3 font-semibold text-orange-700">Paper 2</td>
+                      <td className="p-3">Physics, structured</td>
+                    </tr>
+                    <tr>
+                      <td className="p-3 font-semibold text-green-700">Paper 4</td>
+                      <td className="p-3">Biology, structured</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <p className="text-xs text-gray-500 mt-3">Who sits it: Secondary 4 Express-stream students taking the GCE O-Level exam.</p>
+            </div>
+          </section>
+
+          {/* EXAM TIMETABLES */}
+          <section>
+            <h2 className="text-2xl font-semibold text-blue-700 mb-4">📅 2026 Exam Timetables — Both Levels</h2>
+            <div className="space-y-6">
+              <div>
+                <h3 className="font-semibold text-[#0474BA] mb-2">O-Level Combined Physics/Biology</h3>
+                <ExamTimetable
+                  examSlug="o-level"
+                  subjectSlugs={['combined-science-phy-bio']}
+                  caption="Official 2026 SEAB dates — O-Level Combined Science (Physics/Biology), syllabus 5087."
+                />
+              </div>
+              <div>
+                <h3 className="font-semibold text-[#F17720] mb-2">N-Level Combined Physics/Biology</h3>
+                <ExamTimetable
+                  examSlug="n-level"
+                  subjectSlugs={['combined-science-phy-bio']}
+                  caption="Official 2026 SEAB dates — N-Level Combined Science (Physics/Biology), syllabus 5106."
+                />
               </div>
             </div>
           </section>
@@ -381,9 +454,9 @@ export default function CombinedPhysicsBiology() {
 
           {/* FAQ */}
           <section className="bg-gray-50 p-6 rounded-xl">
-            <h2 className="text-2xl font-semibold text-gray-800 mb-4">❓ Combined Physics–Biology (N(A)) FAQs</h2>
+            <h2 className="text-2xl font-semibold text-gray-800 mb-4">❓ Combined Physics–Biology FAQs</h2>
             <div className="space-y-4">
-              <FAQ q="Is this page meant for Sec 4 N(A) or Express?" a="Sec 4 N(A). Topic lists and strategies here are aligned to the N(A) Combined Science scope." />
+              <FAQ q="Is this page for Sec 4 N(A) or O-Level Express?" a="Both. The detailed topic lists and integration strategies are aligned to N(A) Combined Science (5106); the O-Level (5087) syllabus scope and paper structure are covered in their own section above." />
               <FAQ q="How do I revise both subjects efficiently?" a="Do 70% single-subject practice to secure fundamentals, 30% integrated questions where you must link physics to biological function." />
               <FAQ q="What are common mistakes?" a="Missing units in physics, not naming the biology process, and vague keywords (e.g., saying 'movement' instead of 'diffusion' or 'osmosis')." />
               <FAQ q="Do I need advanced formulas not on the sheet?" a="No. Stick to formulae provided/learned in class; show working and keep units consistent." />
@@ -422,7 +495,7 @@ export default function CombinedPhysicsBiology() {
           </section>
 
           <div className="bg-emerald-800 text-white p-6 rounded-xl mt-8">
-            <h3 className="text-lg font-semibold mb-2">🔬 Check out similar N-Level resources</h3>
+            <h3 className="text-lg font-semibold mb-2">🔬 Check out related Combined Science guides</h3>
             <p className="text-sm">Explore our curated guides to deepen your understanding and excel in your studies.</p>
             <div className="mt-4 pt-4 border-t border-emerald-700">
               <div className="grid grid-cols-3 gap-6 text-center">
@@ -432,6 +505,8 @@ export default function CombinedPhysicsBiology() {
               </div>
             </div>
           </div>
+          <RelatedGuides slug="combined-physics-biology" />
+
           <section className="bg-gradient-to-r from-primary to-primary/90 text-white py-12 px-6 sm:px-8 rounded-2xl text-center space-y-4 shadow-xl">
           <h2 className="text-2xl sm:text-3xl font-bold text-white">Ready to Excel in Combined Physics/Biology?</h2>
           <p className="text-base sm:text-lg max-w-2xl mx-auto text-white/80">
@@ -487,9 +562,9 @@ const articleSchema = {
   "@context": "https://schema.org",
   "@type": "Article",
   headline:
-    'Combined Physics + Biology (N(A)): Master N Level Combined Science with Life–Motion Integration',
+    'Combined Physics + Biology: O-Level (5087) & N-Level (5106) Life–Motion Integration',
   description:
-    'Singapore-focused N(A) Combined Physics–Biology guide. Accurate topic lists, integration patterns, Singapore applications, and practical exam strategies.',
+    'Singapore-focused Combined Physics–Biology guide covering O-Level and N(A). Accurate topic lists, integration patterns, Singapore applications, and practical exam strategies.',
   author: {
     "@type": "Person",
     name: 'Sarah Goh',
@@ -506,10 +581,10 @@ const faqSchema = {
   mainEntity: [
     {
       "@type": "Question",
-      name: 'Is this page meant for Sec 4 N(A) or Express?',
+      name: 'Is this page for Sec 4 N(A) or O-Level Express?',
       acceptedAnswer: {
         "@type": "Answer",
-        text: 'Sec 4 N(A). Topic lists and strategies are aligned to the N(A) Combined Science scope.'
+        text: 'Both. The detailed topic lists and integration strategies are aligned to N(A) Combined Science (5106); the O-Level (5087) syllabus scope and paper structure are covered in their own section on the page.'
       }
     },
     {

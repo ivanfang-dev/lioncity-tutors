@@ -1,12 +1,12 @@
 import { MATCH_TIME } from '@/data/promises';
 export const metadata = {
-  title: "A Level H2 Biology Guide 2026: Complete Study Strategy for Singapore Students | LionCity Tutors",
-  description: "Ultimate A Level H2 Biology preparation guide for Singapore students. Expert strategies, practical techniques, and proven tips to score A in H2 Biology 2026.",
+  title: "A-Level H2 Biology Guide 2026 (9477) | LionCity Tutors",
+  description: "H2 Biology (9477) guide for Singapore JC students — the revised 2026 syllabus, cell biology through ecology, and the technique that scores an A grade.",
   keywords: [
-    "A Level H2 Biology 2026", "H2 Biology Singapore", "GCE A Level Biology guide", "A Level Biology preparation", "H2 Biology study tips", "A Level Biology tuition Singapore", "Biology revision techniques", "H2 Biology syllabus"
+    "A Level H2 Biology 2026", "H2 Biology Singapore", "GCE A Level Biology guide", "A Level Biology preparation", "H2 Biology study tips", "A Level Biology tuition Singapore", "Biology revision techniques", "H2 Biology syllabus", "9477 syllabus"
   ],
   openGraph: {
-    title: "A Level H2 Biology Guide 2026: Complete Study Strategy for Singapore Students",
+    title: "A-Level H2 Biology Guide 2026 (9477) | LionCity Tutors",
     description: "Comprehensive A Level H2 Biology guide with proven strategies to help Singapore students achieve A grades in GCE A Level Biology.",
     type: "article",
     url: "https://www.lioncitytutors.com/a-level-biology",
@@ -17,17 +17,24 @@ export const metadata = {
 };
 
 import TableOfContents from '@/components/TableOfContents';
+import GuideSchema from '@/components/seo/GuideSchema';
 import {
   GuideHeader, SectionHeading, GuideCard, TopicCard, GuideTimeline, KeyTakeaways, GuideCTA, ICON_STROKE,
+  RelatedGuides, ExamTimetable,
 } from '@/components/guide';
+import { getHubFor } from '@/lib/seo/links.mjs';
 import {
   FileText, CalendarClock, Microscope, Dna, HeartPulse, Leaf, Brain, Target,
   TriangleAlert, CalendarDays, BookOpen, FlaskConical, GraduationCap, Users,
-  Hourglass, HeartHandshake, Compass, Flag, ListChecks,
+  Hourglass, HeartHandshake, Compass, Flag, ListChecks, RefreshCw,
 } from 'lucide-react';
+
+const aLevelHub = getHubFor('a-level-biology');
 
 const tableOfContents = [
   { id: 'structure', label: 'Exam & paper structure' },
+  { id: 'exam-dates', label: '2026 exam timetable' },
+  { id: 'revised-syllabus', label: 'What changed for 2026 (9477)' },
   { id: 'timeline', label: '24-month study timeline' },
   { id: 'cell-biology', label: 'Cell biology' },
   { id: 'genetics', label: 'Genetics & molecular biology' },
@@ -101,6 +108,14 @@ Preferred days & timing: `;
 
   return (
     <>
+    <GuideSchema
+      slug="a-level-biology"
+      course={{
+        name: 'A-Level H2 Biology Tuition',
+        description: 'One-to-one H2 Biology tuition in Singapore, covering the revised 9477 syllabus and Paper 4 practical.',
+        educationalLevel: 'GCE A-Level',
+      }}
+    />
     <main className="mx-auto max-w-6xl px-4 sm:px-6 py-12 sm:py-16">
       <div className="mx-auto max-w-2xl lg:max-w-none lg:grid lg:grid-cols-[minmax(0,42rem)_15rem] lg:justify-center lg:gap-12">
         {/* Article column */}
@@ -121,7 +136,7 @@ Preferred days & timing: `;
             {/* Key takeaways */}
             <KeyTakeaways
               items={[
-                <>H2 Biology (9744) is examined across three papers &mdash; MCQ (<span className="tabular-nums">15%</span>), structured (<span className="tabular-nums">50%</span>) and free-response (<span className="tabular-nums">35%</span>).</>,
+                <>H2 Biology (9477) is examined across four papers &mdash; MCQ (<span className="tabular-nums">15%</span>), two structured/free-response papers (<span className="tabular-nums">30%</span> and <span className="tabular-nums">35%</span>) and the Paper 4 practical (<span className="tabular-nums">20%</span>).</>,
                 <>A steady JC1&rarr;JC2 timeline built on understanding beats last-minute memorisation every time.</>,
                 <>The biggest score lever isn&rsquo;t knowing more &mdash; it&rsquo;s answer technique: precise scientific language and visible reasoning.</>,
                 <>Struggling with application or data-analysis questions is the usual signal that targeted tuition will help.</>,
@@ -146,10 +161,10 @@ Preferred days & timing: `;
             <section id="structure" className="scroll-mt-24">
               <SectionHeading icon={FileText}>Understanding A Level H2 Biology Structure</SectionHeading>
               <p className="text-pretty">
-                Singapore&rsquo;s A Level H2 Biology (Paper 9744) is a comprehensive subject that bridges secondary school biology with university-level concepts, essential for students pursuing medicine, life sciences, and related courses.
+                Singapore&rsquo;s A Level H2 Biology (Paper 9477) is a comprehensive subject that bridges secondary school biology with university-level concepts, essential for students pursuing medicine, life sciences, and related courses. This is the revised syllabus school candidates sit from 2026 &mdash; see below for what changed from the legacy 9744 syllabus.
               </p>
               <GuideCard className="mt-4">
-                <h4 className="font-semibold text-gray-900 mb-4">H2 Biology Papers Breakdown</h4>
+                <h4 className="font-semibold text-gray-900 mb-4">H2 Biology (9477) Papers Breakdown</h4>
                 <div className="space-y-5">
                   <div>
                     <h5 className="font-semibold text-gray-900">Paper 1: Multiple Choice Questions</h5>
@@ -163,22 +178,55 @@ Preferred days & timing: `;
                   <div>
                     <h5 className="font-semibold text-gray-900">Paper 2: Structured Questions</h5>
                     <ul className="list-disc ml-5 mt-1.5 space-y-1 text-sm text-gray-700">
-                      <li>Variable number of questions worth 100 marks</li>
+                      <li>Variable number of questions worth 90 marks</li>
                       <li>Duration: 2 hours</li>
-                      <li>50% of total H2 Biology grade</li>
+                      <li>30% of total H2 Biology grade</li>
                       <li>Focuses on application and problem-solving</li>
                     </ul>
                   </div>
                   <div>
-                    <h5 className="font-semibold text-gray-900">Paper 3: Free Response Questions</h5>
+                    <h5 className="font-semibold text-gray-900">Paper 3: Long Structured &amp; Free Response Questions</h5>
                     <ul className="list-disc ml-5 mt-1.5 space-y-1 text-sm text-gray-700">
-                      <li>Variable number of questions worth 100 marks</li>
-                      <li>Duration: 2 hours 30 minutes</li>
+                      <li>Variable number of questions worth 75 marks</li>
+                      <li>Duration: 2 hours</li>
                       <li>35% of total H2 Biology grade</li>
                       <li>Emphasizes extended responses and synthesis</li>
                     </ul>
                   </div>
+                  <div>
+                    <h5 className="font-semibold text-gray-900">Paper 4: Practical</h5>
+                    <ul className="list-disc ml-5 mt-1.5 space-y-1 text-sm text-gray-700">
+                      <li>50 marks, sat as a separately-dated laboratory exam</li>
+                      <li>Duration: 2 hours 30 minutes</li>
+                      <li>20% of total H2 Biology grade</li>
+                      <li>Tests planning, manipulation, observation and data-analysis skills directly, at the bench</li>
+                    </ul>
+                  </div>
                 </div>
+              </GuideCard>
+            </section>
+
+            <section id="exam-dates" className="scroll-mt-24">
+              <SectionHeading icon={CalendarDays}>2026 H2 Biology Exam Timetable</SectionHeading>
+              <ExamTimetable
+                examSlug="a-level"
+                subjectSlugs={['h2-biology']}
+                caption="Official 2026 SEAB dates for H2 Biology (9477)."
+              />
+            </section>
+
+            <section id="revised-syllabus" className="scroll-mt-24">
+              <SectionHeading icon={RefreshCw}>What changed for the 2026 syllabus (9477)?</SectionHeading>
+              <GuideCard>
+                <p className="text-sm text-gray-700">
+                  H2 Biology moved to the revised 9477 syllabus for the 2026 examination — the final year the legacy 9744 syllabus is offered, for private and repeat candidates only. See the{' '}
+                  {aLevelHub ? (
+                    <a href={`${aLevelHub.url}#revised-syllabus`} className="font-semibold text-primary hover:underline">
+                      {aLevelHub.anchor}
+                    </a>
+                  ) : 'A-Level preparation guide'}
+                  {' '}for the full mark-scheme changes and what legacy-syllabus retakers need to know.
+                </p>
               </GuideCard>
             </section>
 
@@ -455,7 +503,7 @@ Preferred days & timing: `;
             <section id="practical" className="scroll-mt-24">
               <SectionHeading icon={FlaskConical}>Practical Skills and Laboratory Techniques</SectionHeading>
               <p className="text-pretty">
-                H2 Biology emphasizes practical skills and data analysis abilities that are tested indirectly through written papers:
+                H2 Biology practical skills are examined directly in the separately-dated Paper 4 practical (20% of the grade), and data-analysis ability is also tested indirectly through written-paper questions. Both draw on the same core skills:
               </p>
               <ul className="list-disc ml-6 space-y-2 mt-3 text-gray-700">
                 <li><strong className="text-gray-900">Master Common Techniques:</strong> Microscopy, DNA extraction, enzyme assays, and chromatography</li>
@@ -604,6 +652,8 @@ Preferred days & timing: `;
                 </p>
               </div>
             </section>
+
+            <RelatedGuides slug="a-level-biology" />
 
             {/* Conversion block */}
             <GuideCTA

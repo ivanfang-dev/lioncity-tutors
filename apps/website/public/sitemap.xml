@@ -294,4 +294,10 @@
     <priority>0.8</priority>
     <changefreq>weekly</changefreq>
   </url>
+  <url>
+    <loc>https://www.lioncitytutors.com/guides/ib-igcse</loc>
+    <lastmod>2026-07-29T00:00:00+08:00</lastmod>
+    <priority>0.8</priority>
+    <changefreq>weekly</changefreq>
+  </url>
 </urlset>

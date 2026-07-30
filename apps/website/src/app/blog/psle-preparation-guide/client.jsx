@@ -4,8 +4,9 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
-import { X, Printer, Star, AlertTriangle, CheckCircle, BookOpen, Target, Calendar, Brain, Heart, Download } from 'lucide-react';
+import { X, Printer, Star, AlertTriangle, CheckCircle, BookOpen, Target, Calendar, CalendarClock, Brain, Heart, Download, HelpCircle } from 'lucide-react';
+import { RelatedGuides, ExamTimetable } from '@/components/guide';
+import { PSLE_FAQS } from './faqs.mjs';
 
 const PDFModal = ({ title, children, onClose }) => (
     <>
@@ -140,6 +141,7 @@ const TableOfContents = () => (
       <h4 className="font-semibold text-text-default">On This Page</h4>
       <nav className="space-y-2 text-sm">
         <a href="#al-scoring" className="block text-text-default/80 hover:text-primary transition-colors">AL Scoring System</a>
+        <a href="#timetable" className="block text-text-default/80 hover:text-primary transition-colors">2026 PSLE Timetable</a>
         <a href="#timeline" className="block text-text-default/80 hover:text-primary transition-colors">12-Month Timeline</a>
         <a href="#subject-strategies" className="block text-text-default/80 hover:text-primary transition-colors">Subject Strategies</a>
         <a href="#common-pitfalls" className="block text-text-default/80 hover:text-primary transition-colors">Common Pitfalls</a>
@@ -185,35 +187,6 @@ const Timeline = () => (
             </div>
         </div>
     </div>
-);
-
-const FAQ = () => (
-  <Accordion type="single" collapsible className="w-full">
-    <AccordionItem value="item-1">
-      <AccordionTrigger>How is the final PSLE score calculated?</AccordionTrigger>
-      <AccordionContent>
-        The final PSLE Score is the sum of the Achievement Levels (AL) from the four subjects (English, Math, Science, Mother Tongue). Each subject is graded from AL 1 (best) to AL 8. The total score will range from 4 to 32, with a lower score being better.
-      </AccordionContent>
-    </AccordionItem>
-    <AccordionItem value="item-2">
-      <AccordionTrigger>What's the biggest change in the new PSLE English syllabus?</AccordionTrigger>
-      <AccordionContent>
-       The most significant change is the increased emphasis on critical thinking and viewing literacy. For the oral component, students are now assessed on their ability to respond to a visual stimulus (e.g., a poster or an infographic) based on the criteria of Purpose, Audience, and Context (PAC). This requires more than just descriptive skills; it demands interpretation and analysis. For a deeper look, check out our <Link href="/psle-english" className="text-accent underline">full guide to the PSLE English syllabus</Link>.
-      </AccordionContent>
-    </AccordionItem>
-    <AccordionItem value="item-3">
-      <AccordionTrigger>Should my child focus more on their weak subjects or strong subjects?</AccordionTrigger>
-      <AccordionContent>
-        A balanced approach is crucial. While it's vital to pull up weaker subjects to prevent them from dragging down the overall score, it's equally important to maintain strong subjects to secure those top ALs. In the final months, the strategy should be to secure the strong subjects while doing targeted, high-impact revision on the weakest 1-2 topics of the weaker subjects.
-      </AccordionContent>
-    </AccordionItem>
-     <AccordionItem value="item-4">
-      <AccordionTrigger>When is the right time to hire a tutor?</AccordionTrigger>
-      <AccordionContent>
-       There is no single "right" time, but key indicators include: 1) Your child consistently struggles with a subject despite effort. 2) You notice a significant drop in their confidence or motivation. 3) Feedback from teachers indicates a persistent conceptual gap. 4) Your child is doing well but aims for a top secondary school and needs to refine their skills from an AL 3/4 to an AL 1/2.
-      </AccordionContent>
-    </AccordionItem>
-  </Accordion>
 );
 
 const Resources = ({ setActivePdf }) => (
@@ -367,7 +340,19 @@ export default function PSLEPreparationGuideClient() {
                 </CardContent>
               </Card>
             </section>
-            
+
+            <section id="timetable">
+              <h2 className="text-3xl md:text-4xl font-bold mb-6 border-l-4 border-primary pl-4 flex items-center"><CalendarClock className="mr-3 h-8 w-8 text-primary shrink-0" />When is the PSLE in 2026?</h2>
+              <p className="mb-6 text-lg">
+                {PSLE_FAQS[0].answer}
+              </p>
+              <Card className="shadow-md bg-background-card">
+                <CardContent className="pt-6">
+                  <ExamTimetable examSlug="psle" caption="Official 2026 PSLE timetable, as published by SEAB." />
+                </CardContent>
+              </Card>
+            </section>
+
             <section id="timeline">
               <h2 className="text-3xl md:text-4xl font-bold mb-8 border-l-4 border-primary pl-4">The 12-Month PSLE Preparation Timeline</h2>
               <Timeline />
@@ -517,13 +502,18 @@ export default function PSLEPreparationGuideClient() {
               <Resources setActivePdf={setActivePdf} />
             </section>
 
-            <section id="faq">
-              <h2 className="text-3xl md:text-4xl font-bold mb-8 border-l-4 border-primary pl-4">Frequently Asked Questions</h2>
-              <Card>
-                <CardContent className="p-6">
-                  <FAQ />
-                </CardContent>
-              </Card>
+            <RelatedGuides slug="psle-prep" heading="In-depth PSLE subject guides" showHub={false} />
+
+            <section id="faq" aria-labelledby="faq-heading">
+              <h2 id="faq-heading" className="text-3xl md:text-4xl font-bold mb-8 border-l-4 border-primary pl-4 flex items-center"><HelpCircle className="mr-3 h-8 w-8 text-primary shrink-0" />Frequently Asked Questions</h2>
+              <div className="space-y-6">
+                {PSLE_FAQS.map((faq) => (
+                  <div key={faq.question}>
+                    <h3 className="text-xl font-semibold text-text-default">{faq.question}</h3>
+                    <p className="mt-2 text-text-default/80">{faq.answer}</p>
+                  </div>
+                ))}
+              </div>
             </section>
 
             <section id="testimonials">

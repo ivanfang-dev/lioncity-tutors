@@ -16,6 +16,14 @@ export function getHubFor(slug) {
   return spoke ? HUBS[spoke.hub] : undefined;
 }
 
+/** Every hub that surfaces this page: its primary hub first, then any alsoIn hubs. */
+export function getHubsFor(slug) {
+  const page = getPage(slug);
+  if (!page) return [];
+  if (HUBS[slug]) return [HUBS[slug]];
+  return [HUBS[page.hub], ...(page.alsoIn ?? []).map((s) => HUBS[s])].filter(Boolean);
+}
+
 /** Sibling spokes in the same cluster, excluding the page itself. */
 export function getSiblings(slug) {
   const hub = getHubFor(slug);

@@ -10,8 +10,10 @@ import useTuitionRequestForm from "@/components/useTuitionRequestForm";
 import FormBenefits from "@/components/FormBenefits";
 import { CheckCircle } from "lucide-react";
 import TableOfContents from "@/components/TableOfContents";
+import GuideSchema from '@/components/seo/GuideSchema';
 import {
   GuideHeader, SectionHeading, GuideCard, TopicCard, GuideTimeline, KeyTakeaways, ICON_STROKE,
+  RelatedGuides, ExamTimetable,
 } from "@/components/guide";
 import {
   FileText, CalendarClock, PenLine, SpellCheck, BookOpenText, Mic, Brain, Target,
@@ -20,6 +22,7 @@ import {
 
 const tableOfContents = [
   { id: "structure", label: "Exam & paper structure" },
+  { id: "exam-dates", label: "2026 exam timetable" },
   { id: "timeline", label: "12-month study plan" },
   { id: "writing", label: "Writing (Paper 1)" },
   { id: "language-use", label: "Language use & grammar" },
@@ -103,6 +106,14 @@ export default function PSLEEnglish() {
 
   return (
     <>
+      <GuideSchema
+        slug="psle-english"
+        course={{
+          name: 'PSLE English Tuition',
+          description: 'One-to-one PSLE English tuition in Singapore, covering composition, comprehension, grammar and oral technique across all four papers.',
+          educationalLevel: 'PSLE',
+        }}
+      />
       <main className="mx-auto max-w-6xl px-4 sm:px-6 py-12 sm:py-16">
         <div className="mx-auto max-w-2xl lg:max-w-none lg:grid lg:grid-cols-[minmax(0,42rem)_15rem] lg:justify-center lg:gap-12">
           {/* Article column */}
@@ -182,6 +193,15 @@ export default function PSLEEnglish() {
                     </div>
                   </div>
                 </GuideCard>
+              </section>
+
+              <section id="exam-dates" className="scroll-mt-24">
+                <SectionHeading icon={CalendarDays}>2026 PSLE English exam timetable</SectionHeading>
+                <ExamTimetable
+                  examSlug="psle"
+                  subjectSlugs={['english']}
+                  caption="Official 2026 SEAB dates for PSLE English Language."
+                />
               </section>
 
               <section id="timeline" className="scroll-mt-24">
@@ -412,6 +432,8 @@ export default function PSLEEnglish() {
                   <p className="text-sm"><strong className="text-gray-900">Choose PSLE English tutors who:</strong> know the current four-paper format, give specific written feedback on compositions and open-ended answers, drill grammar and cloze without rote worksheets, and build a child&rsquo;s confidence in speaking.</p>
                 </GuideCard>
               </section>
+
+              <RelatedGuides slug="psle-english" />
             </article>
           </div>
 
