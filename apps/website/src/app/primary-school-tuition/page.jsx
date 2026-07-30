@@ -269,80 +269,8 @@ export default function PrimarySchoolTuition() {
         </section>
 
         {/* Section 4: PSLE Guides */}
-        <section className="bg-gradient-to-br from-blue-50 to-indigo-50 p-12 rounded-2xl">
-          <h2 className="text-2xl md:text-3xl font-semibold mb-8 text-primary text-center">Comprehensive PSLE Preparation Guides</h2>
-          <p className="text-gray-600 text-center max-w-3xl mx-auto mb-8">
-            Access our detailed subject-specific PSLE guides, designed to help your child excel in every component of the examination.
-          </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <Link href="/blog/psle-preparation-guide" className="block">
-              <div className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-200 h-full">
-                <div className="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <span className="text-2xl">🎯</span>
-                </div>
-                <h3 className="font-bold text-lg text-primary text-center mb-2">PSLE Preparation Guide</h3>
-                <p className="text-gray-600 text-sm text-center">Complete roadmap to PSLE success with proven strategies and study schedules</p>
-              </div>
-            </Link>
-
-            <Link href="/psle-english" className="block">
-              <div className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-200 h-full">
-                <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <span className="text-2xl">📝</span>
-                </div>
-                <h3 className="font-bold text-lg text-blue-700 text-center mb-2">PSLE English Guide</h3>
-                <p className="text-gray-600 text-sm text-center">Master composition writing, comprehension, and oral communication skills</p>
-              </div>
-            </Link>
-
-            <Link href="/psle-math" className="block">
-              <div className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-200 h-full">
-                <div className="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <span className="text-2xl">🔢</span>
-                </div>
-                <h3 className="font-bold text-lg text-emerald-700 text-center mb-2">PSLE Math Guide</h3>
-                <p className="text-gray-600 text-sm text-center">Excel in problem-solving, mental calculations, and mathematical concepts</p>
-              </div>
-            </Link>
-
-            <Link href="/psle-science" className="block">
-              <div className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-200 h-full">
-                <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <span className="text-2xl">🔬</span>
-                </div>
-                <h3 className="font-bold text-lg text-purple-700 text-center mb-2">PSLE Science Guide</h3>
-                <p className="text-gray-600 text-sm text-center">Master scientific concepts, process skills, and application questions</p>
-              </div>
-            </Link>
-
-            <Link href="/psle-chinese" className="block">
-              <div className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-200 h-full">
-                <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <span className="text-2xl">📚</span>
-                </div>
-                <h3 className="font-bold text-lg text-red-700 text-center mb-2">PSLE Chinese Guide</h3>
-                <p className="text-gray-600 text-sm text-center">Excel in composition, comprehension, and oral communication</p>
-              </div>
-            </Link>
-          </div>
-          <div className="mt-8 text-center">
-            <p className="text-gray-600 mb-4">Each guide includes:</p>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-3xl mx-auto">
-              <div className="flex items-center justify-center space-x-2">
-                <span className="text-emerald-500">✓</span>
-                <span className="text-sm">Detailed syllabus breakdown</span>
-              </div>
-              <div className="flex items-center justify-center space-x-2">
-                <span className="text-emerald-500">✓</span>
-                <span className="text-sm">Proven study strategies</span>
-              </div>
-              <div className="flex items-center justify-center space-x-2">
-                <span className="text-emerald-500">✓</span>
-                <span className="text-sm">Practice resources</span>
-              </div>
-            </div>
-          </div>
-        </section>
+        {/* PSLE subject guides are now rendered by <RelatedGuides>, sourcing
+            spokes and anchor text from src/lib/seo/clusters.mjs. */}
 
         {/* Section 5: Teaching Methods */}
         <section>
