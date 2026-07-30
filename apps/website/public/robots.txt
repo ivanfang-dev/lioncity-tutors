@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+# Internal surfaces — no value in the index.
+Disallow: /ops
+Disallow: /api/
+
+Sitemap: https://www.lioncitytutors.com/sitemap.xml
