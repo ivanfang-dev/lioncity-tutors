@@ -50,6 +50,10 @@ export const HUBS = {
     url: '/guides/ib-igcse',
     title: 'IB & IGCSE Guide',
     anchor: 'IB and IGCSE subject guide hub',
+    // Hubs may override the generic description RelatedGuides shows on their
+    // card. The exam-prep hubs are fine with the default; this one is not, since
+    // IB and IGCSE have no single national timetable.
+    blurb: 'How IB Diploma and IGCSE differ from the Singapore national track, subject by subject.',
     spokes: [
       'ibdp-biology', 'ibdp-chemistry', 'ibdp-physics',
       'igcse-biology', 'igcse-chemistry', 'igcse-physics',

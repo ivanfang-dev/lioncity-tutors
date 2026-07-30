@@ -1,6 +1,7 @@
 import { MATCH_TIME } from '@/data/promises';
+import GuideSchema from '@/components/seo/GuideSchema';
 export const metadata = {
-  title: 'IBDP Physics Guide 2026: Complete Study Strategy for Singapore Students | LionCity Tutors',
+  title: 'IBDP Physics Guide 2026: HL & SL Study Strategy',
   description: 'Ultimate IBDP Physics preparation guide for Singapore students. Expert strategies, practical techniques, and proven tips to score 7 in IBDP Physics 2026.',
   keywords: [
     'IBDP Physics 2026',
@@ -26,6 +27,7 @@ export const metadata = {
 import TableOfContents from '@/components/TableOfContents';
 import {
   GuideHeader, SectionHeading, GuideCard, TopicCard, GuideTimeline, KeyTakeaways, GuideCTA, ICON_STROKE,
+  RelatedGuides,
 } from '@/components/guide';
 import {
   FileText, CalendarClock, Gauge, Waves, Zap, Atom, ClipboardList, Target,
@@ -107,6 +109,15 @@ Preferred days & timing: `;
 
   return (
     <>
+      <GuideSchema
+        slug="ibdp-physics"
+        course={{
+          name: 'IBDP Physics Tuition',
+          description:
+            'IB Diploma Physics tuition in Singapore, covering HL and SL content, the internal assessment and paper technique.',
+          educationalLevel: 'IB Diploma Programme',
+        }}
+      />
     <main className="mx-auto max-w-6xl px-4 sm:px-6 py-12 sm:py-16">
       <div className="mx-auto max-w-2xl lg:max-w-none lg:grid lg:grid-cols-[minmax(0,42rem)_15rem] lg:justify-center lg:gap-12">
         {/* Article column */}
@@ -601,6 +612,8 @@ Preferred days & timing: `;
             </section>
 
             {/* Conversion block */}
+            <RelatedGuides slug="ibdp-physics" />
+
             <GuideCTA
               title="Find your IBDP Physics tutor"
               description={`Tell us your child’s level and goals. We hand-match a vetted, MOE-familiar IBDP Physics tutor — usually within ${MATCH_TIME} — and parents never pay an agency fee.`}

@@ -42,7 +42,7 @@ export default function RelatedGuides({ slug, heading = 'Continue your revision'
               <span>
                 <span className="block font-semibold text-[#0474BA]">{hub.anchor}</span>
                 <span className="mt-1 block text-sm text-gray-600">
-                  Timetable, subject choices and the full revision plan in one place.
+                  {hub.blurb ?? 'Timetable, subject choices and the full revision plan in one place.'}
                 </span>
               </span>
               <ArrowUpRight
