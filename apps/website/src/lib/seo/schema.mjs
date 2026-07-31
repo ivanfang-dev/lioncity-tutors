@@ -50,6 +50,39 @@ export function buildFaqSchema(faqs) {
   };
 }
 
+/**
+ * For resource pages — a page whose point is the collection it lists, not a
+ * subject it teaches. Course would be wrong: nobody enrols in a folder of past
+ * papers. `items` are the on-page groupings, each linking to its own section.
+ *
+ * @param {{slug: string, name: string, description: string,
+ *          items?: Array<{name: string, url: string}>}} args
+ */
+export function buildCollectionPageSchema({ slug, name, description, items }) {
+  const page = getPage(slug);
+  if (!page) return null;
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name,
+    description,
+    url: absolute(page.url),
+    publisher: ORG,
+  };
+  if (items && items.length > 0) {
+    schema.mainEntity = {
+      '@type': 'ItemList',
+      itemListElement: items.map((item, index) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        name: item.name,
+        url: absolute(item.url),
+      })),
+    };
+  }
+  return schema;
+}
+
 export function buildCourseSchema({ slug, name, description, educationalLevel }) {
   const page = getPage(slug);
   if (!page) return null;

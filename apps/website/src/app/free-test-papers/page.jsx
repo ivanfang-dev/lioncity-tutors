@@ -1,572 +1,148 @@
-"use client"
+import Link from 'next/link';
+import { ArrowRight, FileText, HelpCircle } from 'lucide-react';
+import GuideSchema from '@/components/seo/GuideSchema';
+import { RelatedGuides, GuideCTA, ICON_STROKE } from '@/components/guide';
+import { getPage } from '@/lib/seo/links.mjs';
+import { MATCH_TIME } from '@/data/promises';
+import PaperLibrary from './PaperLibrary';
+import { PAPER_SECTIONS } from './sections.mjs';
+import { FREE_TEST_PAPERS_FAQS } from './faqs.mjs';
+import { paperStats } from './stats';
 
-import React, { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { toast } from "sonner";
-import { Download, BookOpen, GraduationCap, Atom, FileText, Search, Clock } from "lucide-react";
-import { testPapers } from "../../data/testPapers";
+const SLUG = 'free-test-papers';
 
-// Coming Soon Component for empty arrays
-const ComingSoonCard = ({ examType, colorScheme = "indigo" }) => (
-  <div className={`flex flex-col items-center justify-center p-6 rounded-lg border-2 border-dashed transition-colors ${
-    colorScheme === 'emerald'
-      ? 'border-emerald-200 bg-emerald-50/30'
-      : colorScheme === 'blue'
-      ? 'border-blue-200 bg-blue-50/30'
-      : colorScheme === 'purple'
-      ? 'border-purple-200 bg-purple-50/30'
-      : 'border-indigo-200 bg-indigo-50/30'
-  }`}>
-    <Clock className={`h-8 w-8 mb-3 ${
-      colorScheme === 'emerald'
-        ? 'text-emerald-400'
-        : colorScheme === 'blue'
-        ? 'text-blue-400'
-        : colorScheme === 'purple'
-        ? 'text-purple-400'
-        : 'text-indigo-400'
-    }`} />
-    <p className="text-gray-500 font-medium text-center">
-      Coming Soon
-    </p>
-    <p className="text-gray-400 text-sm text-center mt-1">
-      {examType.replace(/_/g, ' ').toUpperCase()} papers will be available soon
-    </p>
-  </div>
-);
-
-// ✅ Improved Paper list item with better spacing and responsive design
-const PaperListItem = ({ paper, onDownloadClick, colorScheme = "indigo" }) => (
-  <li className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 sm:gap-4 p-4 rounded-lg border border-gray-200 bg-white hover:shadow-md hover:bg-indigo-50/40 transition-all duration-200">
-    <div className="flex items-start gap-3 min-w-0 flex-1">
-      <FileText className="h-5 w-5 text-gray-400 mt-0.5 flex-shrink-0" />
-      <div className="min-w-0 flex-1">
-        <span className="font-medium text-gray-800 text-sm sm:text-base leading-tight block">
-          {paper.title}
-        </span>
-        {paper.description && (
-          <span className="text-xs text-gray-500 mt-1 block">{paper.description}</span>
-        )}
-      </div>
-    </div>
-    <Button
-      variant="outline"
-      size="sm"
-      className={`flex items-center gap-2 transition-colors duration-200 flex-shrink-0 w-full sm:w-auto justify-center ${
-        colorScheme === 'emerald'
-          ? 'text-emerald-600 hover:bg-emerald-600 hover:text-white'
-          : colorScheme === 'blue'
-          ? 'text-blue-600 hover:bg-blue-600 hover:text-white'
-          : colorScheme === 'purple'
-          ? 'text-purple-600 hover:bg-purple-600 hover:text-white'
-          : 'text-indigo-600 hover:bg-indigo-600 hover:text-white'
-      }`}
-      onClick={onDownloadClick}
-      aria-label={`Download ${paper.title}`}
-    >
-      <Download className="h-4 w-4" />
-      Download
-    </Button>
-  </li>
-);
-
-// Subject card with search functionality and coming soon support
-const SubjectCard = ({ subjectTitle, subjectData, onDownloadClick, searchTerm, colorScheme = "indigo" }) => {
-  const hasExamTypes =
-    typeof subjectData === "object" && !Array.isArray(subjectData) && Object.keys(subjectData).length > 0;
-  const examTypes = hasExamTypes ? Object.keys(subjectData) : [];
-
-  // Filter papers based on search term
-  const filterPapers = (papers) => {
-    if (!searchTerm) return papers;
-    return papers.filter(paper => 
-      paper.title.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-  };
-
-  // Check if subject has any papers matching search
-  const hasMatchingPapers = () => {
-    if (hasExamTypes) {
-      return examTypes.some(type => 
-        Array.isArray(subjectData[type]) ? filterPapers(subjectData[type]).length > 0 : 
-        Object.values(subjectData[type] || {}).some(papers => filterPapers(papers).length > 0)
-      );
-    } else {
-      return Array.isArray(subjectData) && filterPapers(subjectData).length > 0;
-    }
-  };
-
-  // Calculate total available papers (excluding empty arrays)
-  const totalAvailablePapers = () => {
-    if (hasExamTypes) {
-      return examTypes.reduce((total, type) => {
-        if (Array.isArray(subjectData[type])) {
-          return total + subjectData[type].length;
-        } else if (typeof subjectData[type] === 'object') {
-          return total + Object.values(subjectData[type] || {}).reduce((subTotal, papers) => {
-            return subTotal + (Array.isArray(papers) ? papers.length : 0);
-          }, 0);
-        }
-        return total;
-      }, 0);
-    } else {
-      return Array.isArray(subjectData) ? subjectData.length : 0;
-    }
-  };
-
-  if (searchTerm && !hasMatchingPapers()) {
-    return null; // Hide card if no matching papers
-  }
-
-  const availablePapers = totalAvailablePapers();
-
-  return (
-    <Card className="hover:shadow-xl hover:-translate-y-1 transition-all duration-300 ease-in-out rounded-2xl overflow-hidden">
-      <CardContent className="p-6 space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-          <h4 className="font-bold text-xl text-gray-900">{subjectTitle}</h4>
-          <div className="text-xs text-gray-500 bg-gray-100 px-3 py-1.5 rounded-full whitespace-nowrap self-start sm:self-auto">
-            {availablePapers} papers available
-          </div>
-        </div>
-        
-        {hasExamTypes ? (
-          <Tabs defaultValue={examTypes[0]} className="w-full">
-            <TabsList className="flex flex-wrap gap-2 bg-gray-100 p-2 rounded-lg w-full">
-              {examTypes.map((type) => (
-                <TabsTrigger
-                  key={type}
-                  value={type}
-                  className={`rounded-full px-3 py-2 text-xs font-semibold transition-all ${
-                    colorScheme === 'emerald' 
-                      ? 'data-[state=active]:bg-emerald-600 data-[state=active]:text-white' 
-                      : colorScheme === 'blue'
-                      ? 'data-[state=active]:bg-blue-600 data-[state=active]:text-white'
-                      : colorScheme === 'purple'
-                      ? 'data-[state=active]:bg-purple-600 data-[state=active]:text-white'
-                      : 'data-[state=active]:bg-indigo-600 data-[state=active]:text-white'
-                  }`}
-                >
-                  {type.replace(/_/g, ' ').toUpperCase()}
-                </TabsTrigger>
-              ))}
-            </TabsList>
-            {examTypes.map((type) => (
-              <TabsContent key={type} value={type} className="mt-4">
-                {Array.isArray(subjectData[type]) ? (
-                  subjectData[type].length === 0 ? (
-                    <ComingSoonCard examType={type} colorScheme={colorScheme} />
-                  ) : (
-                    <ul className="space-y-3">
-                      {filterPapers(subjectData[type]).map((paper, index) => (
-                        <PaperListItem
-                          key={index}
-                          paper={paper}
-                          colorScheme={colorScheme}
-                          onDownloadClick={() =>
-                            onDownloadClick(paper, { subject: subjectTitle, examType: type })
-                          }
-                        />
-                      ))}
-                    </ul>
-                  )
-                ) : (
-                  <div className="space-y-4">
-                    {Object.entries(subjectData[type] || {}).map(([subType, papers]) => (
-                      <div key={subType} className="space-y-2">
-                        <h5 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">
-                          {subType.replace(/_/g, ' ')}
-                        </h5>
-                        {Array.isArray(papers) && papers.length === 0 ? (
-                          <ComingSoonCard examType={`${type} ${subType}`} colorScheme={colorScheme} />
-                        ) : (
-                          <ul className="space-y-3">
-                            {filterPapers(papers).map((paper, index) => (
-                              <PaperListItem
-                                key={index}
-                                paper={paper}
-                                colorScheme={colorScheme}
-                                onDownloadClick={() =>
-                                  onDownloadClick(paper, { subject: subjectTitle, examType: `${type} - ${subType}` })
-                                }
-                              />
-                            ))}
-                          </ul>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </TabsContent>
-            ))}
-          </Tabs>
-        ) : (
-          <div>
-            {Array.isArray(subjectData) && subjectData.length === 0 ? (
-              <ComingSoonCard examType="papers" colorScheme={colorScheme} />
-            ) : (
-              <ul className="space-y-3">
-                {Array.isArray(subjectData) &&
-                  filterPapers(subjectData).map((paper, index) => (
-                    <PaperListItem
-                      key={index}
-                      paper={paper}
-                      colorScheme={colorScheme}
-                      onDownloadClick={() => onDownloadClick(paper, { subject: subjectTitle })}
-                    />
-                  ))}
-              </ul>
-            )}
-          </div>
-        )}
-      </CardContent>
-    </Card>
-  );
+// Which library section each level answer block sends the reader to. N-Level
+// has no shelf of its own, so it points at the O-Level papers it explains.
+const LIBRARY_ANCHOR = {
+  'o-level': '#papers-secondary',
+  'n-level': '#papers-secondary',
+  'a-level': '#papers-jc',
+  psle: '#papers-primary',
 };
 
-// Level section with paper count (only counting available papers)
-const LevelSection = ({ title, icon, papers, onDownloadClick, colorClass, searchTerm, colorScheme = "indigo" }) => {
-  // Calculate total available papers for this level (excluding empty arrays)
-  const totalPapers = Object.values(papers).reduce((total, subjectData) => {
-    if (Array.isArray(subjectData)) {
-      return total + subjectData.length;
-    } else if (typeof subjectData === 'object') {
-      return total + Object.values(subjectData).reduce((subTotal, typeData) => {
-        if (Array.isArray(typeData)) {
-          return subTotal + typeData.length;
-        } else if (typeof typeData === 'object') {
-          return subTotal + Object.values(typeData).reduce((deepTotal, papers) => {
-            return deepTotal + (Array.isArray(papers) ? papers.length : 0);
-          }, 0);
-        }
-        return subTotal;
-      }, 0);
-    }
-    return total;
-  }, 0);
+const whatsappMessage = `Hi LionCity Tutors! I've been using your free test papers and I'd like help finding a tutor.
 
-  return (
-    <section className="space-y-8 animate-fade-in">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-        <div className="flex items-center gap-3">
-          {icon}
-          <h2 className={`text-2xl sm:text-3xl font-bold ${colorClass}`}>{title}</h2>
-        </div>
-        <div className="text-sm text-gray-500 bg-white px-3 py-2 rounded-full border whitespace-nowrap self-start sm:self-auto">
-          {totalPapers} papers available
-        </div>
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-        {Object.entries(papers).map(([subjectKey, subjectData]) => {
-          const subjectTitle = subjectKey.replace(/_/g, " ").replace(/\b\w/g, (l) => l.toUpperCase());
-          return (
-            <SubjectCard
-              key={subjectKey}
-              subjectTitle={subjectTitle}
-              subjectData={subjectData}
-              onDownloadClick={(paper, info) => onDownloadClick(paper, { level: title, ...info })}
-              searchTerm={searchTerm}
-              colorScheme={colorScheme}
-            />
-          );
-        })}
-      </div>
-    </section>
-  );
-};
+Student level (e.g. P6 / Sec 4 / JC2):
+Subject:
+Location:
+Preferred days & timing: `;
+const whatsappHref = `https://wa.me/6588701152?text=${encodeURIComponent(whatsappMessage)}`;
 
-export default function FreeTestPapers() {
-  const [formData, setFormData] = useState({ email: "", phone: "" });
-  const [formErrors, setFormErrors] = useState({ email: "", phone: "" });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [selectedPaper, setSelectedPaper] = useState(null);
-  const [paperInfo, setPaperInfo] = useState(null);
-  const [showModal, setShowModal] = useState(false);
-  const [selectedLevel, setSelectedLevel] = useState("all");
-  const [searchTerm, setSearchTerm] = useState("");
-
-  useEffect(() => {
-    const savedEmail = localStorage.getItem("email");
-    const savedPhone = localStorage.getItem("phone");
-    if (savedEmail || savedPhone) {
-      setFormData({ email: savedEmail || "", phone: savedPhone || "" });
-    }
-  }, []);
-
-  const handleDownloadClick = (paper, info) => {
-    setSelectedPaper(paper);
-    setPaperInfo(info);
-    setShowModal(true);
-  };
-
-  const validateForm = () => {
-    const errors = {};
-    if (!formData.email) {
-      errors.email = "Email is required.";
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      errors.email = "Invalid email address.";
-    }
-    if (!formData.phone) {
-      errors.phone = "Phone number is required.";
-    } else if (!/^\d{8,}$/.test(formData.phone.replace(/\s/g, ""))) {
-      errors.phone = "Enter a valid phone number (at least 8 digits).";
-    }
-    setFormErrors(errors);
-    return Object.keys(errors).length === 0;
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!validateForm()) {
-      toast.error("Please fix the errors in the form.");
-      return;
-    }
-
-    setIsSubmitting(true);
-    localStorage.setItem("email", formData.email);
-    localStorage.setItem("phone", formData.phone);
-
-    try {
-      const response = await fetch("/api/test-paper-leads", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: formData.email,
-          phone: formData.phone,
-          level: paperInfo.level,
-          subject: paperInfo.subject,
-          paperTitle: selectedPaper.title,
-        }),
-      });
-
-      if (!response.ok) throw new Error("API submission failed");
-
-      toast.success("Thank you! Your download will begin shortly.", {
-        description: "Check your email for additional study resources.",
-        duration: 5000,
-      });
-      
-      setShowModal(false);
-      setFormErrors({});
-      
-      if (selectedPaper?.downloadUrl) {
-        window.open(selectedPaper.downloadUrl, "_blank");
-      }
-    } catch (error) {
-      console.error("Submission error:", error);
-      toast.error("Something went wrong. Please try again.", {
-        description: "If the problem persists, please contact support.",
-      });
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const handleInputChange = (e) => {
-    const { id, value } = e.target;
-    setFormData((prev) => ({ ...prev, [id]: value }));
-  };
-
-  const levelFilters = ["all", "primary", "secondary", "jc"];
-
+export default function FreeTestPapersPage() {
   return (
     <>
+      <GuideSchema
+        slug={SLUG}
+        collection={{
+          name: 'Free Test Papers: O-Level, JC and PSLE',
+          description:
+            'Free prelim and past year papers from Singapore schools, grouped by level, subject and exam.',
+          items: PAPER_SECTIONS.map((section) => ({
+            name: section.label,
+            url: `/free-test-papers#${section.id}`,
+          })),
+        }}
+        faqs={FREE_TEST_PAPERS_FAQS}
+      />
+
       <div className="bg-gray-50 min-h-screen">
         <div className="p-4 sm:p-6 md:p-8 max-w-7xl mx-auto space-y-16">
-          {/* Enhanced Hero Section */}
           <section className="text-center py-8 space-y-6">
-            <div className="flex justify-center mb-4">
-              <div className="bg-indigo-100 p-3 rounded-full">
-                <GraduationCap className="h-12 w-12 text-indigo-600" />
-              </div>
-            </div>
-            <h1 className="text-4xl md:text-6xl font-extrabold text-gray-900 tracking-tight">
-              Free Exam Paper Resources
+            <h1 className="text-4xl md:text-6xl font-extrabold text-gray-900 tracking-tight text-balance">
+              Free Test Papers
             </h1>
-            <p className="text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
-              Access our comprehensive collection of past-year exam papers from top Singapore schools. 
-              Practice with authentic materials and boost your exam performance.
+            {/* "free exam papers" earns its place here: it is the phrasing the
+                page already ranks for, and the old H1 was the only thing
+                carrying it. */}
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed text-pretty">
+              Free exam papers for every level &mdash; {paperStats.total} prelim and past year
+              papers from Singapore schools, {paperStats.firstYear} to {paperStats.lastYear},
+              sorted by level, subject and exam.
             </p>
-            
-            {/* Enhanced Search Bar */}
-            <div className="max-w-md mx-auto mt-8">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-                <Input
-                  type="text"
-                  placeholder="Search for specific papers..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 pr-4 py-3 w-full rounded-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
-                />
-              </div>
-            </div>
+            <nav aria-label="Jump to a level" className="flex flex-wrap justify-center gap-2">
+              {PAPER_SECTIONS.map((section) => (
+                <a
+                  key={section.id}
+                  href={`#${section.id}`}
+                  className="rounded-full border border-[#0474BA]/25 bg-white px-4 py-2 text-sm font-semibold text-[#0474BA] shadow-sm transition-colors hover:border-[#0474BA] hover:bg-[#0474BA]/5"
+                >
+                  {section.label}
+                </a>
+              ))}
+            </nav>
           </section>
 
-          {/* Enhanced Level Filter Menu */}
-          <div className="sticky top-4 z-10 flex justify-center backdrop-blur-sm">
-            <Tabs value={selectedLevel} onValueChange={setSelectedLevel} className="w-full max-w-2xl">
-              <TabsList className="grid w-full grid-cols-4 p-1 bg-white/90 backdrop-blur-sm rounded-full h-auto shadow-lg border">
-                {levelFilters.map((level) => (
-                  <TabsTrigger
-                    key={level}
-                    value={level}
-                    className="rounded-full data-[state=active]:bg-indigo-600 data-[state=active]:text-white data-[state=active]:shadow-lg font-semibold px-4 py-3 transition-all duration-200"
+          {/* Level answer blocks: what the library holds for each exam level. */}
+          <div className="mx-auto grid max-w-5xl gap-6 sm:grid-cols-2">
+            {PAPER_SECTIONS.map((section) => {
+              const hub = getPage(section.hub);
+              return (
+                <section
+                  key={section.id}
+                  id={section.id}
+                  className="scroll-mt-24 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm"
+                >
+                  <h2 className="text-xl font-bold text-gray-900 text-balance">{section.heading}</h2>
+                  <p className="mt-3 text-gray-700 leading-relaxed text-pretty">{section.answer}</p>
+                  <p className="mt-3 text-gray-700 leading-relaxed text-pretty">
+                    {section.linkLead}{' '}
+                    <Link href={hub.url} className="font-semibold text-[#0474BA] underline underline-offset-2">
+                      {hub.anchor}
+                    </Link>
+                    .
+                  </p>
+                  <a
+                    href={LIBRARY_ANCHOR[section.id]}
+                    className="group mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-[#F17720]"
                   >
-                    {level === "jc" ? "JC" : level.charAt(0).toUpperCase() + level.slice(1)}
-                    {level === "all" && " Levels"}
-                  </TabsTrigger>
-                ))}
-              </TabsList>
-            </Tabs>
+                    <FileText className="h-4 w-4" strokeWidth={ICON_STROKE} aria-hidden="true" />
+                    Go to the papers
+                    <ArrowRight
+                      className="h-4 w-4 transition-transform group-hover:translate-x-0.5"
+                      strokeWidth={ICON_STROKE}
+                      aria-hidden="true"
+                    />
+                  </a>
+                </section>
+              );
+            })}
           </div>
 
-          {/* Test Papers Sections */}
-          <div className="space-y-20">
-            {(selectedLevel === "all" || selectedLevel === "primary") && (
-              <LevelSection
-                title="Primary School"
-                icon={<BookOpen className="h-8 w-8 text-emerald-600" />}
-                papers={testPapers.primary}
-                onDownloadClick={handleDownloadClick}
-                colorClass="text-emerald-700"
-                searchTerm={searchTerm}
-                colorScheme="emerald"
-              />
-            )}
-            {(selectedLevel === "all" || selectedLevel === "secondary") && (
-              <LevelSection
-                title="Secondary School"
-                icon={<GraduationCap className="h-8 w-8 text-blue-600" />}
-                papers={testPapers.secondary}
-                onDownloadClick={handleDownloadClick}
-                colorClass="text-blue-700"
-                searchTerm={searchTerm}
-                colorScheme="blue"
-              />
-            )}
-            {(selectedLevel === "all" || selectedLevel === "jc") && (
-              <LevelSection
-                title="Junior College (A-Level)"
-                icon={<Atom className="h-8 w-8 text-purple-600" />}
-                papers={testPapers.jc}
-                onDownloadClick={handleDownloadClick}
-                colorClass="text-purple-700"
-                searchTerm={searchTerm}
-                colorScheme="purple"
-              />
-            )}
-          </div>
+          <PaperLibrary />
 
-          {/* Enhanced Footer with Statistics */}
-          <section className="text-center py-16 border-t border-gray-200 bg-white/50 backdrop-blur-sm rounded-2xl">
-            <h3 className="text-2xl font-bold text-gray-900 mb-4">Helping Students Excel</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 max-w-2xl mx-auto">
-              <div className="text-center">
-                <div className="text-3xl font-bold text-emerald-600">500+</div>
-                <div className="text-gray-600">Papers Available</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-blue-600">50+</div>
-                <div className="text-gray-600">Top Schools</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-purple-600">10k+</div>
-                <div className="text-gray-600">Downloads</div>
-              </div>
+          <section aria-labelledby="faq" className="mx-auto max-w-3xl">
+            <div className="flex items-start gap-3 mb-5">
+              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#0474BA]/10 text-[#0474BA]">
+                <HelpCircle className="h-5 w-5" strokeWidth={ICON_STROKE} aria-hidden="true" />
+              </span>
+              <h2 id="faq" className="scroll-mt-24 text-2xl font-bold tracking-tight text-[#0474BA]">
+                Free test papers: common questions
+              </h2>
+            </div>
+            <div className="space-y-6">
+              {FREE_TEST_PAPERS_FAQS.map((faq) => (
+                <div key={faq.question}>
+                  <h3 className="text-lg font-semibold text-gray-900">{faq.question}</h3>
+                  <p className="mt-2 text-gray-700 leading-relaxed">{faq.answer}</p>
+                </div>
+              ))}
             </div>
           </section>
+
+          <div className="mx-auto max-w-3xl">
+            <RelatedGuides slug={SLUG} heading="Guides that go with these papers" showHub={false} />
+          </div>
+
+          <div className="mx-auto max-w-3xl">
+            <GuideCTA
+              title="Papers only take you so far"
+              description={`Tell us the subject and the grade you are aiming for. We hand-match a vetted tutor — usually within ${MATCH_TIME} — and parents never pay an agency fee.`}
+              buttonText="Find a tutor for this subject"
+              whatsappHref={whatsappHref}
+            />
+          </div>
         </div>
       </div>
-
-      {/* Enhanced Modal */}
-      <Dialog open={showModal} onOpenChange={setShowModal}>
-        <DialogContent className="sm:max-w-[500px] rounded-2xl">
-          <DialogHeader className="space-y-3">
-            <DialogTitle className="text-xl font-bold text-gray-900">
-              Download: {selectedPaper?.title}
-            </DialogTitle>
-            {paperInfo && (
-              <div className="text-sm text-gray-500 bg-gray-50 p-3 rounded-lg">
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-indigo-500 rounded-full"></div>
-                  <span className="font-medium">{paperInfo.level}</span>
-                  <span>→</span>
-                  <span>{paperInfo.subject}</span>
-                  {paperInfo.examType && (
-                    <>
-                      <span>→</span>
-                      <span className="capitalize">{paperInfo.examType.toUpperCase()}</span>
-                    </>
-                  )}
-                </div>
-              </div>
-            )}
-            <DialogDescription className="text-base">
-              Get instant access to this exam paper by providing your contact details below. 
-              We'll also keep you updated with new papers and study resources.
-            </DialogDescription>
-          </DialogHeader>
-          <form onSubmit={handleSubmit} className="grid gap-6 py-4">
-            <div className="grid gap-3">
-              <Label htmlFor="email" className="text-sm font-semibold">Email Address</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="student@example.com"
-                value={formData.email}
-                onChange={handleInputChange}
-                className={`h-12 ${formErrors.email ? "border-red-500 focus:border-red-500" : ""}`}
-              />
-              {formErrors.email && <p className="text-sm text-red-500 flex items-center gap-1">
-                <span className="w-1 h-1 bg-red-500 rounded-full"></span>
-                {formErrors.email}
-              </p>}
-            </div>
-            <div className="grid gap-3">
-              <Label htmlFor="phone" className="text-sm font-semibold">Contact Number</Label>
-              <Input
-                id="phone"
-                type="tel"
-                placeholder="91234567"
-                value={formData.phone}
-                onChange={handleInputChange}
-                className={`h-12 ${formErrors.phone ? "border-red-500 focus:border-red-500" : ""}`}
-              />
-              {formErrors.phone && <p className="text-sm text-red-500 flex items-center gap-1">
-                <span className="w-1 h-1 bg-red-500 rounded-full"></span>
-                {formErrors.phone}
-              </p>}
-            </div>
-            <Button
-              type="submit"
-              className="w-full h-12 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-base transition-colors duration-200"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? (
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                  Submitting...
-                </div>
-              ) : (
-                <div className="flex items-center gap-2">
-                  <Download className="h-4 w-4" />
-                  Confirm & Download
-                </div>
-              )}
-            </Button>
-            <p className="text-xs text-gray-500 text-center leading-relaxed">
-              By downloading, you agree to receive educational content and updates. 
-              Your information is secure and won't be shared with third parties.
-            </p>
-          </form>
-        </DialogContent>
-      </Dialog>
     </>
   );
 }

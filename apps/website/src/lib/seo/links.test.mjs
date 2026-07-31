@@ -137,3 +137,33 @@ describe('link helpers', () => {
     assert.deepEqual(getHubsFor('not-a-page'), []);
   });
 });
+
+describe('site-wide resource pages', () => {
+  test('free-test-papers is surfaced by all four exam-level hubs', () => {
+    assert.deepEqual(getHubsFor('free-test-papers').map((h) => h.slug), [
+      'o-level-prep', 'a-level-prep', 'n-level-prep', 'psle-prep',
+    ]);
+  });
+
+  test('free-notes is surfaced by the A-Level and O-Level hubs', () => {
+    assert.deepEqual(getHubsFor('free-notes').map((h) => h.slug), [
+      'a-level-prep', 'o-level-prep',
+    ]);
+  });
+
+  test('resource pages are flagged so they get CollectionPage, not Course', () => {
+    for (const slug of ['free-test-papers', 'free-notes']) {
+      assert.equal(SPOKES[slug].resource, true, `${slug} is not flagged as a resource`);
+    }
+  });
+
+  test('subject spokes are not flagged as resources', () => {
+    assert.equal(SPOKES['o-level-physics'].resource, undefined);
+  });
+
+  test('breadcrumbs give each resource page a single parent hub', () => {
+    assert.deepEqual(getBreadcrumbs('free-test-papers').map((c) => c.name), [
+      'Home', HUBS['o-level-prep'].title, SPOKES['free-test-papers'].title,
+    ]);
+  });
+});

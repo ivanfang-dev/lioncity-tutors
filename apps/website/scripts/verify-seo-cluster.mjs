@@ -33,6 +33,7 @@ const status = (u) => {
 
 const problems = [];
 const clusterDupes = [];
+const linkCounts = [];
 const rows = [];
 
 const all = [
@@ -66,9 +67,13 @@ for (const page of all) {
   // 2. BreadcrumbList on every cluster page.
   if (!types.includes('BreadcrumbList')) problems.push(`${page.slug}: missing BreadcrumbList`);
 
-  // 3. Hubs get Article; spokes get Course.
+  // 3. Hubs get Article; subject spokes get Course; resource spokes get
+  //    CollectionPage, because a folder of downloads is not a course.
   if (page.kind === 'hub' && !types.includes('Article')) problems.push(`${page.slug}: hub missing Article`);
-  if (page.kind === 'spoke' && !types.includes('Course')) problems.push(`${page.slug}: spoke missing Course`);
+  if (page.kind === 'spoke') {
+    const wanted = page.resource ? 'CollectionPage' : 'Course';
+    if (!types.includes(wanted)) problems.push(`${page.slug}: spoke missing ${wanted}`);
+  }
 
   // 4. Title present and under 60 chars.
   const title = (html.match(/<title>([^<]*)<\/title>/) || [])[1] || '';
@@ -96,13 +101,11 @@ for (const page of all) {
     problems.push(`${page.slug}: hub links to itself`);
   }
 
-  // 8. No duplicate links to another CLUSTER page. Nav, footer and CTA links
-  //    (/, /request-tutor, /tuition-rates) legitimately repeat and are excluded.
-  const clusterUrls = new Set(all.map((x) => x.url));
+  // 8. Count links per page. Duplicates are reported after the loop, once the
+  //    chrome baseline is known — see below.
   const counts = {};
-  for (const u of a) if (clusterUrls.has(u)) counts[u] = (counts[u] || 0) + 1;
-  const dupes = Object.entries(counts).filter(([, n]) => n > 1);
-  if (dupes.length) clusterDupes.push(`${page.slug}: ${dupes.map(([u, n]) => `${u} x${n}`).join(', ')}`);
+  for (const u of a) counts[u] = (counts[u] || 0) + 1;
+  linkCounts.push({ slug: page.slug, counts });
 
   // 9. Every internal link must resolve (no 404s).
   for (const u of internal) {
@@ -118,6 +121,22 @@ for (const page of all) {
     problems.push(`${page.slug}: breadcrumb has ${bc.itemListElement.length} items, registry says ${expected}`);
 
   rows.push({ slug: page.slug, kind: page.kind, titleLen, descLen, links: internal.size, ld: blocks.length, types: types.join('+') });
+}
+
+// Duplicate links to another CLUSTER page, ignoring site chrome. Nav, footer
+// and CTA links repeat on every page by design, and some of them (/, /blog,
+// /free-test-papers, /free-notes) are cluster pages themselves. Rather than
+// hardcoding that list, take the chrome baseline to be the fewest times a url
+// appears on any page: a page that links it more than that is adding one
+// in-content link, which is fine; more than one is worth a look.
+const clusterUrls = new Set(all.map((x) => x.url));
+const chromeBaseline = (url) => Math.min(...linkCounts.map((p) => p.counts[url] ?? 0));
+
+for (const { slug, counts } of linkCounts) {
+  const dupes = Object.entries(counts)
+    .filter(([url, n]) => clusterUrls.has(url) && n - chromeBaseline(url) > 1)
+    .map(([url, n]) => `${url} x${n}`);
+  if (dupes.length) clusterDupes.push(`${slug}: ${dupes.join(', ')}`);
 }
 
 console.log('page'.padEnd(28), 'kind '.padEnd(6), 'title', 'desc', 'links', 'ld', 'schema');

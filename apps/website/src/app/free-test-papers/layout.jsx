@@ -1,17 +1,23 @@
+const TITLE = 'Free Test Papers: O-Level, JC & PSLE | LionCity Tutors';
+const DESCRIPTION =
+  'Download free test papers for PSLE, O-Level and JC — over 100 school prelim and past year papers from 40+ Singapore schools, sorted by level and subject.';
+
 export const metadata = {
-  title: 'Free Test Papers | PSLE, O Level & A Level | Lion City Tutors',
-  description: 'Download free test papers for PSLE, O Level & A Level subjects. Get access to past year papers and practice materials to help your child excel.',
+  title: TITLE,
+  description: DESCRIPTION,
   keywords: [
     'free test papers Singapore',
-    'PSLE papers',
-    'O level papers',
-    'A level papers',
+    'free exam papers',
+    'o level prelim papers',
+    'o level test papers',
+    'secondary free exam papers',
+    'jc test papers',
     'past year papers',
-    'practice papers'
+    'PSLE papers'
   ],
   openGraph: {
-    title: 'Free Test Papers | PSLE, O Level & A Level | Lion City Tutors',
-    description: 'Download free test papers for PSLE, O Level & A Level subjects. Get access to past year papers and practice materials to help your child excel.',
+    title: TITLE,
+    description: DESCRIPTION,
     url: 'https://www.lioncitytutors.com/free-test-papers',
     type: 'website',
   },
@@ -22,4 +28,4 @@ export const metadata = {
 
 export default function FreeTestPapersLayout({ children }) {
   return children;
-} 
+}

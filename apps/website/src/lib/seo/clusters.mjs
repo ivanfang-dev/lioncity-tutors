@@ -16,6 +16,7 @@ export const HUBS = {
       'o-level-english', 'o-level-math', 'o-level-physics', 'o-level-chemistry',
       'o-level-biology', 'combined-science-overview', 'combined-chemistry-physics',
       'combined-chemistry-biology', 'combined-physics-biology', 'o-level-tuition',
+      'free-test-papers', 'free-notes',
     ],
   },
   'a-level-prep': {
@@ -25,7 +26,7 @@ export const HUBS = {
     anchor: 'complete A-Level preparation guide',
     spokes: [
       'a-level-math', 'a-level-physics', 'a-level-chemistry', 'a-level-biology',
-      'a-level-general-paper', 'jc-tuition',
+      'a-level-general-paper', 'jc-tuition', 'free-notes', 'free-test-papers',
     ],
   },
   'n-level-prep': {
@@ -35,7 +36,7 @@ export const HUBS = {
     anchor: 'complete N-Level preparation guide',
     spokes: [
       'n-level-tuition', 'combined-science-overview', 'combined-chemistry-physics',
-      'combined-chemistry-biology', 'combined-physics-biology',
+      'combined-chemistry-biology', 'combined-physics-biology', 'free-test-papers',
     ],
   },
   'psle-prep': {
@@ -43,7 +44,10 @@ export const HUBS = {
     url: '/blog/psle-preparation-guide',
     title: 'PSLE Preparation Guide',
     anchor: 'complete PSLE preparation guide',
-    spokes: ['psle-math', 'psle-english', 'psle-science', 'psle-chinese', 'primary-school-tuition'],
+    spokes: [
+      'psle-math', 'psle-english', 'psle-science', 'psle-chinese', 'primary-school-tuition',
+      'free-test-papers',
+    ],
   },
   'ib-igcse': {
     slug: 'ib-igcse',
@@ -214,5 +218,30 @@ export const SPOKES = {
     slug: 'igcse-physics', url: '/igcse-physics', hub: 'ib-igcse',
     title: 'IGCSE Physics', anchor: 'IGCSE Physics guide',
     blurb: 'Core and extended syllabus with practical paper technique.',
+  },
+
+  // --- Site-wide resources ---
+  // These serve every exam level, so they sit in several hubs at once via
+  // alsoIn. `resource: true` marks a collection of downloads rather than a
+  // subject guide: they carry CollectionPage schema instead of Course, which
+  // verify-seo-cluster.mjs checks for. Their primary hub is whichever level
+  // dominates their search demand, since a breadcrumb needs one parent.
+  'free-test-papers': {
+    slug: 'free-test-papers', url: '/free-test-papers', hub: 'o-level-prep',
+    alsoIn: ['a-level-prep', 'n-level-prep', 'psle-prep'],
+    resource: true,
+    title: 'Free Test Papers',
+    anchor: 'free past-year and prelim papers',
+    blurb: 'Prelim and past-year papers by level and subject, free to download.',
+  },
+  'free-notes': {
+    slug: 'free-notes', url: '/free-notes', hub: 'a-level-prep',
+    alsoIn: ['o-level-prep'],
+    resource: true,
+    title: 'Free Study Notes',
+    // Anchor and blurb describe what the page actually hosts today (GP
+    // infopacks); update them as subjects land rather than promising ahead.
+    anchor: 'free study notes and GP infopacks',
+    blurb: 'Free revision notes to download, starting with JC General Paper.',
   },
 };
