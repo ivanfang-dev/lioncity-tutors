@@ -1,14 +1,21 @@
 import React from 'react';
 import Link from 'next/link';
 
+const TITLE = 'Contact LionCity Tutors | Singapore Tuition Agency';
+const DESCRIPTION =
+  'Contact LionCity Tutors — WhatsApp or email about finding a tutor, an open tuition assignment or an existing match. We are open 9am to 9pm, Monday to Sunday.';
+
 export const metadata = {
-  title: 'Contact Us | LionCity Tutors',
-  description: 'Contact Us at LionCity Tutors.',
+  title: TITLE,
+  description: DESCRIPTION,
   openGraph: {
-    title: 'Contact Us | LionCity Tutors',
-    description: 'Contact Us at LionCity Tutors.',
+    title: TITLE,
+    description: DESCRIPTION,
     url: 'https://www.lioncitytutors.com/contact-us',
     type: 'website',
+  },
+  alternates: {
+    canonical: 'https://www.lioncitytutors.com/contact-us',
   },
 };
 

@@ -137,3 +137,33 @@ describe('link helpers', () => {
     assert.deepEqual(getHubsFor('not-a-page'), []);
   });
 });
+
+describe('commercial pages', () => {
+  test('each subject-tuition page sits in the hub its traffic comes from', () => {
+    const expected = {
+      'math-tuition': ['o-level-prep', 'a-level-prep'],
+      'science-tuition': ['o-level-prep', 'a-level-prep'],
+      'chemistry-tuition': ['o-level-prep', 'a-level-prep'],
+      'physics-tuition': ['o-level-prep', 'a-level-prep'],
+      'biology-tuition': ['o-level-prep', 'a-level-prep'],
+      'english-tuition': ['o-level-prep'],
+      'chinese-tuition': ['psle-prep', 'o-level-prep'],
+      'economics-tuition': ['a-level-prep'],
+      'secondary-school-tuition': ['o-level-prep', 'n-level-prep'],
+    };
+    for (const [slug, hubs] of Object.entries(expected)) {
+      assert.deepEqual(getHubsFor(slug).map((h) => h.slug), hubs, `${slug} hubs`);
+    }
+  });
+
+  test('tuition-rates is surfaced by every exam-level hub', () => {
+    assert.deepEqual(getHubsFor('tuition-rates').map((h) => h.slug), [
+      'o-level-prep', 'a-level-prep', 'n-level-prep', 'psle-prep',
+    ]);
+  });
+
+  test('only the rate card overrides the Course schema default', () => {
+    const overridden = Object.values(SPOKES).filter((s) => s.schemaType);
+    assert.deepEqual(overridden.map((s) => [s.slug, s.schemaType]), [['tuition-rates', 'Service']]);
+  });
+});

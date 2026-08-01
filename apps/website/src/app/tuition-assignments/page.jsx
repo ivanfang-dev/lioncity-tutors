@@ -1,5 +1,10 @@
 import { Suspense } from 'react';
+import Link from 'next/link';
+import { HelpCircle } from 'lucide-react';
+import GuideSchema from '@/components/seo/GuideSchema';
+import { ICON_STROKE } from '@/components/guide';
 import TuitionAssignmentsClient from './TuitionAssignmentsClient';
+import { TUITION_ASSIGNMENTS_FAQS } from './faqs.mjs';
 
 // Helper function to fetch data on the server
 async function getAssignments() {
@@ -7,7 +12,7 @@ async function getAssignments() {
     const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:4000';
     // Using fetch with revalidation for fresh data (cache for 5 minutes)
     const response = await fetch(`${backendUrl}/api/assignments`, {
-      next: { revalidate: 300 } 
+      next: { revalidate: 300 }
     });
     if (!response.ok) {
         console.error('Failed to fetch assignments:', response.statusText);
@@ -20,26 +25,37 @@ async function getAssignments() {
   }
 }
 
+const TITLE_SUFFIX = ' | LionCity Tutors';
+
 export async function generateMetadata({ searchParams }) {
   const levelFilter = searchParams.level || '';
   const subjectFilter = searchParams.subject || '';
+  const filtered = Boolean(levelFilter || subjectFilter);
 
-  const titleParts = [
-    levelFilter,
-    subjectFilter,
-    'Tuition Assignments in Singapore',
-  ].filter(Boolean);
-  
-  const pageTitle = `${titleParts.join(' ')} | LionCity Tutors`;
-  const pageDescription = `Find the latest home tuition jobs for ${levelFilter || 'all levels'} and ${subjectFilter || 'all subjects'} in Singapore. Apply instantly and start tutoring with LionCity Tutors.`;
-  const canonicalUrl = `https://www.lioncitytutors.com/tuition-assignments${levelFilter ? `?level=${levelFilter}` : ''}${subjectFilter ? `&subject=${subjectFilter}` : ''}`;
+  // "Singapore" only fits in the unfiltered title; with both filters applied
+  // the string would run past 60 characters and truncate in the SERP.
+  const pageTitle = filtered
+    ? `${[levelFilter, subjectFilter, 'Tuition Assignments'].filter(Boolean).join(' ')}${TITLE_SUFFIX}`
+    : `Tuition Assignments in Singapore${TITLE_SUFFIX}`;
+
+  const pageDescription = filtered
+    ? `Open ${[levelFilter, subjectFilter].filter(Boolean).join(' ')} home tuition assignments in Singapore, with the location and rate on every listing. Apply online in minutes as a vetted tutor.`
+    : 'Open home tuition assignments across Singapore — every level and subject, with the location and rate on each listing. Apply online in minutes as a vetted tutor.';
+
+  const query = new URLSearchParams();
+  if (levelFilter) query.set('level', levelFilter);
+  if (subjectFilter) query.set('subject', subjectFilter);
+  const suffix = query.toString() ? `?${query}` : '';
+  const canonicalUrl = `https://www.lioncitytutors.com/tuition-assignments${suffix}`;
 
   return {
     title: pageTitle,
     description: pageDescription,
     keywords: [
       'tuition assignments Singapore',
-      'tutoring jobs',
+      'tuition assignment east',
+      'tuition assignments west',
+      'tutoring jobs Singapore',
       levelFilter ? `${levelFilter} tutor jobs` : null,
       subjectFilter ? `${subjectFilter} tuition assignments` : null,
       'private tutor opportunities',
@@ -66,8 +82,59 @@ export default async function TuitionAssignmentsPage() {
   const initialAssignments = await getAssignments();
 
   return (
-    <Suspense fallback={<div>Loading assignments...</div>}>
-      <TuitionAssignmentsClient initialAssignments={initialAssignments} />
-    </Suspense>
+    <>
+      <GuideSchema
+        breadcrumbs={[
+          { name: 'Home', url: '/' },
+          { name: 'Tuition Assignments', url: '/tuition-assignments' },
+        ]}
+        faqs={TUITION_ASSIGNMENTS_FAQS}
+      />
+
+      <Suspense fallback={<div>Loading assignments...</div>}>
+        <TuitionAssignmentsClient initialAssignments={initialAssignments} />
+      </Suspense>
+
+      {/* Server-rendered so the answers are in the HTML whatever the listing
+          above is doing — it depends on a backend fetch that can come back
+          empty. */}
+      <section aria-labelledby="assignment-faq" className="mx-auto max-w-3xl px-4 sm:px-6 py-16">
+        <div className="flex items-start gap-3 mb-6">
+          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#0474BA]/10 text-[#0474BA]">
+            <HelpCircle className="h-5 w-5" strokeWidth={ICON_STROKE} aria-hidden="true" />
+          </span>
+          <h2 id="assignment-faq" className="scroll-mt-24 text-2xl font-bold tracking-tight text-[#0474BA]">
+            Tuition assignments: common questions
+          </h2>
+        </div>
+        <div className="space-y-6">
+          {TUITION_ASSIGNMENTS_FAQS.map((faq) => (
+            <div key={faq.question}>
+              <h3 className="text-lg font-semibold text-gray-900">{faq.question}</h3>
+              <p className="mt-2 text-gray-700 leading-relaxed">{faq.answer}</p>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-10 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+          <h2 className="text-xl font-bold text-gray-900">New to LionCity Tutors?</h2>
+          <p className="mt-2 text-gray-700 leading-relaxed">
+            Applying needs a vetted tutor profile, so{' '}
+            <Link href="/register-tutor" className="font-semibold text-[#0474BA] underline underline-offset-2">
+              register as a tutor
+            </Link>{' '}
+            first — it takes a few minutes. The{' '}
+            <Link href="/terms-and-conditions-for-tutors" className="font-semibold text-[#0474BA] underline underline-offset-2">
+              tutor terms
+            </Link>{' '}
+            set out commission in full, and{' '}
+            <Link href="/tuition-rates" className="font-semibold text-[#0474BA] underline underline-offset-2">
+              tuition rates in Singapore
+            </Link>{' '}
+            shows what parents expect to pay by level.
+          </p>
+        </div>
+      </section>
+    </>
   );
 }

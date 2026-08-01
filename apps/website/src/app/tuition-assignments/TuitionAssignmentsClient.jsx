@@ -8,7 +8,6 @@ import {
   useCallback,
 } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import Head from 'next/head';
 import { AnimatePresence, motion } from 'framer-motion';
 
 // Import from shared package
@@ -687,15 +686,11 @@ export default function TuitionAssignmentsClient({ initialAssignments }) {
 
   return (
     <>
-      <Head>
-        <title>Premium Tuition Assignments in Singapore | LionCity Tutors</title>
-        <meta name="description" content={`Browse ${allAssignments.length}+ high-quality tuition assignments. Find your next tutoring opportunity in Singapore.`} />
-      </Head>
       <div className="min-h-screen bg-slate-50 font-sans">
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <header className="mb-10 text-center">
-            <h1 className="text-4xl md:text-5xl font-extrabold text-slate-800 tracking-tighter mb-3">Find Your Next Tutoring Opportunity</h1>
-            <p className="text-lg text-slate-500 max-w-3xl mx-auto">Browse our curated list of premium tuition assignments across Singapore. New opportunities added daily.</p>
+            <h1 className="text-4xl md:text-5xl font-extrabold text-slate-800 tracking-tighter mb-3">Tuition Assignments in Singapore</h1>
+            <p className="text-lg text-slate-500 max-w-3xl mx-auto">Browse open tuition assignments across Singapore. New assignments are posted as parents request tutors, so the list changes through the week.</p>
             <div className="mt-6 flex items-center justify-center space-x-2 text-slate-600">
                 <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
                 <span className="font-semibold">{filteredAssignments.length}</span>

@@ -1,17 +1,21 @@
-import { MATCH_HOURS, MATCH_TIME } from '@/data/promises';
+import { MATCH_TIME } from '@/data/promises';
+import { rangeFor } from '../tuition-rates/rates.mjs';
 import React from "react";
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { GuideCTA } from "@/components/guide";
+import { GuideCTA, RelatedGuides } from "@/components/guide";
+import GuideSchema from "@/components/seo/GuideSchema";
 
 // --- SEO & CONTENT DATA ---
 
+const PRIMARY = rangeFor('primary');
+const JC = rangeFor('jc');
+
 const pageMetadata = {
-  title: 'Expert English Tuition Singapore | PSLE, O & A Level Tutors',
-  description: `Unlock your child's potential with Singapore's top English tutors for PSLE, O-Level, and A-Level. Lion City Tutors offers a free, ${MATCH_HOURS}-hour matching service for qualified home tutors.`,
+  title: 'English Tuition Singapore, P1 to O-Level | LionCity Tutors',
+  description: `English tuition in Singapore from primary to O-Level — composition, comprehension and oral technique. Tutors hand-matched in ${MATCH_TIME}, with no agency fee.`,
   keywords: [
     'English tuition Singapore', 'PSLE English tutor', 'O level English tuition', 'A level English tutor',
     'H1 GP tuition', 'JC English tutor', 'private English tutor Singapore', 'home tuition English',
@@ -32,64 +36,15 @@ const faqData = [
   },
   {
     question: "What are the typical rates for English tuition?",
-    answer: "Tuition rates vary depending on the tutor's qualifications and experience, and the student's level. Generally, rates range from $30/hr for Primary School to $80/hr or more for experienced JC A-Level tutors. Our team will provide you with specific quotes based on your requirements."
+    // Figures read from the rate card so this page and /tuition-rates can
+    // never quote different numbers to the same parent.
+    answer: `Rates depend on the tutor's qualifications and the student's level. Primary tuition runs $${PRIMARY.min} to $${PRIMARY.max} an hour and JC $${JC.min} to $${JC.max}, which is our published rate card rather than a quote — we confirm the exact rate with you before you commit.`
   },
   {
     question: "Is there a trial lesson?",
     answer: "While we don't offer free trial lessons, you are not locked into any long-term contract. You can decide whether to continue with the tutor after the first paid lesson. Our goal is to ensure a perfect match, and we can rematch you if you're not satisfied."
   }
 ];
-
-// --- JSON-LD SCHEMA ---
-
-const JsonLdSchema = () => (
-  <script
-    type="application/ld+json"
-    dangerouslySetInnerHTML={{ __html: JSON.stringify({
-      "@context": "https://schema.org",
-      "@graph": [
-        {
-          "@type": "BreadcrumbList",
-          "itemListElement": [
-            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.lioncitytutors.com" },
-            { "@type": "ListItem", "position": 2, "name": "English Tuition", "item": pageMetadata.url }
-          ]
-        },
-        {
-          "@type": "Service",
-          "name": "English Tuition Matching Service",
-          "serviceType": "Tutoring",
-          "provider": {
-            "@type": "Organization",
-            "name": "Lion City Tutors",
-            "url": "https://www.lioncitytutors.com",
-            "logo": "https://www.lioncitytutors.com/images/logo.webp"
-          },
-          "areaServed": {
-            "@type": "Country",
-            "name": "Singapore"
-          },
-          "description": "A free matching service connecting students with qualified private English tutors in Singapore for PSLE, O-Level, A-Level, and IP/IB curriculums.",
-          "broker": {
-            "@type": "Organization",
-            "name": "Lion City Tutors"
-          }
-        },
-        {
-          "@type": "FAQPage",
-          "mainEntity": faqData.map(item => ({
-            "@type": "Question",
-            "name": item.question,
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": item.answer
-            }
-          }))
-        }
-      ]
-    })}}
-  />
-);
 
 export const metadata = {
   title: pageMetadata.title,
@@ -115,7 +70,15 @@ export const metadata = {
 export default function EnglishTuitionPage() {
   return (
     <>
-      <JsonLdSchema />
+      <GuideSchema
+        slug="english-tuition"
+        course={{
+          name: 'English Tuition in Singapore',
+          description: 'One-to-one English tuition covering composition, comprehension and oral from primary through to O-Level.',
+          educationalLevel: 'Primary to GCE O-Level',
+        }}
+        faqs={faqData}
+      />
       <div className="p-6 max-w-5xl mx-auto space-y-16">
 
         {/* Section 1: Hero */}
@@ -407,22 +370,24 @@ export default function EnglishTuitionPage() {
           </div>
         </section>
 
-        {/* Section 6: FAQ */}
+        {/* Section 6: FAQ. Rendered open, not in an accordion: the FAQPage
+            markup claims these answers are on the page, and a Radix accordion
+            unmounts closed content, so they were absent from the HTML. */}
         <section>
           <h2 className="text-3xl font-semibold mb-6 text-center text-blue-800">Frequently Asked Questions</h2>
-          <Accordion type="single" collapsible className="w-full max-w-3xl mx-auto">
-            {faqData.map((item, index) => (
-              <AccordionItem value={`item-${index + 1}`} key={index}>
-                <AccordionTrigger className="text-lg text-left">{item.question}</AccordionTrigger>
-                <AccordionContent className="text-base text-gray-700">
-                  {item.answer}
-                </AccordionContent>
-              </AccordionItem>
+          <div className="w-full max-w-3xl mx-auto space-y-6">
+            {faqData.map((item) => (
+              <div key={item.question}>
+                <h3 className="text-lg font-semibold text-gray-900">{item.question}</h3>
+                <p className="mt-2 text-base text-gray-700 leading-relaxed">{item.answer}</p>
+              </div>
             ))}
-          </Accordion>
+          </div>
         </section>
 
         {/* Section 7: Final CTA */}
+        <RelatedGuides slug="english-tuition" heading="Guides for this subject" />
+
         <GuideCTA
           title="Ready to Boost Your Child's English Grades?"
           description="Let's find the perfect English tutor to build confidence and achieve academic excellence. The process is simple, fast, and completely free."

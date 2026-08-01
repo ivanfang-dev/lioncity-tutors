@@ -3,12 +3,13 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { GuideCTA } from "@/components/guide";
+import { GuideCTA, RelatedGuides } from "@/components/guide";
+import GuideSchema from "@/components/seo/GuideSchema";
 
 
 export const metadata = {
-  title: 'Best Physics Tuition Singapore | Secondary, JC H1/H2, IGCSE, IB Physics Tutors | Lion City Tutors',
-  description: 'Expert physics tutors in Singapore for Secondary, JC H1/H2, IGCSE & IB Physics. Specialized in mechanics, thermodynamics, electromagnetism, quantum physics, and exam preparation with proven results.',
+  title: 'Physics Tuition Singapore: O-Level & H2 | LionCity Tutors',
+  description: 'Physics tuition in Singapore for O-Level, H1 and H2 — kinematics, electricity and practical skills. Tutors matched in 6 hours, with no agency fee for parents.',
   keywords: [
     'physics tuition Singapore',
     'JC H2 physics tutor',
@@ -48,6 +49,14 @@ export const metadata = {
 export default function PhysicsTuition() {
   return (
     <>
+      <GuideSchema
+        slug="physics-tuition"
+        course={{
+          name: 'Physics Tuition in Singapore',
+          description: 'One-to-one Physics tuition for O-Level, H1 and H2, covering kinematics, electricity and the practical paper.',
+          educationalLevel: 'GCE O-Level to A-Level',
+        }}
+      />
       <div className="p-4 sm:p-6 max-w-5xl mx-auto space-y-8 sm:space-y-12">
         {/* Section 1: Hero with Image */}
         <section className="text-center space-y-4 sm:space-y-6">
@@ -772,6 +781,8 @@ export default function PhysicsTuition() {
         </section>
 
         {/* Section 11: Final CTA */}
+        <RelatedGuides slug="physics-tuition" heading="Guides for this subject" />
+
         <GuideCTA
           title="Ready to Boost Your Child's Physics Grades?"
           description="Let's find the perfect Physics tutor to build confidence and achieve academic excellence. The process is simple, fast, and completely free."
