@@ -4,11 +4,12 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { GuideCTA } from "@/components/guide";
+import { GuideCTA, RelatedGuides } from "@/components/guide";
+import GuideSchema from "@/components/seo/GuideSchema";
 
 export const metadata = {
-  title: 'Best Chinese Tuition Singapore | PSLE, O Level, A Level Chinese Tutors | Lion City Tutors',
-  description: `Find the best Chinese tutors in Singapore for PSLE, O Level, A Level & JC H1 Chinese. Free matching service with handpicked private tutors. Results guaranteed within ${MATCH_TIME}.`,
+  title: 'Chinese Tuition Singapore: PSLE & O-Level | LionCity Tutors',
+  description: 'Chinese tuition in Singapore for PSLE and O-Level — oral, composition and comprehension for mother tongue. Tutors matched in 6 hours, with no agency fee.',
   keywords: [
     'Chinese tuition Singapore',
     'PSLE Chinese tutor',
@@ -22,7 +23,7 @@ export const metadata = {
     'primary Chinese tuition'
   ],
   openGraph: {
-    title: 'Best Chinese Tuition Singapore | Expert PSLE, O & A Level Chinese Tutors',
+    title: 'Chinese Tuition Singapore: PSLE & O-Level | LionCity Tutors',
     description: "Connect with Singapore's top Chinese tutors for PSLE, O Level, A Level & H1 Chinese. Free matching service with proven results. Request your tutor today!",
     url: 'https://www.lioncitytutors.com/chinese-tuition',
     type: 'website',
@@ -46,6 +47,14 @@ export const metadata = {
 export default function ChineseTuition() {
   return (
     <>
+      <GuideSchema
+        slug="chinese-tuition"
+        course={{
+          name: 'Chinese Tuition in Singapore',
+          description: 'One-to-one Chinese tuition for PSLE and O-Level, covering oral, composition and comprehension.',
+          educationalLevel: 'Primary to GCE O-Level',
+        }}
+      />
       <div className="p-6 max-w-5xl mx-auto space-y-12">
         {/* Section 1: Headline */}
         <section className="text-center space-y-4">
@@ -312,6 +321,8 @@ export default function ChineseTuition() {
         </section>
 
         {/* Section 9: Call to Action */}
+        <RelatedGuides slug="chinese-tuition" heading="Guides for this subject" />
+
         <GuideCTA
           title="Ready to Boost Your Child's Chinese Grades?"
           description="Let's find the perfect Chinese tutor to build confidence and achieve academic excellence. The process is simple, fast, and completely free."

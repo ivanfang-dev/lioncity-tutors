@@ -1,235 +1,148 @@
-"use client";
-
+import Link from 'next/link';
+import { ArrowRight, HelpCircle } from 'lucide-react';
+import GuideSchema from '@/components/seo/GuideSchema';
+import { RelatedGuides, ICON_STROKE } from '@/components/guide';
 import { MATCH_TIME } from '@/data/promises';
-import React, { useRef } from "react";
-import { motion } from "framer-motion";
-import { Button } from "@/components/ui/button";
-import { Step1, Step2, Step3 } from "../../components/FormSteps";
-import FormStepper from "../../components/FormStepper";
-import useTuitionRequestForm from "../../components/useTuitionRequestForm";
-import { CheckCircle, ArrowRight, Star, BrainCircuit, GraduationCap, Atom } from "lucide-react";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import TuitionRequestForm from './TuitionRequestForm';
+import { RATE_CARD, RATES_REVIEWED, bandFor, priceLabel, overallRange } from './rates.mjs';
+import { RATE_ANSWERS, SERVICE_FAQS, TUITION_RATES_FAQS } from './faqs.mjs';
 
-// --- Main Page Component ---
+const SLUG = 'tuition-rates';
+
+/** One level's rate table. Server-rendered: the figures are in the HTML. */
+function RateTable({ id }) {
+  const band = bandFor(id);
+  return (
+    <div className="mt-5 overflow-x-auto">
+      <table className="w-full min-w-[20rem] border-collapse text-left text-sm">
+        <caption className="sr-only">
+          {band.level} tuition rates per hour, by tutor type
+        </caption>
+        <thead>
+          <tr className="border-b border-border">
+            <th scope="col" className="py-2 pr-4 font-semibold text-text-default">Tutor type</th>
+            <th scope="col" className="py-2 font-semibold text-text-default">Rate per hour</th>
+          </tr>
+        </thead>
+        <tbody>
+          {band.rates.map((rate) => (
+            <tr key={rate.type} className="border-b border-border/60 last:border-0">
+              <td className="py-3 pr-4">
+                <span className="block font-medium text-text-default">{rate.type}</span>
+                <span className="block text-xs text-text-default/60">{rate.details}</span>
+              </td>
+              <td className="py-3 font-bold text-primary whitespace-nowrap">{priceLabel(rate)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
 export default function TuitionRatesPage() {
-  const formRef = useRef(null);
-  const {
-    currentStep,
-    formData,
-    errors,
-    status,
-    nextStep,
-    prevStep,
-    handleChange,
-    handleLevelSubjectChange,
-    addLevelSubject,
-    removeLevelSubject,
-    handleSubmit,
-    resetForm
-  } = useTuitionRequestForm({
-    name: '',
-    mobile: '',
-    levelSubjects: [''],
-    location: '',
-    lessonDuration: '1.5 Hours',
-    customDuration: '',
-    lessonFrequency: '1 Lesson/Week',
-    customFrequency: '',
-    preferredTime: '',
-    tutorType: { partTime: true, fullTime: false, moeTeacher: false },
-    budget: { type: 'marketRate', customAmount: '' },
-    preferences: ''
-  });
-
-  const scrollToForm = () => {
-    formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  };
-
-  const rateData = [
-    {
-      level: "Primary School",
-      description: "Building strong foundational skills for PSLE success.",
-      icon: Atom,
-      tutorTypes: [
-        { name: "Undergraduate", price: "$25 - $40", details: "Bright minds from top universities." },
-        { name: "Full-Time Tutor", price: "$40 - $60", details: "Experienced and dedicated educators." },
-        { name: "MOE-Trained Teacher", price: "$60 - $80", details: "Certified experts in the curriculum." },
-      ]
-    },
-    {
-      level: "Secondary School",
-      description: "Navigating O/N-Levels with targeted strategies.",
-      icon: BrainCircuit,
-      tutorTypes: [
-        { name: "Undergraduate", price: "$35 - $50", details: "Specialized knowledge and relatable." },
-        { name: "Full-Time Tutor", price: "$50 - $70", details: "Proven track records of success." },
-        { name: "MOE-Trained Teacher", price: "$70 - $90", details: "In-depth syllabus understanding." },
-      ]
-    },
-    {
-      level: "Junior College",
-      description: "Mastering the demanding A-Level curriculum.",
-      icon: GraduationCap,
-      tutorTypes: [
-        { name: "Undergraduate", price: "$50 - $70", details: "High-achievers in specific subjects." },
-        { name: "Full-Time Tutor", price: "$70 - $90", details: "Expert guidance for A-Level excellence." },
-        { name: "MOE-Trained Teacher", price: "$90 - $120", details: "Premier instruction and insights." },
-      ]
-    },
-     {
-      level: "IB / University Prep",
-      description: "Specialized support for IB, IP, and university pathways.",
-      icon: Star,
-      tutorTypes: [
-        { name: "Undergraduate", price: "$50 - $70", details: "Familiar with the IB/IP structure." },
-        { name: "Full-Time Tutor", price: "$70 - $90", details: "Experienced in holistic development." },
-        { name: "MOE-Trained Teacher", price: "$90 - $120", details: "Top-tier, specialized instructors." },
-      ]
-    },
-  ];
-
-  const faqData = [
-    { q: "Are there any hidden fees?", a: "None. Our service is 100% free for parents. The rates listed are the tutor's hourly fees. We believe in complete transparency." },
-    { q: "How is the final rate determined?", a: "The final rate depends on the tutor's experience, qualifications, and your location. We confirm the exact rate with you before you commit." },
-    { q: "Can I request a tutor within a budget?", a: "Absolutely. Our form allows you to specify your budget, and we'll find the best match who meets your academic and financial needs." },
-    { q: "What's the difference between tutor types?", a: "Undergraduates are relatable high-achievers from top universities. Full-Time Tutors are experienced professionals. MOE-Trained Teachers have official training and deep curriculum insight." }
-  ];
+  const { min, max } = overallRange();
 
   return (
     <>
-      <div className="bg-background-default text-text-default">
-        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-28">
-          {/* --- Hero Section --- */}
-          <motion.div
-            className="text-center mb-24 md:mb-32"
-            initial={{ opacity: 0, y: -30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
-          >
-            <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-8xl font-bold tracking-tighter mb-6 text-primary">
-              Invest in Excellence.
-            </h1>
-            <p className="text-lg md:text-xl text-text-default/80 max-w-3xl mx-auto mb-10">
-              Access Singapore's elite tutors with clear, competitive rates. We provide unparalleled value by connecting you with educators who deliver real results, all with zero agency fees.
-            </p>
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.98 }}>
-              <Button
-                onClick={scrollToForm}
-                className="bg-accent hover:opacity-90 text-text-inverse font-bold px-8 py-7 rounded-full shadow-lg text-lg group"
-              >
-                Request a Tutor <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
-              </Button>
-            </motion.div>
-          </motion.div>
+      <GuideSchema
+        slug={SLUG}
+        service={{
+          name: 'Private tuition in Singapore',
+          description: `Hand-matched private tutors across every level, charged by the hour at $${min} to $${max} depending on level and tutor experience. No agency fee for parents.`,
+          offers: RATE_CARD.map((band) => ({
+            name: band.level,
+            min: Math.min(...band.rates.map((r) => r.min)),
+            max: Math.max(...band.rates.map((r) => r.max)),
+          })),
+        }}
+        faqs={TUITION_RATES_FAQS}
+      />
 
-          {/* --- Rates Grid Section --- */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-24 md:mb-32">
-            {rateData.map((card, index) => (
-              <motion.div
-                key={card.level}
-                className="bg-background-card p-8 rounded-2xl shadow-lg border border-border transition-all duration-300 hover:shadow-2xl hover:-translate-y-2"
-                initial={{ opacity: 0, y: 50 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.3 }}
-                transition={{ duration: 0.6, delay: index * 0.1, ease: "easeOut" }}
+      <div className="bg-background-default text-text-default">
+        <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-24">
+          <div className="text-center mb-16">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tighter mb-6 text-primary text-balance">
+              Tuition Rates in Singapore
+            </h1>
+            <p className="text-lg md:text-xl text-text-default/80 max-w-3xl mx-auto mb-4 text-pretty">
+              Private tuition runs ${min} to ${max} an hour here, depending on the level and how
+              experienced the tutor is. Every rate below is what the tutor charges &mdash; parents
+              pay no agency fee.
+            </p>
+            <p className="text-sm text-text-default/60 mb-10">
+              LionCity Tutors&apos; own rate card, reviewed {RATES_REVIEWED}. Rates elsewhere in the
+              market will differ.
+            </p>
+            <a
+              href="#request"
+              className="group inline-flex items-center gap-2 bg-accent hover:opacity-90 text-text-inverse font-bold px-8 py-4 rounded-full shadow-lg text-lg"
+            >
+              Request a Tutor
+              <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" aria-hidden="true" />
+            </a>
+          </div>
+
+          <nav aria-label="Jump to a level" className="flex flex-wrap justify-center gap-2 mb-16">
+            {RATE_ANSWERS.map((section) => (
+              <a
+                key={section.id}
+                href={`#${section.id}`}
+                className="rounded-full border border-border bg-background-card px-4 py-2 text-sm font-semibold text-primary shadow-sm transition-colors hover:border-primary"
               >
-                <div className="flex items-center gap-4 mb-5">
-                  <div className="bg-background-subtle p-3 rounded-xl border border-border">
-                    <card.icon className="w-8 h-8 text-primary" />
-                  </div>
-                  <div>
-                    <h3 className="text-2xl font-bold text-primary">{card.level}</h3>
-                    <p className="text-text-default/70 text-sm">{card.description}</p>
-                  </div>
-                </div>
-                <div className="space-y-3">
-                  {card.tutorTypes.map(tutor => (
-                    <div key={tutor.name} className="flex justify-between items-center bg-background-subtle p-4 rounded-lg border border-border">
-                      <div>
-                        <p className="font-semibold text-text-default">{tutor.name}</p>
-                        <p className="text-xs text-text-default/60">{tutor.details}</p>
-                      </div>
-                      <p className="font-bold text-lg text-primary tracking-wide whitespace-nowrap pl-4">{tutor.price}</p>
-                    </div>
-                  ))}
-                </div>
-              </motion.div>
+                {section.label}
+              </a>
+            ))}
+          </nav>
+
+          {/* Answer blocks: the question, the figure, then the table it came from. */}
+          <div className="space-y-10">
+            {RATE_ANSWERS.map((section) => (
+              <section
+                key={section.id}
+                id={section.id}
+                className="scroll-mt-24 rounded-2xl border border-border bg-background-card p-6 sm:p-8 shadow-sm"
+              >
+                <h2 className="text-2xl font-bold text-primary text-balance">{section.question}</h2>
+                <p className="mt-3 text-text-default/85 leading-relaxed text-pretty">{section.answer}</p>
+                {section.band ? <RateTable id={section.band} /> : null}
+              </section>
             ))}
           </div>
 
-          {/* --- FAQ Section --- */}
-          <div className="max-w-3xl mx-auto mb-24 md:mb-32">
-            <h2 className="text-4xl md:text-5xl font-bold text-center tracking-tighter mb-12 text-primary">
-                Answering Your Questions
-            </h2>
-            <Accordion type="single" collapsible className="w-full">
-                {faqData.map((faq, i) => (
-                    <motion.div
-                        key={i}
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true, amount: 0.8 }}
-                        transition={{ duration: 0.5, delay: i * 0.1 }}
-                    >
-                        <AccordionItem value={`item-${i+1}`} className="border-border">
-                            <AccordionTrigger className="text-left text-lg font-semibold hover:no-underline text-text-default py-6">
-                                {faq.q}
-                            </AccordionTrigger>
-                            <AccordionContent className="text-text-default/80 text-base pb-6">
-                                {faq.a}
-                            </AccordionContent>
-                        </AccordionItem>
-                    </motion.div>
-                ))}
-            </Accordion>
-          </div>
-
-          {/* --- Form / CTA Section --- */}
-          <section ref={formRef} className="form-section-gradient">
-              <div className="max-w-4xl mx-auto px-6 py-16 sm:py-24">
-                <motion.div
-                  className="form-card-container"
-                  initial={{ opacity: 0, y: 50 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, amount: 0.3 }}
-                  transition={{ duration: 0.8, ease: "easeOut" }}
-                >
-                  <h2 className="text-4xl font-bold text-center text-primary mb-4">
-                      Ready to Find The Perfect Tutor?
-                  </h2>
-                  <p className="text-center text-text-default/80 mb-10 text-lg">
-                      Get matched with qualified tutors in {MATCH_TIME}. Just fill out the details below.
-                  </p>
-                  <div className="bg-background-card rounded-xl shadow-lg p-8 border border-border">
-                    {status.submitted ? (
-                      <div className="text-center py-10">
-                        <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring" }}>
-                          <CheckCircle className="text-green-500 w-20 h-20 mx-auto mb-4" />
-                        </motion.div>
-                        <h2 className="text-2xl font-semibold mb-2 text-primary">Thank You!</h2>
-                        <p className="text-text-default/80 mb-6">We've received your request and will send tutor profiles shortly.</p>
-                        <Button
-                          className="bg-accent text-text-inverse hover:opacity-90"
-                          onClick={resetForm}
-                        >
-                          Make Another Request
-                        </Button>
-                      </div>
-                    ) : (
-                      <form onSubmit={handleSubmit}>
-                        <FormStepper currentStep={currentStep} />
-                        {status.error && <div className="bg-red-100 text-red-800 p-4 rounded-md mb-6">{status.error}</div>}
-                        
-                        {currentStep === 1 && <Step1 nextStep={nextStep} formData={formData} handleChange={handleChange} handleLevelSubjectChange={handleLevelSubjectChange} addLevelSubject={addLevelSubject} removeLevelSubject={removeLevelSubject} errors={errors} />}
-                        {currentStep === 2 && <Step2 nextStep={nextStep} prevStep={prevStep} formData={formData} handleChange={handleChange} errors={errors} />}
-                        {currentStep === 3 && <Step3 prevStep={prevStep} formData={formData} handleChange={handleChange} status={status} errors={errors} />}
-                      </form>
-                    )}
-                  </div>
-                </motion.div>
-              </div>
+          <section aria-labelledby="faq" className="mt-16 max-w-3xl mx-auto">
+            <div className="flex items-start gap-3 mb-6">
+              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                <HelpCircle className="h-5 w-5" strokeWidth={ICON_STROKE} aria-hidden="true" />
+              </span>
+              <h2 id="faq" className="scroll-mt-24 text-2xl font-bold tracking-tight text-primary">
+                Answering your questions
+              </h2>
+            </div>
+            <div className="space-y-6">
+              {SERVICE_FAQS.map((faq) => (
+                <div key={faq.question}>
+                  <h3 className="text-lg font-semibold text-text-default">{faq.question}</h3>
+                  <p className="mt-2 text-text-default/80 leading-relaxed">{faq.answer}</p>
+                </div>
+              ))}
+            </div>
           </section>
+
+          <div className="mt-16 max-w-3xl mx-auto">
+            <p className="text-text-default/80">
+              Know the rate and ready to start? Tell us the level and subject and we hand-match a
+              vetted tutor, usually within {MATCH_TIME}.{' '}
+              <Link href="/request-tutor" className="font-semibold text-primary underline underline-offset-2">
+                Request a tutor
+              </Link>
+              .
+            </p>
+            <RelatedGuides slug={SLUG} heading="Plan the year around the exam" />
+          </div>
         </main>
+
+        <TuitionRequestForm />
       </div>
     </>
   );

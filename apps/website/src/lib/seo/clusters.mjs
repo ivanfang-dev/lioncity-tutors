@@ -16,6 +16,9 @@ export const HUBS = {
       'o-level-english', 'o-level-math', 'o-level-physics', 'o-level-chemistry',
       'o-level-biology', 'combined-science-overview', 'combined-chemistry-physics',
       'combined-chemistry-biology', 'combined-physics-biology', 'o-level-tuition',
+      'math-tuition', 'science-tuition', 'chemistry-tuition', 'physics-tuition',
+      'biology-tuition', 'english-tuition', 'chinese-tuition',
+      'secondary-school-tuition', 'tuition-rates',
       'free-test-papers', 'free-notes',
     ],
   },
@@ -26,7 +29,10 @@ export const HUBS = {
     anchor: 'complete A-Level preparation guide',
     spokes: [
       'a-level-math', 'a-level-physics', 'a-level-chemistry', 'a-level-biology',
-      'a-level-general-paper', 'jc-tuition', 'free-notes', 'free-test-papers',
+      'a-level-general-paper', 'jc-tuition',
+      'math-tuition', 'science-tuition', 'chemistry-tuition', 'physics-tuition',
+      'biology-tuition', 'economics-tuition', 'tuition-rates',
+      'free-notes', 'free-test-papers',
     ],
   },
   'n-level-prep': {
@@ -36,7 +42,8 @@ export const HUBS = {
     anchor: 'complete N-Level preparation guide',
     spokes: [
       'n-level-tuition', 'combined-science-overview', 'combined-chemistry-physics',
-      'combined-chemistry-biology', 'combined-physics-biology', 'free-test-papers',
+      'combined-chemistry-biology', 'combined-physics-biology',
+      'secondary-school-tuition', 'tuition-rates', 'free-test-papers',
     ],
   },
   'psle-prep': {
@@ -46,7 +53,7 @@ export const HUBS = {
     anchor: 'complete PSLE preparation guide',
     spokes: [
       'psle-math', 'psle-english', 'psle-science', 'psle-chinese', 'primary-school-tuition',
-      'free-test-papers',
+      'chinese-tuition', 'tuition-rates', 'free-test-papers',
     ],
   },
   'ib-igcse': {
@@ -229,7 +236,7 @@ export const SPOKES = {
   'free-test-papers': {
     slug: 'free-test-papers', url: '/free-test-papers', hub: 'o-level-prep',
     alsoIn: ['a-level-prep', 'n-level-prep', 'psle-prep'],
-    resource: true,
+    schemaType: 'CollectionPage',
     title: 'Free Test Papers',
     anchor: 'free past-year and prelim papers',
     blurb: 'Prelim and past-year papers by level and subject, free to download.',
@@ -237,11 +244,76 @@ export const SPOKES = {
   'free-notes': {
     slug: 'free-notes', url: '/free-notes', hub: 'a-level-prep',
     alsoIn: ['o-level-prep'],
-    resource: true,
+    schemaType: 'CollectionPage',
     title: 'Free Study Notes',
     // Anchor and blurb describe what the page actually hosts today (GP
     // infopacks); update them as subjects land rather than promising ahead.
     anchor: 'free study notes and GP infopacks',
     blurb: 'Free revision notes to download, starting with JC General Paper.',
+  },
+
+  // --- Commercial pages ---
+  // Subject-tuition pages sit in the exam hub their traffic comes from, so
+  // they stop being dead ends and pass equity into the guides. `schemaType`
+  // overrides the Course default that subject pages get: a rate card is a
+  // Service with prices, not a course.
+  'math-tuition': {
+    slug: 'math-tuition', url: '/math-tuition', hub: 'o-level-prep',
+    alsoIn: ['a-level-prep'],
+    title: 'Maths Tuition', anchor: 'maths tuition in Singapore',
+    blurb: 'Hand-matched maths tutors from primary through to H2.',
+  },
+  'science-tuition': {
+    slug: 'science-tuition', url: '/science-tuition', hub: 'o-level-prep',
+    alsoIn: ['a-level-prep'],
+    title: 'Science Tuition', anchor: 'science tuition in Singapore',
+    blurb: 'Physics, Chemistry and Biology tutors across every level.',
+  },
+  'chemistry-tuition': {
+    slug: 'chemistry-tuition', url: '/chemistry-tuition', hub: 'o-level-prep',
+    alsoIn: ['a-level-prep'],
+    title: 'Chemistry Tuition', anchor: 'chemistry tuition in Singapore',
+    blurb: 'O-Level and H2 Chemistry tutors, matched to your syllabus.',
+  },
+  'physics-tuition': {
+    slug: 'physics-tuition', url: '/physics-tuition', hub: 'o-level-prep',
+    alsoIn: ['a-level-prep'],
+    title: 'Physics Tuition', anchor: 'physics tuition in Singapore',
+    blurb: 'O-Level and H2 Physics tutors, matched to your syllabus.',
+  },
+  'biology-tuition': {
+    slug: 'biology-tuition', url: '/biology-tuition', hub: 'o-level-prep',
+    alsoIn: ['a-level-prep'],
+    title: 'Biology Tuition', anchor: 'biology tuition in Singapore',
+    blurb: 'O-Level and H2 Biology tutors, matched to your syllabus.',
+  },
+  'english-tuition': {
+    slug: 'english-tuition', url: '/english-tuition', hub: 'o-level-prep',
+    title: 'English Tuition', anchor: 'English tuition in Singapore',
+    blurb: 'Composition, comprehension and oral, primary to O-Level.',
+  },
+  'chinese-tuition': {
+    slug: 'chinese-tuition', url: '/chinese-tuition', hub: 'psle-prep',
+    alsoIn: ['o-level-prep'],
+    title: 'Chinese Tuition', anchor: 'Chinese tuition in Singapore',
+    blurb: 'Mother tongue support from primary through to O-Level.',
+  },
+  'economics-tuition': {
+    slug: 'economics-tuition', url: '/economics-tuition', hub: 'a-level-prep',
+    title: 'Economics Tuition', anchor: 'economics tuition in Singapore',
+    blurb: 'H1 and H2 Economics tutors for essays and case studies.',
+  },
+  'secondary-school-tuition': {
+    slug: 'secondary-school-tuition', url: '/secondary-school-tuition', hub: 'o-level-prep',
+    alsoIn: ['n-level-prep'],
+    title: 'Secondary Tuition', anchor: 'secondary school tuition in Singapore',
+    blurb: 'Sec 1 to Sec 5 tutors across the O-Level and N-Level tracks.',
+  },
+  'tuition-rates': {
+    slug: 'tuition-rates', url: '/tuition-rates', hub: 'o-level-prep',
+    alsoIn: ['a-level-prep', 'n-level-prep', 'psle-prep'],
+    schemaType: 'Service',
+    title: 'Tuition Rates', anchor: 'tuition rates in Singapore',
+    blurb: 'What tutors charge by level and experience, with no agency fee.',
   },
 };

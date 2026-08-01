@@ -151,19 +151,44 @@ describe('site-wide resource pages', () => {
     ]);
   });
 
-  test('resource pages are flagged so they get CollectionPage, not Course', () => {
-    for (const slug of ['free-test-papers', 'free-notes']) {
-      assert.equal(SPOKES[slug].resource, true, `${slug} is not flagged as a resource`);
-    }
-  });
-
-  test('subject spokes are not flagged as resources', () => {
-    assert.equal(SPOKES['o-level-physics'].resource, undefined);
-  });
-
   test('breadcrumbs give each resource page a single parent hub', () => {
     assert.deepEqual(getBreadcrumbs('free-test-papers').map((c) => c.name), [
       'Home', HUBS['o-level-prep'].title, SPOKES['free-test-papers'].title,
     ]);
+  });
+});
+
+describe('commercial pages', () => {
+  test('each subject-tuition page sits in the hub its traffic comes from', () => {
+    const expected = {
+      'math-tuition': ['o-level-prep', 'a-level-prep'],
+      'science-tuition': ['o-level-prep', 'a-level-prep'],
+      'chemistry-tuition': ['o-level-prep', 'a-level-prep'],
+      'physics-tuition': ['o-level-prep', 'a-level-prep'],
+      'biology-tuition': ['o-level-prep', 'a-level-prep'],
+      'english-tuition': ['o-level-prep'],
+      'chinese-tuition': ['psle-prep', 'o-level-prep'],
+      'economics-tuition': ['a-level-prep'],
+      'secondary-school-tuition': ['o-level-prep', 'n-level-prep'],
+    };
+    for (const [slug, hubs] of Object.entries(expected)) {
+      assert.deepEqual(getHubsFor(slug).map((h) => h.slug), hubs, `${slug} hubs`);
+    }
+  });
+
+  test('tuition-rates is surfaced by every exam-level hub', () => {
+    assert.deepEqual(getHubsFor('tuition-rates').map((h) => h.slug), [
+      'o-level-prep', 'a-level-prep', 'n-level-prep', 'psle-prep',
+    ]);
+  });
+
+  test('subject spokes take the Course default; the others name their type', () => {
+    assert.equal(SPOKES['o-level-physics'].schemaType, undefined);
+    const overridden = Object.values(SPOKES).filter((s) => s.schemaType);
+    assert.deepEqual(new Map(overridden.map((s) => [s.slug, s.schemaType])), new Map([
+      ['free-test-papers', 'CollectionPage'],
+      ['free-notes', 'CollectionPage'],
+      ['tuition-rates', 'Service'],
+    ]));
   });
 });
