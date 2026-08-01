@@ -68,7 +68,7 @@ for (const page of all) {
   if (!types.includes('BreadcrumbList')) problems.push(`${page.slug}: missing BreadcrumbList`);
 
   // 3. Hubs get Article; spokes get Course unless the registry names another
-  //    type — a rate card is a Service, not a course.
+  //    type — a folder of downloads is a CollectionPage, a rate card a Service.
   if (page.kind === 'hub' && !types.includes('Article')) problems.push(`${page.slug}: hub missing Article`);
   if (page.kind === 'spoke') {
     const wanted = page.schemaType ?? 'Course';
@@ -125,10 +125,11 @@ for (const page of all) {
 
 // Duplicate links to another CLUSTER page, ignoring site chrome. Nav, footer
 // and CTA links repeat on every page by design, and some of them (/, /blog,
-// /tuition-rates) are cluster pages themselves. Rather than hardcoding that
-// list, take the chrome baseline to be the fewest times a url appears on any
-// page: a page that links it more than that is adding one in-content link,
-// which is fine; more than one is worth a look.
+// /tuition-rates, /free-test-papers, /free-notes) are cluster pages
+// themselves. Rather than hardcoding that list, take the chrome baseline to be
+// the fewest times a url appears on any page: a page that links it more than
+// that is adding one in-content link, which is fine; more than one is worth a
+// look.
 const clusterUrls = new Set(all.map((x) => x.url));
 const chromeBaseline = (url) => Math.min(...linkCounts.map((p) => p.counts[url] ?? 0));
 

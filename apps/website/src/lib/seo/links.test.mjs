@@ -138,6 +138,26 @@ describe('link helpers', () => {
   });
 });
 
+describe('site-wide resource pages', () => {
+  test('free-test-papers is surfaced by all four exam-level hubs', () => {
+    assert.deepEqual(getHubsFor('free-test-papers').map((h) => h.slug), [
+      'o-level-prep', 'a-level-prep', 'n-level-prep', 'psle-prep',
+    ]);
+  });
+
+  test('free-notes is surfaced by the A-Level and O-Level hubs', () => {
+    assert.deepEqual(getHubsFor('free-notes').map((h) => h.slug), [
+      'a-level-prep', 'o-level-prep',
+    ]);
+  });
+
+  test('breadcrumbs give each resource page a single parent hub', () => {
+    assert.deepEqual(getBreadcrumbs('free-test-papers').map((c) => c.name), [
+      'Home', HUBS['o-level-prep'].title, SPOKES['free-test-papers'].title,
+    ]);
+  });
+});
+
 describe('commercial pages', () => {
   test('each subject-tuition page sits in the hub its traffic comes from', () => {
     const expected = {
@@ -162,8 +182,13 @@ describe('commercial pages', () => {
     ]);
   });
 
-  test('only the rate card overrides the Course schema default', () => {
+  test('subject spokes take the Course default; the others name their type', () => {
+    assert.equal(SPOKES['o-level-physics'].schemaType, undefined);
     const overridden = Object.values(SPOKES).filter((s) => s.schemaType);
-    assert.deepEqual(overridden.map((s) => [s.slug, s.schemaType]), [['tuition-rates', 'Service']]);
+    assert.deepEqual(new Map(overridden.map((s) => [s.slug, s.schemaType])), new Map([
+      ['free-test-papers', 'CollectionPage'],
+      ['free-notes', 'CollectionPage'],
+      ['tuition-rates', 'Service'],
+    ]));
   });
 });

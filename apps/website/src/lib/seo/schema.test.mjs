@@ -2,7 +2,7 @@ import { test, describe } from 'node:test';
 import assert from 'node:assert/strict';
 import {
   buildBreadcrumbSchema, buildBreadcrumbTrail, buildArticleSchema, buildFaqSchema,
-  buildCourseSchema, buildServiceSchema,
+  buildCourseSchema, buildCollectionPageSchema, buildServiceSchema,
 } from './schema.mjs';
 
 const SITE = 'https://www.lioncitytutors.com';
@@ -79,6 +79,41 @@ describe('course schema', () => {
 
   test('returns null for an unknown slug', () => {
     assert.equal(buildCourseSchema({ slug: 'not-a-page', name: 'x' }), null);
+  });
+});
+
+describe('collection page schema', () => {
+  const args = {
+    slug: 'free-test-papers',
+    name: 'Free Test Papers',
+    description: 'Prelim and past year papers by level and subject.',
+    items: [
+      { name: 'O-Level prelim papers', url: '/free-test-papers#o-level' },
+      { name: 'JC and A-Level prelim papers', url: '/free-test-papers#a-level' },
+    ],
+  };
+
+  test('describes the page as a collection with a numbered item list', () => {
+    const schema = buildCollectionPageSchema(args);
+    assert.equal(schema['@type'], 'CollectionPage');
+    assert.equal(schema.url, `${SITE}/free-test-papers`);
+    assert.equal(schema.mainEntity['@type'], 'ItemList');
+    assert.deepEqual(schema.mainEntity.itemListElement.map((i) => i.position), [1, 2]);
+    assert.equal(
+      schema.mainEntity.itemListElement[0].url,
+      `${SITE}/free-test-papers#o-level`,
+    );
+    assert.equal(schema.publisher.name, 'LionCity Tutors');
+  });
+
+  test('omits the item list when there are no items', () => {
+    const schema = buildCollectionPageSchema({ ...args, items: [] });
+    assert.equal(schema.mainEntity, undefined);
+    assert.equal(schema['@type'], 'CollectionPage');
+  });
+
+  test('returns null for an unknown slug', () => {
+    assert.equal(buildCollectionPageSchema({ slug: 'not-a-page', name: 'x' }), null);
   });
 });
 

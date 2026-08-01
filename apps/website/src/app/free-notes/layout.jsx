@@ -1,25 +1,30 @@
+const TITLE = 'Free Study Notes: A-Level General Paper | LionCity Tutors';
+const DESCRIPTION =
+  'Free study notes to download for JC and secondary students — A-Level General Paper infopacks on media, science and social issues, with more subjects coming.';
+
 export const metadata = {
-    title: 'Free Test Notes | PSLE, O Level & A Level | Lion City Tutors',
-    description: 'Download free test notes for PSLE, O Level & A Level subjects. Get access to past year notes and practice materials to help your child excel.',
-    keywords: [
-      'free notes Singapore',
-      'PSLE notes',
-      'O level notes',
-      'A level notes',
-      'past year notes',
-      'practice notes'
-    ],
-    openGraph: {
-      title: 'Free Notes | PSLE, O Level & A Level | Lion City Tutors',
-      description: 'Download free test notes for PSLE, O Level & A Level subjects. Get access to past year notes and practice materials to help your child excel.',
-      url: 'https://www.lioncitytutors.com/free-notes',
-      type: 'website',
-    },
-    alternates: {
-      canonical: "https://www.lioncitytutors.com/free-notes"
-    }
-  };
-  
-  export default function FreeNotesLayout({ children }) {
-    return children;
-  } 
+  title: TITLE,
+  description: DESCRIPTION,
+  keywords: [
+    'free study notes Singapore',
+    'general paper a level notes',
+    'gp notes a level',
+    'general paper notes',
+    'JC notes',
+    'O level notes',
+    'free revision notes'
+  ],
+  openGraph: {
+    title: TITLE,
+    description: DESCRIPTION,
+    url: 'https://www.lioncitytutors.com/free-notes',
+    type: 'website',
+  },
+  alternates: {
+    canonical: "https://www.lioncitytutors.com/free-notes"
+  }
+};
+
+export default function FreeNotesLayout({ children }) {
+  return children;
+}
