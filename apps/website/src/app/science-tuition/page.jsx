@@ -3,12 +3,13 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { GuideCTA } from "@/components/guide";
+import { GuideCTA, RelatedGuides } from "@/components/guide";
+import GuideSchema from "@/components/seo/GuideSchema";
 
 
 export const metadata = {
-  title: 'Best Science Tuition Singapore | PSLE, O Level, A Level Science Tutors | Lion City Tutors',
-  description: 'Find expert science tutors in Singapore for PSLE, O Level & A Level Physics, Chemistry, Biology. Free matching with experienced tutors who make science engaging and understandable.',
+  title: 'Science Tuition Singapore: PSLE to JC | LionCity Tutors',
+  description: 'Science tuition in Singapore for PSLE, O-Level and JC — Physics, Chemistry and Biology tutors matched to your syllabus in 6 hours, with no agency fee.',
   keywords: [
     'science tuition Singapore',
     'PSLE science tutor',
@@ -21,7 +22,7 @@ export const metadata = {
     'home tuition science'
   ],
   openGraph: {
-    title: 'Best Science Tuition Singapore | Expert Physics, Chemistry & Biology Tutors',
+    title: 'Science Tuition Singapore: PSLE to JC | LionCity Tutors',
     description: "Connect with Singapore's top science tutors for PSLE, O Level & A Level. Specialized in Physics, Chemistry & Biology with proven results.",
     url: 'https://www.lioncitytutors.com/science-tuition',
     type: 'website',
@@ -45,6 +46,14 @@ export const metadata = {
 export default function ScienceTuition() {
   return (
     <>
+      <GuideSchema
+        slug="science-tuition"
+        course={{
+          name: 'Science Tuition in Singapore',
+          description: 'One-to-one Physics, Chemistry and Biology tuition for PSLE Science, O-Level and JC.',
+          educationalLevel: 'Primary to A-Level',
+        }}
+      />
       <div className="p-4 sm:p-6 max-w-5xl mx-auto space-y-8 sm:space-y-12">
         {/* Section 1: Hero with Image */}
         <section className="text-center space-y-4 sm:space-y-6">
@@ -486,6 +495,8 @@ export default function ScienceTuition() {
         </section>
 
         {/* Section 9: Final CTA */}
+        <RelatedGuides slug="science-tuition" heading="Guides for this subject" />
+
         <GuideCTA
           title="Ready to Boost Your Child's Science Grades?"
           description="Let's find the perfect Science tutor to build confidence and achieve academic excellence. The process is simple, fast, and completely free."

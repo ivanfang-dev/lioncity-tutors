@@ -11,17 +11,28 @@ import { ICON_STROKE } from './constants';
  * more than one hub (see getHubsFor) — e.g. a page that is both an O-Level
  * and N-Level spoke gets one card per hub.
  *
+ * Siblings are capped: the O-Level hub carries nineteen spokes since the
+ * commercial pages joined it, and a page that links eighteen others spreads
+ * itself thin and reads as a link farm. The cap keeps registry order, which
+ * lists the subject guides first — those are the ones worth passing equity to.
+ *
  * @param {string} slug - registry slug of the page rendering this block
  * @param {string} [heading]
  * @param {boolean} [showHub] - pass false on a hub page
+ * @param {number} [limit] - maximum sibling cards
  */
-export default function RelatedGuides({ slug, heading = 'Continue your revision', showHub = true }) {
+export default function RelatedGuides({
+  slug,
+  heading = 'Continue your revision',
+  showHub = true,
+  limit = 10,
+}) {
   const page = getPage(slug);
   if (!page) return null;
 
   // A hub never links to itself, so drop it from its own list of hub cards.
   const hubs = getHubsFor(slug).filter((hub) => hub.slug !== slug);
-  const siblings = getSiblings(slug);
+  const siblings = getSiblings(slug).slice(0, limit);
   if (hubs.length === 0 && siblings.length === 0) return null;
 
   return (

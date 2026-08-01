@@ -3,11 +3,12 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { GuideCTA } from "@/components/guide";
+import { GuideCTA, RelatedGuides } from "@/components/guide";
+import GuideSchema from "@/components/seo/GuideSchema";
 
 export const metadata = {
-  title: 'Best Chemistry Tuition Singapore | Secondary, JC H1/H2, IGCSE, IB Chemistry Tutors | Lion City Tutors',
-  description: 'Expert chemistry tutors in Singapore for Secondary, JC H1/H2, IGCSE & IB Chemistry. Specialized in organic chemistry, stoichiometry, chemical bonding, thermochemistry, and exam preparation with proven results.',
+  title: 'Chemistry Tuition Singapore: O-Level & H2 | LionCity Tutors',
+  description: 'Chemistry tuition in Singapore for O-Level, H1 and H2 — mole calculations, organic chemistry and practicals. Tutors matched in 6 hours, with no agency fee.',
   keywords: [
     'chemistry tuition Singapore',
     'JC H2 chemistry tutor',
@@ -47,6 +48,14 @@ export const metadata = {
 export default function ChemistryTuition() {
   return (
     <>
+      <GuideSchema
+        slug="chemistry-tuition"
+        course={{
+          name: 'Chemistry Tuition in Singapore',
+          description: 'One-to-one Chemistry tuition for O-Level, H1 and H2, covering the mole, organic chemistry and the practical paper.',
+          educationalLevel: 'GCE O-Level to A-Level',
+        }}
+      />
       <div className="p-4 sm:p-6 max-w-5xl mx-auto space-y-8 sm:space-y-12">
         {/* Section 1: Headline */}
         <section className="text-center space-y-3 sm:space-y-4">
@@ -746,6 +755,8 @@ export default function ChemistryTuition() {
         </section>
 
         {/* Section 10: Final CTA */}
+        <RelatedGuides slug="chemistry-tuition" heading="Guides for this subject" />
+
         <GuideCTA
           title="Ready to Boost Your Child's Chemistry Grades?"
           description="Let's find the perfect Chemistry tutor to build confidence and achieve academic excellence. The process is simple, fast, and completely free."

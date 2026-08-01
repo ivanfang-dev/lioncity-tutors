@@ -4,11 +4,12 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { GuideCTA } from "@/components/guide";
+import { GuideCTA, RelatedGuides } from "@/components/guide";
+import GuideSchema from "@/components/seo/GuideSchema";
 
 export const metadata = {
-  title: 'Best Economics Tuition Singapore | H1, H2, IB Economics Tutors | Lion City Tutors',
-  description: `Find the best economics tutors in Singapore for H1, H2, IB SL & HL Economics. Free matching service with handpicked private tutors. Results guaranteed within ${MATCH_TIME}.`,
+  title: 'Economics Tuition Singapore: H1 & H2 | LionCity Tutors',
+  description: 'Economics tuition in Singapore for H1 and H2 — essay structure, case studies and diagrams. JC tutors hand-matched in 6 hours, with no agency fee for parents.',
   keywords: [
     'economics tuition Singapore',
     'H1 economics tutor',
@@ -22,7 +23,7 @@ export const metadata = {
     'IB SL economics'
   ],
   openGraph: {
-    title: 'Best Economics Tuition Singapore | Expert H1, H2 & IB Economics Tutors',
+    title: 'Economics Tuition Singapore: H1 & H2 | LionCity Tutors',
     description: "Connect with Singapore's top economics tutors for H1, H2, IB SL & HL Economics. Free matching service with proven results. Request your tutor today!",
     url: 'https://www.lioncitytutors.com/economics-tuition',
     type: 'website',
@@ -46,6 +47,14 @@ export const metadata = {
 export default function EconomicsTuition() {
   return (
     <>
+      <GuideSchema
+        slug="economics-tuition"
+        course={{
+          name: 'Economics Tuition in Singapore',
+          description: 'One-to-one Economics tuition for H1 and H2, covering essay structure, case studies and diagram work.',
+          educationalLevel: 'GCE A-Level',
+        }}
+      />
       <div className="p-4 sm:p-6 max-w-5xl mx-auto space-y-8 sm:space-y-12">
         {/* Section 1: Headline */}
         <section className="text-center space-y-4">
@@ -477,6 +486,8 @@ export default function EconomicsTuition() {
         </section>
 
         {/* Section 7: Call to Action */}
+        <RelatedGuides slug="economics-tuition" heading="Guides for this subject" />
+
         <GuideCTA
           title="Ready to Boost Your Child's Economics Grades?"
           description="Let's find the perfect Economics tutor to build confidence and achieve academic excellence. The process is simple, fast, and completely free."

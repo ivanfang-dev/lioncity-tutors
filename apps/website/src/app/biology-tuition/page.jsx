@@ -4,11 +4,13 @@ import Image from 'next/image';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import biologyImage from '../../../public/biology.webp';
-import { GuideCTA } from "@/components/guide";
+import { GuideCTA, RelatedGuides } from "@/components/guide";
+import GuideSchema from "@/components/seo/GuideSchema";
+import { BIOLOGY_TUITION_FAQS } from "./faqs.mjs";
 
 export const metadata = {
-  title: 'Best Biology Tuition Singapore | Secondary, JC H1/H2, IGCSE, IB Biology Tutors | Lion City Tutors',
-  description: 'Top biology tuition in Singapore. Experienced tutors for Secondary (O/N), IGCSE, JC H1/H2 and IB. Practical lab skills, exam strategies, and personalised lesson plans to boost confidence and grades.',
+  title: 'Biology Tuition Singapore: O-Level & H2 | LionCity Tutors',
+  description: 'Biology tuition in Singapore for O-Level, H1 and H2 — cells, physiology and genetics with exam-ready phrasing. Tutors matched in 6 hours, no agency fee.',
   keywords: [
     "biology tuition Singapore",
     "secondary biology tuition",
@@ -25,7 +27,7 @@ export const metadata = {
     "biology practical tuition"
   ],
   openGraph: {
-    title: 'Best Biology Tuition Singapore | Secondary, JC H1/H2, IGCSE, IB Biology Tutors | Lion City Tutors',
+    title: 'Biology Tuition Singapore: O-Level & H2 | LionCity Tutors',
     description: 'Top biology tuition in Singapore. Improve your grades with our experienced tutors and proven teaching framework: concept-first teaching, practical mastery, and exam strategies.',
     url: 'https://www.lioncitytutors.com/biology-tuition',
     images: [
@@ -38,6 +40,9 @@ export const metadata = {
     ],
     type: 'article',
   },
+  alternates: {
+    canonical: 'https://www.lioncitytutors.com/biology-tuition',
+  },
 };
 
 const articleSchema = {
@@ -47,7 +52,7 @@ const articleSchema = {
     "@type": "WebPage",
     "@id": "https://www.lioncitytutors.com/biology-tuition"
   },
-  "headline": "Best Biology Tuition Singapore — Secondary, JC, IGCSE, IB | Lion City Tutors",
+  "headline": "Biology Tuition Singapore: O-Level & H2 | LionCity Tutors",
   "description": "Experienced biology tutors in Singapore offering Secondary (O/N), JC H1/H2, IGCSE and IB tuition. Focus on lab skills, exam techniques, concept mastery and personalised lesson plans.",
   "image": "https://www.lioncitytutors.com/biology.webp",
   "author": {
@@ -66,50 +71,19 @@ const articleSchema = {
   "dateModified": "2026-07-12"
 };
 
-const faqSchema = {
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  "mainEntity": [
-    {
-      "@type": "Question",
-      "name": "What levels of biology tuition do you provide?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "We provide tuition for Secondary (O-Level and N-Level), IGCSE, JC H1/H2, and IB (SL/HL). Lessons are customised to the syllabus you follow and your exam board."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "How does one-to-one biology tuition help improve exam grades?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "One-to-one tuition targets knowledge gaps, reinforces exam technique, and offers focused practical training. Tutors use concept-first lessons, past-paper practice and personalised revision plans to accelerate improvement."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Do you offer online lessons and in-person tuition?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Yes — we match students to tutors for both online and in-person lessons across Singapore with flexible scheduling."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Can tutors help with biology practical assessments and IA?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Yes. Our tutors coach practical techniques, data handling, experimental design and Internal Assessment (IA) support for IB and school projects, while emphasising safety and scientific methodology."
-      }
-    }
-  ]
-};
-
 export default function BiologyTuition() {
   return (
     <>
+      <GuideSchema
+        slug="biology-tuition"
+        course={{
+          name: 'Biology Tuition in Singapore',
+          description: 'One-to-one Biology tuition for O-Level, H1 and H2, covering cells, physiology, genetics and the practical paper.',
+          educationalLevel: 'GCE O-Level to A-Level',
+        }}
+        faqs={BIOLOGY_TUITION_FAQS}
+      />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
 
       <div className="p-6 max-w-6xl mx-auto space-y-12">
         {/* Hero */}
@@ -586,37 +560,20 @@ export default function BiologyTuition() {
         <section>
           <h2 className="text-3xl font-semibold text-green-700 text-center mb-4">Frequently asked questions</h2>
           <div className="grid md:grid-cols-2 gap-6">
-            <Card className="shadow-sm">
-              <CardContent className="p-6">
-                <h4 className="font-semibold mb-2">How quickly will my child see improvement?</h4>
-                <p className="text-sm text-gray-700">Improvement depends on starting point and commitment to practice. Many students notice improved understanding within 4–8 lessons; exam-grade improvements usually require sustained tuition & deliberate practice.</p>
-              </CardContent>
-            </Card>
-
-            <Card className="shadow-sm">
-              <CardContent className="p-6">
-                <h4 className="font-semibold mb-2">Do tutors teach both content and exam technique?</h4>
-                <p className="text-sm text-gray-700">Yes — we teach concept mastery, practical skills, and targeted exam technique including time management, command-term interpretation, and structured answers.</p>
-              </CardContent>
-            </Card>
-
-            <Card className="shadow-sm">
-              <CardContent className="p-6">
-                <h4 className="font-semibold mb-2">Online vs in-person — which is better?</h4>
-                <p className="text-sm text-gray-700">Both work well. Online tuition is flexible and effective for theory and data practice; in-person may be preferred for hands-on practical coaching. We match based on needs and geography.</p>
-              </CardContent>
-            </Card>
-
-            <Card className="shadow-sm">
-              <CardContent className="p-6">
-                <h4 className="font-semibold mb-2">How are tutors matched?</h4>
-                <p className="text-sm text-gray-700">We match students with tutors based on syllabus, level, learning style and scheduling. Trial lessons help confirm chemistry and teaching approach before committing.</p>
-              </CardContent>
-            </Card>
+            {BIOLOGY_TUITION_FAQS.map((faq) => (
+              <Card className="shadow-sm" key={faq.question}>
+                <CardContent className="p-6">
+                  <h3 className="font-semibold mb-2">{faq.question}</h3>
+                  <p className="text-sm text-gray-700">{faq.answer}</p>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         </section>
 
         {/* CTA */}
+        <RelatedGuides slug="biology-tuition" heading="Guides for this subject" />
+
         <GuideCTA
           title="Ready to Boost Your Child's Biology Grades?"
           description="Let's find the perfect Biology tutor to build confidence and achieve academic excellence. The process is simple, fast, and completely free."
@@ -624,10 +581,6 @@ export default function BiologyTuition() {
           whatsappHref={`https://wa.me/6588701152?text=${encodeURIComponent("Hi LionCity Tutors! I'd like help finding a Biology tutor.\n\nStudent level:\nCurrent grade:\nLocation:\nPreferred days & timing: ")}`}
         />
 
-        {/* Footer mini-links */}
-        <section className="text-center text-sm text-gray-600">
-          <p>Explore more: <Link href="/o-level-biology" className="text-green-600 hover:underline">O-Level Biology</Link> • <Link href="/igcse-biology" className="text-blue-600 hover:underline">IGCSE Biology</Link> • <Link href="/a-level-biology" className="text-purple-600 hover:underline">JC / A-Level Biology</Link></p>
-        </section>
       </div>
     </>
   );

@@ -4,11 +4,12 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { GuideCTA } from "@/components/guide";     
+import { GuideCTA, RelatedGuides } from "@/components/guide";
+import GuideSchema from "@/components/seo/GuideSchema";     
 
 export const metadata = {
-  title: 'Best Math Tuition Singapore | PSLE, O Level, A Level Math Tutors | Lion City Tutors',
-  description: `Find the best math tutors in Singapore for PSLE, O Level, A Level & JC H2 Math. Free matching service with handpicked private tutors. Results guaranteed within ${MATCH_TIME}. Expert tutors for E Math, A Math, H2 Math, and more.`,
+  title: 'Maths Tuition Singapore: PSLE to A-Level | LionCity Tutors',
+  description: `Maths tuition in Singapore from P1 to H2 — hand-matched tutors for PSLE, O-Level E-Math and A-Math, and JC. Matched in ${MATCH_TIME}, and parents pay no agency fee.`,
   keywords: [
     'math tuition Singapore',
     'PSLE math tutor',
@@ -28,8 +29,8 @@ export const metadata = {
     'A level math guide'
   ],
   openGraph: {
-    title: 'Best Math Tuition Singapore | Expert PSLE, O & A Level Math Tutors',
-    description: "Connect with Singapore's top math tutors for PSLE, O Level, A Level & H2 Math. Free matching service with proven results. Expert tutors for E Math, A Math, and H2 Math. Request your tutor today!",
+    title: 'Maths Tuition Singapore: PSLE to A-Level | LionCity Tutors',
+    description: `Maths tuition in Singapore from P1 to H2 — hand-matched tutors for PSLE, O-Level E-Math and A-Math, and JC. Matched in ${MATCH_TIME}, and parents pay no agency fee.`,
     url: 'https://www.lioncitytutors.com/math-tuition',
     type: 'website',
     images: [
@@ -55,6 +56,14 @@ export const metadata = {
 export default function MathTuition() {
   return (
     <>
+      <GuideSchema
+        slug="math-tuition"
+        course={{
+          name: 'Maths Tuition in Singapore',
+          description: 'One-to-one maths tuition from primary through to H2, covering PSLE, O-Level E-Math and A-Math, and A-Level.',
+          educationalLevel: 'Primary to A-Level',
+        }}
+      />
       <div className="p-6 max-w-5xl mx-auto space-y-12">
         {/* Section 1: Headline */}
         <section className="text-center space-y-4">
@@ -743,6 +752,8 @@ export default function MathTuition() {
         </section>
 
         {/* Section 7: Call to Action */}
+        <RelatedGuides slug="math-tuition" heading="Guides for this subject" />
+
         <GuideCTA
           title="Ready to Boost Your Child's Math Grades?"
           description="Let's find the perfect Math tutor to build confidence and achieve academic excellence. The process is simple, fast, and completely free."
