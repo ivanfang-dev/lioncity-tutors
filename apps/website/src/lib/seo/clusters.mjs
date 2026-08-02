@@ -7,11 +7,22 @@
  */
 
 export const HUBS = {
+  'psle-prep': {
+    slug: 'psle-prep',
+    url: '/blog/psle-preparation-guide',
+    title: 'PSLE Preparation Guide',
+    anchor: 'Complete PSLE preparation guide',
+    spokes: [
+      'psle-math', 'psle-english', 'psle-science', 'psle-chinese', 'primary-school-tuition',
+      'chinese-tuition', 'tuition-rates', 'free-test-papers',
+      'how-to-choose-a-tuition-agency-singapore',
+    ],
+  },
   'o-level-prep': {
     slug: 'o-level-prep',
     url: '/blog/o-level-preparation-guide',
     title: 'O-Level Preparation Guide',
-    anchor: 'complete O-Level preparation guide',
+    anchor: 'Complete O-Level preparation guide',
     spokes: [
       'o-level-english', 'o-level-math', 'o-level-physics', 'o-level-chemistry',
       'o-level-biology', 'combined-science-overview', 'combined-chemistry-physics',
@@ -20,40 +31,58 @@ export const HUBS = {
       'biology-tuition', 'english-tuition', 'chinese-tuition',
       'secondary-school-tuition', 'tuition-rates',
       'free-test-papers', 'free-notes',
-    ],
-  },
-  'a-level-prep': {
-    slug: 'a-level-prep',
-    url: '/blog/a-level-preparation-guide',
-    title: 'A-Level Preparation Guide',
-    anchor: 'complete A-Level preparation guide',
-    spokes: [
-      'a-level-math', 'a-level-physics', 'a-level-chemistry', 'a-level-biology',
-      'a-level-general-paper', 'jc-tuition',
-      'math-tuition', 'science-tuition', 'chemistry-tuition', 'physics-tuition',
-      'biology-tuition', 'economics-tuition', 'tuition-rates',
-      'free-notes', 'free-test-papers',
+      'how-to-choose-a-tuition-agency-singapore',
     ],
   },
   'n-level-prep': {
     slug: 'n-level-prep',
     url: '/blog/n-level-preparation-guide',
     title: 'N-Level Preparation Guide',
-    anchor: 'complete N-Level preparation guide',
+    anchor: 'Complete N-Level preparation guide',
     spokes: [
       'n-level-tuition', 'combined-science-overview', 'combined-chemistry-physics',
       'combined-chemistry-biology', 'combined-physics-biology',
       'secondary-school-tuition', 'tuition-rates', 'free-test-papers',
+      'how-to-choose-a-tuition-agency-singapore',
     ],
   },
-  'psle-prep': {
-    slug: 'psle-prep',
-    url: '/blog/psle-preparation-guide',
-    title: 'PSLE Preparation Guide',
-    anchor: 'complete PSLE preparation guide',
+  'a-level-prep': {
+    slug: 'a-level-prep',
+    url: '/blog/a-level-preparation-guide',
+    title: 'A-Level Preparation Guide',
+    anchor: 'Complete A-Level preparation guide',
     spokes: [
-      'psle-math', 'psle-english', 'psle-science', 'psle-chinese', 'primary-school-tuition',
-      'chinese-tuition', 'tuition-rates', 'free-test-papers',
+      'a-level-math', 'a-level-physics', 'a-level-chemistry', 'a-level-biology',
+      'a-level-general-paper', 'jc-tuition',
+      'math-tuition', 'science-tuition', 'chemistry-tuition', 'physics-tuition',
+      'biology-tuition', 'economics-tuition', 'tuition-rates',
+      'free-notes', 'free-test-papers',
+      'how-to-choose-a-tuition-agency-singapore',
+    ],
+  },
+  'find-a-tutor': {
+    slug: 'find-a-tutor',
+    url: '/request-tutor',
+    title: 'Find a Tutor',
+    anchor: 'Request a hand-matched tutor',
+    blurb: 'Tell us the level, subject and area — we match a vetted tutor, usually within 6 hours.',
+    // "6 hours" above is hardcoded because this registry is a plain data file
+    // that cannot import MATCH_HOURS from @/data/promises. If MATCH_HOURS
+    // ever changes, this string must change too.
+    //
+    // This hub is a conversion page, not an editorial guide, so it carries
+    // Service schema rather than the Article every other hub gets — see
+    // scripts/verify-seo-cluster.mjs. It also legitimately links to itself:
+    // the site-wide "Get Free Tutor Matching" nav CTA points here from every
+    // page, including this one, so the usual hub-self-link check is skipped.
+    schemaType: 'Service',
+    allowSelfLink: true,
+    spokes: [
+      'tuition-punggol-sengkang',
+      'tuition-tampines-bedok',
+      'tuition-jurong-bukit-batok',
+      'how-to-choose-a-tuition-agency-singapore',
+      'tuition-rates',
     ],
   },
   'ib-igcse': {
@@ -311,9 +340,49 @@ export const SPOKES = {
   },
   'tuition-rates': {
     slug: 'tuition-rates', url: '/tuition-rates', hub: 'o-level-prep',
-    alsoIn: ['a-level-prep', 'n-level-prep', 'psle-prep'],
+    // find-a-tutor listed last: tuition-rates already belongs to all four exam
+    // hubs, and joining a fifth means RelatedGuides' default hubLimit (4) would
+    // drop one of them. tuition-rates/page.jsx passes hubLimit={5} instead, so
+    // all five render and none of the four existing prep-guide links are lost.
+    alsoIn: ['a-level-prep', 'n-level-prep', 'psle-prep', 'find-a-tutor'],
     schemaType: 'Service',
     title: 'Tuition Rates', anchor: 'tuition rates in Singapore',
     blurb: 'What tutors charge by level and experience, with no agency fee.',
+  },
+  'how-to-choose-a-tuition-agency-singapore': {
+    slug: 'how-to-choose-a-tuition-agency-singapore',
+    url: '/how-to-choose-a-tuition-agency-singapore',
+    hub: 'psle-prep',
+    alsoIn: ['o-level-prep', 'n-level-prep', 'a-level-prep', 'find-a-tutor'],
+    schemaType: 'Service',
+    title: 'Choosing an Agency',
+    anchor: 'how to choose a tuition agency',
+    blurb: 'Agency, centre or independent tutor — what each costs and who each suits.',
+  },
+
+  // --- Regional pages ---
+  // Corridor pages, not single-estate pages: each covers the cluster of areas
+  // that actually co-occur in the assignment data. areaServed (a list of
+  // Place names, not a Country) is passed by each page.jsx, not stored here.
+  'tuition-punggol-sengkang': {
+    slug: 'tuition-punggol-sengkang', url: '/tuition-punggol-sengkang',
+    hub: 'find-a-tutor',
+    schemaType: 'Service',
+    title: 'Punggol & Sengkang', anchor: 'tuition in Punggol and Sengkang',
+    blurb: 'Tutors covering Punggol, Sengkang, Hougang and Serangoon.',
+  },
+  'tuition-tampines-bedok': {
+    slug: 'tuition-tampines-bedok', url: '/tuition-tampines-bedok',
+    hub: 'find-a-tutor',
+    schemaType: 'Service',
+    title: 'Tampines & Bedok', anchor: 'tuition in Tampines and Bedok',
+    blurb: 'Tutors covering Tampines, Bedok, Pasir Ris and Simei.',
+  },
+  'tuition-jurong-bukit-batok': {
+    slug: 'tuition-jurong-bukit-batok', url: '/tuition-jurong-bukit-batok',
+    hub: 'find-a-tutor',
+    schemaType: 'Service',
+    title: 'Jurong & Bukit Batok', anchor: 'tuition in Jurong and Bukit Batok',
+    blurb: 'Tutors covering Jurong, Bukit Batok, Choa Chu Kang and Tengah.',
   },
 };

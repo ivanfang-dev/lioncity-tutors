@@ -16,6 +16,7 @@
  * so the visible text and the markup can never disagree.
  */
 import { rangeFor, RATES_REVIEWED, bandFor, priceLabel, TUTOR_TYPE_PROSE } from './rates.mjs';
+import { observedSpan } from './placements.mjs';
 
 /** "$35 to $90 an hour" — prose form of a level's full span. */
 const span = (id) => {
@@ -75,6 +76,38 @@ export const RATE_ANSWERS = [
     answer:
       `IB, IP and university preparation sit at ${span('ib')}, the same band as JC: ${byType('ib')}. The premium buys a tutor who knows the IB assessment structure and internal assessments rather than the national syllabus. ${ours}.`,
   },
+  {
+    id: 'jc-chemistry-rates',
+    label: 'JC Chemistry',
+    band: 'jc',
+    question: 'How much does JC Chemistry tuition cost?',
+    answer:
+      `JC Chemistry sits in the same band as every other H1 and H2 subject, ${span('jc')}: ${byType('jc')}. Subject does not move the rate here — level and tutor experience do. Parents booking JC tuition with us typically budget ${observedSpan('jc')}. ${ours}.`,
+  },
+  {
+    id: 'h2-math-rates',
+    label: 'H2 Maths',
+    band: 'jc',
+    question: 'What do H2 Maths tutors charge?',
+    answer:
+      `H2 Maths tutors charge the same JC band as every other subject, ${span('jc')}: ${byType('jc')}. It's the level and the tutor's experience that set the rate, not the subject. Parents booking JC tuition with us typically budget ${observedSpan('jc')}. ${ours}.`,
+  },
+  {
+    id: 'psle-science-rates',
+    label: 'PSLE Science',
+    band: 'primary',
+    question: 'How much is PSLE Science tuition?',
+    answer:
+      `PSLE Science sits in the primary band like every other subject, ${span('primary')}: ${byType('primary')}. Subject does not move the rate here — level and tutor experience do. Parents booking primary tuition with us typically budget ${observedSpan('primary')}. ${ours}.`,
+  },
+  {
+    id: 'o-level-chemistry-rates',
+    label: 'O-Level Chemistry',
+    band: 'secondary',
+    question: 'What does O-Level Chemistry tuition cost?',
+    answer:
+      `O-Level Chemistry sits in the secondary band like every other subject, ${span('secondary')}: ${byType('secondary')}. Subject does not move the rate here — level and tutor experience do. Parents booking secondary tuition with us typically budget ${observedSpan('secondary')}. ${ours}.`,
+  },
 ];
 
 /**
@@ -97,11 +130,6 @@ export const SERVICE_FAQS = [
     question: 'Can I request a tutor within a budget?',
     answer:
       "Absolutely. Our form allows you to specify your budget, and we'll find the best match who meets your academic and financial needs.",
-  },
-  {
-    question: "What's the difference between tutor types?",
-    answer:
-      'Undergraduates are relatable high-achievers from top universities. Full-Time Tutors are experienced professionals. MOE-Trained Teachers have official training and deep curriculum insight.',
   },
 ];
 

@@ -1,178 +1,335 @@
 'use client';
 
-import Link from 'next/link';
-import Image from 'next/image';
-import { motion } from 'framer-motion';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { motion, MotionConfig } from 'framer-motion';
+import TableOfContents from '@/components/TableOfContents';
 import {
-    ArrowRight,
-    BookOpenCheck,
-    Calendar,
-    ShieldCheck,
-    Zap,
-    Flag,
-    AlertTriangle,
-    XCircle,
-    Heart,
-    Brain,
-    Moon,
-    GraduationCap,
-    Briefcase,
-    ArrowUpRight,
-    Check,
-    ClipboardCheck,
-    Bell,
-    Target,
-    CalendarClock,
-    RefreshCw,
-    HelpCircle,
+  GuideHeader, SectionHeading, GuideCard, GuideTimeline, KeyTakeaways, GuideCTA,
+  RelatedGuides, ExamTimetable, ICON_STROKE,
+} from '@/components/guide';
+import { MATCH_TIME } from '@/data/promises';
+import {
+  BookOpenCheck, CalendarClock, RefreshCw, Milestone, BookOpen, Lightbulb, ListChecks,
+  AlertTriangle, Clock, GraduationCap, Heart, Compass, Users, Target, HelpCircle,
+  Calendar, ShieldCheck, Zap, Flag, Brain, Moon, Briefcase, Award,
 } from 'lucide-react';
-import { RelatedGuides, ExamTimetable } from '@/components/guide';
 import { A_LEVEL_FAQS } from './faqs.mjs';
 
-// Data for sections, tailored for A-Levels
-const subjectData = {
-    'General Paper (GP)': {
-        icon: '✍️',
-        tips: [
-            { title: 'Build a Diverse Content Arsenal', description: "GP tests breadth and depth. Create a digital or physical 'content file' organized by key themes (e.g., Science & Tech, The Arts, Politics, Social Issues). For each theme, collate key statistics, relevant real-world examples (local and global), and insightful quotes to substantiate your arguments." },
-            { title: 'Master the Application Question (AQ) Demands', description: "The AQ is a test of critical thinking. Practice deconstructing arguments from passages, identifying the author's assumptions and biases. Crucially, you must be able to evaluate these arguments and apply them to the specific context of Singapore, providing local examples to demonstrate deep understanding." },
-            { title: 'Refine Essay Structure for Clarity and Cohesion', description: "A-Level essays demand a clear, logical, and persuasive structure. Master the PEEL (Point, Evidence, Explanation, Link) framework for your paragraphs. Use sophisticated signposting (e.g., 'Consequently,', 'In contrast,', 'This paradigm is further complicated by...') to guide the examiner through your line of reasoning." }
-        ]
-    },
-    'H2 Mathematics': {
-        icon: '🧮',
-        tips: [
-            { title: 'Cultivate Conceptual Mastery Over Rote Learning', description: "A-Level Math is designed to thwart pure memorization. Invest time in understanding the proofs and derivations behind formulas, especially in Calculus and Vectors. This conceptual depth is what enables you to solve novel, application-based problems that are a hallmark of the exam." },
-            { title: 'Leverage the Graphing Calculator (GC) Strategically', description: "Your GC is an indispensable tool, not just a calculator. Master its functions for graphing complex functions, solving systems of equations, and performing statistical tests. Knowing your GC's capabilities can save critical time and allow you to verify answers obtained through manual calculation." },
-            { title: 'Simulate Exam Conditions Consistently', description: "The sheer volume of the H2 Math syllabus requires rigorous, timed practice. Work through a wide variety of past-year papers from different JCs. This builds speed, accuracy, and the mental stamina required to perform under pressure. Meticulously review your mistakes to identify and eliminate recurring errors." }
-        ]
-    },
-    'H2 Chemistry': {
-        icon: '🧪',
-        tips: [
-            { title: 'Visualize and Master Reaction Mechanisms', description: "Organic Chemistry is often the deciding factor. Don't just memorize reactions; understand the underlying mechanisms (e.g., nucleophilic substitution, electrophilic addition). Use arrow-pushing diagrams to visualize electron flow. This understanding is key to predicting products in unfamiliar reaction schemes." },
-            { title: 'Conquer Data Interpretation & Application', description: "Paper 3 heavily tests data analysis. Practice interpreting spectroscopic data (IR, NMR), titration curves, and kinetic graphs. The ability to extract information, draw logical inferences, and apply them to a given chemical context is a skill that separates top students." },
-            { title: 'Connect the Dots Across Chemistry Branches', description: "A-Level Chemistry is highly integrated. Questions often require you to link concepts from Physical, Organic, and Inorganic Chemistry (e.g., applying principles of Chemical Bonding to explain the properties of an organic molecule). Use mind maps to visualize these interconnections." }
-        ]
-    },
-    'H2 Physics': {
-        icon: '⚛️',
-        tips: [
-            { title: 'Develop Strong Foundational Principles', description: "Physics is hierarchical; complex topics are built on fundamental principles like conservation of energy and momentum. Before tackling advanced concepts like Quantum Physics or Electromagnetism, ensure your grasp of Newtonian Mechanics is flawless. Many challenging questions are simply fundamentals in disguise." },
-            { title: 'Hone Your Explanation & Definition Skills', description: "Paper 2 requires precise, keyword-focused explanations. Simply stating a formula is not enough. Practice articulating the physical meaning behind concepts and laws (e.g., Lenz's Law, Principle of Superposition). Create a glossary of precise definitions and commit them to memory." },
-            { title: 'Master Experimental Design and Error Analysis', description: "The Planning Question (Q1) in Paper 4 is a common stumbling block. Practice designing viable experiments, identifying key variables, and suggesting methods for uncertainty reduction. This section tests your practical intuition as a scientist and can be a major score differentiator." }
-        ]
-    },
-    'H2 Biology': {
-        icon: '🧬',
-        tips: [
-            { title: 'Embrace the Volume with Smart Note-Taking', description: "H2 Biology has the largest content volume. Use smart learning techniques like mind maps, flowcharts for physiological processes, and summary tables to condense information. Focus on understanding pathways (e.g., Cellular Respiration, Photosynthesis) rather than just memorizing isolated facts." },
-            { title: 'Develop Application Skills for Novel Scenarios', description: "Top-band questions often present novel biological scenarios and require you to apply your knowledge. For example, applying principles of genetics to a previously unseen pedigree chart. Practice is key to developing this intellectual flexibility and avoiding 'template' answers." },
-            { title: 'Master the Art of Comparison', description: "Many essay questions require you to 'Compare and contrast' (e.g., mitosis vs. meiosis; prokaryotic vs. eukaryotic cells). Practice structuring these answers using a point-by-point comparison table to ensure your response is balanced, comprehensive, and directly addresses the question." }
-        ]
-    },
-    'H2 Economics': {
-        icon: '📈',
-        tips: [
-            { title: 'Go Beyond Theory with Deep Evaluation', description: "Getting a distinction in Economics requires strong evaluative skills. For any policy you discuss (e.g., fiscal, monetary), you must analyze its limitations, unintended consequences, and conflicting outcomes. Use the 'UDEE' (Understand, Define, Explain, Evaluate) framework, dedicating significant effort to the evaluation part." },
-            { title: 'Integrate Real-World Context in Case Studies', description: "Paper 2 is entirely application-based. You must be able to dissect case study extracts, identify the relevant economic concepts, and use data from the extracts to support your analysis. Regularly read economic news to build a rich repository of real-world examples to enhance your answers." },
-            { title: 'Draw Accurate, Well-Labelled, and Integrated Diagrams', description: "Diagrams are your primary analytical tool. Practice drawing them from memory until they are second nature. Ensure all axes, curves, and equilibrium points are accurately labelled. In essays, explicitly refer to your diagrams to explain complex concepts, making them an integral part of your argument." }
-        ]
-    },
-     'H2 History': {
-        icon: '📜',
-        tips: [
-            { title: 'Master Source-Based Question (SBQ) Skills', description: "History is not just about content; it's about analysis. For SBQs, practice identifying provenance, purpose, and tone to evaluate the reliability and utility of sources. Master the skills of comparison, cross-referencing, and detecting authorial bias to construct nuanced arguments." },
-            { title: 'Engage with Historiography', description: "Top-tier history essays engage with different historical interpretations (historiography). For key events like the Cold War, understand the arguments of different schools of thought (e.g., Orthodox, Revisionist, Post-Revisionist). Incorporating these into your essays demonstrates a higher level of historical understanding." },
-            { title: 'Craft a Strong, Thesis-Driven Argument', description: "An A-Level History essay must have a clear, consistent, and well-defended thesis statement that is established in the introduction and sustained throughout. Each paragraph should contribute directly to proving your overall argument, avoiding a narrative or descriptive approach." }
-        ]
-    },
-    'H2 Literature in English': {
-        icon: '📚',
-        tips: [
-            { title: 'Develop Sophisticated Close Reading Skills', description: "Literature is about analysing the 'how' as much as the 'what'. Practice detailed textual analysis (close reading), paying attention to literary devices, imagery, sentence structure (syntax), and tone. Your analysis must be grounded in specific evidence from the text." },
-            { title: 'Engage with Literary Criticism and Theory', description: "Beyond your personal interpretation, showing awareness of different critical perspectives (e.g., feminist, post-colonial, psychoanalytic) can elevate your analysis. Understanding these lenses allows you to offer more nuanced and academically rigorous interpretations of your set texts." },
-            { title: 'Master the Unseen Paper', description: "The unseen paper is a true test of your analytical abilities. Practice with a wide range of poems and prose passages. Develop a systematic approach: first impressions, identifying key themes and devices, analysing structure, and forming a coherent interpretation, all under timed conditions." }
-        ]
-    }
+// Motion tokens per DESIGN.md (duration.base 0.3s, standard easing). One
+// shared variant, applied selectively — not on every section — so entrance
+// motion stays a quiet accent rather than a sprinkle of one-off timings.
+const EASE = [0.4, 0, 0.2, 1];
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 16 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.3, ease: EASE } },
 };
 
-const timelineData = [
+function Reveal({ children, className }) {
+  return (
+    <motion.div
+      className={className}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, amount: 0.2 }}
+      variants={fadeUp}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+const tableOfContents = [
+  { id: 'gateway', label: 'The A-Levels: gateway to university' },
+  { id: 'exam-timetable', label: '2026 exam timetable' },
+  { id: 'revised-syllabus', label: 'What changed for 2026' },
+  { id: 'campaign', label: 'The two-year campaign' },
+  { id: 'strategies', label: 'Subject-specific strategies' },
+  { id: 'techniques', label: 'Study techniques that work' },
+  { id: 'exam-strategy', label: 'Exam-day strategy' },
+  { id: 'pitfalls', label: 'Common pitfalls to avoid' },
+  { id: 'study-plan', label: 'Weekly study plan' },
+  { id: 'resources', label: 'Essential resources' },
+  { id: 'well-being', label: 'Maintaining peak performance' },
+  { id: 'pathways', label: 'Life after the A-Levels' },
+  { id: 'tuition', label: 'When to consider tuition' },
+  { id: 'countdown', label: 'The final 60 days' },
+  { id: 'faq', label: 'A-Level FAQs' },
+];
+
+const subjectData = [
+  {
+    name: 'General Paper (GP)',
+    icon: '✍️',
+    tips: [
+      { title: 'Build a Diverse Content Arsenal', description: "GP tests breadth and depth. Create a digital or physical 'content file' organized by key themes (e.g., Science & Tech, The Arts, Politics, Social Issues). For each theme, collate key statistics, relevant real-world examples (local and global), and insightful quotes to substantiate your arguments." },
+      { title: 'Master the Application Question (AQ) Demands', description: "The AQ is a test of critical thinking. Practice deconstructing arguments from passages, identifying the author's assumptions and biases. Crucially, you must be able to evaluate these arguments and apply them to the specific context of Singapore, providing local examples to demonstrate deep understanding." },
+      { title: 'Refine Essay Structure for Clarity and Cohesion', description: "A-Level essays demand a clear, logical, and persuasive structure. Master the PEEL (Point, Evidence, Explanation, Link) framework for your paragraphs. Use sophisticated signposting (e.g., 'Consequently,', 'In contrast,', 'This paradigm is further complicated by...') to guide the examiner through your line of reasoning." },
+    ],
+  },
+  {
+    name: 'H2 Mathematics',
+    icon: '🧮',
+    tips: [
+      { title: 'Cultivate Conceptual Mastery Over Rote Learning', description: "A-Level Math is designed to thwart pure memorization. Invest time in understanding the proofs and derivations behind formulas, especially in Calculus and Vectors. This conceptual depth is what enables you to solve novel, application-based problems that are a hallmark of the exam." },
+      { title: 'Leverage the Graphing Calculator (GC) Strategically', description: "Your GC is an indispensable tool, not just a calculator. Master its functions for graphing complex functions, solving systems of equations, and performing statistical tests. Knowing your GC's capabilities can save critical time and allow you to verify answers obtained through manual calculation." },
+      { title: 'Simulate Exam Conditions Consistently', description: "The sheer volume of the H2 Math syllabus requires rigorous, timed practice. Work through a wide variety of past-year papers from different JCs. This builds speed, accuracy, and the mental stamina required to perform under pressure. Meticulously review your mistakes to identify and eliminate recurring errors." },
+    ],
+  },
+  {
+    name: 'H2 Chemistry',
+    icon: '🧪',
+    tips: [
+      { title: 'Visualize and Master Reaction Mechanisms', description: "Organic Chemistry is often the deciding factor. Don't just memorize reactions; understand the underlying mechanisms (e.g., nucleophilic substitution, electrophilic addition). Use arrow-pushing diagrams to visualize electron flow. This understanding is key to predicting products in unfamiliar reaction schemes." },
+      { title: 'Conquer Data Interpretation & Application', description: "Paper 3 heavily tests data analysis. Practice interpreting spectroscopic data (IR, NMR), titration curves, and kinetic graphs. The ability to extract information, draw logical inferences, and apply them to a given chemical context is a skill that separates top students." },
+      { title: 'Connect the Dots Across Chemistry Branches', description: "A-Level Chemistry is highly integrated. Questions often require you to link concepts from Physical, Organic, and Inorganic Chemistry (e.g., applying principles of Chemical Bonding to explain the properties of an organic molecule). Use mind maps to visualize these interconnections." },
+    ],
+  },
+  {
+    name: 'H2 Physics',
+    icon: '⚛️',
+    tips: [
+      { title: 'Develop Strong Foundational Principles', description: "Physics is hierarchical; complex topics are built on fundamental principles like conservation of energy and momentum. Before tackling advanced concepts like Quantum Physics or Electromagnetism, ensure your grasp of Newtonian Mechanics is flawless. Many challenging questions are simply fundamentals in disguise." },
+      { title: 'Hone Your Explanation & Definition Skills', description: "Paper 2 requires precise, keyword-focused explanations. Simply stating a formula is not enough. Practice articulating the physical meaning behind concepts and laws (e.g., Lenz's Law, Principle of Superposition). Create a glossary of precise definitions and commit them to memory." },
+      { title: 'Master Experimental Design and Error Analysis', description: "The Planning Question (Q1) in Paper 4 is a common stumbling block. Practice designing viable experiments, identifying key variables, and suggesting methods for uncertainty reduction. This section tests your practical intuition as a scientist and can be a major score differentiator." },
+    ],
+  },
+  {
+    name: 'H2 Biology',
+    icon: '🧬',
+    tips: [
+      { title: 'Embrace the Volume with Smart Note-Taking', description: "H2 Biology has the largest content volume. Use smart learning techniques like mind maps, flowcharts for physiological processes, and summary tables to condense information. Focus on understanding pathways (e.g., Cellular Respiration, Photosynthesis) rather than just memorizing isolated facts." },
+      { title: 'Develop Application Skills for Novel Scenarios', description: "Top-band questions often present novel biological scenarios and require you to apply your knowledge. For example, applying principles of genetics to a previously unseen pedigree chart. Practice is key to developing this intellectual flexibility and avoiding 'template' answers." },
+      { title: 'Master the Art of Comparison', description: "Many essay questions require you to 'Compare and contrast' (e.g., mitosis vs. meiosis; prokaryotic vs. eukaryotic cells). Practice structuring these answers using a point-by-point comparison table to ensure your response is balanced, comprehensive, and directly addresses the question." },
+    ],
+  },
+  {
+    name: 'H2 Economics',
+    icon: '📈',
+    tips: [
+      { title: 'Go Beyond Theory with Deep Evaluation', description: "Getting a distinction in Economics requires strong evaluative skills. For any policy you discuss (e.g., fiscal, monetary), you must analyze its limitations, unintended consequences, and conflicting outcomes. Use the 'UDEE' (Understand, Define, Explain, Evaluate) framework, dedicating significant effort to the evaluation part." },
+      { title: 'Integrate Real-World Context in Case Studies', description: "Paper 2 is entirely application-based. You must be able to dissect case study extracts, identify the relevant economic concepts, and use data from the extracts to support your analysis. Regularly read economic news to build a rich repository of real-world examples to enhance your answers." },
+      { title: 'Draw Accurate, Well-Labelled, and Integrated Diagrams', description: "Diagrams are your primary analytical tool. Practice drawing them from memory until they are second nature. Ensure all axes, curves, and equilibrium points are accurately labelled. In essays, explicitly refer to your diagrams to explain complex concepts, making them an integral part of your argument." },
+    ],
+  },
+  {
+    name: 'H2 History',
+    icon: '📜',
+    tips: [
+      { title: 'Master Source-Based Question (SBQ) Skills', description: "History is not just about content; it's about analysis. For SBQs, practice identifying provenance, purpose, and tone to evaluate the reliability and utility of sources. Master the skills of comparison, cross-referencing, and detecting authorial bias to construct nuanced arguments." },
+      { title: 'Engage with Historiography', description: "Top-tier history essays engage with different historical interpretations (historiography). For key events like the Cold War, understand the arguments of different schools of thought (e.g., Orthodox, Revisionist, Post-Revisionist). Incorporating these into your essays demonstrates a higher level of historical understanding." },
+      { title: 'Craft a Strong, Thesis-Driven Argument', description: "An A-Level History essay must have a clear, consistent, and well-defended thesis statement that is established in the introduction and sustained throughout. Each paragraph should contribute directly to proving your overall argument, avoiding a narrative or descriptive approach." },
+    ],
+  },
+  {
+    name: 'H2 Literature in English',
+    icon: '📚',
+    tips: [
+      { title: 'Develop Sophisticated Close Reading Skills', description: "Literature is about analysing the 'how' as much as the 'what'. Practice detailed textual analysis (close reading), paying attention to literary devices, imagery, sentence structure (syntax), and tone. Your analysis must be grounded in specific evidence from the text." },
+      { title: 'Engage with Literary Criticism and Theory', description: "Beyond your personal interpretation, showing awareness of different critical perspectives (e.g., feminist, post-colonial, psychoanalytic) can elevate your analysis. Understanding these lenses allows you to offer more nuanced and academically rigorous interpretations of your set texts." },
+      { title: 'Master the Unseen Paper', description: "The unseen paper is a true test of your analytical abilities. Practice with a wide range of poems and prose passages. Develop a systematic approach: first impressions, identifying key themes and devices, analysing structure, and forming a coherent interpretation, all under timed conditions." },
+    ],
+  },
+];
+
+const campaignTimeline = [
   {
     period: 'JC1 Year-End to March of JC2',
-    icon: <Calendar className="h-8 w-8 text-white" />,
-    bgColor: 'bg-blue-500',
     title: 'Syllabus Completion & Deep Understanding',
-    description: 'This is the most critical phase. Focus on mastering the remaining JC2 topics while constantly revisiting JC1 content. The goal is not just to cover the syllabus, but to achieve a deep, interconnected understanding. Consolidate notes and clarify all conceptual doubts with teachers or tutors.',
+    icon: Calendar,
+    description: 'Master the remaining JC2 topics while constantly revisiting JC1 content — the goal is an interconnected understanding, not just coverage. Consolidate notes and clear every conceptual doubt with a teacher or tutor.',
   },
   {
     period: 'April to June (Mid-Year Exams)',
-    icon: <ShieldCheck className="h-8 w-8 text-white" />,
-    bgColor: 'bg-green-500',
     title: 'Targeted Revision & Prelim Preparation',
-    description: 'Begin intensive, focused revision. Start working through topical past papers to identify and rectify weaknesses. Use the mid-year examinations as a serious benchmark to gauge your progress. After the exams, analyze your performance in detail and create a targeted plan for the final stretch.',
+    icon: ShieldCheck,
+    description: 'Begin topical past-paper practice to find and fix weaknesses. Use the mid-year exams as a genuine benchmark, then build a targeted plan for the final stretch from the results.',
   },
   {
     period: 'July to September (Prelims)',
-    icon: <Zap className="h-8 w-8 text-white" />,
-    bgColor: 'bg-yellow-500',
     title: 'Full Mock Papers & Stamina Building',
-    description: 'Shift your focus entirely to full-length papers from various top JCs under strict exam conditions. This phase is about building mental stamina, perfecting time management, and refining exam strategies. The Prelims are the most realistic simulation before the actual A-Levels.',
+    icon: Zap,
+    description: 'Shift to full-length papers from other JCs under strict exam conditions. Prelims are the most realistic simulation before the real thing — use them to perfect timing and technique.',
   },
   {
-    period: 'October to A-Level Exams',
-    icon: <Flag className="h-8 w-8 text-white" />,
-    bgColor: 'bg-red-500',
+    period: 'October to the A-Levels',
     title: 'Strategic Refinement & Mental Preparation',
-    description: 'In the final weeks, avoid learning new content. Focus on reviewing your mistakes, memorizing key definitions and formulas, and rereading your content files (especially for GP and Humanities). Prioritize sleep, nutrition, and mental well-being to ensure you are at your peak performance state.',
-  }
+    icon: Flag,
+    description: 'Stop learning new content. Review mistakes, memorise key definitions and formulas, reread your content files, and prioritise sleep and well-being ahead of peak performance.',
+  },
 ];
 
 const mistakes = [
   {
-    title: "Underestimating the JC1 to JC2 Jump",
+    title: 'Underestimating the JC1 to JC2 Jump',
     description: "The pace and depth of the JC2 curriculum are significantly more intense than in JC1. Many students struggle because they don't adjust their study habits, leading to a snowball effect of falling behind. What worked in JC1 is often insufficient for JC2.",
-    solution: "Start revising JC1 content during the JC1 year-end holidays. Treat the beginning of JC2 as a critical period to establish a rigorous and disciplined study routine. Stay consistently on top of your tutorials and lectures from day one."
+    solution: 'Start revising JC1 content during the JC1 year-end holidays. Treat the beginning of JC2 as a critical period to establish a rigorous and disciplined study routine. Stay consistently on top of your tutorials and lectures from day one.',
   },
   {
-    title: "Neglecting General Paper (GP) until the last minute",
-    description: "GP is not a subject you can cram for. It requires a broad knowledge of current affairs and the ability to construct coherent, nuanced arguments. Last-minute reading will be superficial and insufficient for the demands of the GP essay and AQ.",
-    solution: "Make reading a weekly habit from the start of JC1. Dedicate a few hours each week to reading from diverse, quality sources. Discuss these issues with peers to sharpen your thinking and argumentation skills. Build your content file progressively."
+    title: 'Neglecting General Paper (GP) until the last minute',
+    description: 'GP is not a subject you can cram for. It requires a broad knowledge of current affairs and the ability to construct coherent, nuanced arguments. Last-minute reading will be superficial and insufficient for the demands of the GP essay and AQ.',
+    solution: 'Make reading a weekly habit from the start of JC1. Dedicate a few hours each week to reading from diverse, quality sources. Discuss these issues with peers to sharpen your thinking and argumentation skills. Build your content file progressively.',
   },
   {
-    title: "Memorizing Answers Instead of Understanding Concepts",
-    description: "The A-Levels are designed to test higher-order thinking, not rote memorization. Examiners can easily spot memorized essays or solutions. This approach fails when faced with novel questions that require the application of concepts in unfamiliar contexts.",
-    solution: "Focus on the 'why' behind every concept, formula, and theory. Use techniques like the Feynman method to test your understanding. Practice applying your knowledge to a wide variety of questions from different schools' prelim papers to build intellectual flexibility."
+    title: 'Memorizing Answers Instead of Understanding Concepts',
+    description: 'The A-Levels are designed to test higher-order thinking, not rote memorization. Examiners can easily spot memorized essays or solutions. This approach fails when faced with novel questions that require the application of concepts in unfamiliar contexts.',
+    solution: "Focus on the 'why' behind every concept, formula, and theory. Use techniques like the Feynman method to test your understanding. Practice applying your knowledge to a wide variety of questions from different schools' prelim papers to build intellectual flexibility.",
   },
   {
-    title: "Ignoring Mental Health and Sacrificing Sleep",
-    description: "The A-Level marathon is mentally and emotionally taxing. Chronic sleep deprivation and high stress levels impair cognitive function, memory recall, and critical thinking. Burnout before the exam is a very real and dangerous possibility.",
-    solution: "Schedule regular breaks and maintain at least one hobby or sport. Aim for 7-8 hours of quality sleep per night. Learn to recognize the signs of burnout and seek support from friends, family, or school counsellors. A healthy mind is your most powerful asset."
-  }
+    title: 'Ignoring Mental Health and Sacrificing Sleep',
+    description: 'The A-Level marathon is mentally and emotionally taxing. Chronic sleep deprivation and high stress levels impair cognitive function, memory recall, and critical thinking. Burnout before the exam is a very real and dangerous possibility.',
+    solution: 'Schedule regular breaks and maintain at least one hobby or sport. Aim for 7-8 hours of quality sleep per night. Learn to recognize the signs of burnout and seek support from friends, family, or school counsellors. A healthy mind is your most powerful asset.',
+  },
+];
+
+const studyTechniques = [
+  { title: 'The Pomodoro Technique', description: 'Work in focused 25-minute sprints followed by a 5-minute break. Keeps concentration high and prevents burnout across a long revision session.' },
+  { title: 'Active Recall', description: 'After studying a topic, close your notes and write down everything you remember. Retrieval strengthens memory far more than rereading ever does.' },
+  { title: 'Spaced Repetition', description: 'Revisit material at growing intervals — a day, then three days, then a week — so it moves from short-term to long-term memory instead of fading after the first pass.' },
+  { title: 'The Feynman Technique', description: 'Explain a concept in the simplest language you can, as if teaching a junior. Wherever you reach for jargon or get stuck, that is the gap in your understanding.' },
+  { title: 'Mind Mapping', description: 'Draw the connections between topics — especially powerful for content-heavy subjects like Biology, History and Economics, where the links between ideas carry marks.' },
+];
+
+const examStrategyPhases = [
+  {
+    title: 'Before the Exam',
+    points: [
+      "Confirm your timetable, venue and required materials — GC, stationery, ID — the night before",
+      'Get at least 8 hours of sleep and eat a proper meal; skip anything heavy or unfamiliar',
+      'Do a light review of formulas and definitions only — this is not the time to learn new content',
+      "Arrive early enough that a delayed bus or a wrong room doesn't become a crisis",
+    ],
+  },
+  {
+    title: 'During the Exam',
+    points: [
+      'Scan the whole paper first and mark the questions you are most confident on',
+      'Start with your strongest questions to build momentum and secure marks early',
+      'Show every step of working — method marks are real marks',
+      "Answer the command word that is actually asked ('evaluate' is not 'describe')",
+      'If a question stalls you, move on and return to it once the rest is done',
+    ],
+  },
+  {
+    title: 'Time Management',
+    points: [
+      'Budget roughly a minute per mark as a starting rule, then adjust per paper',
+      'Plan your section-by-section time allocation before you start writing',
+      'Reserve the last 10–15 minutes to check working, units and that every question is attempted',
+      'The only way to internalise pacing is timed practice under real conditions — do it repeatedly',
+    ],
+  },
+];
+
+const weeklyPlan = {
+  weekdays: [
+    'Start with a short break after school before beginning any deep work',
+    'One focused 90-minute block on your heaviest subject (often H2 Math or a science)',
+    'A second block rotating through the remaining subjects',
+    'A short nightly review of what was covered and what tomorrow needs',
+  ],
+  weekends: [
+    'Morning: a full timed past-paper attempt under exam conditions',
+    "Afternoon: mark it strictly against the Cambridge scheme and log every mark lost",
+    "Evening: a weekly review — consolidate the week's mistakes into your content file or formula sheet",
+    "Sunday night: set next week's priority subject before Monday arrives",
+  ],
+};
+
+const resourceGroups = [
+  {
+    title: 'Official resources',
+    items: [
+      'SEAB syllabus documents for every H1/H2 subject — the actual scope of what can be examined',
+      'Past-year papers from your own JC and, once those run out, from other JCs',
+      'Prelim papers, which are the closest realistic simulation of the actual exam',
+    ],
+  },
+  {
+    title: 'Subject tools',
+    items: [
+      "A graphing calculator (GC) you know inside out, not one you're still learning under exam pressure",
+      'A content file for GP and the Humanities, built weekly rather than crammed in Term 3',
+      'Mark schemes for every past paper attempted — mark yourself before a tutor or teacher does',
+    ],
+  },
+  {
+    title: 'Digital tools',
+    items: [
+      'Scheduling: Google Calendar or Todoist to actually protect study blocks',
+      'Flashcards: Anki for spaced repetition, especially definitions and formulas',
+      'Focus: Forest or a similar app to keep your phone out of study sessions',
+    ],
+  },
+];
+
+const countdownPhases = [
+  {
+    range: 'Days 60–31',
+    title: 'Comprehensive Review & Gap-Filling',
+    points: [
+      'Finish any remaining content and move to daily topical past-paper practice',
+      'Use your results so far to aggressively target the weakest topics, not the comfortable ones',
+      'Start condensing notes into a single-page summary per subject',
+    ],
+  },
+  {
+    range: 'Days 30–15',
+    title: 'Peak Practice & Simulation',
+    points: [
+      'Shift to full papers under strict timing, daily where possible',
+      'Refine technique, precision and pacing rather than covering new ground',
+      'Track whether marks are lost early (a rushed start) or late (ran out of time) and adjust',
+    ],
+  },
+  {
+    range: 'Days 14–1',
+    title: 'Final Consolidation & Mental Prep',
+    points: [
+      'Move from intense practice to light review of your content files and mistake log',
+      'Finalise your cheat sheets — the single-page distillation of each subject',
+      'Protect sleep and routine over squeezing in one more topic',
+    ],
+  },
+];
+
+const wellbeingPillars = [
+  {
+    icon: Brain,
+    iconClass: 'bg-green-100 text-green-600',
+    title: 'Combat Cognitive Fatigue',
+    description: 'The intensity of A-Level preparation can lead to cognitive fatigue. Use spaced repetition and active recall to study more efficiently, and take short, frequent breaks rather than marathon sessions.',
+  },
+  {
+    icon: Moon,
+    iconClass: 'bg-blue-100 text-blue-600',
+    title: 'Optimize Your Sleep',
+    description: 'Sleep is when your brain consolidates learning into long-term memory. Establish a strict pre-bed routine, avoid caffeine late in the day, and aim for 7–9 hours of uninterrupted sleep.',
+  },
+  {
+    icon: Heart,
+    iconClass: 'bg-red-100 text-red-600',
+    title: 'Nutrition for the Brain',
+    description: 'Your diet directly impacts focus and energy. Prioritise omega-3s, antioxidants and complex carbohydrates, stay hydrated, and avoid sugary snacks that cause energy crashes.',
+  },
 ];
 
 const pathways = [
-    {
-        icon: <GraduationCap className="h-8 w-8 text-white" />,
-        title: "Local Universities (NUS, NTU, SMU etc.)",
-        description: "The primary goal for most A-Level graduates. Your Rank Points (RP) will determine your eligibility for various competitive courses. A strong portfolio in co-curricular activities (CCAs) can also be a differentiating factor for admission.",
-        color: "from-blue-600 to-indigo-700"
-    },
-    {
-        icon: <Briefcase className="h-8 w-8 text-white" />,
-        title: "Overseas Universities (UK, US, Australia)",
-        description: "A-Levels are an internationally recognized qualification that can grant you direct entry into top universities worldwide. Application processes may require additional essays, interviews, or standardized tests like the SAT or BMAT.",
-        color: "from-purple-500 to-violet-600"
-    },
-    {
-        icon: <Target className="h-8 w-8 text-white" />,
-        title: "Scholarships & Special Programmes",
-        description: "Excellent A-Level results open doors to prestigious scholarships from government bodies (PSC), statutory boards, and private organizations. These often cover tuition fees and provide an allowance, but come with a service bond.",
-        color: "from-green-500 to-teal-600"
-    }
-]
+  {
+    icon: GraduationCap,
+    title: 'Local Universities (NUS, NTU, SMU etc.)',
+    description: 'The primary goal for most A-Level graduates. Your Rank Points (RP) determine eligibility for competitive courses, and a strong CCA portfolio can be a differentiating factor for admission.',
+  },
+  {
+    icon: Briefcase,
+    title: 'Overseas Universities (UK, US, Australia)',
+    description: 'A-Levels are internationally recognised and can grant direct entry into top universities worldwide. Application processes may require additional essays, interviews, or tests like the SAT or BMAT.',
+  },
+  {
+    icon: Award,
+    title: 'Scholarships & Special Programmes',
+    description: 'Excellent A-Level results open doors to scholarships from government bodies (PSC), statutory boards, and private organisations — these often cover tuition and provide an allowance, but come with a service bond.',
+  },
+];
 
 const revisedSyllabusRows = [
   {
@@ -195,458 +352,305 @@ const revisedSyllabusRows = [
   },
 ];
 
-const ALevelPrepClient = () => {
+export default function ALevelPrepClient() {
+  const whatsappMessage = `Hi LionCity Tutors! I'd like help finding an A-Level (JC) tutor.
+
+Subject(s):
+Student level (e.g. JC1 / JC2):
+Current grade:
+Preferred days & timing: `;
+  const whatsappHref = `https://wa.me/6588701152?text=${encodeURIComponent(whatsappMessage)}`;
+
   return (
-    <div className="bg-white text-gray-800 font-sans antialiased">
-      <main>
-      {/* Hero Section */}
-      <motion.section
-        initial={{ opacity: 0, y: -50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, ease: 'easeOut' }}
-        className="relative text-center py-30 px-4 shadow-lg overflow-hidden bg-cover bg-top"
-        style={{ backgroundImage: "url('/final.webp')" }}
-      >
-        <div className="absolute inset-0 bg-black opacity-50"></div>
-        <div className="relative z-10">
-          <motion.h1
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="text-5xl md:text-6xl font-extrabold text-white mb-4 tracking-tight"
-          >
-            Conquer the A-Levels in 2026
-          </motion.h1>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.4 }}
-            className="text-lg md:text-xl text-gray-200 mb-10 max-w-3xl mx-auto"
-          >
-            The ultimate guide to mastering the Singapore GCE A-Levels. Unlock elite strategies, in-depth subject analysis, and proven study plans for JC students.
-          </motion.p>
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5, delay: 0.6 }}
-          >
-              <Link href="/request-tutor" passHref>
-                  <Button size="lg" className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 px-8 text-lg rounded-full shadow-lg transform hover:scale-105 transition-transform duration-300">
-                      Get a Free Consultation <ArrowRight className="ml-2 h-5 w-5" />
-                  </Button>
-              </Link>
-          </motion.div>
-        </div>
-      </motion.section>
+    <MotionConfig reducedMotion="user">
+      <main className="mx-auto max-w-6xl px-4 sm:px-6 py-12 sm:py-16">
+        <div className="mx-auto max-w-2xl lg:max-w-none lg:grid lg:grid-cols-[minmax(0,42rem)_15rem] lg:justify-center lg:gap-12">
+          <div>
+            <Reveal>
+              <GuideHeader
+                title="A-Level Preparation Guide 2026: H1 & H2 Study Plan"
+                author="By the LionCity Tutors JC Team"
+                meta="Updated August 1, 2026 · 16 min read"
+                imageSrc="/jc-tuition_optimized.webp"
+                imageAlt="A JC tutor working through a concept with a student ahead of the A-Level exams."
+              />
+            </Reveal>
 
-        {/* Introduction Section */}
-        <motion.section
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true, amount: 0.3 }}
-          transition={{ duration: 0.7 }}
-          className="py-20 px-4"
-        >
-          <div className="max-w-5xl mx-auto">
-            <div className="text-center mb-12">
-              <h2 className="text-4xl font-bold text-indigo-900 mb-4">The A-Levels: Your Gateway to University and Beyond</h2>
-              <p className="text-lg text-gray-600">
-                Understanding the gravity and structure of this examination is fundamental to strategic preparation.
+            <article className="space-y-12 text-gray-700 leading-relaxed">
+              <p className="text-lg text-gray-800 leading-relaxed text-pretty">
+                The Singapore-Cambridge GCE A-Level exam is the culmination of the pre-university journey and the primary benchmark for university admission. This guide covers the official 2026 timetable, what changed in the revised H2 science syllabuses, subject-by-subject strategies, and a full JC1-to-JC2 study plan.
               </p>
-            </div>
-            <Card className="bg-white p-8 rounded-xl shadow-md border-l-4 border-indigo-500">
-              <CardContent className="text-lg text-gray-700 space-y-6">
-                  <div className="flex items-start space-x-4">
-                      <BookOpenCheck className="h-8 w-8 text-indigo-500 mt-1 flex-shrink-0" />
-                      <p>
-                      The Singapore-Cambridge GCE A-Level examination is the culmination of the pre-university journey, serving as the primary benchmark for admission into local and international universities. Unlike previous national exams, the A-Levels test for a profound depth of knowledge, critical thinking, and intellectual maturity. Success requires not just hard work, but a highly strategic and disciplined approach.
-                      </p>
-                  </div>
-                  <p>
-                  Your A-Level Rank Points (RP) are the currency for university admissions. Every H2 and H1 subject, including General Paper and Project Work, contributes to this final score. This guide is engineered to provide you with the frameworks, subject-specific insights, and psychological preparation needed to navigate this demanding journey and emerge successful, opening the doors to your dream university course and future career.
+
+              <KeyTakeaways
+                items={[
+                  <>The 2026 A-Levels run <span className="tabular-nums">2 June – 27 November</span>, with results out <span className="tabular-nums">19–23 February 2027</span>.</>,
+                  <>H2 Chemistry, Physics and Biology move to revised syllabuses (9476, 9478, 9477) for school candidates in 2026.</>,
+                  <>A two-year plan beats a Term 3 sprint — finish content before the JC2 June holidays, then shift to full timed papers.</>,
+                  <>Your Rank Points (RP) come from every H1 and H2 subject, including General Paper and Project Work.</>,
+                ]}
+              />
+
+              <section id="gateway" className="scroll-mt-24">
+                <SectionHeading icon={BookOpenCheck}>The A-Levels: Your Gateway to University and Beyond</SectionHeading>
+                <GuideCard>
+                  <p className="text-sm text-gray-700">
+                    The A-Levels test depth, critical thinking and intellectual maturity rather than content recall alone — success takes a strategic, disciplined approach, not just hours logged. Your Rank Points (RP) are the currency of university admission: every H2 and H1 subject, including General Paper and Project Work, contributes to the final score that determines eligibility for competitive courses.
                   </p>
-              </CardContent>
-            </Card>
-          </div>
-        </motion.section>
+                </GuideCard>
+              </section>
 
-        {/* 2026 A-Level Exam Timetable */}
-        <section id="exam-timetable" className="py-20 px-4 bg-gray-50">
-          <div className="max-w-5xl mx-auto">
-            <div className="text-center mb-12">
-              <h2 className="text-4xl font-bold text-indigo-900 mb-4 flex items-center justify-center gap-3">
-                <CalendarClock className="h-9 w-9 text-[#0474BA]" aria-hidden="true" />
-                {A_LEVEL_FAQS[0].question}
-              </h2>
-              <p className="text-lg text-gray-600 max-w-3xl mx-auto">{A_LEVEL_FAQS[0].answer}</p>
-            </div>
-            <Card className="bg-white p-4 sm:p-8 rounded-xl shadow-md">
-              <CardContent className="pt-2">
+              <section id="exam-timetable" className="scroll-mt-24">
+                <SectionHeading icon={CalendarClock}>{A_LEVEL_FAQS[0].question}</SectionHeading>
+                <p className="mb-4 text-sm text-gray-700">{A_LEVEL_FAQS[0].answer}</p>
                 <ExamTimetable examSlug="a-level" caption="Official 2026 GCE A-Level timetable, as published by SEAB." />
-              </CardContent>
-            </Card>
-          </div>
-        </section>
+              </section>
 
-        {/* Revised 2026 A-Level Science Syllabuses */}
-        <section id="revised-syllabus" className="py-20 px-4 bg-white">
-          <div className="max-w-5xl mx-auto">
-            <div className="text-center mb-12">
-              <h2 className="text-4xl font-bold text-indigo-900 mb-4 flex items-center justify-center gap-3">
-                <RefreshCw className="h-9 w-9 text-[#F17720]" aria-hidden="true" />
-                What changed in the 2026 A-Level science syllabuses?
-              </h2>
-              <p className="text-lg text-gray-600 max-w-3xl mx-auto">{A_LEVEL_FAQS[2].answer}</p>
-            </div>
-
-            <Card className="bg-white rounded-xl shadow-md border overflow-hidden mb-8">
-              <div className="overflow-x-auto">
-                <table className="w-full min-w-[36rem] border-collapse text-left text-sm">
-                  <thead>
-                    <tr className="border-b-2 border-gray-200 text-gray-900 bg-gray-50">
-                      <th scope="col" className="py-3 px-4 font-semibold">Subject</th>
-                      <th scope="col" className="py-3 px-4 font-semibold">Legacy code (last exam 2026)</th>
-                      <th scope="col" className="py-3 px-4 font-semibold">Revised code (from 2026)</th>
-                      <th scope="col" className="py-3 px-4 font-semibold">What changed</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {revisedSyllabusRows.map((row) => (
-                      <tr key={row.subject} className="border-b border-gray-100">
-                        <th scope="row" className="py-3 px-4 align-top font-medium text-gray-900">{row.subject}</th>
-                        <td className="py-3 px-4 align-top tabular-nums text-gray-700">{row.legacy}</td>
-                        <td className="py-3 px-4 align-top tabular-nums text-gray-700">{row.revised}</td>
-                        <td className="py-3 px-4 align-top text-gray-700">{row.whatChanged}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </Card>
-
-            <div className="p-6 rounded-xl bg-[#F17720]/10 border-l-4 border-[#F17720] flex items-start gap-4">
-              <AlertTriangle className="h-7 w-7 text-[#F17720] mt-1 flex-shrink-0" aria-hidden="true" />
-              <p className="text-gray-800">
-                <strong className="font-semibold">If you&rsquo;re sitting a legacy paper (9729, 9749 or 9744) in 2026,</strong> this is your final attempt on that syllabus — SEAB will not offer it again. Any resit must be on the revised syllabus (9476, 9478 or 9477) instead.
-              </p>
-            </div>
-          </div>
-        </section>
-
-        {/* Subject-Specific Strategies Section */}
-        <section className="py-20 px-4 bg-gray-50">
-          <div className="max-w-7xl mx-auto">
-            <div className="text-center mb-16">
-              <h2 className="text-4xl font-bold text-indigo-900 mb-4">Advanced Subject-Specific Strategies</h2>
-              <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-                Move beyond surface-level revision with these expert techniques for core H1 and H2 subjects.
-              </p>
-            </div>
-            <div className="grid md:grid-cols-2 gap-10">
-              {Object.entries(subjectData).map(([subject, data], index) => (
-                <motion.div
-                  key={subject}
-                  initial={{ opacity: 0, y: 50 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, amount: 0.5 }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                >
-                  <Card className="h-full shadow-lg hover:shadow-2xl transition-shadow duration-300 rounded-xl overflow-hidden">
-                    <CardHeader className="bg-indigo-600 text-white p-6">
-                      <CardTitle className="flex items-center text-2xl font-bold">
-                        <span className="text-3xl mr-4">{data.icon}</span>
-                        {subject}
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="p-6 space-y-4">
-                      {data.tips.map((tip, tipIndex) => (
-                        <div key={tipIndex} className="p-4 bg-indigo-50 rounded-lg">
-                          <h4 className="font-semibold text-indigo-800">{tip.title}</h4>
-                          <p className="text-gray-700">{tip.description}</p>
-                        </div>
-                      ))}
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Study Timeline Section */}
-        <section className="py-20 px-4">
-          <div className="max-w-4xl mx-auto">
-            <div className="text-center mb-16">
-              <h2 className="text-4xl font-bold text-indigo-900 mb-4">The Two-Year A-Level Campaign</h2>
-              <p className="text-lg text-gray-600">A strategic timeline to manage the marathon from the end of JC1 to the final paper.</p>
-            </div>
-            <div className="relative">
-              <div className="absolute left-1/2 top-0 bottom-0 w-1 bg-gray-200 transform -translate-x-1/2"></div>
-              {timelineData.map((item, index) => (
-                <motion.div
-                  key={index}
-                  className="mb-12 flex items-center w-full"
-                  initial={{ opacity: 0, x: index % 2 === 0 ? -100 : 100 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true, amount: 0.5 }}
-                  transition={{ duration: 0.6 }}
-                >
-                  <div className={`w-1/2 ${index % 2 === 0 ? 'pr-8 text-right' : 'pl-8'}`}>
-                    <div className="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
-                      <h3 className="text-xl font-bold text-indigo-800 mb-2">{item.title}</h3>
-                      <p className="text-gray-600">{item.description}</p>
-                    </div>
+              <section id="revised-syllabus" className="scroll-mt-24">
+                <SectionHeading icon={RefreshCw}>What Changed in the 2026 A-Level Science Syllabuses?</SectionHeading>
+                <p className="mb-4 text-sm text-gray-700">{A_LEVEL_FAQS[2].answer}</p>
+                <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+                  <div className="overflow-x-auto">
+                    <table className="w-full min-w-[36rem] border-collapse text-left text-sm">
+                      <thead>
+                        <tr className="border-b-2 border-gray-200 bg-gray-100 text-gray-900">
+                          <th scope="col" className="py-3 px-4 font-semibold">Subject</th>
+                          <th scope="col" className="py-3 px-4 font-semibold">Legacy code (last exam 2026)</th>
+                          <th scope="col" className="py-3 px-4 font-semibold">Revised code (from 2026)</th>
+                          <th scope="col" className="py-3 px-4 font-semibold">What changed</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {revisedSyllabusRows.map((row) => (
+                          <tr key={row.subject} className="border-b border-gray-100">
+                            <th scope="row" className="py-3 px-4 align-top font-medium text-gray-900">{row.subject}</th>
+                            <td className="py-3 px-4 align-top tabular-nums text-gray-700">{row.legacy}</td>
+                            <td className="py-3 px-4 align-top tabular-nums text-gray-700">{row.revised}</td>
+                            <td className="py-3 px-4 align-top text-gray-700">{row.whatChanged}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
                   </div>
-                  <div className="w-12 h-12 rounded-full flex items-center justify-center z-10 absolute left-1/2 transform -translate-x-1/2">
-                      <div className={`w-12 h-12 rounded-full flex items-center justify-center ${item.bgColor} shadow-md`}>
-                          {item.icon}
+                </div>
+                <div className="mt-4 flex items-start gap-3 rounded-xl border-l-4 border-accent bg-accent/10 p-5">
+                  <AlertTriangle className="mt-0.5 h-6 w-6 shrink-0 text-accent" strokeWidth={ICON_STROKE} aria-hidden="true" />
+                  <p className="text-sm text-gray-800">
+                    <strong className="font-semibold">If you&rsquo;re sitting a legacy paper (9729, 9749 or 9744) in 2026,</strong> this is your final attempt on that syllabus — SEAB will not offer it again. Any resit must be on the revised syllabus (9476, 9478 or 9477) instead.
+                  </p>
+                </div>
+              </section>
+
+              <section id="campaign" className="scroll-mt-24">
+                <SectionHeading icon={Milestone}>The Two-Year A-Level Campaign</SectionHeading>
+                <p className="mb-6 text-sm text-gray-700">A strategic timeline for the marathon from the end of JC1 to the final paper.</p>
+                <Reveal>
+                  <GuideTimeline items={campaignTimeline} variant="graph" />
+                </Reveal>
+              </section>
+
+              <section id="strategies" className="scroll-mt-24">
+                <SectionHeading icon={BookOpen}>Subject-Specific Strategies</SectionHeading>
+                <p className="mb-6 text-sm text-gray-700">Move beyond surface revision with techniques for the core H1 and H2 subjects.</p>
+                <Reveal className="grid gap-6 md:grid-cols-2">
+                  {subjectData.map((subject) => (
+                    <GuideCard key={subject.name}>
+                      <h4 className="mb-3 flex items-center gap-2 text-base font-semibold text-gray-900">
+                        <span className="text-xl" aria-hidden="true">{subject.icon}</span>
+                        {subject.name}
+                      </h4>
+                      <div className="space-y-3">
+                        {subject.tips.map((tip) => (
+                          <div key={tip.title}>
+                            <p className="text-sm font-semibold text-primary">{tip.title}</p>
+                            <p className="mt-0.5 text-sm text-gray-700">{tip.description}</p>
+                          </div>
+                        ))}
                       </div>
-                  </div>
-                  <div className={`w-1/2 ${index % 2 === 0 ? 'pl-8' : 'pr-8 text-right'}`}>
-                       <p className="text-lg font-semibold text-gray-500">{item.period}</p>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </section>
+                    </GuideCard>
+                  ))}
+                </Reveal>
+              </section>
 
-        {/* Common Mistakes Section */}
-        <section className="py-20 px-4 bg-red-50">
-          <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-16">
-              <h2 className="text-4xl font-bold text-red-800 mb-4 flex items-center justify-center">
-                  <AlertTriangle className="h-10 w-10 mr-4"/>
-                  Critical A-Level Pitfalls to Avoid
-              </h2>
-              <p className="text-lg text-gray-700 max-w-3xl mx-auto">
-                Top-performing students are often separated by their awareness and avoidance of these common strategic errors.
-              </p>
-            </div>
-            <div className="grid md:grid-cols-2 gap-8">
-              {mistakes.map((mistake, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true, amount: 0.5 }}
-                  transition={{ duration: 0.5 }}
-                >
-                  <div className="bg-white p-6 rounded-lg shadow-md border border-gray-200 h-full">
-                    <h3 className="text-2xl font-bold text-red-700 mb-3 flex items-center">
-                      <XCircle className="h-6 w-6 mr-2"/>
-                      {mistake.title}
-                    </h3>
-                    <p className="text-gray-600 mb-4">{mistake.description}</p>
-                    <div className="p-3 rounded-lg bg-green-50 border border-green-200 text-green-800">
-                      <p><strong className="font-semibold">The Strategic Edge:</strong> {mistake.solution}</p>
+              <section id="techniques" className="scroll-mt-24">
+                <SectionHeading icon={Lightbulb}>Study Techniques That Work</SectionHeading>
+                <GuideCard>
+                  <h4 className="mb-3 font-semibold text-gray-900">Proven Methods for Deeper Learning</h4>
+                  <div className="space-y-3 text-sm">
+                    {studyTechniques.map((technique) => (
+                      <div key={technique.title}>
+                        <p><strong className="text-gray-900">{technique.title}:</strong></p>
+                        <p className="text-gray-700">{technique.description}</p>
+                      </div>
+                    ))}
+                  </div>
+                </GuideCard>
+              </section>
+
+              <section id="exam-strategy" className="scroll-mt-24">
+                <SectionHeading icon={ListChecks}>Exam-Day Strategy</SectionHeading>
+                <div className="space-y-4">
+                  {examStrategyPhases.map((phase) => (
+                    <GuideCard key={phase.title}>
+                      <h4 className="mb-2 font-semibold text-gray-900">{phase.title}</h4>
+                      <ul className="ml-5 list-disc space-y-1 text-sm text-gray-700">
+                        {phase.points.map((point) => (
+                          <li key={point}>{point}</li>
+                        ))}
+                      </ul>
+                    </GuideCard>
+                  ))}
+                </div>
+              </section>
+
+              <section id="pitfalls" className="scroll-mt-24">
+                <SectionHeading icon={AlertTriangle}>Common A-Level Pitfalls to Avoid</SectionHeading>
+                <Reveal className="grid gap-6 md:grid-cols-2">
+                  {mistakes.map((mistake) => (
+                    <div key={mistake.title} className="rounded-xl border border-red-100 bg-red-50 p-5">
+                      <h4 className="mb-2 font-semibold text-red-800">{mistake.title}</h4>
+                      <p className="mb-3 text-sm text-gray-700">{mistake.description}</p>
+                      <div className="rounded-lg border border-green-200 bg-green-50 p-3">
+                        <p className="text-sm text-green-900"><strong className="font-semibold">The fix:</strong> {mistake.solution}</p>
+                      </div>
+                    </div>
+                  ))}
+                </Reveal>
+              </section>
+
+              <section id="study-plan" className="scroll-mt-24">
+                <SectionHeading icon={Clock}>Creating Your Weekly Study Plan</SectionHeading>
+                <GuideCard>
+                  <h4 className="mb-3 font-semibold text-gray-900">A Starting Template — Adapt It to Your CCA and Energy Levels</h4>
+                  <div className="grid gap-6 text-sm md:grid-cols-2">
+                    <div>
+                      <p className="mb-1.5 font-semibold text-gray-900">Weekdays</p>
+                      <ul className="ml-5 list-disc space-y-1 text-gray-700">
+                        {weeklyPlan.weekdays.map((item) => (
+                          <li key={item}>{item}</li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div>
+                      <p className="mb-1.5 font-semibold text-gray-900">Weekends</p>
+                      <ul className="ml-5 list-disc space-y-1 text-gray-700">
+                        {weeklyPlan.weekends.map((item) => (
+                          <li key={item}>{item}</li>
+                        ))}
+                      </ul>
                     </div>
                   </div>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </section>
+                </GuideCard>
+              </section>
 
-        {/* Well-being Section */}
-        <section className="py-20 px-4 bg-white">
-          <div className="max-w-5xl mx-auto">
-            <div className="text-center mb-16">
-              <h2 className="text-4xl font-bold text-indigo-900 mb-4">Maintaining Peak Performance</h2>
-              <p className="text-lg text-gray-600">Your mental and physical well-being are non-negotiable components of A-Level success.</p>
-            </div>
-            <div className="grid md:grid-cols-3 gap-8 text-center">
-              <motion.div initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.1 }} className="p-6">
-                <div className="flex justify-center mb-4">
-                  <div className="bg-green-100 p-4 rounded-full">
-                    <Brain className="h-12 w-12 text-green-600" />
-                  </div>
+              <section id="resources" className="scroll-mt-24">
+                <SectionHeading icon={GraduationCap}>Essential Resources &amp; Tools</SectionHeading>
+                <div className="space-y-4">
+                  {resourceGroups.map((group) => (
+                    <div key={group.title}>
+                      <h4 className="mb-1.5 font-semibold text-gray-900">{group.title}</h4>
+                      <ul className="ml-5 list-disc space-y-1 text-sm text-gray-700">
+                        {group.items.map((item) => (
+                          <li key={item}>{item}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
                 </div>
-                <h3 className="text-2xl font-semibold text-gray-800 mb-2">Combat Cognitive Fatigue</h3>
-                <p className="text-gray-600">The intensity of A-Level preparation can lead to cognitive fatigue. Use techniques like spaced repetition and active recall to study more efficiently. Short, frequent breaks are more effective than marathon sessions. Step away from your desk to recharge.</p>
-              </motion.div>
-              <motion.div initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.2 }} className="p-6">
-                <div className="flex justify-center mb-4">
-                  <div className="bg-blue-100 p-4 rounded-full">
-                    <Moon className="h-12 w-12 text-blue-600" />
-                  </div>
-                </div>
-                <h3 className="text-2xl font-semibold text-gray-800 mb-2">Optimize Your Sleep</h3>
-                <p className="text-gray-600">Sleep is when your brain consolidates learning and forms long-term memories. Consistently sacrificing sleep for study is one of the worst trade-offs you can make. Establish a strict pre-bed routine, avoid caffeine late in the day, and aim for 7-9 hours of uninterrupted sleep.</p>
-              </motion.div>
-              <motion.div initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.3 }} className="p-6">
-                <div className="flex justify-center mb-4">
-                  <div className="bg-red-100 p-4 rounded-full">
-                    <Heart className="h-12 w-12 text-red-600" />
-                  </div>
-                </div>
-                <h3 className="text-2xl font-semibold text-gray-800 mb-2">Nutrition for the Brain</h3>
-                <p className="text-gray-600">Your diet directly impacts your focus and energy levels. Prioritize brain-boosting foods like omega-3 fatty acids (fish, walnuts), antioxidants (berries), and complex carbohydrates (oats). Stay hydrated and avoid sugary snacks that cause energy crashes.</p>
-              </motion.div>
-            </div>
-          </div>
-        </section>
+              </section>
 
-        {/* Pathways After A-Levels Section */}
-        <section className="py-20 px-4 bg-gray-50">
-            <div className="max-w-6xl mx-auto">
-                <div className="text-center mb-16">
-                    <h2 className="text-4xl font-bold text-indigo-900 mb-4">Life After A-Levels: Your Next Chapter</h2>
-                    <p className="text-lg text-gray-600 max-w-3xl mx-auto">Strong A-Level results are the key that unlocks a world of prestigious opportunities, both locally and globally.</p>
-                </div>
-                <div className="grid md:grid-cols-3 gap-8">
-                    {pathways.map((path, index) => (
-                        <motion.div
-                            key={index}
-                            initial={{ opacity: 0, y: 50 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true, amount: 0.5 }}
-                            transition={{ duration: 0.5, delay: index * 0.1 }}
-                        >
-                            <Card className="h-full shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-lg overflow-hidden flex flex-col">
-                                <CardHeader className={`bg-gradient-to-br ${path.color} text-white p-6 flex flex-row items-center space-x-4`}>
-                                    {path.icon}
-                                    <CardTitle className="text-xl font-bold">{path.title}</CardTitle>
-                                </CardHeader>
-                                <CardContent className="p-6 flex-grow">
-                                    <p className="text-gray-700">{path.description}</p>
-                                </CardContent>
-                            </Card>
-                        </motion.div>
+              <section id="well-being" className="scroll-mt-24">
+                <SectionHeading icon={Heart}>Maintaining Peak Performance</SectionHeading>
+                <p className="mb-6 text-sm text-gray-700">Your mental and physical well-being are non-negotiable parts of A-Level preparation, not an afterthought.</p>
+                <Reveal className="grid gap-8 sm:grid-cols-3">
+                  {wellbeingPillars.map((pillar) => (
+                    <div key={pillar.title} className="text-center">
+                      <div className={`mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full ${pillar.iconClass}`}>
+                        <pillar.icon className="h-6 w-6" strokeWidth={ICON_STROKE} aria-hidden="true" />
+                      </div>
+                      <h4 className="mb-1.5 font-semibold text-gray-900">{pillar.title}</h4>
+                      <p className="text-sm text-gray-700">{pillar.description}</p>
+                    </div>
+                  ))}
+                </Reveal>
+              </section>
+
+              <section id="pathways" className="scroll-mt-24">
+                <SectionHeading icon={Compass}>Life After the A-Levels</SectionHeading>
+                <p className="mb-6 text-sm text-gray-700">Strong A-Level results open doors both locally and globally — here&rsquo;s what each path requires.</p>
+                <Reveal className="grid gap-6 md:grid-cols-3">
+                  {pathways.map((path) => (
+                    <GuideCard key={path.title}>
+                      <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                        <path.icon className="h-5 w-5" strokeWidth={ICON_STROKE} aria-hidden="true" />
+                      </div>
+                      <h4 className="mb-2 font-semibold text-gray-900">{path.title}</h4>
+                      <p className="text-sm text-gray-700">{path.description}</p>
+                    </GuideCard>
+                  ))}
+                </Reveal>
+              </section>
+
+              <section id="tuition" className="scroll-mt-24">
+                <SectionHeading icon={Users}>When to Consider Specialist Tuition</SectionHeading>
+                <p className="mb-3 text-sm text-gray-700">
+                  In a high-stakes environment, targeted guidance can be the difference between a good grade and a distinction. A specialist JC tutor offers what a school classroom often cannot:
+                </p>
+                <ul className="ml-6 list-disc space-y-1 text-sm text-gray-700">
+                  <li><strong className="text-gray-900">Deconstructing complex questions:</strong> breaking higher-order and synoptic questions into manageable parts with an experienced guide</li>
+                  <li><strong className="text-gray-900">Customised pacing:</strong> moving ahead of the school curriculum or spending more time on weak topics</li>
+                  <li><strong className="text-gray-900">Curated resources:</strong> a tutor&rsquo;s collection of challenging practice papers, summary notes and exam strategies</li>
+                </ul>
+              </section>
+
+              <section id="countdown" className="scroll-mt-24">
+                <SectionHeading icon={Target}>The Final 60-Day Countdown</SectionHeading>
+                <GuideCard>
+                  <h4 className="mb-3 font-semibold text-gray-900">An Intensive Strategy for the Home Stretch</h4>
+                  <div className="space-y-4 text-sm">
+                    {countdownPhases.map((phase) => (
+                      <div key={phase.range}>
+                        <p className="font-semibold text-gray-900">{phase.range}: {phase.title}</p>
+                        <ul className="ml-5 mt-1 list-disc space-y-1 text-gray-700">
+                          {phase.points.map((point) => (
+                            <li key={point}>{point}</li>
+                          ))}
+                        </ul>
+                      </div>
                     ))}
+                  </div>
+                </GuideCard>
+              </section>
+
+              <RelatedGuides slug="a-level-prep" heading="Explore Our Other A-Level Resources" showHub={false} />
+
+              <section id="faq" className="scroll-mt-24">
+                <SectionHeading icon={HelpCircle}>A-Level FAQs</SectionHeading>
+                <div className="space-y-6">
+                  {A_LEVEL_FAQS.map((faq) => (
+                    <div key={faq.question}>
+                      <h3 className="text-lg font-semibold text-gray-900">{faq.question}</h3>
+                      <p className="mt-1 text-sm text-gray-700">{faq.answer}</p>
+                    </div>
+                  ))}
                 </div>
-            </div>
-        </section>
+              </section>
 
-        {/* Tuition Advice Section */}
-        <section className="py-20 px-4">
-          <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
-            <motion.div
-              initial={{ opacity: 0, x: -50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true, amount: 0.5 }}
-              transition={{ duration: 0.7 }}
-            >
-          <Image src="/jc-tuition_optimized.webp"  alt="Tutor explaining a complex concept for A-Level preparation"  className="rounded-xl shadow-2xl" width={800} height={533} style={{ width: '100%', height: 'auto' }} />
-           </motion.div>
-            <motion.div
-              initial={{ opacity: 0, x: 50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true, amount: 0.5 }}
-              transition={{ duration: 0.7 }}
-            >
-              <h2 className="text-4xl font-bold text-indigo-900 mb-6">Gaining a Competitive Edge with Specialist Tuition</h2>
-              <p className="text-lg text-gray-700 mb-6">
-                In the high-stakes A-Level environment, targeted, expert guidance can be the deciding factor between a good grade and a distinction. A specialist JC tutor can provide what a school classroom often cannot.
-              </p>
-              <ul className="space-y-4 mb-8">
-                <li className="flex items-start">
-                  <Check className="h-6 w-6 text-green-500 mr-3 flex-shrink-0 mt-1" />
-                  <span><strong className="font-semibold">Deconstruct Complex Questions:</strong> Learn to tackle higher-order and synoptic questions by breaking them down into manageable parts with an experienced guide.</span>
-                </li>
-                <li className="flex items-start">
-                  <Check className="h-6 w-6 text-green-500 mr-3 flex-shrink-0 mt-1" />
-                  <span><strong className="font-semibold">Customized Pacing:</strong> Move ahead of the school curriculum or spend more time reinforcing weak topics. Tuition offers the flexibility to tailor the learning pace to your specific needs.</span>
-                </li>
-                <li className="flex items-start">
-                  <Check className="h-6 w-6 text-green-500 mr-3 flex-shrink-0 mt-1" />
-                  <span><strong className="font-semibold">Access to Curated Resources:</strong> Benefit from a tutor's collection of challenging practice papers, concise summary notes, and proprietary exam strategies that are not available elsewhere.</span>
-                </li>
-              </ul>
-              <Link href="/request-tutor" passHref>
-                <Button size="lg" className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold">
-                  <Link href="/request-tutor">Find a Specialist A-Level Tutor</Link>
-                </Button>
-              </Link>
-            </motion.div>
+              <GuideCTA
+                title="Find your specialist A-Level tutor"
+                description={`Tell us your child's subjects and goals. We hand-match a vetted, MOE-familiar JC tutor — usually within ${MATCH_TIME} — and parents never pay an agency fee.`}
+                buttonText="Find your A-Level tutor"
+                whatsappHref={whatsappHref}
+              />
+            </article>
           </div>
-        </section>
 
-        {/* Final Preparation Section */}
-        <section className="py-20 px-4 bg-gray-50">
-            <div className="max-w-5xl mx-auto">
-                <div className="text-center mb-16">
-                    <h2 className="text-4xl font-bold text-indigo-900 mb-4">The Final Ascent: Exam Period Strategy</h2>
-                    <p className="text-lg text-gray-600">How you manage the final days before each paper is critical for peak performance.</p>
-                </div>
-                <div className="grid md:grid-cols-3 gap-8">
-                    <motion.div initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.1 }} className="p-6 bg-white rounded-lg shadow-md text-center">
-                        <ClipboardCheck className="h-12 w-12 text-blue-500 mx-auto mb-4" />
-                        <h3 className="text-xl font-semibold text-gray-800 mb-2">Finalize Your "Cheat Sheets"</h3>
-                        <p className="text-gray-600">Condense all your notes for each subject onto a single A4 page. This should contain only the most essential formulas, definitions, and key concepts. This is your final, high-impact revision tool for the morning of the exam.</p>
-                    </motion.div>
-                    <motion.div initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.2 }} className="p-6 bg-white rounded-lg shadow-md text-center">
-                        <Bell className="h-12 w-12 text-yellow-500 mx-auto mb-4" />
-                        <h3 className="text-xl font-semibold text-gray-800 mb-2">Review, Don't Re-learn</h3>
-                        <p className="text-gray-600">The time for learning new content is long past. Focus on reviewing your mistake log and re-reading model essays or solutions. Re-affirm what you know to build confidence, rather than trying to patch knowledge gaps in a panic.</p>
-                    </motion.div>
-                    <motion.div initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.3 }} className="p-6 bg-white rounded-lg shadow-md text-center">
-                        <Briefcase className="h-12 w-12 text-green-500 mx-auto mb-4" />
-                        <h3 className="text-xl font-semibold text-gray-800 mb-2">Execute with Calm Confidence</h3>
-                        <p className="text-gray-600">On exam day, have a good breakfast and arrive early. During the exam, stay calm, manage your time according to your practiced strategy, and read every question carefully. Trust in your two years of hard work and preparation.</p>
-                    </motion.div>
-                </div>
+          <aside className="hidden lg:block">
+            <div className="sticky top-24">
+              <TableOfContents items={tableOfContents} />
             </div>
-        </section>
-
-        {/* Related Guides Section */}
-        <section className="py-20 px-4 bg-white">
-            <div className="max-w-6xl mx-auto">
-                <RelatedGuides slug="a-level-prep" heading="Explore Our Other A-Level Resources" showHub={false} />
-            </div>
-        </section>
-
-        {/* FAQ Section */}
-        <section id="faq" className="py-20 px-4 bg-gray-50">
-          <div className="max-w-4xl mx-auto">
-            <div className="text-center mb-16">
-              <h2 className="text-4xl font-bold text-indigo-900 mb-4 flex items-center justify-center gap-3">
-                <HelpCircle className="h-9 w-9 text-[#0474BA]" aria-hidden="true" />
-                A-Level FAQs
-              </h2>
-              <p className="text-lg text-gray-600 max-w-3xl mx-auto">Straight answers to the questions JC students and parents ask us most.</p>
-            </div>
-            <div className="space-y-6">
-              {A_LEVEL_FAQS.map((faq) => (
-                <Card key={faq.question} className="bg-white p-6 rounded-xl shadow-sm">
-                  <CardContent className="p-0">
-                    <h3 className="text-xl font-semibold text-gray-900">{faq.question}</h3>
-                    <p className="mt-2 text-gray-700">{faq.answer}</p>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Call to Action Section */}
-        <motion.section
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true, amount: 0.5 }}
-          transition={{ duration: 0.8 }}
-          className="py-24 px-4 bg-gradient-to-r from-indigo-700 to-purple-800 text-white"
-        >
-          <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-4xl md:text-5xl font-extrabold mb-6 tracking-tight">
-              Ready to Achieve Your A-Level Goals?
-            </h2>
-            <p className="text-lg md:text-xl text-indigo-100 mb-10 max-w-2xl mx-auto">
-              The A-Levels are a formidable challenge, but you don't have to face it alone. LionCity Tutors provides elite, specialist tutors who can give you the competitive edge needed to secure your place in a top university course.
-            </p>
-            <Link href="/request-tutor" passHref>
-                <Button
-                  size="lg"
-                  className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 px-10 text-lg rounded-full shadow-lg transform hover:scale-105 transition-transform duration-300"
-                >
-                  Request a Specialist Tutor
-                </Button>
-            </Link>
-          </div>
-        </motion.section>
+          </aside>
+        </div>
       </main>
-    </div>
+    </MotionConfig>
   );
-};
-
-export default ALevelPrepClient;
+}
