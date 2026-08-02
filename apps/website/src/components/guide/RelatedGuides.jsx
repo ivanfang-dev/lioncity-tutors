@@ -16,22 +16,31 @@ import { ICON_STROKE } from './constants';
  * itself thin and reads as a link farm. The cap keeps registry order, which
  * lists the subject guides first — those are the ones worth passing equity to.
  *
+ * Hub cards are capped for the same reason: a site-wide page like the rate card
+ * belongs to every hub, and stacking one full-width card per hub buries the
+ * siblings below them. The default is the widest any page is today, so the cap
+ * only bites once a page joins a fifth hub — it must never silently drop a link
+ * the cluster already relies on. The cap keeps registry order, so a spoke that
+ * expects to be capped should list `alsoIn` most-relevant-hub first.
+ *
  * @param {string} slug - registry slug of the page rendering this block
  * @param {string} [heading]
  * @param {boolean} [showHub] - pass false on a hub page
  * @param {number} [limit] - maximum sibling cards
+ * @param {number} [hubLimit] - maximum hub cards
  */
 export default function RelatedGuides({
   slug,
   heading = 'Continue your revision',
   showHub = true,
   limit = 10,
+  hubLimit = 4,
 }) {
   const page = getPage(slug);
   if (!page) return null;
 
   // A hub never links to itself, so drop it from its own list of hub cards.
-  const hubs = getHubsFor(slug).filter((hub) => hub.slug !== slug);
+  const hubs = getHubsFor(slug).filter((hub) => hub.slug !== slug).slice(0, hubLimit);
   const siblings = getSiblings(slug).slice(0, limit);
   if (hubs.length === 0 && siblings.length === 0) return null;
 
@@ -51,7 +60,7 @@ export default function RelatedGuides({
               className="group flex items-start justify-between gap-4 rounded-xl border border-[#0474BA]/20 bg-[#0474BA]/5 p-5 transition-colors hover:border-[#0474BA]/50"
             >
               <span>
-                <span className="block font-semibold text-[#0474BA]">{hub.anchor}</span>
+                <span className="block font-semibold text-[#0474BA] first-letter:uppercase">{hub.anchor}</span>
                 <span className="mt-1 block text-sm text-gray-600">
                   {hub.blurb ?? 'Timetable, subject choices and the full revision plan in one place.'}
                 </span>
@@ -73,7 +82,7 @@ export default function RelatedGuides({
               href={s.url}
               className="group block h-full rounded-xl border border-gray-200 p-5 transition-all hover:-translate-y-0.5 hover:border-[#F17720] hover:shadow-md"
             >
-              <span className="block font-semibold text-gray-900 group-hover:text-[#F17720]">
+              <span className="block font-semibold text-gray-900 group-hover:text-[#F17720] first-letter:uppercase">
                 {s.anchor}
               </span>
               <span className="mt-1 block text-sm text-gray-600">{s.blurb}</span>

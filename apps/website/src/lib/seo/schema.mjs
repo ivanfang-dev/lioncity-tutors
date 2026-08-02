@@ -7,6 +7,14 @@ const absolute = (path) => `${SITE_URL}${path}`;
 const ORG = { '@type': 'Organization', name: 'LionCity Tutors', url: SITE_URL };
 
 /**
+ * The schema types a spoke may name via `schemaType` in the cluster registry.
+ * Spokes that name nothing get Course. Anything outside this set has no
+ * builder behind it, so the page would silently emit no content schema —
+ * links.test.mjs fails the build instead.
+ */
+export const BUILDABLE_SCHEMA_TYPES = new Set(['Course', 'CollectionPage', 'Service']);
+
+/**
  * BreadcrumbList from an explicit trail. For pages outside the cluster
  * registry — the tutor-side pages belong to no exam hub, so they have no
  * registry entry to derive a trail from.
@@ -94,13 +102,28 @@ export function buildCollectionPageSchema({ slug, name, description, items }) {
 }
 
 /**
+ * A country by default, or a list of Places when a page names the estates it
+ * covers. Never a LocalBusiness with an address: the agency has no premises in
+ * the areas it serves, and claiming one is a spam signal.
+ */
+function buildAreaServed(areaServed) {
+  return Array.isArray(areaServed)
+    ? areaServed.map((place) => ({ '@type': 'Place', name: place }))
+    : { '@type': 'Country', name: areaServed };
+}
+
+/**
  * For a page whose subject is what something costs. Course would be wrong —
  * nobody enrols in a rate card — and Service is the type that carries an
  * offer, so the price range can be stated in the markup as well as the copy.
  *
  * `offers` are per-level price bands: { name, min, max }, in SGD per hour.
  *
- * @param {{slug: string, name: string, description: string, areaServed?: string,
+ * `areaServed` takes a country name, or a list of place names for a page that
+ * serves specific estates rather than the whole country.
+ *
+ * @param {{slug: string, name: string, description: string,
+ *          areaServed?: string | string[],
  *          offers?: Array<{name: string, min: number, max: number}>}} args
  */
 export function buildServiceSchema({ slug, name, description, areaServed = 'Singapore', offers }) {
@@ -112,7 +135,7 @@ export function buildServiceSchema({ slug, name, description, areaServed = 'Sing
     name,
     description,
     serviceType: 'Private tuition',
-    areaServed: { '@type': 'Country', name: areaServed },
+    areaServed: buildAreaServed(areaServed),
     url: absolute(page.url),
     provider: ORG,
   };

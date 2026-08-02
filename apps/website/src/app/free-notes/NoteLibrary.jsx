@@ -16,6 +16,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Download, BookOpen, GraduationCap, Atom, FileText, Search, Clock } from "lucide-react";
 import { notesData } from "../../data/notesData";
+import { LEVEL_TINTS } from "@/lib/levelTints";
 
 // Counted from the data rather than typed into the copy, so the page can never
 // claim more notes than it hosts.
@@ -23,25 +24,9 @@ const flatten = (node) => (Array.isArray(node) ? node : Object.values(node ?? {}
 const noteCount = flatten(notesData).length;
 
 // Coming Soon Component for empty arrays
-const ComingSoonCard = ({ level, colorScheme = "indigo" }) => (
-  <div className={`flex flex-col items-center justify-center p-6 rounded-lg border-2 border-dashed transition-colors ${
-    colorScheme === 'emerald'
-      ? 'border-emerald-200 bg-emerald-50/30'
-      : colorScheme === 'blue'
-      ? 'border-blue-200 bg-blue-50/30'
-      : colorScheme === 'purple'
-      ? 'border-purple-200 bg-purple-50/30'
-      : 'border-indigo-200 bg-indigo-50/30'
-  }`}>
-    <Clock className={`h-8 w-8 mb-3 ${
-      colorScheme === 'emerald'
-        ? 'text-emerald-400'
-        : colorScheme === 'blue'
-        ? 'text-blue-400'
-        : colorScheme === 'purple'
-        ? 'text-purple-400'
-        : 'text-indigo-400'
-    }`} />
+const ComingSoonCard = ({ level, tint }) => (
+  <div className={`flex flex-col items-center justify-center p-6 rounded-lg border-2 border-dashed transition-colors ${tint.placeholder}`}>
+    <Clock className={`h-8 w-8 mb-3 ${tint.placeholderIcon}`} />
     <p className="text-gray-500 font-medium text-center">
       Coming Soon
     </p>
@@ -52,8 +37,8 @@ const ComingSoonCard = ({ level, colorScheme = "indigo" }) => (
 );
 
 // Enhanced Note list item with better spacing and responsive design
-const NoteListItem = ({ note, onDownloadClick, colorScheme = "indigo" }) => (
-  <li className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 sm:gap-4 p-4 rounded-lg border border-gray-200 bg-white hover:shadow-md hover:bg-indigo-50/40 transition-all duration-200">
+const NoteListItem = ({ note, onDownloadClick, tint }) => (
+  <li className={`flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 sm:gap-4 p-4 rounded-lg border border-gray-200 bg-white hover:shadow-md transition-all duration-200 ${tint.rowHover}`}>
     <div className="flex items-start gap-3 min-w-0 flex-1">
       <FileText className="h-5 w-5 text-gray-400 mt-0.5 flex-shrink-0" />
       <div className="min-w-0 flex-1">
@@ -68,15 +53,7 @@ const NoteListItem = ({ note, onDownloadClick, colorScheme = "indigo" }) => (
     <Button
       variant="outline"
       size="sm"
-      className={`flex items-center gap-2 transition-colors duration-200 flex-shrink-0 w-full sm:w-auto justify-center ${
-        colorScheme === 'emerald'
-          ? 'text-emerald-600 hover:bg-emerald-600 hover:text-white'
-          : colorScheme === 'blue'
-          ? 'text-blue-600 hover:bg-blue-600 hover:text-white'
-          : colorScheme === 'purple'
-          ? 'text-purple-600 hover:bg-purple-600 hover:text-white'
-          : 'text-indigo-600 hover:bg-indigo-600 hover:text-white'
-      }`}
+      className={`flex items-center gap-2 transition-colors duration-200 flex-shrink-0 w-full sm:w-auto justify-center ${tint.action}`}
       onClick={onDownloadClick}
       aria-label={`Download ${note.title}`}
     >
@@ -87,7 +64,7 @@ const NoteListItem = ({ note, onDownloadClick, colorScheme = "indigo" }) => (
 );
 
 // Subject card with search functionality and coming soon support
-const SubjectCard = ({ subjectTitle, subjectData, onDownloadClick, searchTerm, colorScheme = "indigo" }) => {
+const SubjectCard = ({ subjectTitle, subjectData, onDownloadClick, searchTerm, tint }) => {
   // Filter notes based on search term
   const filterNotes = (notes) => {
     if (!searchTerm || !Array.isArray(notes)) return notes || [];
@@ -117,14 +94,14 @@ const SubjectCard = ({ subjectTitle, subjectData, onDownloadClick, searchTerm, c
         
         <div>
           {!Array.isArray(subjectData) || subjectData.length === 0 ? (
-            <ComingSoonCard level={subjectTitle} colorScheme={colorScheme} />
+            <ComingSoonCard level={subjectTitle} tint={tint} />
           ) : (
             <ul className="space-y-3">
               {filteredNotes.map((note, index) => (
                 <NoteListItem
                   key={index}
                   note={note}
-                  colorScheme={colorScheme}
+                  tint={tint}
                   onDownloadClick={() => onDownloadClick(note, { subject: subjectTitle })}
                 />
               ))}
@@ -138,7 +115,7 @@ const SubjectCard = ({ subjectTitle, subjectData, onDownloadClick, searchTerm, c
 
 // Level section with note count.
 // `id` is the anchor the subject answer blocks above the library link into.
-const LevelSection = ({ id, title, icon, notes, onDownloadClick, colorClass, searchTerm, colorScheme = "indigo" }) => {
+const LevelSection = ({ id, title, icon, notes, onDownloadClick, searchTerm, tint }) => {
   // Calculate total available notes for this level
   const totalNotes = Object.values(notes).reduce((total, subjectData) => {
     return total + (Array.isArray(subjectData) ? subjectData.length : 0);
@@ -149,7 +126,7 @@ const LevelSection = ({ id, title, icon, notes, onDownloadClick, colorClass, sea
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div className="flex items-center gap-3">
           {icon}
-          <h2 className={`text-2xl sm:text-3xl font-bold ${colorClass}`}>{title}</h2>
+          <h2 className={`text-2xl sm:text-3xl font-bold ${tint.heading}`}>{title}</h2>
         </div>
         <div className="text-sm text-gray-500 bg-white px-3 py-2 rounded-full border whitespace-nowrap self-start sm:self-auto">
           {totalNotes} notes available
@@ -165,7 +142,7 @@ const LevelSection = ({ id, title, icon, notes, onDownloadClick, colorClass, sea
               subjectData={subjectData}
               onDownloadClick={(note, info) => onDownloadClick(note, { level: title, ...info })}
               searchTerm={searchTerm}
-              colorScheme={colorScheme}
+              tint={tint}
             />
           );
         })}
@@ -302,20 +279,20 @@ export default function NoteLibrary() {
             placeholder="Search for specific notes..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10 pr-4 py-3 w-full rounded-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
+            className="pl-10 pr-4 py-3 w-full rounded-full border-gray-300 focus-visible:border-primary focus-visible:ring-primary/30 focus-visible:ring-[3px]"
           />
         </div>
         </div>
 
         {/* Enhanced Level Filter Menu */}
-        <div className="sticky top-4 z-10 flex justify-center backdrop-blur-sm">
+        <div className="flex justify-center">
           <Tabs value={selectedLevel} onValueChange={setSelectedLevel} className="w-full max-w-2xl">
-            <TabsList className="grid w-full grid-cols-4 p-1 bg-white/90 backdrop-blur-sm rounded-full h-auto shadow-lg border">
+            <TabsList className="grid w-full grid-cols-4 p-1 bg-white rounded-full h-auto shadow-sm border">
               {levelFilters.map((level) => (
                 <TabsTrigger
                   key={level}
                   value={level}
-                  className="rounded-full data-[state=active]:bg-indigo-600 data-[state=active]:text-white data-[state=active]:shadow-lg font-semibold px-4 py-3 transition-all duration-200"
+                  className="rounded-full data-[state=active]:bg-primary data-[state=active]:text-white data-[state=active]:shadow-sm font-semibold px-4 py-3 transition-all duration-200"
                 >
                   {level === "jc" ? "JC" : level.charAt(0).toUpperCase() + level.slice(1)}
                   {level === "all" && " Levels"}
@@ -331,43 +308,40 @@ export default function NoteLibrary() {
             <LevelSection
               id="notes-primary"
               title="Primary School"
-              icon={<BookOpen className="h-8 w-8 text-emerald-600" />}
+              icon={<BookOpen className={`h-8 w-8 ${LEVEL_TINTS.primary.icon}`} />}
               notes={notesData.primary || {}}
               onDownloadClick={handleDownloadClick}
-              colorClass="text-emerald-700"
               searchTerm={searchTerm}
-              colorScheme="emerald"
+              tint={LEVEL_TINTS.primary}
             />
           )}
           {(selectedLevel === "all" || selectedLevel === "secondary") && (
             <LevelSection
               id="notes-secondary"
               title="Secondary School"
-              icon={<GraduationCap className="h-8 w-8 text-blue-600" />}
+              icon={<GraduationCap className={`h-8 w-8 ${LEVEL_TINTS.secondary.icon}`} />}
               notes={notesData.secondary || {}}
               onDownloadClick={handleDownloadClick}
-              colorClass="text-blue-700"
               searchTerm={searchTerm}
-              colorScheme="blue"
+              tint={LEVEL_TINTS.secondary}
             />
           )}
           {(selectedLevel === "all" || selectedLevel === "jc") && (
             <LevelSection
               id="notes-jc"
               title="Junior College (A-Level)"
-              icon={<Atom className="h-8 w-8 text-purple-600" />}
+              icon={<Atom className={`h-8 w-8 ${LEVEL_TINTS.jc.icon}`} />}
               notes={notesData.jc || {}}
               onDownloadClick={handleDownloadClick}
-              colorClass="text-purple-700"
               searchTerm={searchTerm}
-              colorScheme="purple"
+              tint={LEVEL_TINTS.jc}
             />
           )}
         </div>
 
         {/* Honest state of the library. A subject with no notes shows as
             "Coming soon" above rather than being counted here. */}
-        <section className="text-center py-12 border-t border-gray-200 bg-white/50 backdrop-blur-sm rounded-2xl">
+        <section className="text-center py-12 border-t border-gray-200 rounded-2xl">
           <h3 className="text-2xl font-bold text-gray-900 mb-3">What&apos;s in the notes library today</h3>
           <p className="text-gray-600 max-w-xl mx-auto px-4">
             {noteCount} General Paper infopacks, free to download. Other subjects are marked
@@ -387,7 +361,7 @@ export default function NoteLibrary() {
             {noteInfo && (
               <div className="text-sm text-gray-500 bg-gray-50 p-3 rounded-lg">
                 <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-indigo-500 rounded-full"></div>
+                  <div className="w-2 h-2 bg-primary rounded-full"></div>
                   <span className="font-medium">{noteInfo.level}</span>
                   <span>→</span>
                   <span>{noteInfo.subject}</span>
@@ -432,7 +406,7 @@ export default function NoteLibrary() {
             </div>
             <Button
               type="submit"
-              className="w-full h-12 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-base transition-colors duration-200"
+              className="w-full h-12 bg-primary hover:bg-[#035C93] text-white font-semibold text-base transition-colors duration-200"
               disabled={isSubmitting}
             >
               {isSubmitting ? (

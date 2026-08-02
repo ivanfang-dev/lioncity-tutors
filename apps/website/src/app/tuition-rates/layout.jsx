@@ -1,15 +1,15 @@
-import { rangeFor } from './rates.mjs';
+import { observedFor, PLACEMENT_SAMPLE } from './placements.mjs';
 
-// Composed from the rate card, not typed, so the SERP snippet cannot quote a
-// price the page no longer charges.
-const band = (id) => {
-  const { min, max } = rangeFor(id);
-  return `$${min}-$${max}`;
+// Composed from the observed-budget data, not typed, so the SERP snippet
+// cannot quote a figure the page no longer shows.
+const observedBand = (id) => {
+  const { medianMin, medianMax } = observedFor(id);
+  return `$${medianMin}-${medianMax}`;
 };
 
 const TITLE = 'Tuition Rates in Singapore 2026 | LionCity Tutors';
 const DESCRIPTION =
-  `Singapore tuition rates by level and tutor type — primary ${band('primary')}, secondary ${band('secondary')} and JC ${band('jc')} an hour. Our own rate card, and no agency fee for parents.`;
+  `Singapore tuition rates by level and tutor type, plus what ${PLACEMENT_SAMPLE} real parents here actually budgeted — primary ${observedBand('primary')}, secondary ${observedBand('secondary')}, JC ${observedBand('jc')} an hour.`;
 
 export const metadata = {
   title: TITLE,
@@ -22,7 +22,12 @@ export const metadata = {
     'secondary school tuition rates',
     'o level tuition rates',
     'JC tuition rates',
-    'private tutor rates Singapore'
+    'private tutor rates Singapore',
+    'moe teacher tuition rate',
+    'undergraduate tutor rate singapore',
+    'jc chemistry tuition rate',
+    'h2 math tuition rate',
+    'average tuition rate singapore'
   ],
   openGraph: {
     title: TITLE,

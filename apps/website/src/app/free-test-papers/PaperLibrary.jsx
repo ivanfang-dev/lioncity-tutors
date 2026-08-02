@@ -10,28 +10,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import { Download, BookOpen, GraduationCap, Atom, FileText, Search, Clock } from "lucide-react";
 import { testPapers } from "../../data/testPapers";
+import { LEVEL_TINTS } from "@/lib/levelTints";
 import { paperStats } from "./stats";
 
 // Coming Soon Component for empty arrays
-const ComingSoonCard = ({ examType, colorScheme = "indigo" }) => (
-  <div className={`flex flex-col items-center justify-center p-6 rounded-lg border-2 border-dashed transition-colors ${
-    colorScheme === 'emerald'
-      ? 'border-emerald-200 bg-emerald-50/30'
-      : colorScheme === 'blue'
-      ? 'border-blue-200 bg-blue-50/30'
-      : colorScheme === 'purple'
-      ? 'border-purple-200 bg-purple-50/30'
-      : 'border-indigo-200 bg-indigo-50/30'
-  }`}>
-    <Clock className={`h-8 w-8 mb-3 ${
-      colorScheme === 'emerald'
-        ? 'text-emerald-400'
-        : colorScheme === 'blue'
-        ? 'text-blue-400'
-        : colorScheme === 'purple'
-        ? 'text-purple-400'
-        : 'text-indigo-400'
-    }`} />
+const ComingSoonCard = ({ examType, tint }) => (
+  <div className={`flex flex-col items-center justify-center p-6 rounded-lg border-2 border-dashed transition-colors ${tint.placeholder}`}>
+    <Clock className={`h-8 w-8 mb-3 ${tint.placeholderIcon}`} />
     <p className="text-gray-500 font-medium text-center">
       Coming Soon
     </p>
@@ -42,8 +27,8 @@ const ComingSoonCard = ({ examType, colorScheme = "indigo" }) => (
 );
 
 // ✅ Improved Paper list item with better spacing and responsive design
-const PaperListItem = ({ paper, onDownloadClick, colorScheme = "indigo" }) => (
-  <li className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 sm:gap-4 p-4 rounded-lg border border-gray-200 bg-white hover:shadow-md hover:bg-indigo-50/40 transition-all duration-200">
+const PaperListItem = ({ paper, onDownloadClick, tint }) => (
+  <li className={`flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 sm:gap-4 p-4 rounded-lg border border-gray-200 bg-white hover:shadow-md transition-all duration-200 ${tint.rowHover}`}>
     <div className="flex items-start gap-3 min-w-0 flex-1">
       <FileText className="h-5 w-5 text-gray-400 mt-0.5 flex-shrink-0" />
       <div className="min-w-0 flex-1">
@@ -58,15 +43,7 @@ const PaperListItem = ({ paper, onDownloadClick, colorScheme = "indigo" }) => (
     <Button
       variant="outline"
       size="sm"
-      className={`flex items-center gap-2 transition-colors duration-200 flex-shrink-0 w-full sm:w-auto justify-center ${
-        colorScheme === 'emerald'
-          ? 'text-emerald-600 hover:bg-emerald-600 hover:text-white'
-          : colorScheme === 'blue'
-          ? 'text-blue-600 hover:bg-blue-600 hover:text-white'
-          : colorScheme === 'purple'
-          ? 'text-purple-600 hover:bg-purple-600 hover:text-white'
-          : 'text-indigo-600 hover:bg-indigo-600 hover:text-white'
-      }`}
+      className={`flex items-center gap-2 transition-colors duration-200 flex-shrink-0 w-full sm:w-auto justify-center ${tint.action}`}
       onClick={onDownloadClick}
       aria-label={`Download ${paper.title}`}
     >
@@ -77,7 +54,7 @@ const PaperListItem = ({ paper, onDownloadClick, colorScheme = "indigo" }) => (
 );
 
 // Subject card with search functionality and coming soon support
-const SubjectCard = ({ subjectTitle, subjectData, onDownloadClick, searchTerm, colorScheme = "indigo" }) => {
+const SubjectCard = ({ subjectTitle, subjectData, onDownloadClick, searchTerm, tint }) => {
   const hasExamTypes =
     typeof subjectData === "object" && !Array.isArray(subjectData) && Object.keys(subjectData).length > 0;
   const examTypes = hasExamTypes ? Object.keys(subjectData) : [];
@@ -143,15 +120,7 @@ const SubjectCard = ({ subjectTitle, subjectData, onDownloadClick, searchTerm, c
                 <TabsTrigger
                   key={type}
                   value={type}
-                  className={`rounded-full px-3 py-2 text-xs font-semibold transition-all ${
-                    colorScheme === 'emerald' 
-                      ? 'data-[state=active]:bg-emerald-600 data-[state=active]:text-white' 
-                      : colorScheme === 'blue'
-                      ? 'data-[state=active]:bg-blue-600 data-[state=active]:text-white'
-                      : colorScheme === 'purple'
-                      ? 'data-[state=active]:bg-purple-600 data-[state=active]:text-white'
-                      : 'data-[state=active]:bg-indigo-600 data-[state=active]:text-white'
-                  }`}
+                  className={`rounded-full px-3 py-2 text-xs font-semibold transition-all ${tint.tab}`}
                 >
                   {type.replace(/_/g, ' ').toUpperCase()}
                 </TabsTrigger>
@@ -161,14 +130,14 @@ const SubjectCard = ({ subjectTitle, subjectData, onDownloadClick, searchTerm, c
               <TabsContent key={type} value={type} className="mt-4">
                 {Array.isArray(subjectData[type]) ? (
                   subjectData[type].length === 0 ? (
-                    <ComingSoonCard examType={type} colorScheme={colorScheme} />
+                    <ComingSoonCard examType={type} tint={tint} />
                   ) : (
                     <ul className="space-y-3">
                       {filterPapers(subjectData[type]).map((paper, index) => (
                         <PaperListItem
                           key={index}
                           paper={paper}
-                          colorScheme={colorScheme}
+                          tint={tint}
                           onDownloadClick={() =>
                             onDownloadClick(paper, { subject: subjectTitle, examType: type })
                           }
@@ -184,14 +153,14 @@ const SubjectCard = ({ subjectTitle, subjectData, onDownloadClick, searchTerm, c
                           {subType.replace(/_/g, ' ')}
                         </h5>
                         {Array.isArray(papers) && papers.length === 0 ? (
-                          <ComingSoonCard examType={`${type} ${subType}`} colorScheme={colorScheme} />
+                          <ComingSoonCard examType={`${type} ${subType}`} tint={tint} />
                         ) : (
                           <ul className="space-y-3">
                             {filterPapers(papers).map((paper, index) => (
                               <PaperListItem
                                 key={index}
                                 paper={paper}
-                                colorScheme={colorScheme}
+                                tint={tint}
                                 onDownloadClick={() =>
                                   onDownloadClick(paper, { subject: subjectTitle, examType: `${type} - ${subType}` })
                                 }
@@ -209,7 +178,7 @@ const SubjectCard = ({ subjectTitle, subjectData, onDownloadClick, searchTerm, c
         ) : (
           <div>
             {Array.isArray(subjectData) && subjectData.length === 0 ? (
-              <ComingSoonCard examType="papers" colorScheme={colorScheme} />
+              <ComingSoonCard examType="papers" tint={tint} />
             ) : (
               <ul className="space-y-3">
                 {Array.isArray(subjectData) &&
@@ -217,7 +186,7 @@ const SubjectCard = ({ subjectTitle, subjectData, onDownloadClick, searchTerm, c
                     <PaperListItem
                       key={index}
                       paper={paper}
-                      colorScheme={colorScheme}
+                      tint={tint}
                       onDownloadClick={() => onDownloadClick(paper, { subject: subjectTitle })}
                     />
                   ))}
@@ -232,7 +201,7 @@ const SubjectCard = ({ subjectTitle, subjectData, onDownloadClick, searchTerm, c
 
 // Level section with paper count (only counting available papers).
 // `id` is the anchor the level answer blocks above the library link into.
-const LevelSection = ({ id, title, icon, papers, onDownloadClick, colorClass, searchTerm, colorScheme = "indigo" }) => {
+const LevelSection = ({ id, title, icon, papers, onDownloadClick, searchTerm, tint }) => {
   // Calculate total available papers for this level (excluding empty arrays)
   const totalPapers = Object.values(papers).reduce((total, subjectData) => {
     if (Array.isArray(subjectData)) {
@@ -257,7 +226,7 @@ const LevelSection = ({ id, title, icon, papers, onDownloadClick, colorClass, se
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div className="flex items-center gap-3">
           {icon}
-          <h2 className={`text-2xl sm:text-3xl font-bold ${colorClass}`}>{title}</h2>
+          <h2 className={`text-2xl sm:text-3xl font-bold ${tint.heading}`}>{title}</h2>
         </div>
         <div className="text-sm text-gray-500 bg-white px-3 py-2 rounded-full border whitespace-nowrap self-start sm:self-auto">
           {totalPapers} papers available
@@ -273,7 +242,7 @@ const LevelSection = ({ id, title, icon, papers, onDownloadClick, colorClass, se
               subjectData={subjectData}
               onDownloadClick={(paper, info) => onDownloadClick(paper, { level: title, ...info })}
               searchTerm={searchTerm}
-              colorScheme={colorScheme}
+              tint={tint}
             />
           );
         })}
@@ -395,20 +364,20 @@ export default function PaperLibrary() {
               placeholder="Search for specific papers..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 pr-4 py-3 w-full rounded-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
+              className="pl-10 pr-4 py-3 w-full rounded-full border-gray-300 focus-visible:border-primary focus-visible:ring-primary/30 focus-visible:ring-[3px]"
             />
           </div>
         </div>
 
         {/* Enhanced Level Filter Menu */}
-        <div className="sticky top-4 z-10 flex justify-center backdrop-blur-sm">
+        <div className="flex justify-center">
           <Tabs value={selectedLevel} onValueChange={setSelectedLevel} className="w-full max-w-2xl">
-            <TabsList className="grid w-full grid-cols-4 p-1 bg-white/90 backdrop-blur-sm rounded-full h-auto shadow-lg border">
+            <TabsList className="grid w-full grid-cols-4 p-1 bg-white rounded-full h-auto shadow-sm border">
               {levelFilters.map((level) => (
                 <TabsTrigger
                   key={level}
                   value={level}
-                  className="rounded-full data-[state=active]:bg-indigo-600 data-[state=active]:text-white data-[state=active]:shadow-lg font-semibold px-4 py-3 transition-all duration-200"
+                  className="rounded-full data-[state=active]:bg-primary data-[state=active]:text-white data-[state=active]:shadow-sm font-semibold px-4 py-3 transition-all duration-200"
                 >
                   {level === "jc" ? "JC" : level.charAt(0).toUpperCase() + level.slice(1)}
                   {level === "all" && " Levels"}
@@ -424,54 +393,51 @@ export default function PaperLibrary() {
             <LevelSection
               id="papers-primary"
               title="Primary School"
-              icon={<BookOpen className="h-8 w-8 text-emerald-600" />}
+              icon={<BookOpen className={`h-8 w-8 ${LEVEL_TINTS.primary.icon}`} />}
               papers={testPapers.primary}
               onDownloadClick={handleDownloadClick}
-              colorClass="text-emerald-700"
               searchTerm={searchTerm}
-              colorScheme="emerald"
+              tint={LEVEL_TINTS.primary}
             />
           )}
           {(selectedLevel === "all" || selectedLevel === "secondary") && (
             <LevelSection
               id="papers-secondary"
               title="Secondary School"
-              icon={<GraduationCap className="h-8 w-8 text-blue-600" />}
+              icon={<GraduationCap className={`h-8 w-8 ${LEVEL_TINTS.secondary.icon}`} />}
               papers={testPapers.secondary}
               onDownloadClick={handleDownloadClick}
-              colorClass="text-blue-700"
               searchTerm={searchTerm}
-              colorScheme="blue"
+              tint={LEVEL_TINTS.secondary}
             />
           )}
           {(selectedLevel === "all" || selectedLevel === "jc") && (
             <LevelSection
               id="papers-jc"
               title="Junior College (A-Level)"
-              icon={<Atom className="h-8 w-8 text-purple-600" />}
+              icon={<Atom className={`h-8 w-8 ${LEVEL_TINTS.jc.icon}`} />}
               papers={testPapers.jc}
               onDownloadClick={handleDownloadClick}
-              colorClass="text-purple-700"
               searchTerm={searchTerm}
-              colorScheme="purple"
+              tint={LEVEL_TINTS.jc}
             />
           )}
         </div>
 
         {/* What's in the library — every figure counted from testPapers.js */}
-        <section className="text-center py-16 border-t border-gray-200 bg-white/50 backdrop-blur-sm rounded-2xl">
+        <section className="text-center py-16 border-t border-gray-200 rounded-2xl">
           <h3 className="text-2xl font-bold text-gray-900 mb-4">What&apos;s in the library today</h3>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 max-w-2xl mx-auto">
             <div className="text-center">
-              <div className="text-3xl font-bold text-emerald-600">{paperStats.total}</div>
+              <div className="text-3xl font-bold text-primary tabular-nums">{paperStats.total}</div>
               <div className="text-gray-600">Papers to download</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl font-bold text-blue-600">{paperStats.subjects}</div>
+              <div className="text-3xl font-bold text-primary tabular-nums">{paperStats.subjects}</div>
               <div className="text-gray-600">Subjects covered</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl font-bold text-purple-600">
+              <div className="text-3xl font-bold text-primary tabular-nums">
                 {paperStats.firstYear}&ndash;{paperStats.lastYear}
               </div>
               <div className="text-gray-600">Exam years</div>
@@ -490,7 +456,7 @@ export default function PaperLibrary() {
             {paperInfo && (
               <div className="text-sm text-gray-500 bg-gray-50 p-3 rounded-lg">
                 <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-indigo-500 rounded-full"></div>
+                  <div className="w-2 h-2 bg-primary rounded-full"></div>
                   <span className="font-medium">{paperInfo.level}</span>
                   <span>→</span>
                   <span>{paperInfo.subject}</span>
@@ -541,7 +507,7 @@ export default function PaperLibrary() {
             </div>
             <Button
               type="submit"
-              className="w-full h-12 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-base transition-colors duration-200"
+              className="w-full h-12 bg-primary hover:bg-[#035C93] text-white font-semibold text-base transition-colors duration-200"
               disabled={isSubmitting}
             >
               {isSubmitting ? (

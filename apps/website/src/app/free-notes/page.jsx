@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { ArrowRight, FileText, HelpCircle } from 'lucide-react';
 import GuideSchema from '@/components/seo/GuideSchema';
-import { GuideCTA, ICON_STROKE } from '@/components/guide';
+import { GuideCTA, SectionHeading, ICON_STROKE } from '@/components/guide';
 import { getPage } from '@/lib/seo/links.mjs';
 import { MATCH_TIME } from '@/data/promises';
 import NoteLibrary from './NoteLibrary';
@@ -120,14 +120,9 @@ export default function FreeNotesPage() {
           <NoteLibrary />
 
           <section aria-labelledby="faq" className="mx-auto max-w-3xl">
-            <div className="flex items-start gap-3 mb-5">
-              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#0474BA]/10 text-[#0474BA]">
-                <HelpCircle className="h-5 w-5" strokeWidth={ICON_STROKE} aria-hidden="true" />
-              </span>
-              <h2 id="faq" className="scroll-mt-24 text-2xl font-bold tracking-tight text-[#0474BA]">
-                Free study notes: common questions
-              </h2>
-            </div>
+            <SectionHeading id="faq" icon={HelpCircle}>
+              Free study notes: common questions
+            </SectionHeading>
             <div className="space-y-6">
               {FREE_NOTES_FAQS.map((faq) => (
                 <div key={faq.question}>

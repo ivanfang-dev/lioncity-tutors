@@ -165,6 +165,20 @@ describe('service schema', () => {
     assert.equal(schema['@type'], 'Service');
   });
 
+  test('areaServed defaults to Singapore as a Country', () => {
+    assert.deepEqual(buildServiceSchema(args).areaServed, {
+      '@type': 'Country', name: 'Singapore',
+    });
+  });
+
+  test('areaServed takes a list of places, for a page that names its estates', () => {
+    const schema = buildServiceSchema({ ...args, areaServed: ['Punggol', 'Sengkang'] });
+    assert.deepEqual(schema.areaServed, [
+      { '@type': 'Place', name: 'Punggol' },
+      { '@type': 'Place', name: 'Sengkang' },
+    ]);
+  });
+
   test('returns null for an unknown slug', () => {
     assert.equal(buildServiceSchema({ slug: 'not-a-page', name: 'x' }), null);
   });

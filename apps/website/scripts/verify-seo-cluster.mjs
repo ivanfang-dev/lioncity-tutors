@@ -67,9 +67,14 @@ for (const page of all) {
   // 2. BreadcrumbList on every cluster page.
   if (!types.includes('BreadcrumbList')) problems.push(`${page.slug}: missing BreadcrumbList`);
 
-  // 3. Hubs get Article; spokes get Course unless the registry names another
-  //    type — a folder of downloads is a CollectionPage, a rate card a Service.
-  if (page.kind === 'hub' && !types.includes('Article')) problems.push(`${page.slug}: hub missing Article`);
+  // 3. Hubs get Article unless the registry names another type — find-a-tutor
+  //    is a conversion page, not an editorial guide, so it carries Service.
+  //    Spokes get Course unless the registry names another type — a folder of
+  //    downloads is a CollectionPage, a rate card a Service.
+  if (page.kind === 'hub') {
+    const wanted = page.schemaType ?? 'Article';
+    if (!types.includes(wanted)) problems.push(`${page.slug}: hub missing ${wanted}`);
+  }
   if (page.kind === 'spoke') {
     const wanted = page.schemaType ?? 'Course';
     if (!types.includes(wanted)) problems.push(`${page.slug}: spoke missing ${wanted}`);
@@ -97,7 +102,7 @@ for (const page of all) {
     for (const extra of page.alsoIn ?? []) {
       if (!internal.has(HUBS[extra].url)) problems.push(`${page.slug}: does not link alsoIn hub ${HUBS[extra].url}`);
     }
-  } else if (internal.has(page.url)) {
+  } else if (internal.has(page.url) && !page.allowSelfLink) {
     problems.push(`${page.slug}: hub links to itself`);
   }
 

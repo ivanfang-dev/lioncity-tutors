@@ -2,7 +2,7 @@ import { Suspense } from 'react';
 import Link from 'next/link';
 import { HelpCircle } from 'lucide-react';
 import GuideSchema from '@/components/seo/GuideSchema';
-import { ICON_STROKE } from '@/components/guide';
+import { SectionHeading } from '@/components/guide';
 import TuitionAssignmentsClient from './TuitionAssignmentsClient';
 import { TUITION_ASSIGNMENTS_FAQS } from './faqs.mjs';
 
@@ -99,14 +99,9 @@ export default async function TuitionAssignmentsPage() {
           above is doing — it depends on a backend fetch that can come back
           empty. */}
       <section aria-labelledby="assignment-faq" className="mx-auto max-w-3xl px-4 sm:px-6 py-16">
-        <div className="flex items-start gap-3 mb-6">
-          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#0474BA]/10 text-[#0474BA]">
-            <HelpCircle className="h-5 w-5" strokeWidth={ICON_STROKE} aria-hidden="true" />
-          </span>
-          <h2 id="assignment-faq" className="scroll-mt-24 text-2xl font-bold tracking-tight text-[#0474BA]">
-            Tuition assignments: common questions
-          </h2>
-        </div>
+        <SectionHeading id="assignment-faq" icon={HelpCircle}>
+          Tuition assignments: common questions
+        </SectionHeading>
         <div className="space-y-6">
           {TUITION_ASSIGNMENTS_FAQS.map((faq) => (
             <div key={faq.question}>

@@ -1,8 +1,8 @@
 import Link from 'next/link';
 
 export const metadata = {
-  title: 'What to Look for in a Private Tutor in Singapore | LionCity Tutors',
-  description: 'Essential guide to choosing the right private tutor in Singapore. Learn key qualities, qualifications, and red flags to avoid when selecting home tuition.',
+  title: 'What to Look for in a Private Tutor | LionCity Tutors',
+  description: 'How to judge a private tutor in Singapore: qualifications, teaching track record, communication style and the red flags to watch for before you commit.',
   keywords: [
     'choosing private tutor Singapore',
     'qualities good tutor',
@@ -12,7 +12,7 @@ export const metadata = {
   ],
   openGraph: {
     title: 'What to Look for in a Private Tutor in Singapore',
-    description: 'Complete guide to selecting the perfect private tutor for your child\'s academic success in Singapore.',
+    description: 'How to judge a private tutor in Singapore: qualifications, teaching track record, communication style and the red flags to watch for before you commit.',
     url: 'https://www.lioncitytutors.com/blog/what-to-look-for-in-a-tutor',
     type: 'article',
   },
@@ -25,12 +25,19 @@ export default function WhatToLookForInATutor() {
   return (
     <>
     <main className="px-4 py-12 max-w-3xl mx-auto">
-      <h1 className="text-3xl font-bold text-blue-800 mb-4">What to Look for in a Private Tutor: A Singapore Parent's Complete Guide</h1>
+      <h1 className="text-3xl font-bold text-blue-800 mb-4">What to Look for in a Private Tutor in Singapore</h1>
       <p className="text-sm text-gray-500 mb-8">Updated May 12, 2026 • 6 min read</p>
+
+      <p className="mb-8 text-gray-700">
+        Choosing between agencies rather than tutors? Read{' '}
+        <Link href="/how-to-choose-a-tuition-agency-singapore" className="text-blue-700 underline underline-offset-2 font-medium">
+          how to choose a tuition agency in Singapore
+        </Link>.
+      </p>
 
       <article className="space-y-6 text-gray-700 leading-relaxed">
         <p className="text-lg font-medium text-gray-800">
-          With over 70% of Singapore students attending private tuition, choosing the right tutor can make the difference between academic struggle and success. Here's your comprehensive guide to finding the perfect educational partner for your child.
+          Choosing the right tutor can make the difference between academic struggle and success. Here's your comprehensive guide to finding the perfect educational partner for your child.
         </p>
 
         <section>

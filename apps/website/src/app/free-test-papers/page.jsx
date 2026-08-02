@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { ArrowRight, FileText, HelpCircle } from 'lucide-react';
 import GuideSchema from '@/components/seo/GuideSchema';
-import { RelatedGuides, GuideCTA, ICON_STROKE } from '@/components/guide';
+import { RelatedGuides, GuideCTA, SectionHeading, ICON_STROKE } from '@/components/guide';
 import { getPage } from '@/lib/seo/links.mjs';
 import { MATCH_TIME } from '@/data/promises';
 import PaperLibrary from './PaperLibrary';
@@ -51,9 +51,6 @@ export default function FreeTestPapersPage() {
             <h1 className="text-4xl md:text-6xl font-extrabold text-gray-900 tracking-tight text-balance">
               Free Test Papers
             </h1>
-            {/* "free exam papers" earns its place here: it is the phrasing the
-                page already ranks for, and the old H1 was the only thing
-                carrying it. */}
             <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed text-pretty">
               Free exam papers for every level &mdash; {paperStats.total} prelim and past year
               papers from Singapore schools, {paperStats.firstYear} to {paperStats.lastYear},
@@ -111,14 +108,9 @@ export default function FreeTestPapersPage() {
           <PaperLibrary />
 
           <section aria-labelledby="faq" className="mx-auto max-w-3xl">
-            <div className="flex items-start gap-3 mb-5">
-              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#0474BA]/10 text-[#0474BA]">
-                <HelpCircle className="h-5 w-5" strokeWidth={ICON_STROKE} aria-hidden="true" />
-              </span>
-              <h2 id="faq" className="scroll-mt-24 text-2xl font-bold tracking-tight text-[#0474BA]">
-                Free test papers: common questions
-              </h2>
-            </div>
+            <SectionHeading id="faq" icon={HelpCircle}>
+              Free test papers: common questions
+            </SectionHeading>
             <div className="space-y-6">
               {FREE_TEST_PAPERS_FAQS.map((faq) => (
                 <div key={faq.question}>

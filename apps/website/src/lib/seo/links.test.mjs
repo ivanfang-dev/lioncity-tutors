@@ -5,6 +5,8 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { HUBS, SPOKES } from './clusters.mjs';
 import { getPage, getHubFor, getHubsFor, getSiblings, getBreadcrumbs, allSlugs } from './links.mjs';
+import { BUILDABLE_SCHEMA_TYPES } from './schema.mjs';
+import { REGIONS } from '../../data/regions.mjs';
 
 const appDir = join(dirname(fileURLToPath(import.meta.url)), '..', '..', 'app');
 
@@ -177,18 +179,68 @@ describe('commercial pages', () => {
   });
 
   test('tuition-rates is surfaced by every exam-level hub', () => {
-    assert.deepEqual(getHubsFor('tuition-rates').map((h) => h.slug), [
-      'o-level-prep', 'a-level-prep', 'n-level-prep', 'psle-prep',
-    ]);
+    // Containment plus the primary hub, not the exact list: a page may join
+    // further hubs later, and only the first one decides the breadcrumb.
+    const hubs = getHubsFor('tuition-rates').map((h) => h.slug);
+    assert.equal(hubs[0], 'o-level-prep', 'primary hub decides the breadcrumb');
+    for (const hub of ['o-level-prep', 'a-level-prep', 'n-level-prep', 'psle-prep']) {
+      assert.ok(hubs.includes(hub), `tuition-rates is not surfaced by ${hub}`);
+    }
+  });
+
+  test('the agency-choice page is surfaced by every exam-level hub', () => {
+    // Containment plus the primary hub, not the exact list: the page later
+    // joined find-a-tutor as a fifth hub, and only the first one decides the
+    // breadcrumb.
+    const hubs = getHubsFor('how-to-choose-a-tuition-agency-singapore').map((h) => h.slug);
+    assert.equal(hubs[0], 'psle-prep', 'primary hub decides the breadcrumb');
+    for (const hub of ['psle-prep', 'o-level-prep', 'n-level-prep', 'a-level-prep']) {
+      assert.ok(hubs.includes(hub), `agency-choice page is not surfaced by ${hub}`);
+    }
   });
 
   test('subject spokes take the Course default; the others name their type', () => {
     assert.equal(SPOKES['o-level-physics'].schemaType, undefined);
-    const overridden = Object.values(SPOKES).filter((s) => s.schemaType);
-    assert.deepEqual(new Map(overridden.map((s) => [s.slug, s.schemaType])), new Map([
-      ['free-test-papers', 'CollectionPage'],
-      ['free-notes', 'CollectionPage'],
-      ['tuition-rates', 'Service'],
-    ]));
+
+    // Assert what each non-default page carries rather than the exhaustive set
+    // of them. Adding a Service or CollectionPage spoke is routine and should
+    // not have to edit this test; a typo still fails, since every override has
+    // to name a type GuideSchema can actually build.
+    const expected = {
+      'free-test-papers': 'CollectionPage',
+      'free-notes': 'CollectionPage',
+      'tuition-rates': 'Service',
+      'how-to-choose-a-tuition-agency-singapore': 'Service',
+    };
+    for (const [slug, schemaType] of Object.entries(expected)) {
+      assert.equal(SPOKES[slug].schemaType, schemaType, `${slug} schemaType`);
+    }
+    for (const spoke of Object.values(SPOKES)) {
+      if (!spoke.schemaType) continue;
+      assert.ok(
+        BUILDABLE_SCHEMA_TYPES.has(spoke.schemaType),
+        `${spoke.slug} names unbuildable schemaType ${spoke.schemaType}`,
+      );
+    }
+  });
+});
+
+describe('regional pages', () => {
+  test('every regional page sits in the find-a-tutor hub', () => {
+    for (const slug of ['tuition-punggol-sengkang', 'tuition-tampines-bedok', 'tuition-jurong-bukit-batok']) {
+      assert.deepEqual(getHubsFor(slug).map((h) => h.slug), ['find-a-tutor']);
+    }
+  });
+
+  test('breadcrumbs run Home -> Find a Tutor -> region', () => {
+    assert.deepEqual(getBreadcrumbs('tuition-punggol-sengkang').map((c) => c.name), [
+      'Home', 'Find a Tutor', 'Punggol & Sengkang',
+    ]);
+  });
+
+  test('every region in the data module has a registry entry and vice versa', () => {
+    const registrySlugs = ['tuition-punggol-sengkang', 'tuition-tampines-bedok', 'tuition-jurong-bukit-batok'];
+    assert.deepEqual(REGIONS.map((r) => r.slug).sort(), [...registrySlugs].sort());
+    for (const r of REGIONS) assert.equal(getPage(r.slug).url, r.url);
   });
 });
