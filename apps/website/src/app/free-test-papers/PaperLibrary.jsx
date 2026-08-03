@@ -9,7 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import { Download, BookOpen, GraduationCap, Atom, FileText, Search, Clock } from "lucide-react";
-import { testPapers } from "../../data/testPapers";
+import { testPapers } from "../../data/testPapers.mjs";
 import { LEVEL_TINTS } from "@/lib/levelTints";
 import { paperStats } from "./stats";
 

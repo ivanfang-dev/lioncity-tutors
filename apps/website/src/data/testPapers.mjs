@@ -97,20 +97,28 @@ export const testPapers = {
         { title: 'O Level A Math 2024 Paper 1 Prelim - Methodist Girls', downloadUrl: 'https://drive.google.com/uc?export=download&id=1r4nkx88zfqD5HDmSoU7kXTT7G9Erd009' },
         { title: 'O Level A Math 2024 Paper 1 Prelim - ACS', downloadUrl: 'https://drive.google.com/uc?export=download&id=1wNvTvXgE4ROT0qGjZ8OqekPj5iq6K3Wo' },
         { title: 'O Level A Math 2024 Paper 1 Prelim - Gan Eng Seng', downloadUrl: 'https://drive.google.com/uc?export=download&id=1TktgMiZLNSpaCRZxeLzmMI6nstRYIUeA' },
-        { title: 'O Level A Math 2024 Paper 1 Prelim - Juying Sec', downloadUrl: 'https://drive.google.com/uc?export=download&id=1feozlFDJeCofhZDfCxcJck13Or8W7eHB' }
+        { title: 'O Level A Math 2024 Paper 1 Prelim - Juying Sec', downloadUrl: 'https://drive.google.com/uc?export=download&id=1feozlFDJeCofhZDfCxcJck13Or8W7eHB' },
+        { title: 'O Level A Math 2025 Prelim Paper 1 - MGS (with Answer Key)', fileKey: 'papers/secondary/2025/amath/mgs-2025-sec-4-prelim-am-p1-with-answer-key.pdf' },
+        { title: 'O Level A Math 2025 Prelim Paper 1 Solutions - MGS', fileKey: 'papers/secondary/2025/amath/mgs-2025-sec-4-prelim-am-p1-solutions.pdf' },
+        { title: 'O Level A Math 2025 Prelim Paper 1 - SCGS', fileKey: 'papers/secondary/2025/amath/scgs-2025-am-prelim-paper-1.pdf' },
+        { title: 'O Level A Math 2025 Prelim Paper 1 Solutions - SCGS', fileKey: 'papers/secondary/2025/amath/scgs-2025-am-prelim-paper-1-solutions.pdf' },
       ],
       'Prelim Paper 2': [
         { title: 'O Level A Math 2024 Paper 2 Prelim - Methodist Girls', downloadUrl: 'https://drive.google.com/uc?export=download&id=15v94Rlt9J2jl0Z_1zP4xgWjcDeqWTwCm' },
         { title: 'O Level A Math 2024 Paper 2 Prelim - ACS', downloadUrl: ' https://drive.google.com/uc?export=download&id=1GVk81-CWEgQ7qkW2yoPDBQlD_hQApnH5' },
         { title: 'O Level A Math 2024 Paper 2 Prelim - Gan Eng Seng', downloadUrl: 'https://drive.google.com/uc?export=download&id=1OyugKcuoT3100KiZ4Hh-_zVmIza5Gyzm' },
-        { title: 'O Level A Math 2024 Paper 2 Prelim - Juying Sec', downloadUrl: 'https://drive.google.com/uc?export=download&id=1nLtZCdh8D61CAg5xp0V2tPMTghdEmIUB' }
+        { title: 'O Level A Math 2024 Paper 2 Prelim - Juying Sec', downloadUrl: 'https://drive.google.com/uc?export=download&id=1nLtZCdh8D61CAg5xp0V2tPMTghdEmIUB' },
+        { title: 'O Level A Math 2025 Prelim Paper 2 - MGS', fileKey: 'papers/secondary/2025/amath/mgs-2025-sec-4-prelim-am-p2.pdf' },
+        { title: 'O Level A Math 2025 Prelim Paper 2 Solutions - MGS', fileKey: 'papers/secondary/2025/amath/mgs-2025-sec-4-prelim-am-p2-solution.pdf' },
+        { title: 'O Level A Math 2025 Prelim Paper 2 - SCGS', fileKey: 'papers/secondary/2025/amath/scgs-2025-am-prelim-paper-2.pdf' },
+        { title: 'O Level A Math 2025 Prelim Paper 2 Solutions - SCGS', fileKey: 'papers/secondary/2025/amath/scgs-2025-am-prelim-paper-2-solutions.pdf' },
       ]
     },
     'Secondary 4 E Math': {
       sa1: [
-        { title: 'O Level E Math 2021 SA1 - Bukit Batok', downloadUrl: 'https://drive.google.com/uc?export=download&id=1oE1zOnGQekk9xPoH74baZ9fKFyP2uoEQ' },
-        { title: 'O Level E Math 2021 SA1 - Fuchun', downloadUrl: 'https://drive.google.com/uc?export=download&id=1eUbMK5hqfQEwRLjJhV_vjen3F3DDqRkn' },
-        { title: 'O Level E Math 2021 SA1 - Peirce', downloadUrl: 'https://drive.google.com/uc?export=download&id=1_bZJYAmqT4y_mujhr3hE3nDGJyzhBRur' },
+        { title: 'O Level E Math 2021 SA1 - Bukit Batok', downloadUrl: 'https://drive.google.com/uc?export=download&id=1oE1zOnGQekk9xPoH74baZ9fKFyP2uoEQ', fileKey: 'papers/secondary/2021/emath/o-level-e-math-2021-sa1-bukit-batok.pdf' },
+        { title: 'O Level E Math 2021 SA1 - Fuchun', downloadUrl: 'https://drive.google.com/uc?export=download&id=1eUbMK5hqfQEwRLjJhV_vjen3F3DDqRkn', fileKey: 'papers/secondary/2021/emath/o-level-e-math-2021-sa1-fuchun.pdf' },
+        { title: 'O Level E Math 2021 SA1 - Peirce', downloadUrl: 'https://drive.google.com/uc?export=download&id=1_bZJYAmqT4y_mujhr3hE3nDGJyzhBRur', fileKey: 'papers/secondary/2021/emath/o-level-e-math-2021-sa1-peirce.pdf' },
       ],
       prelim: [
         { title: 'O Level E Math 2024 Prelim - ACS', downloadUrl: 'https://drive.google.com/uc?export=download&id=1bMm3dKGhaASNfjAp-nEY3d13BZAXPD5p' },
@@ -122,9 +130,9 @@ export const testPapers = {
     },
     'Secondary 4 Chemistry': {
       sa1: [
-        { title: 'O Level Chemistry 2018 SA1 - Temasek', downloadUrl: 'https://drive.google.com/uc?export=download&id=1qazJBEcfIMtgcNnpcmLDDuRmaVTZuyzY' },
-        { title: 'O Level Chemistry 2018 SA1 - Gan Eng Seng', downloadUrl: 'https://drive.google.com/uc?export=download&id=198JMJoz_765oVpxTvBKCj-5Wlc7KNfsd' },
-        { title: 'O Level Chemistry 2018 SA1 - Hua Yi', downloadUrl: 'https://drive.google.com/uc?export=download&id=1km8BK02fcc7VzBiPXKkt7gqFZbhScE54' }
+        { title: 'O Level Chemistry 2018 SA1 - Temasek', downloadUrl: 'https://drive.google.com/uc?export=download&id=1qazJBEcfIMtgcNnpcmLDDuRmaVTZuyzY', fileKey: 'papers/secondary/2018/chemistry/o-level-chemistry-2018-sa1-temasek.pdf' },
+        { title: 'O Level Chemistry 2018 SA1 - Gan Eng Seng', downloadUrl: 'https://drive.google.com/uc?export=download&id=198JMJoz_765oVpxTvBKCj-5Wlc7KNfsd', fileKey: 'papers/secondary/2018/chemistry/o-level-chemistry-2018-sa1-gan-eng-seng.pdf' },
+        { title: 'O Level Chemistry 2018 SA1 - Hua Yi', downloadUrl: 'https://drive.google.com/uc?export=download&id=1km8BK02fcc7VzBiPXKkt7gqFZbhScE54', fileKey: 'papers/secondary/2018/chemistry/o-level-chemistry-2018-sa1-hua-yi.pdf' }
       ],
       prelim: [
         { title: 'O Level Chemistry 2024 Prelim - Catholic High', downloadUrl: 'https://drive.google.com/uc?export=download&id=1OFTz7w9-QspHc9u7Bx0QEg1gKQYTPIci' },
@@ -157,10 +165,30 @@ export const testPapers = {
       ]
     },
     'Secondary 4 History': {
-      prelim: []
+      prelim: [
+        { title: 'O Level History 2025 Prelim Paper 1 - ACSI', fileKey: 'papers/secondary/2025/history/acsi-2025-hist-prelim-p1-qp.pdf' },
+        { title: 'O Level History 2025 Prelim Paper 1 Mark Scheme - ACSI', fileKey: 'papers/secondary/2025/history/acsi-2025-hist-prelim-p1-ms.pdf' },
+        { title: 'O Level History 2025 Prelim Paper 2 - ACSI', fileKey: 'papers/secondary/2025/history/acsi-2025-hist-prelim-p2-qp.pdf' },
+        { title: 'O Level History 2025 Prelim Paper 2 Mark Scheme - ACSI', fileKey: 'papers/secondary/2025/history/acsi-2025-hist-prelim-p2-ms.pdf' },
+        { title: 'O Level History 2025 Prelim Paper 1 (with Answers) - Catholic High', fileKey: 'papers/secondary/2025/history/cat-high-2025-hist-prelim-p1-qp-ms.pdf' },
+        { title: 'O Level History 2025 Prelim Paper 2 (with Answers) - Catholic High', fileKey: 'papers/secondary/2025/history/cat-high-2025-hist-prelim-p2-qp-ms.pdf' },
+        { title: 'O Level History 2025 Prelim Paper 1 (with Answers) - CGS', fileKey: 'papers/secondary/2025/history/cgs-2025-hist-prelim-p1-qp-ms.pdf' },
+        { title: 'O Level History 2025 Prelim Paper 2 (with Answers) - CGS', fileKey: 'papers/secondary/2025/history/cgs-2025-hist-prelim-p2-qp-ms.pdf' },
+        { title: 'O Level History 2025 Prelim Paper 1 (with Answers) - CHIJ', fileKey: 'papers/secondary/2025/history/chij-2025-hist-prelim-p1-qp-ms.pdf' },
+        { title: 'O Level History 2025 Prelim Paper 2 (with Answers) - CHIJ', fileKey: 'papers/secondary/2025/history/chij-2025-hist-prelim-p2-qp-ms.pdf' },
+        { title: 'O Level History 2025 Prelim Paper 1 - NHHS', fileKey: 'papers/secondary/2025/history/nhhs-2025-hist-prelim-p1-qp.pdf' },
+        { title: 'O Level History 2025 Prelim Paper 1 Mark Scheme - NHHS', fileKey: 'papers/secondary/2025/history/nhhs-2025-hist-prelim-p1-ms.pdf' },
+        { title: 'O Level History 2025 Prelim Paper 2 - NHHS', fileKey: 'papers/secondary/2025/history/nhhs-2025-hist-prelim-p2-qp.pdf' },
+        { title: 'O Level History 2025 Prelim Paper 2 Mark Scheme - NHHS', fileKey: 'papers/secondary/2025/history/nhhs-2025-hist-prelim-p2-ms.pdf' },
+      ]
     },
     'Secondary 4 Geography': {
-      prelim: []
+      prelim: [
+        { title: 'O Level Geography 2024 Prelim Paper 1 - Victoria School', fileKey: 'papers/secondary/2024/geography/vs-2024-core-geog-sec-4-prelim-paper-1-qn-paper.pdf' },
+        { title: 'O Level Geography 2024 Prelim Paper 1 Answer Key - Victoria School', fileKey: 'papers/secondary/2024/geography/vs-2024-core-geog-sec-4-prelim-paper-1-ans-key.pdf' },
+        { title: 'O Level Geography 2024 Prelim Paper 2 - Victoria School', fileKey: 'papers/secondary/2024/geography/vs-2024-core-geog-sec-4-prelim-paper-2.pdf' },
+        { title: 'O Level Geography 2024 Prelim Paper 2 Answer Key - Victoria School', fileKey: 'papers/secondary/2024/geography/vs-2024-core-geog-sec-4-prelim-paper-2-ans-key.pdf' },
+      ]
     },
     'Secondary 4 Social Studies': {
       prelim: []

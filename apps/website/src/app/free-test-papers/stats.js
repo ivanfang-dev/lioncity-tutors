@@ -4,7 +4,7 @@
  * Every number shown on /free-test-papers comes from here rather than being
  * typed into the copy, so the page can never claim more papers than it hosts.
  */
-import { testPapers } from '@/data/testPapers';
+import { testPapers } from '@/data/testPapers.mjs';
 
 /** Every paper under a node, however deeply the subject nests its exam types. */
 const flatten = (node) =>

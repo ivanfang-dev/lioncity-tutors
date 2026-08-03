@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Download, BookOpen, GraduationCap, Atom, FileText, Search, Clock } from "lucide-react";
-import { notesData } from "../../data/notesData";
+import { notesData } from "../../data/notesData.mjs";
 import { LEVEL_TINTS } from "@/lib/levelTints";
 
 // Counted from the data rather than typed into the copy, so the page can never
