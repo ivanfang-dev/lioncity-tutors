@@ -228,25 +228,28 @@ export default function NoteLibrary() {
           phone: formData.phone,
           subject,
           year,
-          level
+          level,
+          fileKey: selectedNote.fileKey,
         }),
       });
 
       if (!response.ok) {
         throw new Error('Failed to submit');
       }
+      const result = await response.json().catch(() => ({}));
 
       toast.success('Thank you! Your download will begin shortly.', {
         description: "Check your email for additional study resources.",
         duration: 5000,
       });
-      
+
       setShowModal(false);
       setFormErrors({});
 
       // Trigger the actual file download
-      if (selectedNote?.downloadUrl) {
-        window.open(selectedNote.downloadUrl, '_blank');
+      const url = result.downloadUrl || selectedNote?.downloadUrl;
+      if (url) {
+        window.open(url, '_blank');
       }
     } catch (error) {
       console.error('Submission error:', error);

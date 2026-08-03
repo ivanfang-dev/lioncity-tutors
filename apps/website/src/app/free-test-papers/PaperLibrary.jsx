@@ -317,21 +317,24 @@ export default function PaperLibrary() {
           level: paperInfo.level,
           subject: paperInfo.subject,
           paperTitle: selectedPaper.title,
+          fileKey: selectedPaper.fileKey,
         }),
       });
 
       if (!response.ok) throw new Error("API submission failed");
+      const result = await response.json().catch(() => ({}));
 
       toast.success("Thank you! Your download will begin shortly.", {
         description: "Check your email for additional study resources.",
         duration: 5000,
       });
-      
+
       setShowModal(false);
       setFormErrors({});
-      
-      if (selectedPaper?.downloadUrl) {
-        window.open(selectedPaper.downloadUrl, "_blank");
+
+      const url = result.downloadUrl || selectedPaper?.downloadUrl;
+      if (url) {
+        window.open(url, "_blank");
       }
     } catch (error) {
       console.error("Submission error:", error);
