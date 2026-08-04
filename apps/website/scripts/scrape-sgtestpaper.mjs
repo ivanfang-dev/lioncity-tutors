@@ -10,7 +10,7 @@
 //   node --env-file=.env scripts/scrape-sgtestpaper.mjs \
 //     https://www.sgtestpaper.com/primary/subject2025/y25p6maths.html \
 //     papers/primary/2025/p6-maths --dry-run
-import { writeFile, mkdir } from "node:fs/promises";
+import { writeFile } from "node:fs/promises";
 import path from "node:path";
 import * as cheerio from "cheerio";
 import { AwsClient } from "aws4fetch";
