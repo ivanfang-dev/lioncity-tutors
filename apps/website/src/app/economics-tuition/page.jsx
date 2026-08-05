@@ -29,7 +29,7 @@ export const metadata = {
     type: 'website',
     images: [
       {
-        url: 'https://www.lioncitytutors.com/images/economics.webp',
+        url: 'https://www.lioncitytutors.com/economics.webp',
         alt: 'Economics Tuition Singapore',
       }
     ],

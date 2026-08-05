@@ -32,7 +32,7 @@ export const metadata = {
     url: 'https://www.lioncitytutors.com/biology-tuition',
     images: [
       {
-        url: '/biology.webp',
+        url: 'https://www.lioncitytutors.com/biology.webp',
         width: 1200,
         height: 630,
         alt: 'Biology Tuition Singapore - Lion City Tutors',

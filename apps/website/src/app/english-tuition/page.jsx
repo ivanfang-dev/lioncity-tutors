@@ -22,7 +22,7 @@ const pageMetadata = {
     'secondary English tuition', 'primary English tuition', 'english tutor rates singapore'
   ],
   url: 'https://www.lioncitytutors.com/english-tuition',
-  imageUrl: 'https://www.lioncitytutors.com/images/english-tuition-og.webp', // Use a dedicated OG image
+  imageUrl: 'https://www.lioncitytutors.com/english-tuition_optimized.webp',
 };
 
 const faqData = [

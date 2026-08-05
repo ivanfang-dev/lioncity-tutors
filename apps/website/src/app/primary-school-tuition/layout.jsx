@@ -11,7 +11,7 @@ export const metadata = {
     url: "https://www.lioncitytutors.com/primary-school-tuition",
     images: [
       {
-        url: "https://www.lioncitytutors.com/images/primary-tuition_optimized.webp",
+        url: "https://www.lioncitytutors.com/primary-tuition_optimized.webp",
         width: 1200,
         height: 630,
         alt: "Primary School Tuition Singapore"
@@ -22,7 +22,7 @@ export const metadata = {
     card: "summary_large_image",
     title: "Primary School Tuition Singapore | PSLE Prep",
     description: "Hand-matched primary school tutors in Singapore from P1 to PSLE, for English, Math, Science and Chinese, with subject-by-subject PSLE study guides.",
-    images: ["https://www.lioncitytutors.com/images/primary-tuition_optimized.webp"]
+    images: ["https://www.lioncitytutors.com/primary-tuition_optimized.webp"]
   },
   alternates: {
     canonical: "https://www.lioncitytutors.com/primary-school-tuition"

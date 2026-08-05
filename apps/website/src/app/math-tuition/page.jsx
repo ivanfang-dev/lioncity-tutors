@@ -35,7 +35,7 @@ export const metadata = {
     type: 'website',
     images: [
       {
-        url: 'https://www.lioncitytutors.com/images/math-tuition.webp',
+        url: 'https://www.lioncitytutors.com/math-tuition.webp',
         alt: 'Math Tuition Singapore',
       }
     ],

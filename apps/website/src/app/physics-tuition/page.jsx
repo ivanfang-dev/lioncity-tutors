@@ -31,7 +31,7 @@ export const metadata = {
     type: 'website',
     images: [
       {
-        url: 'https://www.lioncitytutors.com/public/physics.webp',
+        url: 'https://www.lioncitytutors.com/physics.webp',
         alt: 'Physics Tuition Singapore',
       }
     ],

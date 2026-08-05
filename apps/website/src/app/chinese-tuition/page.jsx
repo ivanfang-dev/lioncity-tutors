@@ -29,7 +29,7 @@ export const metadata = {
     type: 'website',
     images: [
       {
-        url: 'https://www.lioncitytutors.com/images/chinese-tuition_optimized.webp',
+        url: 'https://www.lioncitytutors.com/chinese-tuition_optimized.webp',
         alt: 'Chinese Tuition Singapore',
       }
     ],

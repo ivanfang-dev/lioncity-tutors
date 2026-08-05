@@ -28,7 +28,7 @@ export const metadata = {
     type: 'website',
     images: [
       {
-        url: 'https://www.lioncitytutors.com/public/science3.webp',
+        url: 'https://www.lioncitytutors.com/science3.webp',
         alt: 'Science Tuition Singapore',
       }
     ],

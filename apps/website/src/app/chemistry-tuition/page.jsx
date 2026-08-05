@@ -30,7 +30,7 @@ export const metadata = {
     type: 'website',
     images: [
       {
-        url: 'https://www.lioncitytutors.com/public/chemistry.webp',
+        url: 'https://www.lioncitytutors.com/chemistry.webp',
         alt: 'Chemistry Tuition Singapore',
       }
     ],

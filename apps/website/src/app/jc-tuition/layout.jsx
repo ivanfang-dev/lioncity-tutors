@@ -11,7 +11,7 @@ export const metadata = {
     url: "https://www.lioncitytutors.com/jc-tuition",
     images: [
       {
-        url: "https://www.lioncitytutors.com/images/jc-tuition_optimized.webp",
+        url: "https://www.lioncitytutors.com/jc-tuition_optimized.webp",
         width: 1200,
         height: 630,
         alt: "JC Tuition Singapore"
@@ -22,7 +22,7 @@ export const metadata = {
     card: "summary_large_image",
     title: "JC Tuition Singapore | A-Level Preparation",
     description: "Expert JC tuition in Singapore for JC1-JC2 students. Comprehensive A-Level preparation with experienced tutors.",
-    images: ["https://www.lioncitytutors.com/images/jc-tuition_optimized.webp"]
+    images: ["https://www.lioncitytutors.com/jc-tuition_optimized.webp"]
   },
   alternates: {
     canonical: "https://www.lioncitytutors.com/jc-tuition"

@@ -26,7 +26,7 @@ export const metadata = {
     type: 'website',
     images: [
       {
-        url: 'https://www.lioncitytutors.com/images/jc-tuition_optimized.webp',
+        url: 'https://www.lioncitytutors.com/jc-tuition_optimized.webp',
         alt: 'Secondary School Tuition Singapore',
       }
     ],
