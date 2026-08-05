@@ -1,30 +1,69 @@
 export const testPapers = {
   primary: {
-    'P6 English': {
+    'Primary 6 English': {
       sa2: [
         { title: 'Primary 6 English 2024 SA2 - Nanyang', downloadUrl: 'https://drive.google.com/uc?export=download&id=1whfPd0zkv_e9pa9ty2dhplHCa8RGBbsm' },
         { title: 'Primary 6 English 2024 SA2 - Raffles Girls', downloadUrl: 'https://drive.google.com/uc?export=download&id=11rrvnLEdYAumk5xHurXhW5z_cjhYWoKG' },
         { title: 'Primary 6 English 2024 SA2 - SCGS', downloadUrl: 'https://drive.google.com/uc?export=download&id=1PktHAXDsaRlvA8yAeb0J_Mg4mDP0SQwP' }
       ]
     },
-    'P6 Math': {
+    'Primary 6 Math': {
       wa1: [
+        { title: 'P6 Maths WA1 2025  ACSJ - Test Paper & Answers', fileKey: 'papers/primary/2025/p6-maths/p6-maths-wa1-2025-acsj-exam-papers.pdf' },
+        { title: 'P6 Maths WA1 2025  Raffles - Test Paper & Answers', fileKey: 'papers/primary/2025/p6-maths/p6-maths-wa1-2025-raffles-exam-papers.pdf' },
+        { title: 'P6 Maths WA1 2025 Raffles - Worked Solutions', fileKey: 'papers/primary/2025/p6-maths/p6-maths-wa1-2025-worked-solutions-raffles.pdf' },
+        { title: 'P6 Maths WA1 2025  Rosyth - Test Paper & Answers', fileKey: 'papers/primary/2025/p6-maths/p6-maths-wa1-2025-rosyth-exam-papers.pdf' },
+        { title: 'P6 Maths WA1 2025  St Nicholas Paper', fileKey: 'papers/primary/2025/p6-maths/p6-maths-wa1-2025-stnicholas-exam-papers.pdf' },
         { title: 'Primary 6 Math 2024 WA1 - Raffles Girls', downloadUrl: 'https://drive.google.com/uc?export=download&id=1chIvKfHdsWt2WzR8eEndiXH7gsny8oJg' },
         { title: 'Primary 6 Math 2024 WA1 - Nanyang', downloadUrl: 'https://drive.google.com/uc?export=download&id=1LLW0yOHkstGXI0xYE9TyoqlwM0p5RFIi' },
         { title: 'Primary 6 Math 2024 WA1 - Methodist Girls', downloadUrl: 'https://drive.google.com/uc?export=download&id=1JW7tFHqmxYdTd7gy7r-CxpcWZ3R65Bji' },
         { title: 'Primary 6 Math 2024 WA1 - Nanhua', downloadUrl: 'https://drive.google.com/uc?export=download&id=17HL9zjlPJfBPmfgkl6yjs-9Em8OvkLvR' },
         { title: 'Primary 6 Math 2024 WA1 - Red Swastika', downloadUrl: 'https://drive.google.com/uc?export=download&id=1Sr1zCxL1jmMv6ZkazafqmqKwrbwgK9zJ' }
       ],
-      sa2: [
+      wa2: [
+        { title: 'P6 Maths WA2 2025  ACSJ - Test Paper & Answers', fileKey: 'papers/primary/2025/p6-maths/p6-maths-wa2-2025-acsj-exam-papers.pdf' },
+        { title: 'P6 Maths WA2 2025 Worked Solutions - ACSP', fileKey: 'papers/primary/2025/p6-maths/p6-maths-wa2-2025-worked-solutions-acsp.pdf' },
+        { title: 'P6 Maths WA2 2025  Catholic High - Test Paper & Answers', fileKey: 'papers/primary/2025/p6-maths/p6-maths-wa2-2025-catholichigh-exam-papers.pdf' },
+        { title: 'P6 Maths WA2 2025 Worked Solutions - Henry Park', fileKey: 'papers/primary/2025/p6-maths/p6-maths-wa2-2025-worked-solutions-henrypark.pdf' },
+        { title: 'P6 Maths WA2 2025  Nan Hua - Test Paper & Answers', fileKey: 'papers/primary/2025/p6-maths/p6-maths-wa2-2025-nanhua-exam-papers.pdf' },
+        { title: 'P6 Maths WA2 2025  Raffles Paper', fileKey: 'papers/primary/2025/p6-maths/p6-maths-wa2-2025-raffles-exam-papers.pdf' },
+        { title: 'P6 Maths WA2 2025  Rosyth - Test Paper & Answers', fileKey: 'papers/primary/2025/p6-maths/p6-maths-wa2-2025-rosyth-exam-papers.pdf' },
+        { title: 'P6 Maths WA2 2025 Rosyth - Worked Solutions', fileKey: 'papers/primary/2025/p6-maths/p6-maths-wa2-2025-worked-solutions-rosyth.pdf' },
+        { title: 'P6 Maths WA2 2025  St Nicholas Paper', fileKey: 'papers/primary/2025/p6-maths/p6-maths-wa2-2025-stnicholas-exam-papers.pdf' },
+      ],
+      sa1: [
+        { title: 'P6 Maths SA1 2025  Nanyang - Test Paper & Answers', fileKey: 'papers/primary/2025/p6-maths/p6-maths-sa1-2025-nanyang-exam-papers.pdf' },
+        { title: 'P6 Maths SA1 2025  Nanyang - Worked Solutions', fileKey: 'papers/primary/2025/p6-maths/p6-maths-sa1-2025-worked-solutions-nanyang.pdf' },
+      ],
+      prelim: [
+        { title: 'P6 Maths Prelim 2025  Ai Tong - Test Paper & Answers', fileKey: 'papers/primary/2025/p6-maths/p6-maths-prelim-2025-aitong-exam-papers.pdf' },
+        { title: 'P6 Maths Prelim 2025  Nan Hua - Test Paper & Answers', fileKey: 'papers/primary/2025/p6-maths/p6-maths-prelim-2025-nanhua-exam-papers.pdf' },
+        { title: 'P6 Maths Prelim 2025  Nan Hua - Worked Solutions', fileKey: 'papers/primary/2025/p6-maths/p6-maths-prelim-2025-worked-solutions-nanhua.pdf' },
+        { title: 'P6 Maths Prelim 2025  Nanyang - Test Paper & Answers', fileKey: 'papers/primary/2025/p6-maths/p6-maths-prelim-2025-nanyang-exam-papers.pdf' },
+        { title: 'P6 Maths Prelim 2025  Nanyang - Worked Solutions', fileKey: 'papers/primary/2025/p6-maths/p6-maths-prelim-2025-worked-solutions-nanyang.pdf' },
+        { title: 'P6 Maths Prelim 2025  PLMGS Paper', fileKey: 'papers/primary/2025/p6-maths/p6-maths-prelim-2025-plmgs-exam-papers.pdf' },
+        { title: 'P6 Maths Prelim 2025  Raffles - Test Paper & Answers', fileKey: 'papers/primary/2025/p6-maths/p6-maths-prelim-2025-raffles-exam-papers.pdf' },
+        { title: 'P6 Maths Prelim 2025  Raffles - Worked Solutions', fileKey: 'papers/primary/2025/p6-maths/p6-maths-prelim-2025-worked-solutions-raffles.pdf' },
+        { title: 'P6 Maths Prelim 2025  Red Swastika Paper', fileKey: 'papers/primary/2025/p6-maths/p6-maths-prelim-2025-redswastika-exam-papers.pdf' },
+        { title: 'P6 Maths Prelim 2025  Rosyth - Test Paper & Answers', fileKey: 'papers/primary/2025/p6-maths/p6-maths-prelim-2025-rosyth-exam-papers.pdf' },
+        { title: 'P6 Maths Prelim 2025  SCGS - Test Paper & Answers', fileKey: 'papers/primary/2025/p6-maths/p6-maths-prelim-2025-scgs-exam-papers.pdf' },
+        { title: 'P6 Maths Prelim 2025  SCGS - Worked Solutions', fileKey: 'papers/primary/2025/p6-maths/p6-maths-prelim-2025-worked-solutions-scgs.pdf' },
+        { title: 'P6 Maths Prelim 2025  St Nicholas Paper', fileKey: 'papers/primary/2025/p6-maths/p6-maths-prelim-2025-stnicholas-exam-papers.pdf' },
+        { title: 'P6 Maths Prelim 2025  Tao Nan - Test Paper & Answers', fileKey: 'papers/primary/2025/p6-maths/p6-maths-prelim-2025-taonan-exam-papers.pdf' },
+        { title: 'P6 Maths Prelim 2025  Tao Nan - Worked Solutions', fileKey: 'papers/primary/2025/p6-maths/p6-maths-prelim-2025-worked-solutions-taonan.pdf' },
         { title: 'Primary 6 Math 2024 SA2 - ACS Primary', downloadUrl: 'https://drive.google.com/uc?export=download&id=1dRYZBQZxIy5DbPdhsKB2gJ9KawkHn0TW' },
         { title: 'Primary 6 Math 2024 SA2 - Raffles Girls', downloadUrl: 'https://drive.google.com/uc?export=download&id=14S7xq4ithN-5iJb19gQQfAYJ4Q-N2qZS' },
         { title: 'Primary 6 Math 2024 SA2 - Nanyang', downloadUrl: 'https://drive.google.com/uc?export=download&id=1NDmiTYG2ZsoWbhKo0P2YiABL3Zv5uuCz' },
         { title: 'Primary 6 Math 2024 SA2 - Methodist Girls', downloadUrl: 'https://drive.google.com/uc?export=download&id=1h62i3U0KSFiChfzt77eshyghDpu8UvpU' },
         { title: 'Primary 6 Math 2024 SA2 - Catholic High', downloadUrl: 'https://drive.google.com/uc?export=download&id=1gAPmBJyvFRwJ-e_8y9VcLdt7fdRAlEBJ' },
-        { title: 'Primary 6 Math 2024 SA2 - Henry Park', downloadUrl: 'https://drive.google.com/uc?export=download&id=17JSDpUQgxrmcW2dvb0litWiIYnQFUOUq' }
+        { title: 'Primary 6 Math 2024 SA2 - Henry Park', downloadUrl: 'https://drive.google.com/uc?export=download&id=17JSDpUQgxrmcW2dvb0litWiIYnQFUOUq' },
+        { title: 'P6 Maths Prelim 2025  ACSJ - Test Paper & Answers', fileKey: 'papers/primary/2025/p6-maths/p6-maths-prelim-2025-acsj-exam-papers.pdf' },
+        { title: 'P6 Maths Prelim 2025  Catholic High - Test Paper & Answers', fileKey: 'papers/primary/2025/p6-maths/p6-maths-prelim-2025-catholichigh-exam-papers.pdf' },
+        { title: 'P6 Maths Prelim 2025  Henry Park - Test Paper & Answers', fileKey: 'papers/primary/2025/p6-maths/p6-maths-prelim-2025-henrypark-exam-papers.pdf' },
+        { title: 'P6 Maths Prelim 2025  MGS - Test Paper & Answers', fileKey: 'papers/primary/2025/p6-maths/p6-maths-prelim-2025-mgs-exam-papers.pdf' },
       ]
     },
-    'P6 Science': {
+    'Primary 6 Science': {
       wa1: [
         { title: 'Primary 6 Science 2024 WA1 - ACS Junior', downloadUrl: 'https://drive.google.com/uc?export=download&id=1NpV2uMZXQ-laoYXcgGZ2W06g8zx9PqB6' },
         { title: 'Primary 6 Science 2024 WA1 - Methodist Girls', downloadUrl: 'https://drive.google.com/uc?export=download&id=10j4o3caz2Z4rTrULGm1jloETFLDgLLF1' },
@@ -40,11 +79,40 @@ export const testPapers = {
         { title: 'Primary 6 Science 2024 SA2 - Catholic High', downloadUrl: 'https://drive.google.com/uc?export=download&id=1PuU52xPafPYCReDAcRRap3PW777a-ve9' },
       ]
     },
-    'P6 Chinese': {
-      wa1:[],
-      sa2:[]
+    'Primary 6 Chinese': {
+      wa1: [
+        { title: 'P6 Chinese WA1 2025  ACSJ Paper', fileKey: 'papers/primary/2025/p6-chinese/p6-chinese-wa1-2025-acsj-exam-papers.pdf' },
+        { title: 'P6 Chinese WA1 2025  Catholic High Paper', fileKey: 'papers/primary/2025/p6-chinese/p6-chinese-wa1-2025-catholichigh-exam-papers.pdf' },
+        { title: 'P6 Chinese WA1 2025  Raffles Paper', fileKey: 'papers/primary/2025/p6-chinese/p6-chinese-wa1-2025-raffles-exam-papers.pdf' },
+        { title: 'P6 Chinese WA1 2025  Rosyth Paper', fileKey: 'papers/primary/2025/p6-chinese/p6-chinese-wa1-2025-rosyth-exam-papers.pdf' }
+      ],
+      wa2: [
+        { title: 'P6 Chinese WA2 2025  Catholic High Paper', fileKey: 'papers/primary/2025/p6-chinese/p6-chinese-wa2-2025-catholichigh-exam-papers.pdf' },
+        { title: 'P6 Chinese WA2 2025  Raffles Paper', fileKey: 'papers/primary/2025/p6-chinese/p6-chinese-wa2-2025-raffles-exam-papers.pdf' },
+        { title: 'P6 Chinese WA2 2025  Rosyth Paper', fileKey: 'papers/primary/2025/p6-chinese/p6-chinese-wa2-2025-rosyth-exam-papers.pdf' },
+        { title: 'P6 Chinese WA2 2025  St Nicholas Paper', fileKey: 'papers/primary/2025/p6-chinese/p6-chinese-wa2-2025-stnicholas-exam-papers.pdf' }
+      ],
+      sa1: [
+        { title: 'P6 Chinese SA1 2025  Nanyang Paper', fileKey: 'papers/primary/2025/p6-chinese/p6-chinese-sa1-2025-nanyang-exam-papers.pdf' }
+      ],
+      sa2: [],
+      prelim: [
+        { title: 'P6 Chinese Prelim 2025  ACSJ Paper', fileKey: 'papers/primary/2025/p6-chinese/p6-chinese-prelim-2025-acsj-exam-papers.pdf' },
+        { title: 'P6 Chinese Prelim 2025  Ai Tong Paper', fileKey: 'papers/primary/2025/p6-chinese/p6-chinese-prelim-2025-aitong-exam-papers.pdf' },
+        { title: 'P6 Chinese Prelim 2025  Catholic High Paper', fileKey: 'papers/primary/2025/p6-chinese/p6-chinese-prelim-2025-catholichigh-exam-papers.pdf' },
+        { title: 'P6 Chinese Prelim 2025  Henry Park Paper', fileKey: 'papers/primary/2025/p6-chinese/p6-chinese-prelim-2025-henrypark-exam-papers.pdf' },
+        { title: 'P6 Chinese Prelim 2025  MGS Paper', fileKey: 'papers/primary/2025/p6-chinese/p6-chinese-prelim-2025-mgs-exam-papers.pdf' },
+        { title: 'P6 Chinese Prelim 2025  Nan Hua Paper', fileKey: 'papers/primary/2025/p6-chinese/p6-chinese-prelim-2025-nanhua-exam-papers.pdf' },
+        { title: 'P6 Chinese Prelim 2025  Nanyang Paper', fileKey: 'papers/primary/2025/p6-chinese/p6-chinese-prelim-2025-nanyang-exam-papers.pdf' },
+        { title: 'P6 Chinese Prelim 2025  PLMGS Paper', fileKey: 'papers/primary/2025/p6-chinese/p6-chinese-prelim-2025-plmgs-exam-papers.pdf' },
+        { title: 'P6 Chinese Prelim 2025  Raffles Paper', fileKey: 'papers/primary/2025/p6-chinese/p6-chinese-prelim-2025-raffles-exam-papers.pdf' },
+        { title: 'P6 Chinese Prelim 2025  Red Swastika Paper', fileKey: 'papers/primary/2025/p6-chinese/p6-chinese-prelim-2025-redswastika-exam-papers.pdf' },
+        { title: 'P6 Chinese Prelim 2025  Rosyth Paper', fileKey: 'papers/primary/2025/p6-chinese/p6-chinese-prelim-2025-rosyth-exam-papers.pdf' },
+        { title: 'P6 Chinese Prelim 2025  St Nicholas Paper', fileKey: 'papers/primary/2025/p6-chinese/p6-chinese-prelim-2025-stnicholas-exam-papers.pdf' },
+        { title: 'P6 Chinese Prelim 2025  Tao Nan Paper', fileKey: 'papers/primary/2025/p6-chinese/p6-chinese-prelim-2025-taonan-exam-papers.pdf' }
+      ]
     },
-    'P5 English': {
+    'Primary 5 English': {
       wa1: [
         { title: 'Primary 5 English 2024 WA1 - ACS', downloadUrl: 'https://drive.google.com/uc?export=download&id=16ppUT8RlDpjOOBV13AkBVU1qJbvg7EI6' },
         { title: 'Primary 5 English 2024 WA1 - Catholic High', downloadUrl: 'https://drive.google.com/uc?export=download&id=1ecxALjfbBz_9Q-U_ZQe7BXQxr93zTwbn' },
@@ -65,7 +133,7 @@ export const testPapers = {
         { title: 'Primary 5 English 2024 SA2 - Tao Nan', downloadUrl: 'https://drive.google.com/uc?export=download&id=1TT5pt3SCXoVaKimgPXDlVUVLBQnWtLKU' }
       ]
     },
-    'P5 Math': {
+    'Primary 5 Math': {
       wa1: [
 
       ],
@@ -73,11 +141,11 @@ export const testPapers = {
         
       ]
     },
-    'P5 Science': {
+    'Primary 5 Science': {
       wa1: [],
       sa2:[]
     },
-    'P5 Chinese':{
+    'Primary 5 Chinese':{
       wa1:[],
       sa2:[]
     }
