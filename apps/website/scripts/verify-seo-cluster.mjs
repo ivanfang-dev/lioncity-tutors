@@ -7,8 +7,36 @@
  * Every assertion here reads rendered HTML from localhost:3000.
  */
 import { execSync } from 'node:child_process';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { HUBS, SPOKES } from '../src/lib/seo/clusters.mjs';
 import { getBreadcrumbs } from '../src/lib/seo/links.mjs';
+
+const SITE_URL = 'https://www.lioncitytutors.com';
+
+/**
+ * Every public route, discovered straight from the filesystem convention
+ * (a directory with a page.jsx is a route) rather than hardcoded — so this
+ * list can't drift from what actually ships. /ops is excluded (internal,
+ * disallowed in robots.txt); route handlers (route.js) aren't page.jsx so
+ * API routes are naturally excluded too.
+ */
+function discoverRoutes(dir, base = '') {
+  const routes = [];
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    if (entry.name.startsWith('_') || entry.name.startsWith('.')) continue;
+    if (entry.isDirectory()) {
+      if (entry.name === 'ops' || entry.name.startsWith('[')) continue;
+      routes.push(...discoverRoutes(path.join(dir, entry.name), `${base}/${entry.name}`));
+    } else if (entry.name === 'page.jsx') {
+      routes.push(base || '/');
+    }
+  }
+  return routes;
+}
+const APP_DIR = path.join(path.dirname(fileURLToPath(import.meta.url)), '../src/app');
+const allRoutes = discoverRoutes(APP_DIR).sort();
 
 const get = (url) =>
   status(url) === '200'
@@ -35,6 +63,24 @@ const problems = [];
 const clusterDupes = [];
 const linkCounts = [];
 const rows = [];
+const pageLinksByUrl = new Map();
+
+/** og:image presence, and that the image itself resolves. Canonical host
+ * consistency (must be the www host, matching every canonical on the site). */
+function checkOgImageAndCanonical(label, html, problems) {
+  const img = (html.match(/<meta property="og:image" content="([^"]*)"/) || [])[1];
+  if (!img) {
+    problems.push(`${label}: no og:image`);
+  } else {
+    const imgPath = img.startsWith(SITE_URL) ? img.slice(SITE_URL.length) : img;
+    const code = status(imgPath);
+    if (code !== '200') problems.push(`${label}: og:image ${img} returned ${code}`);
+  }
+
+  const canonical = (html.match(/<link rel="canonical" href="([^"]*)"/) || [])[1];
+  if (!canonical) problems.push(`${label}: no canonical`);
+  else if (!canonical.startsWith(SITE_URL)) problems.push(`${label}: canonical is not www host: ${canonical}`);
+}
 
 const all = [
   ...Object.values(HUBS).map((h) => ({ ...h, kind: 'hub' })),
@@ -51,6 +97,9 @@ for (const page of all) {
   const a = anchors(html);
   const internal = new Set(a);
   const blocks = ldBlocks(html);
+  pageLinksByUrl.set(page.url, internal);
+
+  checkOgImageAndCanonical(page.slug, html, problems);
 
   // 1. JSON-LD must be present and every block must parse.
   let types = [];
@@ -128,6 +177,64 @@ for (const page of all) {
   rows.push({ slug: page.slug, kind: page.kind, titleLen, descLen, links: internal.size, ld: blocks.length, types: types.join('+') });
 }
 
+// Hub -> spoke reciprocity. The loop above only checks spoke -> hub, which is
+// exactly why a spoke like economics-tuition could pass every check while
+// being a complete orphan: nothing actually links back to it from its hub.
+for (const spoke of Object.values(SPOKES)) {
+  const hub = HUBS[spoke.hub];
+  if (!hub) continue;
+  const hubLinks = pageLinksByUrl.get(hub.url);
+  if (hubLinks && !hubLinks.has(spoke.url)) {
+    problems.push(`${spoke.slug}: hub ${hub.slug} does not link back to this spoke`);
+  }
+}
+
+// Non-registry pages: a second, lighter pass. These pages don't carry the
+// full cluster-page contract (no breadcrumb-depth or dead-end checks), but
+// still need the baseline: a real title, a description, a canonical, and
+// exactly one <h1> — the deficiencies the original audit found were almost
+// entirely on pages this script never looked at.
+const clusterUrls = new Set(all.map((x) => x.url));
+const nonRegistryRoutes = allRoutes.filter((r) => !clusterUrls.has(r));
+
+for (const route of nonRegistryRoutes) {
+  const html = get(route);
+  if (!html) {
+    problems.push(`${route}: did not return 200`);
+    continue;
+  }
+
+  checkOgImageAndCanonical(route, html, problems);
+
+  const title = decode((html.match(/<title>([^<]*)<\/title>/) || [])[1] || '');
+  if (!title) problems.push(`${route}: no <title>`);
+  else if (title.length >= 60) problems.push(`${route}: title ${title.length} chars (>=60): ${title}`);
+
+  const desc = decode((html.match(/<meta name="description" content="([^"]*)"/) || [])[1] || '');
+  if (!desc) problems.push(`${route}: no meta description`);
+
+  const h1Count = (html.match(/<h1\b/g) || []).length;
+  if (h1Count !== 1) problems.push(`${route}: ${h1Count} <h1> elements (want exactly 1)`);
+}
+
+// Sitemap parity: every discovered route should appear exactly once, and
+// nothing else should be in there (no stale entries, no /ops, no /not-found).
+const sitemapXml = get('/sitemap.xml');
+if (!sitemapXml) {
+  problems.push('sitemap.xml did not return 200');
+} else {
+  const sitemapPaths = [...sitemapXml.matchAll(/<loc>([^<]+)<\/loc>/g)]
+    .map((m) => m[1].startsWith(SITE_URL) ? m[1].slice(SITE_URL.length) || '/' : m[1]);
+  const sitemapSet = new Set(sitemapPaths);
+  const routeSet = new Set(allRoutes);
+
+  for (const r of allRoutes) if (!sitemapSet.has(r)) problems.push(`sitemap: missing route ${r}`);
+  for (const s of sitemapSet) if (!routeSet.has(s)) problems.push(`sitemap: stale/extra entry ${s}`);
+
+  const dupes = sitemapPaths.filter((p, i) => sitemapPaths.indexOf(p) !== i);
+  if (dupes.length) problems.push(`sitemap: duplicate entries ${[...new Set(dupes)].join(', ')}`);
+}
+
 // Duplicate links to another CLUSTER page, ignoring site chrome. Nav, footer
 // and CTA links repeat on every page by design, and some of them (/, /blog,
 // /tuition-rates, /free-test-papers, /free-notes) are cluster pages
@@ -135,7 +242,6 @@ for (const page of all) {
 // the fewest times a url appears on any page: a page that links it more than
 // that is adding one in-content link, which is fine; more than one is worth a
 // look.
-const clusterUrls = new Set(all.map((x) => x.url));
 const chromeBaseline = (url) => Math.min(...linkCounts.map((p) => p.counts[url] ?? 0));
 
 for (const { slug, counts } of linkCounts) {
@@ -149,7 +255,7 @@ console.log('page'.padEnd(28), 'kind '.padEnd(6), 'title', 'desc', 'links', 'ld'
 for (const r of rows)
   console.log(r.slug.padEnd(28), r.kind.padEnd(6), String(r.titleLen).padStart(5), String(r.descLen).padStart(4), String(r.links).padStart(5), String(r.ld).padStart(2), r.types);
 
-console.log(`\n${rows.length} cluster pages checked`);
+console.log(`\n${rows.length} cluster pages checked, ${nonRegistryRoutes.length} non-registry pages checked, ${allRoutes.length} routes total (sitemap parity + og:image + canonical host checked across all of them)`);
 if (clusterDupes.length) {
   console.log(`\nrepeated cluster links (in-content link plus RelatedGuides — review, not necessarily wrong):`);
   for (const d of clusterDupes) console.log('  -', d);
