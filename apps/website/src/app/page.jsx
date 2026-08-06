@@ -2,7 +2,7 @@ import { MATCH_TIME } from '@/data/promises';
 // app/page.jsx
 export const metadata = {
   title: 'LionCity Tutors – MOE-Certified PSLE, O-Level & JC Tutors',
-  description: 'LionCity Tutors connects Singapore parents with qualified tutors for PSLE, O-Level & JC. 100% free for parents.',
+  description: "LionCity Tutors hand-matches Singapore parents with vetted PSLE, O-Level and JC tutors, usually within 6 hours — 100% free, with no agency fee, ever paid.",
   keywords: [
     'home tuition singapore',
     'private tutor singapore',

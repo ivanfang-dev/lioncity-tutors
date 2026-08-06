@@ -3,7 +3,7 @@ import GuideSchema from '@/components/seo/GuideSchema';
 
 export const metadata = {
     title: 'Terms and Conditions for Clients | LionCity Tutors',
-    description: 'Terms and Conditions',
+    description: "Terms and conditions governing parents and students using LionCity Tutors' free tutor-matching service, covering requests, fees and expectations we set.",
     openGraph: {
       images: [DEFAULT_OG_IMAGE],
       title: 'Terms and Conditions for Clients | LionCity Tutors',

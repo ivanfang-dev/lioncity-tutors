@@ -2,12 +2,12 @@ import Link from 'next/link';
 import { DEFAULT_OG_IMAGE } from '@/lib/seo/openGraph';
 
 export const metadata = {
-  title: '404 Not Found | My Tuition Site',
-  description: 'Sorry, the page you are looking for does not exist. Return to the homepage of My Tuition Site.',
+  title: '404 Not Found | LionCity Tutors',
+  description: "Sorry, the page you're looking for doesn't exist or may have moved. Head back to the LionCity Tutors homepage to find a tutor or browse our free guides.",
   openGraph: {
     images: [DEFAULT_OG_IMAGE],
-    title: '404 Not Found | My Tuition Site',
-    description: 'Sorry, the page you are looking for does not exist. Return to the homepage of My Tuition Site.',
+    title: '404 Not Found | LionCity Tutors',
+    description: "Sorry, the page you're looking for doesn't exist or may have moved. Head back to the LionCity Tutors homepage to find a tutor or browse our free guides.",
     url: 'https://www.lioncitytutors.com/404',
     type: 'website',
   },

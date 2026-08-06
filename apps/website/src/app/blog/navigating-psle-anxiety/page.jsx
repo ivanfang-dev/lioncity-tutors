@@ -3,8 +3,8 @@ import { DEFAULT_OG_IMAGE } from '@/lib/seo/openGraph';
 import GuideSchema from '@/components/seo/GuideSchema';
 
 export const metadata = {
-  title: 'Navigating PSLE Anxiety: A Parent\'s Guide to Supporting Your Child | LionCity Tutors',
-  description: 'The PSLE is stressing your child out? Learn how to manage the pressure, support your child\'s mental well-being, and improve academic performance without the burnout.',
+  title: 'Navigating PSLE Anxiety | LionCity Tutors',
+  description: "The PSLE is stressing your child out? How to manage the pressure, support your child's mental well-being, and improve performance without the burnout.",
   keywords: [
     'PSLE anxiety', 
     'manage PSLE stress', 
@@ -36,8 +36,8 @@ export default function NavigatingPSLEAnxiety() {
         ]}
         article={{
           url: '/blog/navigating-psle-anxiety',
-          headline: "Navigating PSLE Anxiety: A Parent's Guide to Supporting Your Child | LionCity Tutors",
-          description: "The PSLE is stressing your child out? Learn how to manage the pressure, support your child's mental well-being, and improve academic performance without the burnout.",
+          headline: 'Navigating PSLE Anxiety | LionCity Tutors',
+          description: "The PSLE is stressing your child out? How to manage the pressure, support your child's mental well-being, and improve performance without the burnout.",
           datePublished: '2025-09-16',
           dateModified: '2026-08-05',
         }}

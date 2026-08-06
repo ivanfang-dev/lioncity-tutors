@@ -3,8 +3,8 @@ import { DEFAULT_OG_IMAGE } from '@/lib/seo/openGraph';
 import GuideSchema from '@/components/seo/GuideSchema';
 
 export const metadata = {
-  title: 'Child Struggling in School? A Parent\'s Guide to Pinpointing Learning Gaps | LionCity Tutors',
-  description: 'Is your child\'s grades slipping? Learn how to identify specific learning gaps in PSLE English, Secondary A. Maths, and more with our diagnostic guide for Singapore parents.',
+  title: 'Pinpointing Your Child\'s Learning Gaps | LionCity Tutors',
+  description: "Grades slipping? A diagnostic guide to identifying the specific learning gaps behind it — PSLE English, Secondary A Maths and more — for Singapore parents.",
   keywords: [
     'child struggling in school', 
     'pinpoint learning gaps', 
@@ -36,8 +36,8 @@ export default function PinpointingLearningGaps() {
         ]}
         article={{
           url: '/blog/pinpointing-learning-gaps',
-          headline: "Child Struggling in School? A Parent's Guide to Pinpointing Learning Gaps | LionCity Tutors",
-          description: "Is your child's grades slipping? Learn how to identify specific learning gaps in PSLE English, Secondary A. Maths, and more with our diagnostic guide for Singapore parents.",
+          headline: "Pinpointing Your Child's Learning Gaps | LionCity Tutors",
+          description: "Grades slipping? A diagnostic guide to identifying the specific learning gaps behind it — PSLE English, Secondary A Maths and more — for Singapore parents.",
           datePublished: '2025-09-16',
           dateModified: '2026-08-05',
         }}

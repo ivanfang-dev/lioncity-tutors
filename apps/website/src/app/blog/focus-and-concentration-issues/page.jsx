@@ -3,8 +3,8 @@ import { DEFAULT_OG_IMAGE } from '@/lib/seo/openGraph';
 import GuideSchema from '@/components/seo/GuideSchema';
 
 export const metadata = {
-  title: 'Child Can\'t Focus on Studies? Actionable Strategies for Singapore Parents | LionCity Tutors',
-  description: 'Is your child smart but easily distracted? Learn why children struggle with focus and discover expert-backed strategies for creating a better study environment at home.',
+  title: 'Child Can\'t Focus on Studies? | LionCity Tutors',
+  description: 'Is your child smart but easily distracted? Learn why children struggle with focus, and the expert-backed strategies for a better home study environment.',
   keywords: [
     'child cannot focus', 
     'student concentration issues', 
@@ -36,8 +36,8 @@ export default function FocusAndConcentration() {
         ]}
         article={{
           url: '/blog/focus-and-concentration-issues',
-          headline: "Child Can't Focus on Studies? Actionable Strategies for Singapore Parents | LionCity Tutors",
-          description: 'Is your child smart but easily distracted? Learn why children struggle with focus and discover expert-backed strategies for creating a better study environment at home.',
+          headline: "Child Can't Focus on Studies? | LionCity Tutors",
+          description: 'Is your child smart but easily distracted? Learn why children struggle with focus, and the expert-backed strategies for a better home study environment.',
           datePublished: '2025-09-16',
           dateModified: '2026-08-05',
         }}

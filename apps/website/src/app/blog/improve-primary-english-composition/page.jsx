@@ -6,8 +6,8 @@ import GuideSchema from '@/components/seo/GuideSchema';
 
 // === CRITICAL SEO METADATA ADDED HERE ===
 export const metadata = {
-  title: 'Child Struggling with English Composition? 5 Signs & Fixes | LionCity Tutors',
-  description: 'Is your child weak in English writing? Discover 5 common signs of composition struggles in Singapore primary school students and learn practical tips to help them improve.',
+  title: 'English Composition Struggles? 5 Fixes | LionCity Tutors',
+  description: 'Is your child weak in English writing? Five signs of composition struggles in Singapore primary school students, and practical tips to help them improve.',
   keywords: [
     'improve english composition',
     'primary school english composition tips',
@@ -42,8 +42,8 @@ export default function ImproveEnglishComposition() {
       ]}
       article={{
         url: '/blog/improve-primary-english-composition',
-        headline: 'Child Struggling with English Composition? 5 Signs & Fixes | LionCity Tutors',
-        description: 'Is your child weak in English writing? Discover 5 common signs of composition struggles in Singapore primary school students and learn practical tips to help them improve.',
+        headline: 'English Composition Struggles? 5 Fixes | LionCity Tutors',
+        description: 'Is your child weak in English writing? Five signs of composition struggles in Singapore primary school students, and practical tips to help them improve.',
         datePublished: '2025-09-16',
         dateModified: '2026-08-05',
       }}

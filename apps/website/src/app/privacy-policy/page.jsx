@@ -4,7 +4,7 @@ import GuideSchema from '@/components/seo/GuideSchema';
 
 export const metadata = {
     title: 'Privacy Policy | LionCity Tutors',
-    description: 'Privacy Policy',
+    description: "How LionCity Tutors collects, uses and protects your personal data when you request a tutor, register as a tutor, or browse our website in Singapore today.",
     openGraph: {
       images: [DEFAULT_OG_IMAGE],
       title: 'Privacy Policy | LionCity Tutors',
