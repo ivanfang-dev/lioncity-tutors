@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { DEFAULT_OG_IMAGE } from '@/lib/seo/openGraph';
+import GuideSchema from '@/components/seo/GuideSchema';
 
 // === CRITICAL SEO METADATA ADDED HERE ===
 export const metadata = {
@@ -20,8 +21,11 @@ export const metadata = {
     images: [DEFAULT_OG_IMAGE],
     title: 'Child Struggling with English Composition? 5 Signs & Fixes | LionCity Tutors',
     description: 'A practical guide for parents to identify and address common writing weaknesses in their children, from "blank page paralysis" to weak story structure.',
-    url: 'https://www.lioncitytutors.com/blog/how-to-improve-english-composition',
+    url: 'https://www.lioncitytutors.com/blog/improve-primary-english-composition',
     type: 'article',
+  },
+  alternates: {
+    canonical: 'https://www.lioncitytutors.com/blog/improve-primary-english-composition',
   },
 };
 // === END OF METADATA ===
@@ -29,6 +33,21 @@ export const metadata = {
 
 export default function ImproveEnglishComposition() {
   return (
+    <>
+    <GuideSchema
+      breadcrumbs={[
+        { name: 'Home', url: '/' },
+        { name: 'Blog', url: '/blog' },
+        { name: 'Improve Primary English Composition', url: '/blog/improve-primary-english-composition' },
+      ]}
+      article={{
+        url: '/blog/improve-primary-english-composition',
+        headline: 'Child Struggling with English Composition? 5 Signs & Fixes | LionCity Tutors',
+        description: 'Is your child weak in English writing? Discover 5 common signs of composition struggles in Singapore primary school students and learn practical tips to help them improve.',
+        datePublished: '2025-09-16',
+        dateModified: '2026-08-05',
+      }}
+    />
     <main className="px-4 sm:px-6 py-12 bg-gray-50">
       <article className="max-w-3xl mx-auto bg-white p-6 sm:p-10 rounded-lg shadow-md">
         
@@ -124,5 +143,6 @@ export default function ImproveEnglishComposition() {
 
       </article>
     </main>
+    </>
   );
 }

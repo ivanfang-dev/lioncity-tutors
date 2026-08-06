@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { DEFAULT_OG_IMAGE } from '@/lib/seo/openGraph';
+import GuideSchema from '@/components/seo/GuideSchema';
 
 export const metadata = {
   title: 'Benefits of Private Tuition in Singapore | LionCity Tutors',
@@ -17,6 +18,20 @@ export const metadata = {
 export default function BenefitsOfPrivateTuition() {
   return (
     <>
+    <GuideSchema
+      breadcrumbs={[
+        { name: 'Home', url: '/' },
+        { name: 'Blog', url: '/blog' },
+        { name: 'Benefits of Private Tuition in Singapore', url: '/blog/benefits-of-private-tuition' },
+      ]}
+      article={{
+        url: '/blog/benefits-of-private-tuition',
+        headline: 'Benefits of Private Tuition in Singapore | LionCity Tutors',
+        description: "Discover the proven benefits of private tuition in Singapore's competitive education landscape. From personalized learning to PSLE preparation strategies.",
+        datePublished: '2026-07-27',
+        dateModified: '2026-08-05',
+      }}
+    />
     <main className="px-4 py-12 max-w-3xl mx-auto">
       <h1 className="text-3xl font-bold text-blue-800 mb-4">Benefits of Private Tuition in Singapore's Education Landscape</h1>
       <p className="text-sm text-gray-500 mb-8">Updated May 16, 2026 • 5 min read</p>

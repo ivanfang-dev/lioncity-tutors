@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { DEFAULT_OG_IMAGE } from '@/lib/seo/openGraph';
+import GuideSchema from '@/components/seo/GuideSchema';
 
 export const metadata = {
   title: 'What to Look for in a Private Tutor | LionCity Tutors',
@@ -26,6 +27,20 @@ export const metadata = {
 export default function WhatToLookForInATutor() {
   return (
     <>
+    <GuideSchema
+      breadcrumbs={[
+        { name: 'Home', url: '/' },
+        { name: 'Blog', url: '/blog' },
+        { name: 'What to Look for in a Private Tutor', url: '/blog/what-to-look-for-in-a-tutor' },
+      ]}
+      article={{
+        url: '/blog/what-to-look-for-in-a-tutor',
+        headline: 'What to Look for in a Private Tutor | LionCity Tutors',
+        description: 'How to judge a private tutor in Singapore: qualifications, teaching track record, communication style and the red flags to watch for before you commit.',
+        datePublished: '2026-07-27',
+        dateModified: '2026-08-05',
+      }}
+    />
     <main className="px-4 py-12 max-w-3xl mx-auto">
       <h1 className="text-3xl font-bold text-blue-800 mb-4">What to Look for in a Private Tutor in Singapore</h1>
       <p className="text-sm text-gray-500 mb-8">Updated May 12, 2026 • 6 min read</p>

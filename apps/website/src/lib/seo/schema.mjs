@@ -39,9 +39,14 @@ export function buildBreadcrumbSchema(slug) {
   return buildBreadcrumbTrail(getBreadcrumbs(slug));
 }
 
-export function buildArticleSchema({ slug, headline, description, datePublished, dateModified }) {
-  const page = getPage(slug);
-  if (!page) return null;
+/**
+ * `url` is an escape hatch for pages outside the cluster registry (e.g. blog
+ * posts, which are editorial content rather than exam-cluster pages) — it
+ * wins over a registry lookup when both are given.
+ */
+export function buildArticleSchema({ slug, url, headline, description, datePublished, dateModified }) {
+  const pageUrl = url ?? getPage(slug)?.url;
+  if (!pageUrl) return null;
   return {
     '@context': 'https://schema.org',
     '@type': 'Article',
@@ -49,7 +54,7 @@ export function buildArticleSchema({ slug, headline, description, datePublished,
     description,
     datePublished,
     dateModified,
-    mainEntityOfPage: { '@type': 'WebPage', '@id': absolute(page.url) },
+    mainEntityOfPage: { '@type': 'WebPage', '@id': absolute(pageUrl) },
     author: ORG,
     publisher: ORG,
   };
@@ -73,18 +78,21 @@ export function buildFaqSchema(faqs) {
  * subject it teaches. Course would be wrong: nobody enrols in a folder of past
  * papers. `items` are the on-page groupings, each linking to its own section.
  *
- * @param {{slug: string, name: string, description: string,
+ * `url` is an escape hatch for pages outside the cluster registry — it wins
+ * over a registry lookup when both are given.
+ *
+ * @param {{slug: string, url?: string, name: string, description: string,
  *          items?: Array<{name: string, url: string}>}} args
  */
-export function buildCollectionPageSchema({ slug, name, description, items }) {
-  const page = getPage(slug);
-  if (!page) return null;
+export function buildCollectionPageSchema({ slug, url, name, description, items }) {
+  const pageUrl = url ?? getPage(slug)?.url;
+  if (!pageUrl) return null;
   const schema = {
     '@context': 'https://schema.org',
     '@type': 'CollectionPage',
     name,
     description,
-    url: absolute(page.url),
+    url: absolute(pageUrl),
     publisher: ORG,
   };
   if (items && items.length > 0) {

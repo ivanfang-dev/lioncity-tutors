@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { DEFAULT_OG_IMAGE } from '@/lib/seo/openGraph';
+import GuideSchema from '@/components/seo/GuideSchema';
 
 export const metadata = {
   title: 'Child Struggling in School? A Parent\'s Guide to Pinpointing Learning Gaps | LionCity Tutors',
@@ -27,6 +28,20 @@ export const metadata = {
 export default function PinpointingLearningGaps() {
   return (
     <>
+      <GuideSchema
+        breadcrumbs={[
+          { name: 'Home', url: '/' },
+          { name: 'Blog', url: '/blog' },
+          { name: "Pinpointing Your Child's Learning Gaps", url: '/blog/pinpointing-learning-gaps' },
+        ]}
+        article={{
+          url: '/blog/pinpointing-learning-gaps',
+          headline: "Child Struggling in School? A Parent's Guide to Pinpointing Learning Gaps | LionCity Tutors",
+          description: "Is your child's grades slipping? Learn how to identify specific learning gaps in PSLE English, Secondary A. Maths, and more with our diagnostic guide for Singapore parents.",
+          datePublished: '2025-09-16',
+          dateModified: '2026-08-05',
+        }}
+      />
       <main className="px-4 py-12 max-w-3xl mx-auto">
         <h1 className="text-3xl font-bold text-blue-800 mb-4">The Parent's Diagnostic Toolkit: Find Out Exactly Why Your Child is Struggling in School</h1>
         <p className="text-sm text-gray-500 mb-8">Updated July 5, 2026 • 9 min read</p>

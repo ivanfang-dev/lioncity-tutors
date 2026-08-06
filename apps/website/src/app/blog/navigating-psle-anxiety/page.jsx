@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { DEFAULT_OG_IMAGE } from '@/lib/seo/openGraph';
+import GuideSchema from '@/components/seo/GuideSchema';
 
 export const metadata = {
   title: 'Navigating PSLE Anxiety: A Parent\'s Guide to Supporting Your Child | LionCity Tutors',
@@ -27,6 +28,20 @@ export const metadata = {
 export default function NavigatingPSLEAnxiety() {
   return (
     <>
+      <GuideSchema
+        breadcrumbs={[
+          { name: 'Home', url: '/' },
+          { name: 'Blog', url: '/blog' },
+          { name: 'Navigating PSLE Anxiety', url: '/blog/navigating-psle-anxiety' },
+        ]}
+        article={{
+          url: '/blog/navigating-psle-anxiety',
+          headline: "Navigating PSLE Anxiety: A Parent's Guide to Supporting Your Child | LionCity Tutors",
+          description: "The PSLE is stressing your child out? Learn how to manage the pressure, support your child's mental well-being, and improve academic performance without the burnout.",
+          datePublished: '2025-09-16',
+          dateModified: '2026-08-05',
+        }}
+      />
       <main className="px-4 py-12 max-w-3xl mx-auto">
         <h1 className="text-3xl font-bold text-blue-800 mb-4">Navigating PSLE Anxiety: How to Support Your Child's Mental Well-being and Academic Performance</h1>
         <p className="text-sm text-gray-500 mb-8">Updated July 4, 2026 • 8 min read</p>

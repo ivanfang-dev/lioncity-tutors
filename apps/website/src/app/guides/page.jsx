@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { guidesData } from '@/data/guidesData';
 import { Button } from '@/components/ui/button';
 import { DEFAULT_OG_IMAGE } from '@/lib/seo/openGraph';
+import GuideSchema from '@/components/seo/GuideSchema';
 
 export const metadata = {
   title: 'Parent & Student Exam Guides | LionCity Tutors Singapore',
@@ -56,6 +57,17 @@ const GuideSection = ({ title, level, sectionDescription }) => {
 export default function GuidesHubPage() {
   return (
     <>
+      <GuideSchema
+        breadcrumbs={[
+          { name: 'Home', url: '/' },
+          { name: 'Exam Guides', url: '/guides' },
+        ]}
+        collection={{
+          url: '/guides',
+          name: 'Parent & Student Exam Guides',
+          description: 'Your central hub for all our comprehensive exam guides. Find in-depth resources for PSLE, O-Level, A-Level, and parenting strategies.',
+        }}
+      />
       <main className="bg-gray-50">
         {/* Hero Section */}
         <div className="text-center py-16 px-4 bg-white">

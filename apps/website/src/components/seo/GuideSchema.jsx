@@ -14,9 +14,11 @@ import {
  * @param {string} [slug] - registry slug; omit for a page outside the registry
  * @param {Array<{name: string, url: string}>} [breadcrumbs] - explicit trail,
  *   for pages with no registry entry to derive one from
- * @param {object} [article] - { headline, description, datePublished, dateModified }
+ * @param {object} [article] - { url, headline, description, datePublished, dateModified };
+ *   `url` is required when the page has no registry slug (e.g. blog posts)
  * @param {object} [course] - { name, description, educationalLevel } for subject pages
- * @param {object} [collection] - { name, description, items } for resource pages
+ * @param {object} [collection] - { url, name, description, items } for resource pages;
+ *   `url` is required when the page has no registry slug
  * @param {object} [service] - { name, description, offers } for pages about price
  * @param {Array<{question: string, answer: string}>} [faqs]
  */

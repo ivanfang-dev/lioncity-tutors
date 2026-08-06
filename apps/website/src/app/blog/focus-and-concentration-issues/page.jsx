@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { DEFAULT_OG_IMAGE } from '@/lib/seo/openGraph';
+import GuideSchema from '@/components/seo/GuideSchema';
 
 export const metadata = {
   title: 'Child Can\'t Focus on Studies? Actionable Strategies for Singapore Parents | LionCity Tutors',
@@ -27,6 +28,20 @@ export const metadata = {
 export default function FocusAndConcentration() {
   return (
     <>
+      <GuideSchema
+        breadcrumbs={[
+          { name: 'Home', url: '/' },
+          { name: 'Blog', url: '/blog' },
+          { name: 'Focus and Concentration Issues', url: '/blog/focus-and-concentration-issues' },
+        ]}
+        article={{
+          url: '/blog/focus-and-concentration-issues',
+          headline: "Child Can't Focus on Studies? Actionable Strategies for Singapore Parents | LionCity Tutors",
+          description: 'Is your child smart but easily distracted? Learn why children struggle with focus and discover expert-backed strategies for creating a better study environment at home.',
+          datePublished: '2025-09-16',
+          dateModified: '2026-08-05',
+        }}
+      />
       <main className="px-4 py-12 max-w-3xl mx-auto">
         <h1 className="text-3xl font-bold text-blue-800 mb-4">Focus is a Muscle: A Parent's Guide to Training Your Child's Concentration</h1>
         <p className="text-sm text-gray-500 mb-8">Updated July 8, 2026 • 10 min read</p>

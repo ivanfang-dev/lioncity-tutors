@@ -1,4 +1,6 @@
 import { DEFAULT_OG_IMAGE } from '@/lib/seo/openGraph';
+import GuideSchema from '@/components/seo/GuideSchema';
+
 export const metadata = {
     title: 'Terms and Conditions for Tutors | LionCity Tutors',
     description: 'Terms and Conditions for Tutors',
@@ -16,6 +18,13 @@ export const metadata = {
 
 export default function TermsAndConditionsForTutors() {
     return (
+        <>
+        <GuideSchema
+          breadcrumbs={[
+            { name: 'Home', url: '/' },
+            { name: 'Terms and Conditions for Tutors', url: '/terms-and-conditions-for-tutors' },
+          ]}
+        />
         <main>
             <div className="max-w-4xl mx-auto px-6 py-16">
                 <h1 className="text-4xl font-bold text-center text-blue-700 mb-7">Terms and Conditions for Tutors</h1>
@@ -177,5 +186,6 @@ export default function TermsAndConditionsForTutors() {
                 </p>
             </div>
         </main>
+        </>
     );
 }

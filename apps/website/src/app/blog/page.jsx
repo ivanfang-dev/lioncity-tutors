@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
+import GuideSchema from '@/components/seo/GuideSchema';
 
 const blogPosts = [
     {
@@ -274,6 +275,17 @@ export default function Blog() {
 
   return (
     <>
+    <GuideSchema
+      breadcrumbs={[
+        { name: 'Home', url: '/' },
+        { name: 'Blog', url: '/blog' },
+      ]}
+      collection={{
+        url: '/blog',
+        name: 'LionCity Tutors Blog',
+        description: 'Expert insights, study guides, and educational resources to help students excel in Singapore\'s education system.',
+      }}
+    />
     <main className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50/30">
       {/* Hero Section */}
       <div className="bg-white border-b border-slate-200">

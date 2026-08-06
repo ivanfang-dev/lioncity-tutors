@@ -1,5 +1,6 @@
 import React from 'react';
 import { DEFAULT_OG_IMAGE } from '@/lib/seo/openGraph';
+import GuideSchema from '@/components/seo/GuideSchema';
 
 export const metadata = {
     title: 'Privacy Policy | LionCity Tutors',
@@ -18,6 +19,13 @@ export const metadata = {
 
 export default function PrivacyPolicy(){
     return (
+        <>
+        <GuideSchema
+          breadcrumbs={[
+            { name: 'Home', url: '/' },
+            { name: 'Privacy Policy', url: '/privacy-policy' },
+          ]}
+        />
         <main>
             <div className="max-w-4xl mx-auto px-6 py-16">
             <h1 className="text-4xl font-bold text-center text-blue-700 mb-7">Privacy Policy</h1>
@@ -37,5 +45,6 @@ export default function PrivacyPolicy(){
                 </p>
             </div>
         </main>
+        </>
     );
 }
