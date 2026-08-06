@@ -56,9 +56,7 @@ export default function SecondarySchoolTuition() {
               alt="Secondary school tuition in Singapore - Students learning with experienced tutors"
               fill
               className="object-cover"
-              sizes="100vw"
-              placeholder="blur"
-              blurDataURL="/secondary-tuition.webp"
+              sizes="(max-width: 768px) 100vw, 768px"
               priority
             />
           </div>

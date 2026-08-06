@@ -6,9 +6,10 @@ import { gsap } from "gsap";
 import { SplitText } from "gsap/SplitText";
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
-import { Button } from '@/components/ui/button'; 
+import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 import { ArrowDown } from 'lucide-react';
+import Image from 'next/image';
 
 // Register GSAP plugins only on the client side
 if (typeof window !== 'undefined') {
@@ -31,8 +32,8 @@ export default function HowItWorksSection({ formRef }) {
       bgColor: "bg-slate-100", 
       textColor: "text-white",
       accentColor: "text-white",
-      bgImage: "url('/combined-chemistry-biology.webp')",
-      bgOverlay: "bg-black/40"       
+      image: '/combined-chemistry-biology.webp',
+      bgOverlay: "bg-black/40"
     },
     { 
       number: "02", 
@@ -46,7 +47,7 @@ export default function HowItWorksSection({ formRef }) {
       bgColor: "bg-primary", 
       textColor: "text-white", 
       accentColor: "text-white",
-      bgImage: "url('/jc-tuition_optimized.webp')",
+      image: '/jc-tuition_optimized.webp',
       bgOverlay: "bg-black/40"
     },
     { 
@@ -61,7 +62,7 @@ export default function HowItWorksSection({ formRef }) {
       bgColor: "bg-[#FF6B00]", 
       textColor: "text-white", 
       accentColor: "text-white",
-      bgImage: "url('/english-tuition.webp')",
+      image: '/english-tuition.webp',
       bgOverlay: "bg-black/50"
     }
   ];
@@ -204,11 +205,14 @@ export default function HowItWorksSection({ formRef }) {
               className="bg-white rounded-2xl overflow-hidden shadow-lg border border-slate-200"
             >
               {/* Image Section */}
-              {step.bgImage && (
+              {step.image && (
                 <div className="relative h-48 w-full overflow-hidden">
-                  <div
-                    className="absolute inset-0 bg-cover bg-center scale-105"
-                    style={{ backgroundImage: step.bgImage }}
+                  <Image
+                    src={step.image}
+                    alt=""
+                    fill
+                    className="object-cover scale-105"
+                    sizes="(max-width: 768px) 100vw, 100vw"
                   />
                   <div className={`absolute inset-0 ${step.bgOverlay}`} />
                   <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm rounded-full w-12 h-12 flex items-center justify-center">
@@ -262,11 +266,14 @@ export default function HowItWorksSection({ formRef }) {
                 style={{ perspective: '1000px' }} 
               >
                 {/* Background Image & Overlay */}
-                {step.bgImage && (
+                {step.image && (
                   <>
-                    <div
-                      className="absolute inset-0 bg-cover bg-center"
-                      style={{ backgroundImage: step.bgImage }}
+                    <Image
+                      src={step.image}
+                      alt=""
+                      fill
+                      className="object-cover"
+                      sizes="100vw"
                     />
                     <div className={`absolute inset-0 ${step.bgOverlay}`} />
                   </>
