@@ -52,12 +52,6 @@ export const metadata = {
   },
 };
 
-// Add this viewport export (new in Next.js)
-export const viewport = {
-  width: 'device-width',
-  initialScale: 1,
-};
-
 import HomePageClient from './HomePageClient';
 
 export default function HomePage(props) {

@@ -15,13 +15,13 @@ import Footer from './Footer';
 import Whatsapp from './Whatsapp';
 
 export const metadata = {
-  metadataBase: new URL('https://lioncitytutors.com'),
-  title: 'LionCity Tutors',
-  description: 'Best tuition in Singapore',
+  metadataBase: new URL('https://www.lioncitytutors.com'),
+  title: 'LionCity Tutors — Singapore Home Tuition Agency',
+  description: 'Hand-matched, MOE-familiar tutors for PSLE, O-Level and JC students in Singapore, usually within 6 hours. 100% free for parents, no agency fee.',
   openGraph: {
-    title: 'LionCity Tutors',
-    description: 'Best tuition in Singapore',
-    url: 'https://lioncitytutors.com',
+    title: 'LionCity Tutors — Singapore Home Tuition Agency',
+    description: 'Hand-matched, MOE-familiar tutors for PSLE, O-Level and JC students in Singapore, usually within 6 hours. 100% free for parents, no agency fee.',
+    url: 'https://www.lioncitytutors.com',
     images: [
       {
         url: '/final.png',
@@ -34,9 +34,15 @@ export const metadata = {
   },
 };
 
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  themeColor: '#0474BA',
+};
+
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={inter.variable}>
+    <html lang="en-SG" className={inter.variable}>
       <head>
         {/* Preconnect to external domains for faster resource loading */}
         <link rel="preconnect" href="https://www.google-analytics.com" />
