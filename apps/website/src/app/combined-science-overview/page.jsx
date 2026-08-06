@@ -58,7 +58,7 @@ export default function CombinedScienceOverview() {
         </div>
 
         <div className="bg-gradient-to-r from-purple-50 to-blue-50 p-6 rounded-xl mb-8 border-l-4 border-purple-400">
-          <h3 className="text-lg font-bold text-purple-800 mb-2">🔬 The Combined Science Advantage</h3>
+          <h2 className="text-lg font-bold text-purple-800 mb-2">🔬 The Combined Science Advantage</h2>
           <p className="text-purple-700">
             Combined Science isn't "easier science" - it's <span className="font-bold">integrated science</span>.
             This guide reveals how to leverage the connections between different science subjects to achieve

@@ -288,9 +288,9 @@ const AssignmentCard = memo(({ assignment, isSelected, isExpanded, onSelect, onT
               <div className="flex-1 min-w-0">
                 {/* Title row with NEW badge */}
                 <div className="flex items-center gap-2 mb-2">
-                  <h3 className="text-lg sm:text-xl font-bold text-slate-900 leading-tight flex-1 min-w-0">
+                  <h2 className="text-lg sm:text-xl font-bold text-slate-900 leading-tight flex-1 min-w-0">
                     {assignment.title}
-                  </h3>
+                  </h2>
                   {isNew && (
                     <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800 border border-emerald-200 flex-shrink-0">
                       NEW
@@ -751,7 +751,7 @@ export default function TuitionAssignmentsClient({ initialAssignments }) {
             ) : (
               <div className="text-center bg-white rounded-2xl shadow-lg py-20 px-8">
                 <Book className="mx-auto h-16 w-16 text-slate-300 mb-6" strokeWidth={1} />
-                <h3 className="text-xl font-semibold text-slate-800 mb-2">No Assignments Found</h3>
+                <h2 className="text-xl font-semibold text-slate-800 mb-2">No Assignments Found</h2>
                 <p className="text-slate-500 max-w-md mx-auto">Your search and filter combination did not match any assignments. Try adjusting your criteria.</p>
                 <button onClick={resetFilters} className="mt-6 inline-flex items-center px-4 py-2 bg-gradient-to-r from-teal-500 to-emerald-500 text-white font-semibold rounded-lg transition-transform transform hover:scale-105">Clear All Filters</button>
               </div>

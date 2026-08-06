@@ -22,7 +22,7 @@ export default function Footer() {
 
           {/* Column 2: For Students & Parents */}
           <div>
-            <h4 className="text-sm font-semibold text-primary uppercase tracking-wider mb-4">For Students & Parents</h4>
+            <h3 className="text-sm font-semibold text-primary uppercase tracking-wider mb-4">For Students & Parents</h3>
             <ul className="text-sm">
               <li><Link href="/request-tutor" className="text-gray-600 hover:text-primary transition-colors min-h-11 flex items-center">Request A Tutor</Link></li>
               <li><Link href="/tuition-rates" className="text-gray-600 hover:text-primary transition-colors min-h-11 flex items-center">Tuition Rates</Link></li>
@@ -34,7 +34,7 @@ export default function Footer() {
 
           {/* Column 3: For Tutors */}
           <div>
-            <h4 className="text-sm font-semibold text-primary uppercase tracking-wider mb-4">For Tutors</h4>
+            <h3 className="text-sm font-semibold text-primary uppercase tracking-wider mb-4">For Tutors</h3>
             <ul className="text-sm">
               <li><Link href="/register-tutor" className="text-gray-600 hover:text-primary transition-colors min-h-11 flex items-center">Become a Tutor</Link></li>
               <li><Link href="/tuition-assignments" className="text-gray-600 hover:text-primary transition-colors min-h-11 flex items-center">Tuition Assignments</Link></li>
@@ -44,7 +44,7 @@ export default function Footer() {
 
           {/* Column 4: Contact */}
           <div>
-            <h4 className="text-sm font-semibold text-primary uppercase tracking-wider mb-4">Contact Us</h4>
+            <h3 className="text-sm font-semibold text-primary uppercase tracking-wider mb-4">Contact Us</h3>
             <ul className="text-sm">
               <li>
                 <a href="https://wa.me/6588701152" className="text-gray-600 hover:text-primary transition-colors min-h-11 flex items-center">

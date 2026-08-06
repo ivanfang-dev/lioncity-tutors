@@ -57,7 +57,7 @@ export default function CombinedChemistryPhysics() {
         </div>
 
         <div className="bg-gradient-to-r from-purple-50 to-indigo-50 p-6 rounded-xl mb-8 border-l-4 border-indigo-400">
-          <h3 className="text-lg font-bold text-indigo-800 mb-2">⚛️ The Molecular-Atomic Bridge</h3>
+          <h2 className="text-lg font-bold text-indigo-800 mb-2">⚛️ The Molecular-Atomic Bridge</h2>
           <p className="text-indigo-700">
             Combined Chemistry-Physics isn't two separate subjects—it's the <span className="font-bold">science of matter in motion</span>.
             This comprehensive guide reveals how to leverage atomic structure to understand energy transformations,

@@ -10,6 +10,7 @@ import FormStepper from "@/components/FormStepper";
 import useTuitionRequestForm from "@/components/useTuitionRequestForm";
 import FormBenefits from "@/components/FormBenefits";
 import { CheckCircle } from "lucide-react";
+import GuideSchema from "@/components/seo/GuideSchema";
 
 export default function SecondarySchoolTuition() {
   const formRef = useRef(null);
@@ -43,6 +44,15 @@ export default function SecondarySchoolTuition() {
 
   return (
     <main>
+      <GuideSchema
+        slug="secondary-school-tuition"
+        course={{
+          name: 'Secondary School Tuition in Singapore',
+          description:
+            'One-to-one secondary school tuition from Sec 1 to Sec 5, covering both the O-Level and N-Level tracks.',
+          educationalLevel: 'GCE O-Level and N-Level',
+        }}
+      />
       <div className="p-6 max-w-5xl mx-auto space-y-12">
         {/* Hero Section */}
         <section className="text-center space-y-4">

@@ -1,4 +1,3 @@
-import GuideSchema from '@/components/seo/GuideSchema';
 import { RelatedGuides } from '@/components/guide';
 import { MATCH_TIME } from '@/data/promises';
 
@@ -43,22 +42,15 @@ export const metadata = {
 };
 
 /**
- * Schema and cluster links live in the layout because the page itself is a
- * client component. A layout is server-rendered, so the JSON-LD and the links
- * land in the HTML without splitting the page apart.
+ * RelatedGuides lives in the layout because the page itself is a client
+ * component and this needs to be server-rendered. GuideSchema is NOT here —
+ * it moved to page.jsx, because this layout also wraps the o-level-tuition
+ * and n-level-tuition sub-routes, and having it here duplicated the
+ * BreadcrumbList + Course JSON-LD on every one of those pages.
  */
 export default function SecondarySchoolTuitionLayout({ children }) {
   return (
     <>
-      <GuideSchema
-        slug="secondary-school-tuition"
-        course={{
-          name: 'Secondary School Tuition in Singapore',
-          description:
-            'One-to-one secondary school tuition from Sec 1 to Sec 5, covering both the O-Level and N-Level tracks.',
-          educationalLevel: 'GCE O-Level and N-Level',
-        }}
-      />
       {children}
       <div className="mx-auto max-w-3xl px-4 sm:px-6 pb-16">
         <RelatedGuides slug="secondary-school-tuition" heading="Guides for secondary students" />

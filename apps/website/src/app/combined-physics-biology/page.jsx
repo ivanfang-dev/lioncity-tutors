@@ -65,7 +65,7 @@ export default function CombinedPhysicsBiology() {
         </div>
 
         <div className="bg-gradient-to-r from-emerald-50 to-teal-50 p-6 rounded-xl mb-8 border-l-4 border-emerald-400">
-          <h3 className="text-lg font-bold text-emerald-800 mb-2">🧬 The Life–in–Motion Bridge</h3>
+          <h2 className="text-lg font-bold text-emerald-800 mb-2">🧬 The Life–in–Motion Bridge</h2>
           <p className="text-emerald-700">
             Combined Physics–Biology, at both O-Level and Sec 4 <span className="font-semibold">N(A)</span>, connects how forces and energy shape living systems. Learn to explain biological
             processes with physics ideas like pressure, heat transfer, waves and electricity — the exact integration

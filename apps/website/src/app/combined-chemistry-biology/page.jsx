@@ -58,7 +58,7 @@ export default function CombinedChemBioNA() {
         </div>
 
         <div className="bg-gradient-to-r from-indigo-50 to-purple-50 p-6 rounded-xl mb-8 border-l-4 border-indigo-400">
-          <h3 className="text-lg font-bold text-indigo-800 mb-2">🔬 Matter & Life — Why this pairing works</h3>
+          <h2 className="text-lg font-bold text-indigo-800 mb-2">🔬 Matter & Life — Why this pairing works</h2>
           <p className="text-indigo-700">
             Combined Chemistry–Biology is all about <span className="font-bold">how chemical reactions power life</span>. You will link chemical equations, reaction energy and rates, and the chemistry of molecules to biological processes like respiration,
             digestion and photosynthesis. This guide covers the N(A) syllabus (5107) in detail below, plus what changes for the O-Level version (5088) — accurate topics, clear examples, and exam-winning structures for both.

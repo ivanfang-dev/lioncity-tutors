@@ -81,8 +81,8 @@ export default function HomePage(props) {
               },
               "geo": {
                 "@type": "GeoCoordinates",
-                "latitude": 1.3521,
-                "longitude": 103.8198
+                "latitude": 1.33131,
+                "longitude": 103.72747
               },
               "openingHoursSpecification": [
                 {

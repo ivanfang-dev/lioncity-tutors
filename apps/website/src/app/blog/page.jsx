@@ -303,7 +303,7 @@ export default function Blog() {
         {/* Filter Bar */}
         <div className="mb-8 sm:mb-12">
           <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 sm:p-6">
-            <h3 className="text-sm font-semibold text-slate-700 mb-4">Filter by Category</h3>
+            <h2 className="text-sm font-semibold text-slate-700 mb-4">Filter by Category</h2>
             <div className="flex flex-wrap gap-2">
               {categories.map((category) => (
                 <button
