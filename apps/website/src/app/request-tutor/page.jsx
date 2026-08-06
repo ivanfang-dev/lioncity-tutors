@@ -13,6 +13,13 @@ export default function RequestForTutor() {
           description: `Tell us the level, subject and area and we hand-match a vetted tutor, usually within ${MATCH_TIME}. No agency fee for parents.`,
         }}
       />
+      {/* Outside the client component's Suspense boundary (it wraps
+          useSearchParams), so the page's only <h1> is part of the static
+          server-rendered HTML rather than trapped behind hydration. */}
+      <div className="bg-gradient-to-r from-blue-50 via-white to-blue-50 py-6 text-center">
+        <h1 className="text-2xl md:text-3xl font-bold text-blue-800 mb-2">Request a Tutor in Singapore</h1>
+        <p className="text-gray-600 text-sm max-w-xl mx-auto">Complete this form - 100% Free, Fast Response Guaranteed</p>
+      </div>
       <RequestForTutorClient />
       {/* Outside the client component's Suspense boundary (it wraps
           useSearchParams), so this reciprocal-link block is part of the

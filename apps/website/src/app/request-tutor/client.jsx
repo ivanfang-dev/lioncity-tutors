@@ -61,12 +61,6 @@ function RequestForTutorContent(){
     <>
     <main>
     <div className="bg-gray-50 min-h-screen">
-      {/* Compact Header */}
-      <div className="bg-gradient-to-r from-blue-50 via-white to-blue-50 py-6 text-center">
-        <h2 className="text-2xl md:text-3xl font-bold text-blue-800 mb-2">Find Your Ideal Tutor Today!</h2>
-        <p className="text-gray-600 text-sm max-w-xl mx-auto">Complete this form - 100% Free, Fast Response Guaranteed</p>
-      </div>
-
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           
