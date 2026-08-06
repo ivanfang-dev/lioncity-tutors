@@ -6,6 +6,7 @@ export const metadata = {
     "A Level H2 Biology 2026", "H2 Biology Singapore", "GCE A Level Biology guide", "A Level Biology preparation", "H2 Biology study tips", "A Level Biology tuition Singapore", "Biology revision techniques", "H2 Biology syllabus", "9477 syllabus"
   ],
   openGraph: {
+    images: [DEFAULT_OG_IMAGE],
     title: "A-Level H2 Biology Guide 2026 (9477) | LionCity Tutors",
     description: "Comprehensive A Level H2 Biology guide with proven strategies to help Singapore students achieve A grades in GCE A Level Biology.",
     type: "article",
@@ -23,6 +24,7 @@ import {
   RelatedGuides, ExamTimetable,
 } from '@/components/guide';
 import { getHubFor } from '@/lib/seo/links.mjs';
+import { DEFAULT_OG_IMAGE } from '@/lib/seo/openGraph';
 import {
   FileText, CalendarClock, Microscope, Dna, HeartPulse, Leaf, Brain, Target,
   TriangleAlert, CalendarDays, BookOpen, FlaskConical, GraduationCap, Users,

@@ -44,6 +44,7 @@ export const metadata = {
     card: 'summary_large_image',
     title: 'Best Math Tuition Singapore | Expert Math Tutors',
     description: `Find qualified math tutors for PSLE, O Level & A Level. Free matching service with handpicked tutors. Expert in E Math, A Math, and H2 Math. Results within ${MATCH_TIME}.`,
+    images: ['https://www.lioncitytutors.com/math-tuition.webp'],
   },
   alternates: {
     canonical: 'https://www.lioncitytutors.com/math-tuition',

@@ -14,6 +14,7 @@ export const metadata = {
     'IBDP Biology syllabus'
   ],
   openGraph: {
+    images: [DEFAULT_OG_IMAGE],
     title: 'IBDP Biology Guide 2026: Complete Study Strategy for Singapore Students',
     description: 'Comprehensive IBDP Biology guide with proven strategies to help Singapore students achieve level 7 in IBDP Biology.',
     url: 'https://www.lioncitytutors.com/ibdp-biology',
@@ -25,6 +26,7 @@ export const metadata = {
 };
 
 import TableOfContents from '@/components/TableOfContents';
+import { DEFAULT_OG_IMAGE } from '@/lib/seo/openGraph';
 import {
   GuideHeader, SectionHeading, GuideCard, TopicCard, GuideTimeline, KeyTakeaways, GuideCTA, ICON_STROKE,
   RelatedGuides,

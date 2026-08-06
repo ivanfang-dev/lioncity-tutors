@@ -3,6 +3,7 @@ import Image from 'next/image';
 import chembioImage from "../../../public/combined-chemistry-biology.webp";
 import GuideSchema from '@/components/seo/GuideSchema';
 import { RelatedGuides, ExamTimetable } from '@/components/guide';
+import { DEFAULT_OG_IMAGE } from '@/lib/seo/openGraph';
 
 export const metadata = {
   title: 'Combined Chemistry/Biology 2026: O & N-Level Guide',
@@ -18,6 +19,7 @@ export const metadata = {
     'LionCity Tutors chemistry biology'
   ],
   openGraph: {
+    images: [DEFAULT_OG_IMAGE],
     title: 'Combined Chemistry + Biology — O-Level & N-Level, Matter & Life Integrated',
     description:
       'Master Chemical reactions and Biological processes for Combined Science, at O-Level (5088) and N-Level (5107). Practical examples, exam strategies, and Singapore contexts.',

@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { DEFAULT_OG_IMAGE } from '@/lib/seo/openGraph';
 
 export const metadata = {
   title: 'Child Struggling in School? A Parent\'s Guide to Pinpointing Learning Gaps | LionCity Tutors',
@@ -12,6 +13,7 @@ export const metadata = {
     'Singapore education help for parents'
   ],
   openGraph: {
+    images: [DEFAULT_OG_IMAGE],
     title: 'A Parent\'s Guide to Pinpointing Your Child\'s Learning Gaps in Singapore',
     description: 'A structured guide with checklists to help Singaporean parents identify the root cause of their child\'s academic struggles before hiring a tutor.',
     url: 'https://www.lioncitytutors.com/blog/pinpointing-learning-gaps',

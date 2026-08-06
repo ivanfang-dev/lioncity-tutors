@@ -14,6 +14,7 @@ export const metadata = {
     'IGCSE Physics syllabus'
   ],
   openGraph: {
+    images: [DEFAULT_OG_IMAGE],
     title: 'IGCSE Physics Guide 2026: Complete Study Strategy for Singapore Students',
     description: 'Comprehensive IGCSE Physics guide with proven strategies to help Singapore students achieve A* grades in Cambridge IGCSE Physics.',
     url: 'https://www.lioncitytutors.com/igcse-physics',
@@ -25,6 +26,7 @@ export const metadata = {
 };
 
 import TableOfContents from '@/components/TableOfContents';
+import { DEFAULT_OG_IMAGE } from '@/lib/seo/openGraph';
 import {
   GuideHeader, SectionHeading, GuideCard, TopicCard, GuideTimeline, KeyTakeaways, GuideCTA, ICON_STROKE,
   RelatedGuides,

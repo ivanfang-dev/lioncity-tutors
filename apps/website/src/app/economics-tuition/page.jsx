@@ -38,6 +38,7 @@ export const metadata = {
     card: 'summary_large_image',
     title: 'Best Economics Tuition Singapore | Expert Economics Tutors',
     description: `Find qualified economics tutors for H1, H2 & IB Economics. Free matching service with handpicked tutors. Results within ${MATCH_TIME}.`,
+    images: ['https://www.lioncitytutors.com/economics.webp'],
   },
   alternates: {
     canonical: 'https://www.lioncitytutors.com/economics-tuition',

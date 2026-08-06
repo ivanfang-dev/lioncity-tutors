@@ -4,6 +4,7 @@ export const metadata = {
   description: 'H2 Physics (9478) guide for Singapore JC students — the revised 2026 syllabus, mechanics through modern physics, and the exam technique that scores an A.',
   keywords: ["A Level H2 Physics 2026", "H2 Physics Singapore", "GCE A Level Physics guide", "A Level Physics preparation", "H2 Physics study tips", "A Level Physics tuition Singapore", "Physics revision techniques", "H2 Physics syllabus", "9478 syllabus"],
   openGraph: {
+    images: [DEFAULT_OG_IMAGE],
     title: 'A-Level H2 Physics Guide 2026 (9478) | LionCity Tutors',
     description: 'Comprehensive A Level H2 Physics guide with proven strategies to help Singapore students achieve A grades in GCE A Level Physics.',
     url: 'https://www.lioncitytutors.com/a-level-physics',
@@ -21,6 +22,7 @@ import {
   RelatedGuides, ExamTimetable,
 } from '@/components/guide';
 import { getHubFor } from '@/lib/seo/links.mjs';
+import { DEFAULT_OG_IMAGE } from '@/lib/seo/openGraph';
 import {
   FileText, CalendarClock, Gauge, Waves, Zap, Atom, Brain, Target,
   TriangleAlert, CalendarDays, BookOpen, Ruler, GraduationCap, Users,

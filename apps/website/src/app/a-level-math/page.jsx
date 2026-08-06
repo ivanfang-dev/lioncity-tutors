@@ -6,6 +6,7 @@ export const metadata = {
     "A Level Math 2026", "H1 Mathematics Singapore", "H2 Mathematics Singapore", "Cambridge A Level Math guide", "A Level Math preparation", "JC Math tuition Singapore", "A Level Math revision techniques", "Singapore A Level Mathematics"
   ],
   openGraph: {
+    images: [DEFAULT_OG_IMAGE],
     title: 'A-Level Math Guide 2026: H1 & H2 Strategy | LionCity Tutors',
     description: 'Comprehensive A Level Mathematics guide with proven strategies to help Singapore JC students achieve A grades in H1 & H2 Mathematics.',
     url: 'https://www.lioncitytutors.com/a-level-math',
@@ -18,6 +19,7 @@ export const metadata = {
 
 import TableOfContents from '@/components/TableOfContents';
 import GuideSchema from '@/components/seo/GuideSchema';
+import { DEFAULT_OG_IMAGE } from '@/lib/seo/openGraph';
 import {
   GuideHeader, SectionHeading, GuideCard, TopicCard, GuideTimeline, KeyTakeaways, GuideCTA, ICON_STROKE,
   RelatedGuides, ExamTimetable,

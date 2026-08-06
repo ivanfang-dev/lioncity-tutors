@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { DEFAULT_OG_IMAGE } from '@/lib/seo/openGraph';
 
 export const metadata = {
   title: 'Child Can\'t Focus on Studies? Actionable Strategies for Singapore Parents | LionCity Tutors',
@@ -12,6 +13,7 @@ export const metadata = {
     'revision skills for students'
   ],
   openGraph: {
+    images: [DEFAULT_OG_IMAGE],
     title: 'Focus and Concentration Issues in Singapore Students: A Parent\'s Guide',
     description: 'Empathetic, psychology-backed advice that helps parents understand focus issues before pitching tuition. Features expert quotes and actionable tips.',
     url: 'https://www.lioncitytutors.com/blog/focus-and-concentration-issues',

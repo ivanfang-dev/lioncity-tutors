@@ -1,6 +1,7 @@
 import GuideSchema from '@/components/seo/GuideSchema';
 import NLevelPrepClient from './client';
 import { N_LEVEL_FAQS } from './faqs.mjs';
+import { DEFAULT_OG_IMAGE } from '@/lib/seo/openGraph';
 
 export const metadata = {
   title: 'N-Level Guide 2026: What N(A) and N(T) Mean & How to Prep',
@@ -12,6 +13,7 @@ export const metadata = {
     'N Level to O Level', 'Normal Academic', 'Normal Technical',
   ],
   openGraph: {
+    images: [DEFAULT_OG_IMAGE],
     title: 'N-Level Guide 2026: What N(A) and N(T) Mean & How to Prep',
     description:
       'What the GCE N-Level is, how the N(A) and N(T) tracks differ, and the official 2026 examination timetable.',

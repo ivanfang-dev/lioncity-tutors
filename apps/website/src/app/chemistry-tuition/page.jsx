@@ -39,6 +39,7 @@ export const metadata = {
     card: 'summary_large_image',
     title: 'Best Chemistry Tuition Singapore | Expert Chemistry Tutors',
     description: 'Find qualified chemistry tutors for Secondary, JC H1/H2, IGCSE & IB levels. Complete syllabus coverage with free matching service.',
+    images: ['https://www.lioncitytutors.com/chemistry.webp'],
   },
   alternates: {
     canonical: 'https://www.lioncitytutors.com/chemistry-tuition',

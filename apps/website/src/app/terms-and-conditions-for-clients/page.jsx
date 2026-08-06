@@ -1,7 +1,9 @@
+import { DEFAULT_OG_IMAGE } from '@/lib/seo/openGraph';
 export const metadata = {
     title: 'Terms and Conditions for Clients | LionCity Tutors',
     description: 'Terms and Conditions',
     openGraph: {
+      images: [DEFAULT_OG_IMAGE],
       title: 'Terms and Conditions for Clients | LionCity Tutors',
       description: 'Terms and Conditions for Clients of LionCity Tutors.',
       url: 'https://www.lioncitytutors.com/terms-and-conditions-for-clients',

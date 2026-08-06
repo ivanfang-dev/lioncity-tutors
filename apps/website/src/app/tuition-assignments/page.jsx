@@ -5,6 +5,7 @@ import GuideSchema from '@/components/seo/GuideSchema';
 import { SectionHeading } from '@/components/guide';
 import TuitionAssignmentsClient from './TuitionAssignmentsClient';
 import { TUITION_ASSIGNMENTS_FAQS } from './faqs.mjs';
+import { DEFAULT_OG_IMAGE } from '@/lib/seo/openGraph';
 
 // Helper function to fetch data on the server
 async function getAssignments() {
@@ -62,12 +63,14 @@ export async function generateMetadata({ searchParams }) {
       'home tutoring jobs Singapore'
     ].filter(Boolean),
     openGraph: {
+      images: [DEFAULT_OG_IMAGE],
       title: pageTitle,
       description: pageDescription,
       url: canonicalUrl,
       type: 'website',
     },
     twitter: {
+      images: [DEFAULT_OG_IMAGE.url],
       card: 'summary_large_image',
       title: pageTitle,
       description: pageDescription,

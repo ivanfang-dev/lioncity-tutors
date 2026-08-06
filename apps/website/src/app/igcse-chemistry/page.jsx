@@ -15,6 +15,7 @@ export const metadata = {
     'IGCSE Chemistry syllabus'
   ],
   openGraph: {
+    images: [DEFAULT_OG_IMAGE],
     title: 'IGCSE Chemistry Guide 2026: Complete Study Strategy for Singapore Students',
     description: 'Comprehensive IGCSE Chemistry guide with proven strategies to help Singapore students achieve A* grades in IGCSE Chemistry.',
     url: 'https://www.lioncitytutors.com/igcse-chemistry',
@@ -26,6 +27,7 @@ export const metadata = {
 };
 
 import TableOfContents from '@/components/TableOfContents';
+import { DEFAULT_OG_IMAGE } from '@/lib/seo/openGraph';
 import {
   GuideHeader, SectionHeading, GuideCard, TopicCard, GuideTimeline, KeyTakeaways, GuideCTA, ICON_STROKE,
   RelatedGuides,

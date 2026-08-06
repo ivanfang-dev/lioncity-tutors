@@ -3,6 +3,7 @@ import Image from 'next/image';
 import physbioImage from "../../../public/combined-physics-biology.webp";
 import GuideSchema from '@/components/seo/GuideSchema';
 import { RelatedGuides, ExamTimetable } from '@/components/guide';
+import { DEFAULT_OG_IMAGE } from '@/lib/seo/openGraph';
 
 export const metadata = {
   title: 'Combined Physics/Biology 2026: O & N-Level Guide',
@@ -19,6 +20,7 @@ export const metadata = {
     'LionCity Tutors Combined Science'
   ],
   openGraph: {
+    images: [DEFAULT_OG_IMAGE],
     title: 'Combined Physics + Biology: O-Level & N-Level Life–Motion Integration',
     description:
       'Master the life–motion bridge in Combined Physics/Biology, at O-Level (5087) and N-Level (5106). Integration strategies, topic checklists, and Singapore applications.',

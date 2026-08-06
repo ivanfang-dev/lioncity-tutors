@@ -1,9 +1,11 @@
 import React from 'react';
+import { DEFAULT_OG_IMAGE } from '@/lib/seo/openGraph';
 
 export const metadata = {
     title: 'Privacy Policy | LionCity Tutors',
     description: 'Privacy Policy',
     openGraph: {
+      images: [DEFAULT_OG_IMAGE],
       title: 'Privacy Policy | LionCity Tutors',
       description: 'Privacy Policy of LionCity Tutors.',
       url: 'https://www.lioncitytutors.com/privacy-policy',

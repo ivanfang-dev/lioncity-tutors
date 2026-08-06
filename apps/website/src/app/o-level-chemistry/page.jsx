@@ -13,6 +13,7 @@ export const metadata = {
     'O Level Chemistry syllabus'
   ],
   openGraph: {
+    images: [DEFAULT_OG_IMAGE],
     title: 'O Level Chemistry Guide 2026: Complete Study Strategy for Singapore Students',
     description: 'Comprehensive O Level Chemistry guide with proven strategies to help Singapore students achieve A1 grades in GCE O Level Chemistry.',
     url: 'https://www.lioncitytutors.com/o-level-chemistry',
@@ -35,6 +36,7 @@ import {
   Hourglass, HeartHandshake, Compass, Flag, ListChecks, HelpCircle,
 } from 'lucide-react';
 import { O_LEVEL_CHEMISTRY_FAQS } from './faqs.mjs';
+import { DEFAULT_OG_IMAGE } from '@/lib/seo/openGraph';
 
 const tableOfContents = [
   { id: 'structure', label: 'Exam & paper structure' },

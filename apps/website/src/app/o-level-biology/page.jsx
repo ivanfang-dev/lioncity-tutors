@@ -35,6 +35,7 @@ export const metadata = {
     'O Level Biology syllabus'
   ],
   openGraph: {
+    images: [DEFAULT_OG_IMAGE],
     title: 'O Level Biology Guide 2026: Complete Study Strategy for Singapore Students',
     description: 'Comprehensive O Level Biology guide with proven strategies to help Singapore students achieve A1 grades in GCE O Level Biology.',
     url: 'https://www.lioncitytutors.com/o-level-biology',
@@ -47,6 +48,7 @@ export const metadata = {
 
 import TableOfContents from '@/components/TableOfContents';
 import GuideSchema from '@/components/seo/GuideSchema';
+import { DEFAULT_OG_IMAGE } from '@/lib/seo/openGraph';
 import {
   GuideHeader, SectionHeading, GuideCard, TopicCard, GuideTimeline, KeyTakeaways, GuideCTA, ICON_STROKE,
   RelatedGuides, ExamTimetable,

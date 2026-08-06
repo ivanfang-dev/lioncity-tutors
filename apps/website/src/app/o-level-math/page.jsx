@@ -12,6 +12,7 @@ export const metadata = {
     'Math revision techniques'
   ],
   openGraph: {
+    images: [DEFAULT_OG_IMAGE],
     title: 'O Level Math Guide 2026: Complete Preparation Strategy for Singapore Students',
     description: 'Comprehensive O Level Mathematics guide with proven strategies to help Singapore students achieve A1 grades in both Elementary and Additional Mathematics.',
     url: 'https://www.lioncitytutors.com/o-level-math',
@@ -34,6 +35,7 @@ import {
   Hourglass, ListChecks, HelpCircle,
 } from 'lucide-react';
 import { O_LEVEL_MATH_FAQS } from './faqs.mjs';
+import { DEFAULT_OG_IMAGE } from '@/lib/seo/openGraph';
 
 const tableOfContents = [
   { id: 'structure', label: 'Exam & subject structure' },

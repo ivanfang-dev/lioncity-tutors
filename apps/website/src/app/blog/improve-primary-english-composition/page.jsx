@@ -1,6 +1,7 @@
 // /blog/how-to-improve-english-composition.js
 
 import Link from 'next/link';
+import { DEFAULT_OG_IMAGE } from '@/lib/seo/openGraph';
 
 // === CRITICAL SEO METADATA ADDED HERE ===
 export const metadata = {
@@ -16,6 +17,7 @@ export const metadata = {
     'english tuition singapore'
   ],
   openGraph: {
+    images: [DEFAULT_OG_IMAGE],
     title: 'Child Struggling with English Composition? 5 Signs & Fixes | LionCity Tutors',
     description: 'A practical guide for parents to identify and address common writing weaknesses in their children, from "blank page paralysis" to weak story structure.',
     url: 'https://www.lioncitytutors.com/blog/how-to-improve-english-composition',

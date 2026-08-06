@@ -1,4 +1,5 @@
 import { observedFor, PLACEMENT_SAMPLE } from './placements.mjs';
+import { DEFAULT_OG_IMAGE } from '@/lib/seo/openGraph';
 
 // Composed from the observed-budget data, not typed, so the SERP snippet
 // cannot quote a figure the page no longer shows.
@@ -30,6 +31,7 @@ export const metadata = {
     'average tuition rate singapore'
   ],
   openGraph: {
+    images: [DEFAULT_OG_IMAGE],
     title: TITLE,
     description: DESCRIPTION,
     url: 'https://www.lioncitytutors.com/tuition-rates',

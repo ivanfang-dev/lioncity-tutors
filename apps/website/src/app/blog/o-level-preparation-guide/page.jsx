@@ -1,6 +1,7 @@
 import GuideSchema from '@/components/seo/GuideSchema';
 import OLevelPrepGuideClient from './client';
 import { O_LEVEL_FAQS } from './faqs.mjs';
+import { DEFAULT_OG_IMAGE } from '@/lib/seo/openGraph';
 
 export const metadata = {
   title: 'O-Level Preparation Guide 2026: Complete Study Plan',
@@ -13,6 +14,7 @@ export const metadata = {
     'O Level exam dates 2026', 'SEAB O Level',
   ],
   openGraph: {
+    images: [DEFAULT_OG_IMAGE],
     title: 'O-Level Preparation Guide 2026: Complete Study Plan',
     description:
       'The official 2026 O-Level timetable, subject strategies and a term-by-term revision plan for Singapore students.',

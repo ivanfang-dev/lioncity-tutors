@@ -1,10 +1,12 @@
 import Link from 'next/link';
+import { DEFAULT_OG_IMAGE } from '@/lib/seo/openGraph';
 
 export const metadata = {
   title: 'Benefits of Private Tuition in Singapore | LionCity Tutors',
   description: "Discover the proven benefits of private tuition in Singapore's competitive education landscape. From personalized learning to PSLE preparation strategies.",
   keywords: ["private tuition Singapore", "home tuition benefits", "PSLE tuition", "O Level tuition", "A Level tuition", "personalized learning Singapore"],
   openGraph: {
+    images: [DEFAULT_OG_IMAGE],
     title: 'Benefits of Private Tuition in Singapore | LionCity Tutors',
     description: "Discover how private tuition can transform your child's academic journey in Singapore's education system.",
     url: 'https://www.lioncitytutors.com/blog/benefits-of-private-tuition',

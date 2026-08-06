@@ -1,4 +1,5 @@
 import { MATCH_TIME } from '@/data/promises';
+import { DEFAULT_OG_IMAGE } from '@/lib/seo/openGraph';
 
 const TITLE = 'Request a Tutor in Singapore | LionCity Tutors';
 // The old description claimed "Trusted by 100+ Parents", which is a number we
@@ -10,6 +11,7 @@ export const metadata = {
   title: TITLE,
   description: DESCRIPTION,
   openGraph: {
+    images: [DEFAULT_OG_IMAGE],
     title: TITLE,
     description: DESCRIPTION,
     url: 'https://www.lioncitytutors.com/request-tutor',

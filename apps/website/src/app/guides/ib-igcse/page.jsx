@@ -1,6 +1,7 @@
 import GuideSchema from '@/components/seo/GuideSchema';
 import { RelatedGuides } from '@/components/guide';
 import { IB_IGCSE_FAQS } from './faqs.mjs';
+import { DEFAULT_OG_IMAGE } from '@/lib/seo/openGraph';
 
 export const metadata = {
   title: 'IB & IGCSE Guides Singapore: HL, SL and Paper Strategy',
@@ -12,6 +13,7 @@ export const metadata = {
     'HL vs SL', 'IB vs A Level', 'IGCSE vs O Level', 'internal assessment',
   ],
   openGraph: {
+    images: [DEFAULT_OG_IMAGE],
     title: 'IB & IGCSE Guides Singapore: HL, SL and Paper Strategy',
     description:
       'How the IB Diploma and IGCSE differ from the Singapore national track, with subject guides for Biology, Chemistry and Physics.',

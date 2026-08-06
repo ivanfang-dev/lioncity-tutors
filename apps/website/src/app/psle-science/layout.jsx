@@ -1,3 +1,4 @@
+import { DEFAULT_OG_IMAGE } from '@/lib/seo/openGraph';
 export const metadata = {
   title: 'PSLE Science Guide 2026: Themes, Timetable & Tips',
   description: 'PSLE Science guide for Singapore parents — the 2026 exam timetable, the five syllabus themes, open-ended answering technique, and AL1–AL8 scoring explained.',
@@ -10,6 +11,7 @@ export const metadata = {
     'PSLE Science scoring'
   ],
   openGraph: {
+    images: [DEFAULT_OG_IMAGE],
     title: 'PSLE Science Guide 2026: Themes, Timetable & Tips',
     description: 'The official 2026 PSLE Science exam timetable, the five syllabus themes, and open-ended answering technique for Singapore parents.',
     url: 'https://www.lioncitytutors.com/psle-science',

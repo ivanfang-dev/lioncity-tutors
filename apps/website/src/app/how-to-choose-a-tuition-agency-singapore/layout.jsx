@@ -1,3 +1,4 @@
+import { DEFAULT_OG_IMAGE } from '@/lib/seo/openGraph';
 // Phase 1 title formula: front-loaded, under 60 characters.
 const TITLE = 'How to Choose a Tuition Agency in Singapore | LionCity';
 const DESCRIPTION =
@@ -14,6 +15,7 @@ export const metadata = {
     'is a tuition agency worth it',
   ],
   openGraph: {
+    images: [DEFAULT_OG_IMAGE],
     title: TITLE,
     description: DESCRIPTION,
     url: 'https://www.lioncitytutors.com/how-to-choose-a-tuition-agency-singapore',

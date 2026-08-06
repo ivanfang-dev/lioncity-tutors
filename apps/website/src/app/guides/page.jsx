@@ -1,11 +1,13 @@
 import Link from 'next/link';
 import { guidesData } from '@/data/guidesData';
 import { Button } from '@/components/ui/button';
+import { DEFAULT_OG_IMAGE } from '@/lib/seo/openGraph';
 
 export const metadata = {
   title: 'Parent & Student Exam Guides | LionCity Tutors Singapore',
   description: 'Your central hub for all our comprehensive exam guides. Find in-depth resources for PSLE, O-Level, A-Level, and parenting strategies.',
   openGraph: {
+    images: [DEFAULT_OG_IMAGE],
     title: 'Parent & Student Exam Guides | LionCity Tutors',
     description: 'The ultimate resource library for Singaporean parents and students navigating PSLE, O-Levels, and A-Levels.',
     url: 'https://www.lioncitytutors.com/guides',

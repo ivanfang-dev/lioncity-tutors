@@ -12,6 +12,7 @@ export const metadata = {
     'English revision techniques'
   ],
   openGraph: {
+    images: [DEFAULT_OG_IMAGE],
     title: 'O Level English Guide 2026: Complete Preparation Strategy for Singapore Students',
     description: 'Comprehensive O Level English guide with proven strategies to help Singapore students achieve A1 grades in both Language and Literature components.',
     url: 'https://www.lioncitytutors.com/o-level-english',
@@ -24,6 +25,7 @@ export const metadata = {
 
 import TableOfContents from '@/components/TableOfContents';
 import GuideSchema from '@/components/seo/GuideSchema';
+import { DEFAULT_OG_IMAGE } from '@/lib/seo/openGraph';
 import {
   GuideHeader, SectionHeading, GuideCard, TopicCard, GuideTimeline, KeyTakeaways, GuideCTA, ICON_STROKE,
   RelatedGuides, ExamTimetable,

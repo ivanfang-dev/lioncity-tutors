@@ -1,3 +1,4 @@
+import { DEFAULT_OG_IMAGE } from '@/lib/seo/openGraph';
 export const metadata = {
   title: 'PSLE Math Guide 2026: Heuristics & Exam Timetable',
   description: 'PSLE Mathematics guide for Singapore parents — the 2026 exam timetable, heuristics like model drawing, and the AL1–AL8 scoring system explained clearly.',
@@ -13,6 +14,7 @@ export const metadata = {
     'PSLE heuristics'
   ],
   openGraph: {
+    images: [DEFAULT_OG_IMAGE],
     title: 'PSLE Math Guide 2026: Heuristics & Exam Timetable',
     description: 'The official 2026 PSLE Maths exam timetable, heuristics like model drawing, and the AL1–AL8 scoring system explained for Singapore parents.',
     type: 'article',

@@ -12,6 +12,7 @@ export const metadata = {
     'Physics revision techniques'
   ],
   openGraph: {
+    images: [DEFAULT_OG_IMAGE],
     title: 'O Level Physics Guide 2026: Complete Study Strategy for Singapore Students',
     description: 'Comprehensive O Level Physics guide with proven strategies to help Singapore students achieve A1 grades in GCE O Level Physics.',
     url: 'https://www.lioncitytutors.com/o-level-physics',
@@ -34,6 +35,7 @@ import {
   Hourglass, HeartHandshake, Flag, ListChecks, HelpCircle,
 } from 'lucide-react';
 import { O_LEVEL_PHYSICS_FAQS } from './faqs.mjs';
+import { DEFAULT_OG_IMAGE } from '@/lib/seo/openGraph';
 
 const tableOfContents = [
   { id: 'structure', label: 'Exam & paper structure' },

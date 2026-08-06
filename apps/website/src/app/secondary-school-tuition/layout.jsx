@@ -35,6 +35,7 @@ export const metadata = {
     card: 'summary_large_image',
     title: TITLE,
     description: DESCRIPTION,
+    images: ['https://www.lioncitytutors.com/jc-tuition_optimized.webp'],
   },
   alternates: {
     canonical: 'https://www.lioncitytutors.com/secondary-school-tuition',

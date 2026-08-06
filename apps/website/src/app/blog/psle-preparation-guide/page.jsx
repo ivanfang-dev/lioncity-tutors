@@ -3,6 +3,7 @@
 import GuideSchema from '@/components/seo/GuideSchema';
 import PSLEPreparationGuideClient from './client'; // Adjust the path if you name it differently
 import { PSLE_FAQS } from './faqs.mjs';
+import { DEFAULT_OG_IMAGE } from '@/lib/seo/openGraph';
 
 // === CRITICAL SEO METADATA ===
 export const metadata = {
@@ -22,6 +23,7 @@ export const metadata = {
     'how to prepare for PSLE'
   ],
   openGraph: {
+    images: [DEFAULT_OG_IMAGE],
     title: 'PSLE Preparation Guide 2026: Timetable & Study Plan',
     description: 'The official 2026 PSLE timetable, subject-by-subject strategies and an AL scoring explainer for Singapore parents.',
     url: 'https://www.lioncitytutors.com/blog/psle-preparation-guide',

@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
+import { DEFAULT_OG_IMAGE } from '@/lib/seo/openGraph';
 
 const TITLE = 'Contact LionCity Tutors | Singapore Tuition Agency';
 const DESCRIPTION =
@@ -9,6 +10,7 @@ export const metadata = {
   title: TITLE,
   description: DESCRIPTION,
   openGraph: {
+    images: [DEFAULT_OG_IMAGE],
     title: TITLE,
     description: DESCRIPTION,
     url: 'https://www.lioncitytutors.com/contact-us',

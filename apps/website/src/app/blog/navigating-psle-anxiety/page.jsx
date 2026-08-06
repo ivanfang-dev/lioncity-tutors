@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { DEFAULT_OG_IMAGE } from '@/lib/seo/openGraph';
 
 export const metadata = {
   title: 'Navigating PSLE Anxiety: A Parent\'s Guide to Supporting Your Child | LionCity Tutors',
@@ -12,6 +13,7 @@ export const metadata = {
     'PSLE mental well-being'
   ],
   openGraph: {
+    images: [DEFAULT_OG_IMAGE],
     title: 'Navigating PSLE Anxiety: How to Support Your Child\'s Mental Health & Grades',
     description: 'This guide moves beyond purely academic advice to address the emotional toll of Singapore\'s high-stakes examination culture, framing tuition as a strategic intervention to reduce stress.',
     url: 'https://www.lioncitytutors.com/blog/navigating-psle-anxiety',

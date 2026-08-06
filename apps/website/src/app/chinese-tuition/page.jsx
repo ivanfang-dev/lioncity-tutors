@@ -38,6 +38,7 @@ export const metadata = {
     card: 'summary_large_image',
     title: 'Best Chinese Tuition Singapore | Expert Chinese Tutors',
     description: `Find qualified Chinese tutors for PSLE, O Level & A Level. Free matching service with handpicked tutors. Results within ${MATCH_TIME}.`,
+    images: ['https://www.lioncitytutors.com/chinese-tuition_optimized.webp'],
   },
   alternates: {
     canonical: 'https://www.lioncitytutors.com/chinese-tuition',

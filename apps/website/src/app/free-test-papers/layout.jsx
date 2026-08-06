@@ -1,3 +1,4 @@
+import { DEFAULT_OG_IMAGE } from '@/lib/seo/openGraph';
 const TITLE = 'Free Test Papers: O-Level, JC & PSLE | LionCity Tutors';
 const DESCRIPTION =
   'Download free test papers for PSLE, O-Level and JC — over 100 school prelim and past year papers from 40+ Singapore schools, sorted by level and subject.';
@@ -16,6 +17,7 @@ export const metadata = {
     'PSLE papers'
   ],
   openGraph: {
+    images: [DEFAULT_OG_IMAGE],
     title: TITLE,
     description: DESCRIPTION,
     url: 'https://www.lioncitytutors.com/free-test-papers',

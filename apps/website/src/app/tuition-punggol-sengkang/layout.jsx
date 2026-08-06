@@ -1,5 +1,6 @@
 import { MATCH_TIME } from '@/data/promises';
 import { regionFor } from '@/data/regions.mjs';
+import { DEFAULT_OG_IMAGE } from '@/lib/seo/openGraph';
 
 const region = regionFor('tuition-punggol-sengkang');
 
@@ -20,6 +21,7 @@ export const metadata = {
     'primary school tuition punggol',
   ],
   openGraph: {
+    images: [DEFAULT_OG_IMAGE],
     title: TITLE,
     description: DESCRIPTION,
     url: 'https://www.lioncitytutors.com/tuition-punggol-sengkang',

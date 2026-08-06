@@ -3,6 +3,7 @@ import Image from 'next/image';
 import chemphysImage from "../../../public/combined-chemistry-physics.webp"
 import GuideSchema from '@/components/seo/GuideSchema';
 import { RelatedGuides, ExamTimetable } from '@/components/guide';
+import { DEFAULT_OG_IMAGE } from '@/lib/seo/openGraph';
 
 export const metadata = {
   title: 'Combined Physics/Chemistry 2026: O & N-Level Guide',
@@ -18,6 +19,7 @@ export const metadata = {
     'Singapore science education integration'
   ],
   openGraph: {
+    images: [DEFAULT_OG_IMAGE],
     title: 'Combined Chemistry + Physics: O-Level & N-Level Guide',
     description: 'Master the molecular-atomic bridge in Combined Chemistry/Physics, at both O-Level (5086) and N-Level (5105). Advanced integration strategies for excellence.',
     url: 'https://www.lioncitytutors.com/combined-chemistry-physics',

@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { DEFAULT_OG_IMAGE } from '@/lib/seo/openGraph';
 
 export const metadata = {
   title: 'What to Look for in a Private Tutor | LionCity Tutors',
@@ -11,6 +12,7 @@ export const metadata = {
     'PSLE tutor selection'
   ],
   openGraph: {
+    images: [DEFAULT_OG_IMAGE],
     title: 'What to Look for in a Private Tutor in Singapore',
     description: 'How to judge a private tutor in Singapore: qualifications, teaching track record, communication style and the red flags to watch for before you commit.',
     url: 'https://www.lioncitytutors.com/blog/what-to-look-for-in-a-tutor',

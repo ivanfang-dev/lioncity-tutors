@@ -6,6 +6,7 @@ export const metadata = {
     'A Level General Paper 2026', 'A Level GP Singapore', 'Cambridge A Level GP guide', 'General Paper essay strategies', 'GP comprehension techniques', 'JC GP tuition Singapore', 'GP current affairs', 'Singapore A Level General Paper', 'a level gp paper 1'
   ],
   openGraph: {
+    images: [DEFAULT_OG_IMAGE],
     title: 'A-Level General Paper Guide 2026 | LionCity Tutors',
     description: 'Comprehensive A Level General Paper guide with proven strategies to help Singapore JC students achieve A grades in GP essays and comprehension.',
     url: 'https://www.lioncitytutors.com/a-level-general-paper',
@@ -28,6 +29,7 @@ import {
   Hourglass, ListChecks, HelpCircle,
 } from 'lucide-react';
 import { A_LEVEL_GENERAL_PAPER_FAQS } from './faqs.mjs';
+import { DEFAULT_OG_IMAGE } from '@/lib/seo/openGraph';
 
 const tableOfContents = [
   { id: 'structure', label: 'Exam & paper structure' },

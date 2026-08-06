@@ -37,6 +37,7 @@ export const metadata = {
     card: 'summary_large_image',
     title: 'Best Science Tuition Singapore | Expert Science Tutors',
     description: 'Find qualified science tutors for PSLE, O Level & A Level. Free matching service with experienced tutors.',
+    images: ['https://www.lioncitytutors.com/science3.webp'],
   },
   alternates: {
     canonical: 'https://www.lioncitytutors.com/science-tuition',

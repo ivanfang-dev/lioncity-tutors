@@ -4,6 +4,7 @@ export const metadata = {
   description: 'H2 Chemistry (9476) guide for Singapore JC students — the revised 2026 syllabus, physical, organic and inorganic topics, and the technique that scores an A.',
   keywords: ["A Level H2 Chemistry 2026", "H2 Chemistry Singapore", "GCE A Level Chemistry guide", "A Level Chemistry preparation", "H2 Chemistry study tips", "A Level Chemistry tuition Singapore", "Chemistry revision techniques", "H2 Chemistry syllabus", "9476 syllabus"],
   openGraph: {
+    images: [DEFAULT_OG_IMAGE],
     title: 'A-Level H2 Chemistry Guide 2026 (9476) | LionCity Tutors',
     description: 'Comprehensive A Level H2 Chemistry guide with proven strategies to help Singapore students achieve A grades in GCE A Level Chemistry.',
     url: 'https://www.lioncitytutors.com/a-level-chemistry',
@@ -21,6 +22,7 @@ import {
   RelatedGuides, ExamTimetable,
 } from '@/components/guide';
 import { getHubFor } from '@/lib/seo/links.mjs';
+import { DEFAULT_OG_IMAGE } from '@/lib/seo/openGraph';
 import {
   FileText, CalendarClock, Atom, Hexagon, Gem, Brain, Target,
   TriangleAlert, CalendarDays, BookOpen, Beaker, GraduationCap, Users,

@@ -3,6 +3,7 @@ import Image from 'next/image';
 import combinedscienceImage from "../../../public/combined-chemistry-biology.webp"
 import GuideSchema from '@/components/seo/GuideSchema';
 import { RelatedGuides, ExamTimetable } from '@/components/guide';
+import { DEFAULT_OG_IMAGE } from '@/lib/seo/openGraph';
 
 export const metadata = {
   title: 'Combined Science Guide 2026: O-Level & N-Level',
@@ -19,6 +20,7 @@ export const metadata = {
     'Singapore science education'
   ],
   openGraph: {
+    images: [DEFAULT_OG_IMAGE],
     title: 'Combined Science 2026: O-Level & N-Level Guide',
     description: 'All three Combined Science combinations at O-Level and N-Level. Physics-Chemistry, Physics-Biology, Chemistry-Biology strategies with Singapore examples.',
     url: 'https://www.lioncitytutors.com/combined-science-overview',

@@ -3,6 +3,7 @@ import { HelpCircle } from 'lucide-react';
 import GuideSchema from '@/components/seo/GuideSchema';
 import { SectionHeading } from '@/components/guide';
 import { REGISTER_TUTOR_FAQS } from './faqs.mjs';
+import { DEFAULT_OG_IMAGE } from '@/lib/seo/openGraph';
 
 const TITLE = 'Become a Tutor in Singapore | LionCity Tutors';
 const DESCRIPTION =
@@ -20,6 +21,7 @@ export const metadata = {
     'part time tutor Singapore'
   ],
   openGraph: {
+    images: [DEFAULT_OG_IMAGE],
     title: TITLE,
     description: DESCRIPTION,
     url: 'https://www.lioncitytutors.com/register-tutor',

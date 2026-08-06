@@ -40,6 +40,7 @@ export const metadata = {
     card: 'summary_large_image',
     title: 'Best Physics Tuition Singapore | Expert Physics Tutors',
     description: 'Find qualified physics tutors for Secondary, JC H1/H2, IGCSE & IB levels. Complete syllabus coverage with free matching service.',
+    images: ['https://www.lioncitytutors.com/physics.webp'],
   },
   alternates: {
     canonical: 'https://www.lioncitytutors.com/physics-tuition',

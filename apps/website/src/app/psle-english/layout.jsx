@@ -1,3 +1,4 @@
+import { DEFAULT_OG_IMAGE } from '@/lib/seo/openGraph';
 export const metadata = {
   title: 'PSLE English Guide 2026: Papers, Timetable & Tips',
   description: 'PSLE English guide for Singapore parents — the 2026 exam timetable across all four papers, composition and oral strategy, and the AL1–AL8 scoring system.',
@@ -13,6 +14,7 @@ export const metadata = {
     'PSLE comprehension'
   ],
   openGraph: {
+    images: [DEFAULT_OG_IMAGE],
     title: 'PSLE English Guide 2026: Papers, Timetable & Tips',
     description: 'The official 2026 PSLE English exam timetable across all four papers, composition and oral strategy, for Singapore parents.',
     type: 'article',

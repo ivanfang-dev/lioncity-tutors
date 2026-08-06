@@ -1,9 +1,11 @@
 import Link from 'next/link';
+import { DEFAULT_OG_IMAGE } from '@/lib/seo/openGraph';
 
 export const metadata = {
   title: '404 Not Found | My Tuition Site',
   description: 'Sorry, the page you are looking for does not exist. Return to the homepage of My Tuition Site.',
   openGraph: {
+    images: [DEFAULT_OG_IMAGE],
     title: '404 Not Found | My Tuition Site',
     description: 'Sorry, the page you are looking for does not exist. Return to the homepage of My Tuition Site.',
     url: 'https://www.lioncitytutors.com/404',
