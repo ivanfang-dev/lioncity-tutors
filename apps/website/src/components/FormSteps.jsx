@@ -29,6 +29,7 @@ export const Step1 = ({ nextStep, formData, handleChange, handleLevelSubjectChan
               <Label htmlFor="name" className="text-base font-medium text-slate-700">Name<span className="text-red-500 -ml-0.5">*</span></Label>
               <Input
                   id="name" name="name" type="text" value={formData.name} onChange={handleChange}
+                  autoComplete="name"
                   placeholder="e.g., Jane Doe"
                   className={cn('mt-1 h-12 text-base', errors.name && 'border-red-500 focus-visible:ring-red-500')}
               />
@@ -39,6 +40,7 @@ export const Step1 = ({ nextStep, formData, handleChange, handleLevelSubjectChan
               <Label htmlFor="mobile" className="text-base font-medium text-slate-700">Mobile Number<span className="text-red-500 -ml-0.5">*</span></Label>
               <Input
                   id="mobile" name="mobile" type="tel" value={formData.mobile} onChange={handleChange}
+                  autoComplete="tel" inputMode="tel"
                   placeholder="e.g., 9123 4567"
                   className={cn('mt-1 h-12 text-base', errors.mobile && 'border-red-500 focus-visible:ring-red-500')}
               />
@@ -75,14 +77,14 @@ export const Step1 = ({ nextStep, formData, handleChange, handleLevelSubjectChan
               <button
                   type="button"
                   onClick={addLevelSubject}
-                  className="mt-2 inline-flex items-center gap-1.5 text-sm font-semibold text-blue-600 hover:text-blue-700 transition-colors"
+                  className="mt-2 inline-flex items-center gap-1.5 min-h-11 text-sm font-semibold text-blue-600 hover:text-blue-700 transition-colors"
               >
                   <Plus size={16} /> Add another subject
               </button>
           </div>
       </div>
       <div className="flex justify-end pt-4">
-          <Button type="button" onClick={nextStep} variant="accent" size="lg" className="w-full sm:w-auto py-3 text-base">Next Step</Button>
+          <Button type="button" onClick={nextStep} variant="accent" size="lg" className="w-full sm:w-auto min-h-11 py-3 text-base">Next Step</Button>
       </div>
   </div>
 );
@@ -131,8 +133,8 @@ export const Step2 = ({ nextStep, prevStep, formData, handleChange, errors }) =>
       <Input id="preferredTime" name="preferredTime" type="text" value={formData.preferredTime} onChange={handleChange} placeholder="e.g., Weekday evenings after 5pm" className="mt-1 h-12 text-base" />
     </div>
     <div className="flex flex-col-reverse sm:flex-row justify-between pt-4 gap-4">
-      <Button type="button" onClick={prevStep} variant="outline" size="lg" className="w-full sm:w-auto py-3 text-base">Go Back</Button>
-      <Button type="button" onClick={nextStep} variant="accent" size="lg" className="w-full sm:w-auto py-3 text-base">Next Step</Button>
+      <Button type="button" onClick={prevStep} variant="outline" size="lg" className="w-full sm:w-auto min-h-11 py-3 text-base">Go Back</Button>
+      <Button type="button" onClick={nextStep} variant="accent" size="lg" className="w-full sm:w-auto min-h-11 py-3 text-base">Next Step</Button>
     </div>
   </div>
 );
@@ -269,8 +271,8 @@ export const Step3 = ({ prevStep, formData, handleChange, status }) => {
         </div>
 
         <div className="flex flex-col-reverse sm:flex-row justify-between pt-4 gap-4">
-            <Button type="button" onClick={prevStep} variant="outline" size="lg" className="w-full sm:w-auto py-3 text-base">Go Back</Button>
-            <Button type="submit" size="lg" variant="accent" className="w-full sm:w-auto py-3 text-base" disabled={status.submitting}>
+            <Button type="button" onClick={prevStep} variant="outline" size="lg" className="w-full sm:w-auto min-h-11 py-3 text-base">Go Back</Button>
+            <Button type="submit" size="lg" variant="accent" className="w-full sm:w-auto min-h-11 py-3 text-base" disabled={status.submitting}>
                 {status.submitting ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : null}
                 {status.submitting ? 'Submitting...' : 'Submit Request'}
             </Button>
