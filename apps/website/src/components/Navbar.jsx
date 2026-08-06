@@ -117,90 +117,95 @@ export default function Navbar() {
         {menuOpen ? <X size={24} /> : <Menu size={24} />}
       </button>
 
-      {menuOpen && (
-        <div
-          className="absolute top-full left-0 w-full bg-white/95 backdrop-blur-xl shadow-lg border-t border-gray-100 flex flex-col z-50 animate-slideDown"
-          onClick={(e) => e.stopPropagation()}
-        >
-          {/* CTA Button */}
-          <div className="px-5 py-4 border-b border-gray-100">
-            <Link
-              href="/request-tutor"
-              onClick={() => setMenuOpen(false)}
-              className="bg-[#F17720] text-white text-sm px-6 py-3 rounded-full hover:bg-[#d9691c] shadow-sm font-semibold block text-center transition-all"
-            >
-              Get Free Tutor Matching
-            </Link>
-          </div>
-
-          {/* Navigation Items */}
-          <div className="py-1">
-            <Link
-              href="/"
-              onClick={() => setMenuOpen(false)}
-              className={`block px-5 py-3.5 text-sm font-medium transition-colors ${
-                pathname === "/"
-                  ? "bg-primary/5 text-primary"
-                  : "text-gray-700 hover:bg-gray-50 active:bg-gray-100"
-              }`}
-            >
-              Home
-            </Link>
-
-            <Dropdown
-              label="Levels & Exams"
-              items={levels}
-              open={openDropdown === "levels"}
-              onToggle={() => toggleDropdown("levels")}
-              isMobile
-            />
-
-            <Dropdown
-              label="Subjects"
-              items={subjects}
-              open={openDropdown === "subjects"}
-              onToggle={() => toggleDropdown("subjects")}
-              isMobile
-            />
-
-            <Dropdown
-              label="Free Resources"
-              items={resources}
-              open={openDropdown === "resources"}
-              onToggle={() => toggleDropdown("resources")}
-              isMobile
-            />
-
-            <Dropdown
-              label="For Parents"
-              items={forParents}
-              open={openDropdown === "parents"}
-              onToggle={() => toggleDropdown("parents")}
-              isMobile
-            />
-
-            <Dropdown
-              label="For Tutors"
-              items={forTutors}
-              open={openDropdown === "tutors"}
-              onToggle={() => toggleDropdown("tutors")}
-              isMobile
-            />
-
-            <Link
-              href="/tuition-rates"
-              onClick={() => setMenuOpen(false)}
-              className={`block px-5 py-3.5 text-sm font-medium transition-colors ${
-                pathname === "/tuition-rates"
-                  ? "bg-primary/5 text-primary"
-                  : "text-gray-700 hover:bg-gray-50 active:bg-gray-100"
-              }`}
-            >
-              Tuition Rates
-            </Link>
-          </div>
+      {/* Mobile menu — always rendered so every link is in the crawlable HTML;
+          visibility is toggled with CSS (not unmounting) and hidden items are
+          taken out of tab order so keyboard nav still skips them when closed. */}
+      <div
+        aria-hidden={!menuOpen}
+        className={`absolute top-full left-0 w-full bg-white/95 backdrop-blur-xl shadow-lg border-t border-gray-100 flex-col z-50 animate-slideDown ${menuOpen ? "flex" : "hidden"}`}
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* CTA Button */}
+        <div className="px-5 py-4 border-b border-gray-100">
+          <Link
+            href="/request-tutor"
+            onClick={() => setMenuOpen(false)}
+            tabIndex={menuOpen ? 0 : -1}
+            className="bg-[#F17720] text-white text-sm px-6 py-3 rounded-full hover:bg-[#d9691c] shadow-sm font-semibold block text-center transition-all"
+          >
+            Get Free Tutor Matching
+          </Link>
         </div>
-      )}
+
+        {/* Navigation Items */}
+        <div className="py-1">
+          <Link
+            href="/"
+            onClick={() => setMenuOpen(false)}
+            tabIndex={menuOpen ? 0 : -1}
+            className={`block px-5 py-3.5 text-sm font-medium transition-colors ${
+              pathname === "/"
+                ? "bg-primary/5 text-primary"
+                : "text-gray-700 hover:bg-gray-50 active:bg-gray-100"
+            }`}
+          >
+            Home
+          </Link>
+
+          <Dropdown
+            label="Levels & Exams"
+            items={levels}
+            open={openDropdown === "levels"}
+            onToggle={() => toggleDropdown("levels")}
+            isMobile
+          />
+
+          <Dropdown
+            label="Subjects"
+            items={subjects}
+            open={openDropdown === "subjects"}
+            onToggle={() => toggleDropdown("subjects")}
+            isMobile
+          />
+
+          <Dropdown
+            label="Free Resources"
+            items={resources}
+            open={openDropdown === "resources"}
+            onToggle={() => toggleDropdown("resources")}
+            isMobile
+          />
+
+          <Dropdown
+            label="For Parents"
+            items={forParents}
+            open={openDropdown === "parents"}
+            onToggle={() => toggleDropdown("parents")}
+            isMobile
+          />
+
+          <Dropdown
+            label="For Tutors"
+            items={forTutors}
+            open={openDropdown === "tutors"}
+            onToggle={() => toggleDropdown("tutors")}
+            isMobile
+          />
+
+          <Link
+            href="/tuition-rates"
+            onClick={() => setMenuOpen(false)}
+            tabIndex={menuOpen ? 0 : -1}
+            className={`block px-5 py-3.5 text-sm font-medium transition-colors ${
+              pathname === "/tuition-rates"
+                ? "bg-primary/5 text-primary"
+                : "text-gray-700 hover:bg-gray-50 active:bg-gray-100"
+            }`}
+          >
+            Tuition Rates
+          </Link>
+        </div>
+      </div>
     </nav>
   );
 }

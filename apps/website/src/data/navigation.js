@@ -25,7 +25,7 @@ export const levels = [
 export const resources = [
   { name: "Free Notes", path: "/free-notes" },
   { name: "Free Test Papers", path: "/free-test-papers" },
-  { name: "Exam Guides Hub", path: "/guides/" }
+  { name: "Exam Guides Hub", path: "/guides" }
 
 ];
 
