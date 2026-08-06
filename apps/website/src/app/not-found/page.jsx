@@ -11,6 +11,9 @@ export const metadata = {
     url: 'https://www.lioncitytutors.com/404',
     type: 'website',
   },
+  alternates: {
+    canonical: 'https://www.lioncitytutors.com/not-found',
+  },
 };
 
 export default function NotFound() {

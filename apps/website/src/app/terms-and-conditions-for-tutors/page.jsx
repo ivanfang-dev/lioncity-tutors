@@ -8,7 +8,10 @@ export const metadata = {
       description: 'Terms and Conditions for Tutors of LionCity Tutors.',
       url: 'https://www.lioncitytutors.com/terms-and-conditions-for-tutors',
       type: 'website',
-    }
+    },
+    alternates: {
+      canonical: 'https://www.lioncitytutors.com/terms-and-conditions-for-tutors',
+    },
 };
 
 export default function TermsAndConditionsForTutors() {

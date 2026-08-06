@@ -46,6 +46,23 @@ export default {
             destination: '/a-level-biology',
             permanent: true,
         },
+        // /guides/* duplicates of /blog/* posts — /blog is the canonical
+        // home for these (see Task 7, docs/seo-action-plan.md).
+        {
+            source: '/guides/focus-and-concentration-issues',
+            destination: '/blog/focus-and-concentration-issues',
+            permanent: true,
+        },
+        {
+            source: '/guides/navigating-psle-anxiety',
+            destination: '/blog/navigating-psle-anxiety',
+            permanent: true,
+        },
+        {
+            source: '/guides/improve-primary-english-composition',
+            destination: '/blog/improve-primary-english-composition',
+            permanent: true,
+        },
       ];
     },
   };

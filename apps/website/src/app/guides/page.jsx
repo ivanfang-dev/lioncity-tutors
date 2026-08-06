@@ -12,6 +12,9 @@ export const metadata = {
     description: 'The ultimate resource library for Singaporean parents and students navigating PSLE, O-Levels, and A-Levels.',
     url: 'https://www.lioncitytutors.com/guides',
   },
+  alternates: {
+    canonical: 'https://www.lioncitytutors.com/guides',
+  },
 };
 
 // Helper to filter guides by level

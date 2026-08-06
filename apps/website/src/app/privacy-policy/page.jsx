@@ -11,6 +11,9 @@ export const metadata = {
       url: 'https://www.lioncitytutors.com/privacy-policy',
       type: 'website',
     },
+    alternates: {
+      canonical: 'https://www.lioncitytutors.com/privacy-policy',
+    },
   };
 
 export default function PrivacyPolicy(){
