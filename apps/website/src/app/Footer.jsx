@@ -47,6 +47,11 @@ export default function Footer() {
             <h3 className="text-sm font-semibold text-primary uppercase tracking-wider mb-4">Contact Us</h3>
             <ul className="text-sm">
               <li>
+                <Link href="/contact-us" className="text-gray-600 hover:text-primary transition-colors min-h-11 flex items-center">
+                  Contact Us
+                </Link>
+              </li>
+              <li>
                 <a href="https://wa.me/6588701152" className="text-gray-600 hover:text-primary transition-colors min-h-11 flex items-center">
                   WhatsApp: +65 8870 1152
                 </a>
