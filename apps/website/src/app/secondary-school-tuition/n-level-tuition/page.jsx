@@ -83,7 +83,7 @@ export default function NLevelTuition() {
                   <p className="text-gray-600 mb-4">Our team will be in touch with suitable tutor profiles shortly via WhatsApp.</p>
                   <Button
                     onClick={resetForm}
-                    className="bg-[#F17720] text-white px-6 py-2 rounded-full hover:bg-[#d9691c] transition-colors"
+                    className="text-[18.7px] font-bold bg-accent-fill text-white px-6 py-2 rounded-full hover:bg-accent-fill-hover transition-colors"
                   >
                     Submit Another Request
                   </Button>
@@ -410,15 +410,15 @@ export default function NLevelTuition() {
         <RelatedGuides slug="n-level-tuition" heading="N-Level guides and resources" />
 
         {/* Section 10: Final CTA - UPDATED */}
-        <section className="text-center space-y-6 bg-accent text-white p-12 rounded-2xl shadow-xl">
+        <section className="text-center space-y-6 bg-gradient-to-r from-primary to-primary/90 text-white p-12 rounded-2xl shadow-xl">
             <h2 className="text-3xl md:text-4xl font-bold text-white">Start Your Journey To N-Level Success Today</h2>
-            <p className="text-text-inverse/80 text-lg max-w-2xl mx-auto">
+            <p className="text-text-inverse text-lg max-w-2xl mx-auto">
                 Experience the difference with our handpicked tutors. We'll match you within {MATCH_TIME}.
             </p>
             <div className="pt-4">
                 <Button 
                     onClick={() => formRef.current?.scrollIntoView({ behavior: 'smooth' })}
-                    className="text-lg px-10 py-4 bg-white text-accent hover:bg-gray-100 font-bold rounded-xl shadow-lg transform hover:scale-105 transition-all duration-200"
+                    className="text-[18.7px] font-bold px-8 sm:px-10 py-3 sm:py-4 bg-accent-fill text-white hover:bg-accent-fill-hover rounded-full shadow-lg transform hover:scale-105 transition-all duration-200"
                 >
                     Get an N-Level Tutor Now
                 </Button>

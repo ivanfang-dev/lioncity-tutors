@@ -70,7 +70,7 @@ export default function FloatingTrustBadge({ onGetStarted }) {
                   }
                   handleDismiss();
                 }}
-                className="inline-flex items-center gap-2 bg-accent hover:bg-accent/90 text-white font-medium px-5 py-2.5 rounded-full text-sm transition-all duration-300 hover:scale-105"
+                className="inline-flex items-center gap-2 bg-accent-fill hover:bg-accent-fill-hover text-white font-bold px-5 py-2.5 rounded-full text-[18.7px] transition-all duration-300 hover:scale-105"
               >
                 Get Started Free
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">

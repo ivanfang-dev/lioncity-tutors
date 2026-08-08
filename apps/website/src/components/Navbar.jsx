@@ -106,7 +106,7 @@ export default function Navbar() {
 
         <Link
           href="/request-tutor"
-          className="bg-[#F17720] text-white px-5 py-2.5 rounded-full hover:bg-[#d9691c] shadow-sm hover:shadow-md transition-all font-semibold whitespace-nowrap ml-3 text-sm"
+          className="bg-accent-fill text-white px-5 py-2.5 rounded-full hover:bg-accent-fill-hover shadow-sm hover:shadow-md transition-all font-semibold whitespace-nowrap ml-3 text-sm"
         >
           Get Free Tutor Matching
         </Link>
@@ -131,7 +131,7 @@ export default function Navbar() {
             href="/request-tutor"
             onClick={() => setMenuOpen(false)}
             tabIndex={menuOpen ? 0 : -1}
-            className="bg-[#F17720] text-white text-sm px-6 py-3 rounded-full hover:bg-[#d9691c] shadow-sm font-semibold block text-center transition-all"
+            className="bg-accent-fill text-white text-sm px-6 py-3 rounded-full hover:bg-accent-fill-hover shadow-sm font-semibold block text-center transition-all"
           >
             Get Free Tutor Matching
           </Link>

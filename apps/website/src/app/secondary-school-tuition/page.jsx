@@ -108,7 +108,7 @@ export default function SecondarySchoolTuition() {
                 <li>Support for progression to O-Levels or ITE</li>
               </ul>
               <Link href="/secondary-school-tuition/n-level-tuition" className="mt-auto">
-                <Button className="bg-[#F17720] hover:bg-[#d9691c] text-white w-full">Learn More</Button>
+                <Button className="bg-accent-fill hover:bg-accent-fill-hover text-white w-full">Learn More</Button>
               </Link>
             </CardContent>
           </Card>
@@ -130,7 +130,7 @@ export default function SecondarySchoolTuition() {
                   <p className="text-gray-600 mb-6">Our team will be in touch with suitable tutor profiles shortly via WhatsApp.</p>
                   <Button
                     onClick={resetForm}
-                    className="bg-[#F17720] text-white px-6 py-2 rounded-full hover:bg-[#d9691c] transition-colors"
+                    className="text-[18.7px] font-bold bg-accent-fill text-white px-6 py-2 rounded-full hover:bg-accent-fill-hover transition-colors"
                   >
                     Submit Another Request
                   </Button>

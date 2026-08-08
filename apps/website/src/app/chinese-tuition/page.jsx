@@ -76,7 +76,7 @@ export default function ChineseTuition() {
             />
           </div>
           <Link href="/request-tutor">
-            <Button className="text-lg px-8 py-4 mt-4 bg-[#F17720] hover:bg-[#d9691c] text-white font-bold rounded-full shadow-lg transform hover:scale-105 transition-all duration-200">
+            <Button className="text-[18.7px] font-bold px-8 py-4 mt-4 bg-accent-fill hover:bg-accent-fill-hover text-white rounded-full shadow-lg transform hover:scale-105 transition-all duration-200">
               Request a Chinese Tutor
             </Button>
           </Link>

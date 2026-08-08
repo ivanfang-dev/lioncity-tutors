@@ -6,8 +6,11 @@
   /* ── Brand Colors ── */
   --color-primary: #0474BA;       /* Trustworthy Blue — brand, headings, links */
   --color-accent: #F17720;        /* Action Orange — brand mark / icon tints (never white text on it) */
-  --color-accent-fill: #D9691C;   /* CTA fill — white label passes AA as large text */
-  --color-accent-fill-hover: #C15E12; /* CTA fill, hover */
+  --color-accent-fill: #EB711D;   /* CTA fill — 3.04:1 on white. Only clears AA via the
+                                     large-text rule, so any white label on this MUST be
+                                     >=18.66px AND bold (text-xl font-bold). text-lg is
+                                     18px and does NOT qualify. */
+  --color-accent-fill-hover: #D1651A; /* CTA fill, hover — 3.76:1, same press depth as before */
 
   /* ── Neutrals ── */
   --color-gray-950: #0a0a0a;
@@ -40,6 +43,29 @@
   --color-success: #22c55e;
   --color-error: #ef4444;
   --color-rating: #FFA630;
+
+  /* ── shadcn/ui semantic aliases ──
+     The vendored components in src/components/ui/ ship with shadcn's stock token
+     names. Without these the classes are never generated at all, so panels render
+     transparent and focus rings invisible. Each one points at the palette above —
+     do not give them independent values.
+     Note: `accent` is already taken by Momentum Orange, which is a brand accent and
+     NOT shadcn's neutral hover surface. Components must use `muted` for hover fills. */
+  --color-background: #FFFFFF;      /* = background-default */
+  --color-foreground: #262626;      /* = text-default */
+  --color-card: #FFFFFF;
+  --color-card-foreground: #262626;
+  --color-popover: #FFFFFF;
+  --color-popover-foreground: #262626;
+  --color-muted: #f5f5f5;           /* = background-subtle; shadcn's neutral hover/fill */
+  --color-muted-foreground: #525252;/* = text-secondary */
+  --color-primary-foreground: #FFFFFF;   /* white on Harbour Blue — 4.98:1, AA */
+  --color-accent-foreground: #262626;    /* ink on orange; never white (2.8:1) */
+  --color-secondary: #f5f5f5;
+  --color-secondary-foreground: #262626;
+  --color-destructive: #ef4444;     /* = error */
+  --color-ring: #D9691C;            /* focus ring — 3:1 on white, unlike #F17720 */
+  --color-input: #e5e5e5;           /* = border */
 
   /* ── Shadows ── */
   --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.04);
@@ -268,7 +294,10 @@ button, a {
 
 button:focus-visible,
 a:focus-visible {
-  outline: 2px solid var(--color-accent-fill); /* #D9691C — 3:1 on white; bright #F17720 fails WCAG 1.4.11 */
+  outline: 2px solid var(--color-ring); /* #D9691C — 3.5:1 on white; bright #F17720 fails WCAG 1.4.11.
+                                           Deliberately NOT accent-fill: the focus ring is a non-text
+                                           indicator with no large-text escape hatch, so it keeps the
+                                           darker value even though the CTA fill lightened. */
   outline-offset: 2px;
 }
 

@@ -224,7 +224,7 @@ Preferred days & timing: `;
                     className="w-full sm:w-auto"
                   >
                     <Button
-                      className="bg-[#F17720] hover:bg-[#d9691c] text-white font-semibold px-8 py-5 rounded-full text-base sm:text-lg shadow-md hover:shadow-lg transition-all duration-200 w-full sm:w-auto"
+                      className="text-[18.7px] font-bold bg-accent-fill hover:bg-accent-fill-hover text-white px-8 py-5 rounded-full shadow-md hover:shadow-lg transition-all duration-200 w-full sm:w-auto"
                       onClick={scrollToForm}
                     >
                       Request tutors
@@ -550,7 +550,7 @@ Preferred days & timing: `;
             </p>
             <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
               <Button
-                className="bg-[#F17720] hover:bg-[#d9691c] text-white font-bold px-10 py-4 rounded-full text-lg shadow-lg hover:shadow-xl transition-all"
+                className="text-[18.7px] font-bold bg-accent-fill hover:bg-accent-fill-hover text-white px-10 py-4 rounded-full shadow-lg hover:shadow-xl transition-all"
                 onClick={scrollToForm}
               >
                 Request My Tutor Now

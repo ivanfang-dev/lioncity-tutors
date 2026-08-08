@@ -576,7 +576,7 @@ export default function CombinedScienceOverview() {
           </p>
           <Link
             href="/request-tutor"
-            className="inline-block bg-[#F17720] text-white hover:bg-[#d9691c] px-6 sm:px-8 py-3 rounded-full text-sm sm:text-base font-bold transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105"
+            className="text-[18.7px] font-bold inline-block bg-accent-fill text-white hover:bg-accent-fill-hover px-6 sm:px-8 py-3 rounded-full transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105"
           >
             Request a Combined Science Tutor
           </Link>

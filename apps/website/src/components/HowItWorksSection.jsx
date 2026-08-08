@@ -241,7 +241,7 @@ export default function HowItWorksSection({ formRef }) {
                   <div className="mt-6">
                     <Button
                       onClick={scrollToForm}
-                      className="w-full bg-accent hover:bg-accent/90 text-white font-semibold py-3 rounded-xl"
+                      className="w-full bg-accent-fill hover:bg-accent-fill-hover text-white font-bold text-[18.7px] py-3 rounded-xl"
                     >
                       Request a Tutor Now
                     </Button>
@@ -302,7 +302,7 @@ export default function HowItWorksSection({ formRef }) {
                       <Button
                         onClick={scrollToForm}
                         size="lg"
-                        className="bg-white text-accent hover:bg-white/90 font-bold text-lg px-8 py-6 rounded-lg shadow-lg transform transition-all duration-300 hover:scale-105"
+                        className="bg-white text-accent-fill hover:bg-white/90 font-bold text-[18.7px] px-8 py-6 rounded-lg shadow-lg transform transition-all duration-300 hover:scale-105"
                       >
                         Request a Tutor Now
                       </Button>

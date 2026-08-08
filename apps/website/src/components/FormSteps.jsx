@@ -84,7 +84,7 @@ export const Step1 = ({ nextStep, formData, handleChange, handleLevelSubjectChan
           </div>
       </div>
       <div className="flex justify-end pt-4">
-          <Button type="button" onClick={nextStep} variant="accent" size="lg" className="w-full sm:w-auto min-h-11 py-3 text-base">Next Step</Button>
+          <Button type="button" onClick={nextStep} variant="accent" size="lg" className="w-full sm:w-auto min-h-11 py-3">Next Step</Button>
       </div>
   </div>
 );
@@ -134,7 +134,7 @@ export const Step2 = ({ nextStep, prevStep, formData, handleChange, errors }) =>
     </div>
     <div className="flex flex-col-reverse sm:flex-row justify-between pt-4 gap-4">
       <Button type="button" onClick={prevStep} variant="outline" size="lg" className="w-full sm:w-auto min-h-11 py-3 text-base">Go Back</Button>
-      <Button type="button" onClick={nextStep} variant="accent" size="lg" className="w-full sm:w-auto min-h-11 py-3 text-base">Next Step</Button>
+      <Button type="button" onClick={nextStep} variant="accent" size="lg" className="w-full sm:w-auto min-h-11 py-3">Next Step</Button>
     </div>
   </div>
 );
@@ -272,7 +272,7 @@ export const Step3 = ({ prevStep, formData, handleChange, status }) => {
 
         <div className="flex flex-col-reverse sm:flex-row justify-between pt-4 gap-4">
             <Button type="button" onClick={prevStep} variant="outline" size="lg" className="w-full sm:w-auto min-h-11 py-3 text-base">Go Back</Button>
-            <Button type="submit" size="lg" variant="accent" className="w-full sm:w-auto min-h-11 py-3 text-base" disabled={status.submitting}>
+            <Button type="submit" size="lg" variant="accent" className="w-full sm:w-auto min-h-11 py-3" disabled={status.submitting}>
                 {status.submitting ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : null}
                 {status.submitting ? 'Submitting...' : 'Submit Request'}
             </Button>

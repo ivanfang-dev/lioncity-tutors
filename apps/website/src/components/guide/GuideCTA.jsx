@@ -7,8 +7,10 @@ import { ICON_STROKE } from './constants';
  * The closing conversion block for a subject guide: the request-tutor CTA
  * with the standard trust facts and a quiet WhatsApp fallback.
  *
- * Uses the fill orange (#D9691C) with a bold 20px label so the white label
+ * Uses the fill orange (accent-fill) with a bold 20px label so the white label
  * clears WCAG large-text contrast — never the bright #F17720 (DESIGN.md).
+ * 20px is above the 18.66px floor, so this keeps a little more headroom than
+ * the shared Button accent variant.
  *
  * @param {string} title
  * @param {string} description
@@ -46,7 +48,7 @@ export default function GuideCTA({
       <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
         <Link
           href="/request-tutor"
-          className="inline-block bg-[#D9691C] text-white px-7 py-3 rounded-full font-bold text-xl shadow-md hover:bg-[#C15E12] hover:shadow-lg transition-all duration-200 w-full sm:w-auto focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C15E12] focus-visible:ring-offset-2"
+          className="inline-block bg-accent-fill text-white px-7 py-3 rounded-full font-bold text-xl shadow-md hover:bg-accent-fill-hover hover:shadow-lg transition-all duration-200 w-full sm:w-auto focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
         >
           {buttonText}
         </Link>

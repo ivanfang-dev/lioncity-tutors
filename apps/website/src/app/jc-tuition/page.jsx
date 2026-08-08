@@ -92,7 +92,7 @@ export default function JCTuition() {
                   <p className="text-gray-600 mb-4">Our team will be in touch with suitable tutor profiles shortly via WhatsApp.</p>
                   <button
                     onClick={resetForm}
-                    className="bg-[#F17720] text-white px-6 py-2 rounded-full hover:bg-[#d9691c] transition-colors font-semibold"
+                    className="text-[18.7px] font-bold bg-accent-fill text-white px-6 py-2 rounded-full hover:bg-accent-fill-hover transition-colors"
                   >
                     Submit Another Request
                   </button>
@@ -1127,7 +1127,7 @@ export default function JCTuition() {
             </p>
             <Button
                 onClick={() => formRef.current?.scrollIntoView({ behavior: 'smooth' })}
-                className="text-lg px-10 py-4 bg-[#F17720] text-white hover:bg-[#d9691c] font-bold rounded-full shadow-lg transform hover:scale-105 transition-all duration-200"
+                className="text-[18.7px] font-bold px-10 py-4 bg-accent-fill text-white hover:bg-accent-fill-hover rounded-full shadow-lg transform hover:scale-105 transition-all duration-200"
             >
                 Request a JC Tutor Now
             </Button>

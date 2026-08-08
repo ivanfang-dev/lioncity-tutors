@@ -376,7 +376,7 @@ export default function PSLEPreparationGuideClient() {
                           <p className="text-sm">Master the PAC (Purpose, Audience, Context) framework for the visual stimulus section. Teach your child to ask: "What is this poster trying to achieve? Who is it for? Where would I see it?"</p>
                       </div>
                       <div className="pt-2">
-                        <Link href="/psle-english" className="text-sm font-semibold text-accent hover:underline">
+                        <Link href="/psle-english" className="text-sm font-semibold text-primary hover:underline">
                           Go to the Complete PSLE English Guide &rarr;
                         </Link>
                       </div>
@@ -398,7 +398,7 @@ export default function PSLEPreparationGuideClient() {
                           <p className="text-sm">Categorize mistakes after every practice paper. Are they due to: 1) Calculation error, 2) Concept misunderstanding, or 3) Misinterpretation of the question? This reveals the true weak spot.</p>
                       </div>
                        <div className="pt-2">
-                        <Link href="/psle-math" className="text-sm font-semibold text-accent hover:underline">
+                        <Link href="/psle-math" className="text-sm font-semibold text-primary hover:underline">
                           Master Heuristics with the PSLE Math Guide &rarr;
                         </Link>
                       </div>
@@ -420,7 +420,7 @@ export default function PSLEPreparationGuideClient() {
                           <p className="text-sm">Teach the C-U-E method for application questions: C (Concept) - identify the core science concept. U (Use) - use data/details from the question. E (Explain) - link the concept and data to explain the outcome.</p>
                       </div>
                        <div className="pt-2">
-                        <Link href="/psle-science" className="text-sm font-semibold text-accent hover:underline">
+                        <Link href="/psle-science" className="text-sm font-semibold text-primary hover:underline">
                           See the Full PSLE Science Syllabus Breakdown &rarr;
                         </Link>
                       </div>
@@ -442,7 +442,7 @@ export default function PSLEPreparationGuideClient() {
                           <p className="text-sm">This section often tests for deeper, inferential understanding (深层含义). Practice identifying subtle clues in the text and understanding the author's hidden intent or emotions.</p>
                       </div>
                        <div className="pt-2">
-                        <Link href="/psle-chinese" className="text-sm font-semibold text-accent hover:underline">
+                        <Link href="/psle-chinese" className="text-sm font-semibold text-primary hover:underline">
                           Read the In-Depth PSLE Chinese Guide &rarr;
                         </Link>
                       </div>
