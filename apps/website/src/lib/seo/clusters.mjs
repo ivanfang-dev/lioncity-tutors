@@ -25,7 +25,8 @@ export const HUBS = {
     anchor: 'Complete O-Level preparation guide',
     spokes: [
       'o-level-english', 'o-level-math', 'o-level-physics', 'o-level-chemistry',
-      'o-level-biology', 'combined-science-overview', 'combined-chemistry-physics',
+      'o-level-biology', 'o-level-history',
+      'combined-science-overview', 'combined-chemistry-physics',
       'combined-chemistry-biology', 'combined-physics-biology', 'o-level-tuition',
       'math-tuition', 'science-tuition', 'chemistry-tuition', 'physics-tuition',
       'biology-tuition', 'english-tuition', 'chinese-tuition',
@@ -127,6 +128,15 @@ export const SPOKES = {
     slug: 'o-level-biology', url: '/o-level-biology', hub: 'o-level-prep',
     title: 'O-Level Biology', anchor: 'O-Level Biology topic guide',
     blurb: 'Cells, physiology and genetics with exam-ready phrasing.',
+  },
+  // A study-technique article rather than a subject landing page, so it carries
+  // Article rather than the spoke default of Course.
+  'o-level-history': {
+    slug: 'o-level-history', url: '/blog/how-to-study-history-o-level', hub: 'o-level-prep',
+    schemaType: 'Article',
+    title: 'How to Study for O-Level History',
+    anchor: 'how to study for O-Level History',
+    blurb: 'Source-based question technique and essay structure, mistake by mistake.',
   },
   'combined-science-overview': {
     slug: 'combined-science-overview', url: '/combined-science-overview', hub: 'o-level-prep',

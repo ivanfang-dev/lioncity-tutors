@@ -59,6 +59,182 @@ const sec3ToSec4 = [
   },
 ];
 
+// The tips chapter. Grouped by subject, numbered continuously 1–21 at render
+// time so tips can be added to a group without renumbering the rest by hand.
+// Each group opens with `lead` — a direct answer to the group's implied
+// question, which is what featured snippets and AI answers extract.
+const tipGroups = [
+  {
+    id: 'tips-general',
+    heading: 'Technique that applies to every subject',
+    lead: 'Most of the marks our tutors recover in Sec 4 are not new content. They are marks the student already knew enough to earn, but lost in how the answer was written.',
+    tips: [
+      {
+        title: 'Read the mark allocation as a specification',
+        body: 'A 3-mark question is telling you the marker has to find three distinct things. Decide what your three are before you start writing. Students who write one long paragraph and hope it covers everything routinely score 1 or 2 on questions they understood completely.',
+      },
+      {
+        title: 'Underline the command word before you write anything',
+        body: 'Describe, explain, compare, evaluate and suggest each want a different shape of answer. The most common way to lose marks on a topic you know well is to answer a slightly different question from the one printed.',
+      },
+      {
+        title: 'Your error log matters more than your paper count',
+        body: 'The loop that works is: attempt, mark, categorise the mistake, write one line on why it happened, redo the question, then do a similar one a few days later. Attempt, check the answer, move on teaches almost nothing. Four papers worked properly beat ten papers skimmed.',
+      },
+      {
+        title: "Practise the questions you don't recognise",
+        body: 'It is possible to get very good at recognising the exact questions you have already practised without getting any better at recognising the underlying concept. Deliberately include unfamiliar and harder questions in every practice session, not just the ones that look like worked examples.',
+      },
+      {
+        title: 'Memorising is fine. Memorising without application is not',
+        body: 'The problem is almost never that a student memorised something. It is that the question arrived in an unfamiliar context and the memorised version did not fit. After learning anything, ask how it would look if the question changed the situation.',
+      },
+    ],
+  },
+  {
+    id: 'tips-maths',
+    heading: 'Elementary and Additional Mathematics',
+    lead: 'In maths our tutors see far more marks lost to execution than to genuine gaps in knowledge. The fix for a careless error is different from the fix for a concept gap, so they have to be logged separately.',
+    tips: [
+      {
+        title: 'Most maths marks are lost to execution, not knowledge',
+        body: 'Dropped negative signs, a bracket expanded wrongly, a number copied incorrectly out of the question, the right answer written in the wrong place. Keep these in a separate column of your error log from concept errors — counting them is usually a surprise.',
+      },
+      {
+        title: 'Roughly a minute a mark, and never let one question eat ten',
+        body: 'This is a pacing strategy rather than an SEAB rule, but it works. A difficult 3-mark question that consumes ten minutes can cost more marks at the end of the paper than it was ever worth. Mark it, move on, come back.',
+      },
+      {
+        title: 'Never round in the middle of your working',
+        body: 'Premature rounding is one of the most avoidable ways to lose accuracy marks. Carry full calculator precision through every intermediate step and round only the final answer, to the accuracy the question asks for.',
+      },
+      {
+        title: "Check the calculator's angle mode before every trigonometry question",
+        body: 'Degrees against radians costs the whole question, and the working looks perfectly correct on the page. Make the check a reflex, along with clearing the previous answer.',
+      },
+      {
+        title: 'A-Math punishes weak Sec 3 algebra hardest',
+        body: (
+          <>
+            Differentiation and integration questions are usually lost in the algebra
+            after the calculus, not in the calculus itself. If A-Math started slipping
+            in Sec 4, the repair is often two terms further back. Our{' '}
+            <Link href="/o-level-math" className="text-primary underline underline-offset-2">
+              O-Level E-Math and A-Math guide
+            </Link>{' '}
+            breaks down which topics carry the most marks.
+          </>
+        ),
+      },
+    ],
+  },
+  {
+    id: 'tips-physics',
+    heading: 'Physics',
+    lead: 'The pattern our tutors see most in Physics is a student who can write every formula on the sheet and still cannot tell which one the question wants.',
+    tips: [
+      {
+        title: 'Learn four things about every formula, not one',
+        body: (
+          <>
+            What each variable means, its units, the physical situation the formula
+            applies to, and the question types it turns up in. A student who has
+            memorised only the symbols can reproduce the formula and still not
+            recognise it as the one being asked for. More topic-by-topic detail is in
+            the{' '}
+            <Link href="/o-level-physics" className="text-primary underline underline-offset-2">
+              O-Level Physics topic guide
+            </Link>
+            .
+          </>
+        ),
+      },
+      {
+        title: 'Unit conversion is free marks',
+        body: 'Centimetres to metres, minutes to seconds, grams to kilograms, and the area and volume conversions that catch almost everyone. Write the unit on every answer, including the intermediate ones — it makes a wrong conversion visible before it reaches the final line.',
+      },
+      {
+        title: '"Explain" means give the mechanism',
+        body: '"The object moves faster because there is more force" restates the outcome in different words. The marks are in the relationship: which quantity changes, what that does, and why that produces the effect described.',
+      },
+    ],
+  },
+  {
+    id: 'tips-chemistry',
+    heading: 'Chemistry',
+    lead: 'Chemistry rewards precise terminology more than most subjects. An answer that is chemically sensible but avoids the required term frequently scores nothing.',
+    tips: [
+      {
+        title: 'Weak mole fundamentals propagate further than any other gap',
+        body: (
+          <>
+            Shaky mole calculations show up again in stoichiometry, in concentration,
+            in gas volumes and in titration. It is the one gap where fixing the
+            foundation repairs several topics at once. The{' '}
+            <Link href="/o-level-chemistry" className="text-primary underline underline-offset-2">
+              O-Level Chemistry topic guide
+            </Link>{' '}
+            covers the mole concept in full.
+          </>
+        ),
+      },
+      {
+        title: 'A plausible answer is not a full-mark answer',
+        body: 'Marks attach to specific chemical terminology. Students routinely describe the right process in everyday language and score zero on a question they genuinely understood. Learn the phrasing the syllabus uses, not just the idea behind it.',
+      },
+      {
+        title: 'In qualitative analysis, answer what was actually asked',
+        body: 'An observation is what you see. An inference is what it means. The two are marked differently, and giving an explanation where an observation was required is one of the most common QA mistakes.',
+      },
+    ],
+  },
+  {
+    id: 'tips-biology',
+    heading: 'Biology',
+    lead: 'Our tutors regularly meet students who know Biology well and still lose marks, because knowing the content and writing the answer the mark scheme rewards are two different skills.',
+    tips: [
+      {
+        title: 'Describe and explain are different questions',
+        body: '"The heart rate increases" describes. The marks are in the physiological reason — which mechanism produces the change, and why. If your answer could be written by someone reading a graph without any Biology, it is a description.',
+      },
+      {
+        title: 'A definition needs the key term, not an example',
+        body: 'Giving an example, or describing the process instead of defining it, is the most common way to drop a definition mark on content the student actually knows. Definitions are worth learning in the syllabus’s own words.',
+      },
+    ],
+  },
+  {
+    id: 'tips-english',
+    heading: 'English Language',
+    lead: 'In English our tutors see strong writers lose marks for reasons that have nothing to do with how good their English is.',
+    tips: [
+      {
+        title: 'Situational writing: tick off every content point as you plan',
+        body: 'A polished, well-organised response that misses one required point loses those marks regardless of how well it reads. Tone counts too — the register has to match the audience and situation, not default to essay English.',
+      },
+      {
+        title: 'In comprehension, identify the question type before answering',
+        body: 'Literal, inference, vocabulary-in-context, language effect and summary each want a different answer shape. Inference answers that quote the passage without explaining what it implies, and language answers that name a technique without explaining its effect, are the two biggest recurring losses.',
+      },
+      {
+        title: 'Use the words you are confident with',
+        body: 'Forced "impressive" vocabulary produces awkward phrasing and grammar errors in sentences that would have been correct in plain English. The same applies to memorised phrases dropped in where they do not fit — and it applies just as much to Chinese and Higher Chinese composition.',
+      },
+    ],
+  },
+];
+
+// Shorter pointers for subjects that have their own paper conventions; the
+// full treatment belongs on the individual subject guides, not this hub.
+const otherSubjectNotes = [
+  ['Geography', 'Case studies are evidence, not decoration. Naming an event proves nothing — the marks are in using its specifics to support the argument.'],
+  ['History', '"The source is biased" scores nothing on its own. Explain how the provenance or content affects reliability for the particular claim being tested.'],
+  ['Literature', 'Identifying the metaphor is step one, not the answer. What it suggests, why the writer chose it and what effect it creates are where the marks sit.'],
+  ['Chinese and Higher Chinese', 'Memorise structures and transitions, not whole essays. Forced 成语 and memorised paragraphs that do not fit the prompt read worse than plain, accurate Chinese.'],
+  ['Principles of Accounts', 'When a statement will not balance, find the first incorrect entry rather than fixing the final number — one early error cascades through journal, ledger, trial balance and both statements.'],
+  ['Computing', 'When a trace question goes wrong, the cause is usually not syntax. Trace variable by variable through each iteration instead of reasoning backwards from the output.'],
+];
+
 const TableOfContents = () => (
   <aside className="hidden lg:block w-64 xl:w-72">
     <div className="sticky top-28 space-y-3 border-l-2 pl-4">
@@ -69,9 +245,10 @@ const TableOfContents = () => (
         <Link href="#sec3-sec4-timeline" className="text-muted-foreground hover:text-primary transition-colors">Sec 3 to Sec 4 timeline</Link>
         <Link href="#timeline" className="text-muted-foreground hover:text-primary transition-colors">The 24-Month Roadmap</Link>
         <Link href="#strategies" className="text-muted-foreground hover:text-primary transition-colors">Subject-Specific Strategies</Link>
-        <Link href="#techniques" className="text-muted-foreground hover:text-primary transition-colors">Science-Backed Study Techniques</Link>
+        <Link href="#tips" className="text-muted-foreground hover:text-primary transition-colors">21 tips from our tutors</Link>
+        <Link href="#prelim-recovery" className="text-muted-foreground hover:text-primary transition-colors">If your prelims went badly</Link>
         <Link href="#exam-strategy" className="text-muted-foreground hover:text-primary transition-colors">Mastering Exam Strategy</Link>
-        <Link href="#pitfalls" className="text-muted-foreground hover:text-primary transition-colors">Common Pitfalls to Avoid</Link>
+        <Link href="#pitfalls" className="text-muted-foreground hover:text-primary transition-colors">Preparation mistakes to avoid</Link>
         <Link href="#study-plan" className="text-muted-foreground hover:text-primary transition-colors">Creating a Personal Study Plan</Link>
         <Link href="#resources" className="text-muted-foreground hover:text-primary transition-colors">Essential Resources & Tools</Link>
         <Link href="#related-o-level-prep" className="text-muted-foreground hover:text-primary transition-colors">In-depth O-Level subject guides</Link>
@@ -93,10 +270,10 @@ export default function OLevelPrepGuideClient() {
         <div className="container mx-auto px-6 py-16 md:py-24 text-center">
           <p className="font-semibold text-primary">THE 2026 GCE O-LEVELS</p>
           <h1 className="mt-2 text-4xl md:text-6xl font-extrabold text-primary leading-tight tracking-tighter">
-            The Ultimate O-Level Preparation Guide
+            How to Prepare for the O-Levels
           </h1>
           <p className="mt-4 text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
-            Your strategic roadmap to master the O-Level syllabus, develop winning exam techniques, and secure the results you need for your post-secondary path.
+            The 2026 timetable and a term-by-term study plan, 21 exam-tested tips from our tutors, and what to do if your prelims went badly.
           </p>
           <div className="mt-8">
             <Button size="lg" className="bg-accent text-text-inverse hover:bg-accent/90 shadow-lg transform hover:scale-105 transition-transform">
@@ -316,39 +493,131 @@ export default function OLevelPrepGuideClient() {
               </div>
             </section>
             
-            {/* SECTION: Effective Study Techniques */}
-            <section id="techniques" aria-labelledby="techniques-heading">
-                <h2 id="techniques-heading" className="text-3xl font-bold mb-8 border-l-4 border-primary pl-4 flex items-center"><Lightbulb className="mr-3 h-8 w-8" />Effective O-Level Study Techniques</h2>
-                <Card className="shadow-md">
-                    <CardHeader>
-                        <CardTitle>Proven Study Methods for Deeper Learning</CardTitle>
-                        <CardDescription>Move beyond passive reading. These science-backed techniques force your brain to engage with the material, leading to better retention and recall under pressure.</CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                        <div>
-                            <h4 className="font-semibold">The Pomodoro Technique:</h4>
-                            <p className="text-sm text-muted-foreground">Work in focused 25-minute sprints, followed by a 5-minute break. This technique maintains high concentration and prevents mental burnout during long study sessions.</p>
+            {/* SECTION: The 21 tips */}
+            <section id="tips" aria-labelledby="tips-heading">
+                <h2 id="tips-heading" className="text-3xl font-bold mb-6 border-l-4 border-primary pl-4 flex items-center"><Lightbulb className="mr-3 h-8 w-8" />21 O-Level tips from our tutors</h2>
+                <p className="text-lg text-muted-foreground mb-8">
+                  These are the corrections our tutors make most often with Sec 3 and Sec 4 students. Almost none of them are about working harder. They are about converting knowledge the student already has into the specific answer the paper rewards — which is where the majority of recoverable marks sit.
+                </p>
+                <div className="space-y-10">
+                  {tipGroups.map((group, groupIndex) => {
+                    // Continuous numbering across groups.
+                    const startNumber =
+                      tipGroups.slice(0, groupIndex).reduce((total, g) => total + g.tips.length, 0) + 1;
+                    return (
+                      <div key={group.id}>
+                        <h3 id={group.id} className="scroll-mt-24 text-2xl font-bold text-primary mb-3">{group.heading}</h3>
+                        <p className="text-muted-foreground mb-6">{group.lead}</p>
+                        <div className="space-y-4">
+                          {group.tips.map((tip, tipIndex) => (
+                            <Card key={tip.title} className="shadow-sm">
+                              <CardContent className="flex gap-4 pt-6">
+                                <span
+                                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm font-bold text-primary"
+                                  aria-hidden="true"
+                                >
+                                  {startNumber + tipIndex}
+                                </span>
+                                <div>
+                                  <h4 className="font-semibold text-foreground mb-1">{tip.title}</h4>
+                                  <p className="text-sm text-muted-foreground">{tip.body}</p>
+                                </div>
+                              </CardContent>
+                            </Card>
+                          ))}
                         </div>
-                        <div>
-                            <h4 className="font-semibold">Active Recall:</h4>
-                            <p className="text-sm text-muted-foreground">This is the most powerful learning tool. After studying a topic, close your book and actively try to recall and write down everything you know. This strengthens neural pathways far more than passively re-reading.</p>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                <Card className="mt-10 shadow-sm">
+                  <CardHeader>
+                    <CardTitle>Other subjects, in one line each</CardTitle>
+                    <CardDescription>The same principle applies — every paper has its own way of turning knowledge into marks.</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <dl className="space-y-3">
+                      {otherSubjectNotes.map(([subject, note]) => (
+                        <div key={subject}>
+                          <dt className="font-semibold text-sm text-foreground">{subject}</dt>
+                          <dd className="text-sm text-muted-foreground">{note}</dd>
                         </div>
-                        <div>
-                            <h4 className="font-semibold">Spaced Repetition:</h4>
-                            <p className="text-sm text-muted-foreground">Review material at increasing intervals (e.g., after 1 day, 3 days, 1 week). This signals to your brain that the information is important, moving it from short-term to long-term memory.</p>
-                        </div>
-                        <div>
-                            <h4 className="font-semibold">The Feynman Technique:</h4>
-                            <p className="text-sm text-muted-foreground">Try to explain a complex concept in the simplest terms possible, as if you were teaching a younger sibling. If you get stuck or use complicated jargon, you've found a gap in your understanding.</p>
-                        </div>
-                        <div>
-                            <h4 className="font-semibold">Mind Mapping:</h4>
-                            <p className="text-sm text-muted-foreground">Create visual diagrams to connect concepts. This is especially effective for subjects like Biology and History, helping you see the big picture and the relationships between topics.</p>
-                        </div>
-                    </CardContent>
+                      ))}
+                    </dl>
+                  </CardContent>
                 </Card>
             </section>
-            
+
+            {/* SECTION: Prelim recovery */}
+            <section id="prelim-recovery" aria-labelledby="prelim-recovery-heading">
+                <h2 id="prelim-recovery-heading" className="text-3xl font-bold mb-6 border-l-4 border-primary pl-4 flex items-center"><Target className="mr-3 h-8 w-8" />How to improve fast if your prelims went badly</h2>
+                <p className="text-lg text-muted-foreground mb-8">
+                  Prelims are a diagnostic, not a verdict. The fastest recovery between prelims and the O-Levels comes from working out exactly where the marks went, then attacking the cheapest categories first — technique and careless marks come back in weeks, genuine knowledge gaps take months. Students who recover most are almost always the ones who can name the category their lost marks fall into.
+                </p>
+                <div className="space-y-6">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Step 1 · Get every script back and classify every lost mark</CardTitle>
+                      <CardDescription>Not "I did badly in Chemistry" — mark by mark, into six categories.</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <ul className="list-disc pl-5 space-y-1 text-sm text-muted-foreground">
+                        <li><strong>Knowledge</strong> — you did not know the content.</li>
+                        <li><strong>Application</strong> — you knew it, but not in that context.</li>
+                        <li><strong>Technique</strong> — the answer missed the keyword, the mechanism or the required structure.</li>
+                        <li><strong>Careless</strong> — sign, unit, transcription, arithmetic.</li>
+                        <li><strong>Time</strong> — you ran out and left marks on the table.</li>
+                        <li><strong>Misread</strong> — you answered a different question from the one asked.</li>
+                      </ul>
+                    </CardContent>
+                  </Card>
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Step 2 · Count them, do not estimate</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-sm text-muted-foreground">Add the marks in each category, per subject. Nearly every student we do this with is wrong about where their marks went before they count. Most assume knowledge; most find technique and careless dominate.</p>
+                    </CardContent>
+                  </Card>
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Step 3 · Attack in cost order, not in syllabus order</CardTitle>
+                      <CardDescription>Cheapest marks first — that is what makes the difference over a short runway.</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <ul className="list-disc pl-5 space-y-1 text-sm text-muted-foreground">
+                        <li><strong>Weeks:</strong> careless, misread and time marks. These respond to checking habits and pacing drills, not to more content.</li>
+                        <li><strong>Weeks to a month:</strong> technique marks — keywords, mechanism sentences, observation against inference, command words. This is usually the single biggest recoverable block.</li>
+                        <li><strong>Month plus:</strong> application, then genuine knowledge gaps. Real, but the slowest per mark, and the wrong place to start if the exam is close.</li>
+                      </ul>
+                    </CardContent>
+                  </Card>
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Step 4 · Run the loop on whichever category dominates</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-sm text-muted-foreground">Attempt, mark, categorise, write one line on why, redo, then a similar question days later (tip 3). Doing this on twenty targeted questions beats another full paper skimmed for the answers.</p>
+                    </CardContent>
+                  </Card>
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Step 5 · Re-test under real timing</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-sm text-muted-foreground">
+                        A category is only fixed when it stops appearing on a timed paper. Work through school prelim papers from other schools under exam conditions and classify the losses again — the mix should have shifted. Our{' '}
+                        <Link href="/free-test-papers" className="text-primary underline underline-offset-2">
+                          free O-Level and JC prelim papers
+                        </Link>{' '}
+                        are a good source of unseen papers for this.
+                      </p>
+                    </CardContent>
+                  </Card>
+                </div>
+            </section>
+
             {/* SECTION: O-Level Examination Strategies */}
             <section id="exam-strategy" aria-labelledby="exam-strategy-heading">
                 <h2 id="exam-strategy-heading" className="text-3xl font-bold mb-8 border-l-4 border-primary pl-4 flex items-center"><ListChecks className="mr-3 h-8 w-8" />Mastering O-Level Examination Strategy</h2>
@@ -393,21 +662,16 @@ export default function OLevelPrepGuideClient() {
             {/* SECTION: Common O-Level Preparation Mistakes */}
             <section id="pitfalls" aria-labelledby="pitfalls-heading">
                 <div className="bg-red-100/50 border-l-4 border-red-500 text-red-900 p-6 rounded-r-lg shadow-lg">
-                    <h2 id="pitfalls-heading" className="text-2xl font-bold flex items-center mb-4 text-red-700"><AlertTriangle className="mr-3 h-8 w-8" />Top 12 O-Level Pitfalls to Avoid</h2>
-                    <div className="grid md:grid-cols-2 gap-x-6 gap-y-2 text-red-800/90">
+                    <h2 id="pitfalls-heading" className="text-2xl font-bold flex items-center mb-2 text-red-700"><AlertTriangle className="mr-3 h-8 w-8" />Preparation mistakes that cost the most</h2>
+                    <p className="text-sm text-red-800/80 mb-4">The tips above cover marks lost inside the exam hall. These are the ones lost in the two years before it.</p>
+                    <div className="text-red-800/90">
                         <ol className="list-decimal list-inside space-y-2">
-                            <li><strong>Starting serious preparation too late in Sec 4.</strong></li>
-                            <li><strong>Focusing disproportionately on favourite subjects.</strong></li>
-                            <li><strong>Rote memorizing without true conceptual understanding.</strong></li>
-                            <li><strong>Neglecting consistent practice with the Ten Year Series (TYS).</strong></li>
-                            <li><strong>Having poor time management during study sessions and exams.</strong></li>
-                            <li><strong>Hesitating to seek help from teachers when struggling.</strong></li>
-                            <li><strong>Sacrificing sleep and self-care for last-minute cramming.</strong></li>
-                            <li><strong>Maintaining an inconsistent or non-existent study schedule.</strong></li>
-                            <li><strong>Failing to systematically analyze and learn from mistakes.</strong></li>
-                            <li><strong>Relying solely on cramming right before examinations.</strong></li>
-                            <li><strong>Completely ignoring weaker subjects, hoping to compensate with stronger ones.</strong></li>
-                            <li><strong>Becoming overconfident in familiar topics and not practicing them enough.</strong></li>
+                            <li><strong>Starting serious preparation too late in Sec 4</strong>, when the syllabus is still being completed.</li>
+                            <li><strong>Over-investing in favourite subjects and avoiding weak ones</strong> — L1R5 counts both, and the cheapest grade to move is usually the worst one.</li>
+                            <li><strong>Leaving the Ten Year Series until the final months</strong>, so there is no time left to act on what it exposes.</li>
+                            <li><strong>Not asking teachers for help early</strong>, while there is still runway to do something about the answer.</li>
+                            <li><strong>Trading sleep for cramming in the final weeks</strong>, which reliably costs more marks in careless errors than the extra hours add.</li>
+                            <li><strong>Studying without a schedule</strong>, so the subject that gets dropped is always the one that needed the time.</li>
                         </ol>
                     </div>
                 </div>

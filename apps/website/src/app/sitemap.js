@@ -26,10 +26,30 @@ const NON_REGISTRY_PAGES = [
   { path: '/terms-and-conditions-for-tutors', priority: 0.1 },
 ];
 
+// Vercel clones shallowly by default, so `git log` resolves every file to the
+// single deploy commit and every URL gets the same lastmod — which is exactly
+// the "stamp the build date on everything" failure the code below was written
+// to avoid. Google only uses lastmod when it is consistently and verifiably
+// accurate, so a uniformly wrong date is worse than no date at all.
+//
+// Detect the shallow case and omit lastModified entirely rather than guessing.
+// This is self-correcting: enable a full clone (VERCEL_DEEP_CLONE=true) and
+// real per-page dates start appearing with no further code change.
+function hasTrustworthyHistory() {
+  try {
+    const shallow = execSync('git rev-parse --is-shallow-repository', {
+      encoding: 'utf8',
+      cwd: process.cwd(),
+    }).trim();
+    return shallow === 'false';
+  } catch {
+    // No git available at build time — cannot date anything honestly.
+    return false;
+  }
+}
+
 // Runs at build time (this route has no dynamic segments, so Next statically
-// generates it once), where the full git history is available. Falls back to
-// omitting lastModified rather than guessing — never stamp every URL with
-// the build date.
+// generates it once). Falls back to omitting lastModified rather than guessing.
 function lastModifiedFor(routePath) {
   const filePath = path.join(process.cwd(), 'src/app', routePath === '/' ? '' : routePath, 'page.jsx');
   try {
@@ -49,8 +69,10 @@ export default function sitemap() {
     ...Object.values(SPOKES).map((s) => ({ path: s.url, priority: 0.7 })),
   ];
 
+  const datesAreTrustworthy = hasTrustworthyHistory();
+
   return [...registryPages, ...NON_REGISTRY_PAGES].map(({ path: routePath, priority }) => {
-    const lastModified = lastModifiedFor(routePath);
+    const lastModified = datesAreTrustworthy ? lastModifiedFor(routePath) : undefined;
     return {
       url: `${SITE_URL}${routePath}`,
       ...(lastModified ? { lastModified } : {}),

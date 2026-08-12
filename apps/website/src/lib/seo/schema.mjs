@@ -12,7 +12,11 @@ const ORG = { '@type': 'Organization', name: 'LionCity Tutors', url: SITE_URL };
  * builder behind it, so the page would silently emit no content schema —
  * links.test.mjs fails the build instead.
  */
-export const BUILDABLE_SCHEMA_TYPES = new Set(['Course', 'CollectionPage', 'Service']);
+// Types a spoke may name in the registry. `Article` is here for spokes that are
+// genuinely articles rather than subject landing pages (a study-technique post
+// under /blog): dressing one as a Course to satisfy the default is the
+// structured-data mismatch we want to avoid, not adopt.
+export const BUILDABLE_SCHEMA_TYPES = new Set(['Course', 'CollectionPage', 'Service', 'Article']);
 
 /**
  * BreadcrumbList from an explicit trail. For pages outside the cluster

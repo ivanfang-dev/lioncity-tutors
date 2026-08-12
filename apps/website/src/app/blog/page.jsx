@@ -110,6 +110,14 @@ const blogPosts = [
     categories: ['N-Level', 'General']
   },
   {
+    slug: 'how-to-study-history-o-level',
+    title: 'How to Study for O-Level History',
+    description: 'What each source-based question type actually wants, how to write an essay that argues rather than narrates, and the 10 mistakes our tutors correct most.',
+    date: 'August 11, 2026',
+    directUrl: '/blog/how-to-study-history-o-level',
+    categories: ['O-Level', 'History'],
+  },
+  {
     slug: 'o-level-english',
     title: 'O-Level English Guide',
     description: 'Comprehensive guide to O-Level English. Expert strategies, language skills, and proven tips to score A1 in O Level English.',

@@ -18,7 +18,7 @@ const articleSchema = {
     },
   },
   'datePublished': '2026-02-05',
-  'dateModified': '2026-05-26',
+  'dateModified': '2026-08-11',
 };
 
 export const metadata = {
@@ -69,7 +69,7 @@ const tableOfContents = [
   { id: 'ecology', label: 'Ecology & the environment' },
   { id: 'study-techniques', label: 'Study techniques that work' },
   { id: 'exam-strategies', label: 'Paper-by-paper exam strategy' },
-  { id: 'mistakes', label: 'Common mistakes to avoid' },
+  { id: 'mistakes', label: '10 common mistakes' },
   { id: 'schedule', label: 'Weekly study schedule' },
   { id: 'resources', label: 'Essential resources' },
   { id: 'practical', label: 'Practical & lab skills' },
@@ -121,6 +121,62 @@ const timeline = [
       'Final consolidation of all key concepts and terminology',
       'Mental preparation and stress management strategies',
     ],
+  },
+];
+
+// The mistakes our tutors correct most often on Biology scripts. Knowing the
+// content and writing the answer the mark scheme rewards are two different
+// skills, and most of these sit in the gap between them.
+const commonMistakes = [
+  {
+    mistake: 'Describing when the question asks you to explain',
+    detail: '"The heart rate increases" describes what happens. If your answer could have been written by someone reading the graph with no Biology at all, it is a description, and explain-marks will not be awarded for it.',
+    fix: 'Name the mechanism: what changes, what that causes, and why. Explain answers need a chain of reasoning, not a statement of the outcome.',
+  },
+  {
+    mistake: 'Giving an example instead of a definition',
+    detail: 'Asked to define a term, students frequently describe the process it appears in or offer an instance of it. Both lose the mark on content the student genuinely knows.',
+    fix: 'Learn definitions in the syllabus’s own wording. A definition says what something is; it does not tell a story about it.',
+  },
+  {
+    mistake: 'Vague terminology where a precise term is being marked',
+    detail: 'Everyday paraphrases stand in for the specific biological word, and the mark scheme has no room to accept them however sound the underlying understanding is.',
+    fix: 'Build a keyword list per topic and check your practice answers against it, not against whether the answer sounds reasonable.',
+  },
+  {
+    mistake: 'Processes with steps missing or in the wrong order',
+    detail: 'Sequences such as digestion, transpiration or the cardiac cycle are given with intermediate stages skipped, so the causal chain the question is testing never appears.',
+    fix: 'Rehearse processes as ordered steps and check that each one leads to the next. Where a question is worth several marks, the steps usually are the marks.',
+  },
+  {
+    mistake: 'Confusing structures and processes that look similar',
+    detail: 'Mitosis against meiosis, arteries against veins, xylem against phloem, chromosome against chromatid. Under time pressure the wrong one of the pair gets written down.',
+    fix: 'Revise confusable pairs side by side rather than separately, and learn the one feature that distinguishes them rather than two full descriptions.',
+  },
+  {
+    mistake: 'Describing a graph instead of interpreting it',
+    detail: 'Data questions get answered with a narration of the line going up and then down, without connecting the pattern to any biological explanation.',
+    fix: 'State the trend, quote the data that shows it, then explain the biology causing it. All three parts, in that order.',
+  },
+  {
+    mistake: 'Not quoting data from the question',
+    detail: 'A correct biological explanation offered without reference to the figures provided leaves available marks unclaimed, because the question asked you to use them.',
+    fix: 'Cite specific values with their units when the question supplies data. If a table or graph is given, the marks assume you will refer to it.',
+  },
+  {
+    mistake: 'Incomplete genetic diagrams',
+    detail: 'Parental genotypes given without gametes, offspring ratios omitted, or the phenotype never stated. Genetic crosses are marked on the working, not only on the conclusion.',
+    fix: 'Use the same full layout every time: parental phenotypes, genotypes, gametes, offspring genotypes, offspring phenotypes, ratio. Every line earns its own credit.',
+  },
+  {
+    mistake: 'The textbook example memorised, the unfamiliar context unanswerable',
+    detail: 'Students who know the standard case well can stall when the same concept arrives with a different organism, an unfamiliar diagram, or two topics combined in one question.',
+    fix: 'After learning any process, ask what it would look like in a different organism or context. Application questions are testing the concept, not the example.',
+  },
+  {
+    mistake: 'Practical questions answered without experimental thinking',
+    detail: 'Variables not identified or controlled, reliability and accuracy used interchangeably, and suggested improvements that could not actually be carried out in a school lab.',
+    fix: 'For every experiment state the independent, dependent and controlled variables, and make each improvement something a person could physically do.',
   },
 ];
 
@@ -407,32 +463,32 @@ Preferred days & timing: `;
             </section>
 
             <section id="mistakes" className="scroll-mt-24">
-              <SectionHeading icon={TriangleAlert}>Common O Level Biology Mistakes to Avoid</SectionHeading>
-              <GuideCard>
-                <h4 className="font-semibold text-gray-900 mb-3">Top 12 O Level Biology Pitfalls</h4>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3 text-sm">
-                  <div>
-                    <ol className="list-decimal ml-5 space-y-1 text-gray-700">
-                      <li>Writing a definition when an explanation is required</li>
-                      <li>Confusing photosynthesis and respiration</li>
-                      <li>Missing steps in a described process</li>
-                      <li>Vague terminology instead of precise terms</li>
-                      <li>Unlabelled or poorly proportioned diagrams</li>
-                      <li>Confusing correlation with causation in data questions</li>
-                    </ol>
-                  </div>
-                  <div>
-                    <ol className="list-decimal ml-5 space-y-1 text-gray-700" start="7">
-                      <li>Missing units in numerical answers</li>
-                      <li>Misreading the command word (state vs explain)</li>
-                      <li>Confusing similar structures (arteries vs veins, xylem vs phloem)</li>
-                      <li>Incomplete genetic diagrams (missing gametes or ratios)</li>
-                      <li>Poor time management across papers</li>
-                      <li>Not using data from the question to support answers</li>
-                    </ol>
-                  </div>
-                </div>
-              </GuideCard>
+              <SectionHeading icon={TriangleAlert}>10 common O-Level Biology mistakes</SectionHeading>
+              <p className="text-gray-700 mb-5">
+                Our tutors regularly meet students who know Biology well and still lose marks, because knowing the content and writing the answer the mark scheme rewards are two different skills. These are the ten we correct most often, and what to do instead.
+              </p>
+              <div className="space-y-4">
+                {commonMistakes.map((item, index) => (
+                  <GuideCard key={item.mistake}>
+                    <div className="flex gap-4">
+                      <span
+                        className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm font-bold text-primary tabular-nums"
+                        aria-hidden="true"
+                      >
+                        {index + 1}
+                      </span>
+                      <div>
+                        <h4 className="font-semibold text-gray-900 mb-1.5">{item.mistake}</h4>
+                        <p className="text-sm text-gray-700 mb-2">{item.detail}</p>
+                        <p className="text-sm text-gray-700">
+                          <span className="font-semibold text-gray-900">The fix: </span>
+                          {item.fix}
+                        </p>
+                      </div>
+                    </div>
+                  </GuideCard>
+                ))}
+              </div>
             </section>
 
             <section id="schedule" className="scroll-mt-24">

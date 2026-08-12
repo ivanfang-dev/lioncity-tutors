@@ -1,15 +1,16 @@
 import { MATCH_TIME } from '@/data/promises';
 export const metadata = {
-  title: 'O-Level Physics Guide 2026 | LionCity Tutors',
-  description: 'O-Level Physics guide for Singapore students — mechanics, waves and electricity explained, plus the practical-paper and exam techniques that lift a B3 to an A1.',
+  title: 'O-Level Physics (6091): Topics, Common Mistakes & Tips',
+  description: 'The 10 mistakes our tutors correct most on O-Level Physics scripts, plus paper-by-paper exam strategy, practical skills and the 2026 syllabus 6091 topics.',
   keywords: [
+    'common physics mistakes O Level',
+    'O Level Physics exam tips',
+    'physics O Level',
     'O Level Physics 2026',
     'O Level Physics Singapore',
     'GCE O Level Physics guide',
     'O Level Physics preparation',
-    'Physics study tips',
     'O Level Physics tuition Singapore',
-    'Physics revision techniques'
   ],
   openGraph: {
     images: [DEFAULT_OG_IMAGE],
@@ -46,7 +47,7 @@ const tableOfContents = [
   { id: 'electromagnetism', label: 'Electricity & magnetism' },
   { id: 'study-techniques', label: 'Study techniques that work' },
   { id: 'exam-strategies', label: 'Paper-by-paper exam strategy' },
-  { id: 'mistakes', label: 'Common mistakes to avoid' },
+  { id: 'mistakes', label: '10 common mistakes' },
   { id: 'schedule', label: 'Weekly study schedule' },
   { id: 'resources', label: 'Essential resources' },
   { id: 'practical', label: 'Practical & lab skills' },
@@ -98,6 +99,62 @@ const timeline = [
       'Mental preparation and exam stress management',
       'Maintain a consistent study routine until exam day',
     ],
+  },
+];
+
+// The mistakes our tutors correct most often on Physics scripts. Each entry
+// names the error, what it costs, and the fix — a bare list of labels gives a
+// student nothing to act on.
+const commonMistakes = [
+  {
+    mistake: 'Leaving the unit conversion undone',
+    detail: 'Centimetres used where the equation expects metres, minutes where it expects seconds, grams where it expects kilograms. The physics is right and the answer is out by a factor of 100 or 1,000.',
+    fix: 'Convert everything to SI units in the first line of working, before any substitution. Write the converted values down rather than doing it in your head.',
+  },
+  {
+    mistake: 'Omitting units from the final answer',
+    detail: 'A numerically correct answer with no unit is an incomplete answer, and it costs marks on a question the student got right.',
+    fix: 'Write the unit on every line of working, not just the last one. A wrong conversion then shows up before it reaches the answer.',
+  },
+  {
+    mistake: 'Knowing the formula but not recognising when it applies',
+    detail: 'The single most common Physics pattern our tutors see. The student can reproduce every formula on the sheet and still cannot tell which one the question is asking for.',
+    fix: 'Learn four things about each formula, not one: what each variable means, its units, the physical situation it describes, and the question types it appears in.',
+  },
+  {
+    mistake: 'Correct formula, wrong substitution',
+    detail: 'Total distance used where displacement is required, initial velocity where final velocity is needed, or a value read from the wrong part of the question.',
+    fix: 'List the given quantities with their symbols before substituting. It takes fifteen seconds and makes a mismatch visible.',
+  },
+  {
+    mistake: 'Definitions that are conceptually right but miss the required terminology',
+    detail: 'An answer that describes the idea correctly in everyday language frequently scores nothing. Physics definitions are marked against specific wording.',
+    fix: 'Learn definitions in the syllabus’s own phrasing. If your definition would not appear in a textbook, it is a paraphrase, not a definition.',
+  },
+  {
+    mistake: 'Answering "explain" by restating the outcome',
+    detail: '"The object moves faster because there is more force" says the same thing twice in different words. The marks are in the mechanism, not the result.',
+    fix: 'Name the quantity that changes, state what that does, and connect it to the effect described in the question. Three linked statements, not one assertion.',
+  },
+  {
+    mistake: 'Graph work done by eye',
+    detail: 'Gradients calculated from a single point instead of a large triangle, axes misread, and units on the axes ignored when interpreting what the gradient represents.',
+    fix: 'Use a triangle spanning at least half the plotted line, mark it on the graph, and state what the gradient physically represents before calculating it.',
+  },
+  {
+    mistake: 'Not showing enough working',
+    detail: 'When the final answer is wrong, method marks are the only marks available — and they can only be awarded for working that is on the page.',
+    fix: 'Write the formula, then the substitution, then the answer. Three lines minimum, even for a calculation you can do mentally.',
+  },
+  {
+    mistake: 'Rounding too early, or to the wrong precision',
+    detail: 'Intermediate values rounded partway through the working shift the final answer outside the accepted range, and significant figures are frequently ignored altogether.',
+    fix: 'Carry full calculator precision through every step and round only at the end, to the precision the question specifies.',
+  },
+  {
+    mistake: 'Treating the practical paper as a writing exercise',
+    detail: 'Variables not clearly identified or controlled, sources of error confused with mistakes the student made, and "improvements" that could not actually be carried out.',
+    fix: 'For every experiment know the independent, dependent and controlled variables, and make each suggested improvement something a person could physically do in a lab.',
   },
 ];
 
@@ -364,30 +421,32 @@ Preferred days & timing: `;
             </section>
 
             <section id="mistakes" className="scroll-mt-24">
-              <SectionHeading icon={TriangleAlert}>Common O Level Physics Mistakes to Avoid</SectionHeading>
-              <GuideCard>
-                <h4 className="font-semibold text-gray-900 mb-3">Top 10 O Level Physics Pitfalls</h4>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3 text-sm">
-                  <div>
-                    <ol className="list-decimal ml-5 space-y-1 text-gray-700">
-                      <li>Incorrect unit conversions</li>
-                      <li>Confusing vector and scalar quantities</li>
-                      <li>Missing forces in free body diagrams</li>
-                      <li>Wrong significant figures in calculations</li>
-                      <li>Incorrect sign conventions</li>
-                    </ol>
-                  </div>
-                  <div>
-                    <ol className="list-decimal ml-5 space-y-1 text-gray-700" start="6">
-                      <li>Incorrect interpretation of graphs</li>
-                      <li>Missing units in numerical answers</li>
-                      <li>Confusing different types of energy</li>
-                      <li>Inadequate explanation of principles</li>
-                      <li>Poor time management across papers</li>
-                    </ol>
-                  </div>
-                </div>
-              </GuideCard>
+              <SectionHeading icon={TriangleAlert}>10 common O-Level Physics mistakes</SectionHeading>
+              <p className="text-gray-700 mb-5">
+                Most Physics marks our tutors recover are not lost to gaps in knowledge. They are lost by students who understood the question and wrote an answer the mark scheme could not reward. These are the ten we correct most often, and what to do instead.
+              </p>
+              <div className="space-y-4">
+                {commonMistakes.map((item, index) => (
+                  <GuideCard key={item.mistake}>
+                    <div className="flex gap-4">
+                      <span
+                        className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm font-bold text-primary tabular-nums"
+                        aria-hidden="true"
+                      >
+                        {index + 1}
+                      </span>
+                      <div>
+                        <h4 className="font-semibold text-gray-900 mb-1.5">{item.mistake}</h4>
+                        <p className="text-sm text-gray-700 mb-2">{item.detail}</p>
+                        <p className="text-sm text-gray-700">
+                          <span className="font-semibold text-gray-900">The fix: </span>
+                          {item.fix}
+                        </p>
+                      </div>
+                    </div>
+                  </GuideCard>
+                ))}
+              </div>
             </section>
 
             <section id="schedule" className="scroll-mt-24">

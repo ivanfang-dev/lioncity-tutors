@@ -56,7 +56,10 @@ export default function SecondarySchoolTuition() {
       <div className="p-6 max-w-5xl mx-auto space-y-12">
         {/* Hero Section */}
         <section className="text-center space-y-4">
-          <h1 className="text-4xl font-bold text-primary">Secondary School Tuition in Singapore<br />O-Level &amp; N-Level Specialist Tutors</h1>
+          {/* The explicit space matters: <br> is a visual break but not a word
+              separator, so without it the heading extracts as
+              "…in SingaporeO-Level & N-Level…" for crawlers and screen readers. */}
+          <h1 className="text-4xl font-bold text-primary">Secondary School Tuition in Singapore{' '}<br />O-Level &amp; N-Level Specialist Tutors</h1>
           <p className="text-lg text-gray-700 max-w-2xl mx-auto">
             Achieve academic success with Singapore&apos;s top O-Level and N-Level tutors. We help students in Express, Normal Academic (N(A)), and Normal Technical (N(T)) streams build confidence, master key concepts, and excel in their exams.
           </p>

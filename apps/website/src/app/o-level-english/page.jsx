@@ -44,7 +44,7 @@ const tableOfContents = [
   { id: 'literature', label: 'English Literature (2065)' },
   { id: 'study-techniques', label: 'Study techniques that work' },
   { id: 'exam-strategies', label: 'Paper-by-paper exam strategy' },
-  { id: 'mistakes', label: 'Common mistakes to avoid' },
+  { id: 'mistakes', label: '10 common mistakes' },
   { id: 'schedule', label: 'Weekly study schedule' },
   { id: 'resources', label: 'Essential resources' },
   { id: 'mindset', label: 'Mental preparation & mindset' },
@@ -93,6 +93,62 @@ const timeline = [
       'Mental preparation and exam stress management',
       'Maintain a consistent study routine until exam day',
     ],
+  },
+];
+
+// The mistakes our tutors correct most often on English scripts. Nearly all of
+// them cost marks for reasons unrelated to how good the student's English is —
+// which is why strong writers still lose marks here.
+const commonMistakes = [
+  {
+    mistake: 'Situational writing that misses a required content point',
+    detail: 'A polished, well-organised letter or email that addresses four of the five things the prompt asked for loses those marks regardless of how well it reads. This is the most common situational writing error we see.',
+    fix: 'List every content point from the prompt before writing, and tick each one off as you cover it. Check the list again before moving on to Continuous Writing.',
+  },
+  {
+    mistake: 'Tone that does not match the audience',
+    detail: 'Grammatically correct English pitched wrongly — too casual for a formal reader, too stiff for an informal one, or written as an essay when the task is a real piece of communication.',
+    fix: 'Identify who is reading it and why before the first sentence. Purpose and audience determine register, and register is marked.',
+  },
+  {
+    mistake: 'Reaching for vocabulary you are not comfortable with',
+    detail: 'Sophisticated words used slightly wrongly produce awkward, unnatural sentences — and often drag grammar errors in with them, in sentences that would have been correct in plain English.',
+    fix: 'Use words you know you can control. Clear, accurate English scores better than ambitious English used imprecisely.',
+  },
+  {
+    mistake: 'Memorised phrases forced in regardless of context',
+    detail: 'Phrases learned in advance and inserted where they do not fit read as decoration rather than writing, and they interrupt the flow of an otherwise coherent piece.',
+    fix: 'Memorise sentence structures and transitions rather than whole phrases, so what you have prepared can bend to the question in front of you.',
+  },
+  {
+    mistake: 'Continuous writing that answers a nearby question, not the set one',
+    detail: 'A well-written narrative or discursive piece that drifts from the exact question loses content marks no matter how strong the prose is.',
+    fix: 'Underline the key words in the question and write them at the top of your plan. Check each paragraph against them as you go.',
+  },
+  {
+    mistake: 'Not identifying the comprehension question type before answering',
+    detail: 'Literal, inference, vocabulary-in-context, language effect and summary each want a different shape of answer. Answering all five the same way is the root cause of most Paper 2 losses.',
+    fix: 'Name the question type before writing a word. The type tells you what the answer must contain.',
+  },
+  {
+    mistake: 'Inference answers that quote the passage without explaining it',
+    detail: 'The student locates exactly the right sentence and then stops, leaving the marker to infer the implication for them. Finding the evidence is half the question.',
+    fix: 'After identifying the relevant line, write what it suggests and how you know. The explanation is where the marks are.',
+  },
+  {
+    mistake: '"In your own words" answers that swap one or two words',
+    detail: 'Substituting a synonym or two while keeping the sentence structure of the passage is not rephrasing, and it is marked as lifting.',
+    fix: 'Read the line, cover it, then write the meaning from memory. If your version shares a long run of words with the original, rewrite it.',
+  },
+  {
+    mistake: 'Naming a technique without explaining its effect',
+    detail: '"This is a metaphor" identifies a device and stops. Language questions ask what the writer achieves by using it, which is a different question entirely.',
+    fix: 'Say what the device suggests, what impression it creates and why the writer chose it. Identification alone is rarely worth a mark.',
+  },
+  {
+    mistake: 'Summaries that include the wrong points, or too many words',
+    detail: 'Relevant points missed, irrelevant ones included, whole phrases copied from the passage, and the word limit exceeded — often all four in the same answer.',
+    fix: 'Establish exactly what the summary question is asking for first, select only points that serve it, paraphrase each one, then count the words before moving on.',
   },
 ];
 
@@ -338,30 +394,32 @@ Preferred days & timing: `;
             </section>
 
             <section id="mistakes" className="scroll-mt-24">
-              <SectionHeading icon={TriangleAlert}>Common O Level English Mistakes to Avoid</SectionHeading>
-              <GuideCard>
-                <h4 className="font-semibold text-gray-900 mb-3">Top 10 O Level English Pitfalls</h4>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3 text-sm">
-                  <div>
-                    <ol className="list-decimal ml-5 space-y-1 text-gray-700">
-                      <li>Poor time management in writing papers</li>
-                      <li>Not reading questions carefully enough</li>
-                      <li>Weak essay structure and organization</li>
-                      <li>Insufficient textual evidence in literature</li>
-                      <li>Grammatical and spelling errors</li>
-                    </ol>
-                  </div>
-                  <div>
-                    <ol className="list-decimal ml-5 space-y-1 text-gray-700" start="6">
-                      <li>Inappropriate tone and register</li>
-                      <li>Not planning essays before writing</li>
-                      <li>Weak vocabulary and repetitive language</li>
-                      <li>Incomplete comprehension answers</li>
-                      <li>Poor handwriting affecting readability</li>
-                    </ol>
-                  </div>
-                </div>
-              </GuideCard>
+              <SectionHeading icon={TriangleAlert}>10 common O-Level English mistakes</SectionHeading>
+              <p className="text-gray-700 mb-5">
+                In English our tutors regularly see strong writers lose marks for reasons that have nothing to do with how good their English is. These are the ten we correct most often across Paper 1 and Paper 2, and what to do instead.
+              </p>
+              <div className="space-y-4">
+                {commonMistakes.map((item, index) => (
+                  <GuideCard key={item.mistake}>
+                    <div className="flex gap-4">
+                      <span
+                        className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm font-bold text-primary tabular-nums"
+                        aria-hidden="true"
+                      >
+                        {index + 1}
+                      </span>
+                      <div>
+                        <h4 className="font-semibold text-gray-900 mb-1.5">{item.mistake}</h4>
+                        <p className="text-sm text-gray-700 mb-2">{item.detail}</p>
+                        <p className="text-sm text-gray-700">
+                          <span className="font-semibold text-gray-900">The fix: </span>
+                          {item.fix}
+                        </p>
+                      </div>
+                    </div>
+                  </GuideCard>
+                ))}
+              </div>
             </section>
 
             <section id="schedule" className="scroll-mt-24">

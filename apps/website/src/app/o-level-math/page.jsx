@@ -1,15 +1,16 @@
 import { MATCH_TIME } from '@/data/promises';
 export const metadata = {
-  title: 'O-Level Maths Guide 2026 | LionCity Tutors',
-  description: 'O-Level E-Math and A-Math guide for Singapore students — topic strategy, a revision timeline, and the exam technique that turns understanding into an A1.',
+  title: 'O-Level Maths (E-Math & A-Math): Common Mistakes & Tips',
+  description: 'The 10 mistakes our tutors correct most across E-Math and A-Math scripts, plus topic strategy, paper timing and a revision timeline for the 2026 O-Levels.',
   keywords: [
+    'O Level math exam tips',
+    'tips for scoring A1 in O Level math',
     'O Level Math 2026',
     'O Level Mathematics Singapore',
     'GCE O Level Math guide',
     'Additional Math preparation',
     'Elementary Math study tips',
     'O Level Math tuition Singapore',
-    'Math revision techniques'
   ],
   openGraph: {
     images: [DEFAULT_OG_IMAGE],
@@ -45,7 +46,7 @@ const tableOfContents = [
   { id: 'a-math', label: 'Additional Math (A Math)' },
   { id: 'study-techniques', label: 'Study techniques that work' },
   { id: 'exam-strategies', label: 'Paper-by-paper exam strategy' },
-  { id: 'mistakes', label: 'Common mistakes to avoid' },
+  { id: 'mistakes', label: '10 common mistakes' },
   { id: 'schedule', label: 'Weekly study schedule' },
   { id: 'resources', label: 'Essential resources' },
   { id: 'mindset', label: 'Mental preparation & mindset' },
@@ -95,6 +96,62 @@ const timeline = [
       'Mental preparation and exam stress management',
       'Maintain a consistent study routine until exam day',
     ],
+  },
+];
+
+// The mistakes our tutors correct most often across E-Math and A-Math scripts.
+// In maths especially, far more marks go to execution than to genuine gaps in
+// knowledge — so each entry names the fix, not just the error.
+const commonMistakes = [
+  {
+    mistake: 'Dropping a negative sign, usually in front of a bracket',
+    detail: 'Expanding −(3x − 5) as −3x − 5 instead of −3x + 5 is the single most frequent algebra slip we see, and it propagates through every line that follows.',
+    fix: 'Expand brackets on their own line before combining anything, and write the sign of every term explicitly rather than carrying it mentally.',
+  },
+  {
+    mistake: 'Rounding in the middle of the working',
+    detail: 'Intermediate values rounded to 3 significant figures and then reused push the final answer outside the accepted range, even though the method was entirely correct.',
+    fix: 'Keep full calculator precision through every intermediate step. Round once, at the end, to the accuracy the question asks for.',
+  },
+  {
+    mistake: 'Leaving the calculator in the wrong angle mode',
+    detail: 'Degrees against radians costs the entire question, and the working on the page looks perfectly correct — which makes it almost impossible to spot when checking.',
+    fix: 'Check the mode before starting any trigonometry question, and again after any calculator reset. Make it as automatic as writing your name on the paper.',
+  },
+  {
+    mistake: 'Copying the question down incorrectly',
+    detail: 'A digit transposed or a sign changed while transferring the question to your working means a flawless solution to a problem that was never asked.',
+    fix: 'Read the copied line back against the question paper before solving. This is the cheapest check on the paper.',
+  },
+  {
+    mistake: 'Not showing enough working',
+    detail: 'When the final answer is wrong, method marks are the only marks still available, and they can only be given for working that is written down.',
+    fix: 'Show the formula, the substitution and the rearrangement as separate lines — including for steps you can do in your head.',
+  },
+  {
+    mistake: 'Setting up probability questions wrongly',
+    detail: '"At least one" and "at most one" get treated as interchangeable, and questions involving without-replacement are set up as if replacement occurred.',
+    fix: 'Write out what the event actually includes before calculating. For "at least one", check whether the complement is faster — it usually is.',
+  },
+  {
+    mistake: 'Losing marks on graphs before any maths happens',
+    detail: 'Scales chosen to make plotting awkward, points misplotted, and gradients read off between two points that are too close together to be accurate.',
+    fix: 'Choose a scale that uses most of the grid, plot with a sharp pencil, and take gradients from a triangle spanning at least half the line.',
+  },
+  {
+    mistake: 'A-Math: the calculus is right, the algebra afterwards is not',
+    detail: 'Chain, product and quotient rules applied correctly, then the simplification that follows goes wrong. The question is lost after the hard part was done.',
+    fix: 'Treat the post-differentiation algebra as its own step. If A-Math started slipping in Sec 4, the repair is often in Sec 3 algebra rather than in the calculus.',
+  },
+  {
+    mistake: 'A-Math: integration set up without choosing a method first',
+    detail: 'A forgotten constant of integration, limits substituted in the wrong order, or an attempt to integrate directly when a substitution was required.',
+    fix: 'Name the method before writing anything. Check for the constant on every indefinite integral, and evaluate limits as upper minus lower every time.',
+  },
+  {
+    mistake: 'Only being able to solve questions that look familiar',
+    detail: 'It is possible to become very good at recognising questions you have already practised without becoming better at recognising the concept underneath them.',
+    fix: 'Deliberately include unfamiliar and harder questions in every practice session. If every question you attempt is one you can already do, the session is revision, not preparation.',
   },
 ];
 
@@ -358,30 +415,32 @@ Preferred days & timing: `;
             </section>
 
             <section id="mistakes" className="scroll-mt-24">
-              <SectionHeading icon={TriangleAlert}>Common O Level Math Mistakes to Avoid</SectionHeading>
-              <GuideCard>
-                <h4 className="font-semibold text-gray-900 mb-3">Top 10 O Level Math Pitfalls</h4>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3 text-sm">
-                  <div>
-                    <ol className="list-decimal ml-5 space-y-1 text-gray-700">
-                      <li>Careless sign errors in algebra</li>
-                      <li>Forgetting to simplify final answers</li>
-                      <li>Misreading question requirements</li>
-                      <li>Not showing sufficient working</li>
-                      <li>Confusing degrees and radians</li>
-                    </ol>
-                  </div>
-                  <div>
-                    <ol className="list-decimal ml-5 space-y-1 text-gray-700" start="6">
-                      <li>Incorrect calculator mode settings</li>
-                      <li>Poor time management strategies</li>
-                      <li>Not checking answer reasonableness</li>
-                      <li>Mixing up similar formulas</li>
-                      <li>Incomplete coordinate geometry solutions</li>
-                    </ol>
-                  </div>
-                </div>
-              </GuideCard>
+              <SectionHeading icon={TriangleAlert}>10 common O-Level Maths mistakes</SectionHeading>
+              <p className="text-gray-700 mb-5">
+                In maths our tutors see far more marks lost to execution than to gaps in knowledge — and the fix for a careless error is completely different from the fix for a concept gap, which is why they have to be logged separately. These are the ten we correct most often across E-Math and A-Math.
+              </p>
+              <div className="space-y-4">
+                {commonMistakes.map((item, index) => (
+                  <GuideCard key={item.mistake}>
+                    <div className="flex gap-4">
+                      <span
+                        className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm font-bold text-primary tabular-nums"
+                        aria-hidden="true"
+                      >
+                        {index + 1}
+                      </span>
+                      <div>
+                        <h4 className="font-semibold text-gray-900 mb-1.5">{item.mistake}</h4>
+                        <p className="text-sm text-gray-700 mb-2">{item.detail}</p>
+                        <p className="text-sm text-gray-700">
+                          <span className="font-semibold text-gray-900">The fix: </span>
+                          {item.fix}
+                        </p>
+                      </div>
+                    </div>
+                  </GuideCard>
+                ))}
+              </div>
             </section>
 
             <section id="schedule" className="scroll-mt-24">

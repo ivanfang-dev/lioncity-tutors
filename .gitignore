@@ -61,3 +61,6 @@ improvements.md
 # Superpowers design docs, plans and briefs — carried manually, not via git
 docs/superpowers/
 docs/
+# SEO audit working files (never commit — public repo)
+seo-data/
+seo-audit/

@@ -1,16 +1,16 @@
 import { MATCH_TIME } from '@/data/promises';
 export const metadata = {
-  title: 'O-Level Chemistry Guide 2026 | LionCity Tutors',
-  description: 'O-Level Chemistry guide for Singapore students — physical, organic and inorganic chemistry, with the mole calculations and practical technique that earn an A1.',
+  title: 'O-Level Chemistry (6092): Topics, Common Mistakes & Tips',
+  description: 'The 2026 syllabus 6092 topics ranked by marks weight, the 10 mistakes our tutors correct most on Chemistry scripts, and how to prepare for Papers 1 to 3.',
   keywords: [
+    'pure chemistry O Level syllabus',
+    'O Level Chemistry common mistakes',
+    'O Level Chemistry study tips',
     'O Level Chemistry 2026',
     'O Level Chemistry Singapore',
     'GCE O Level Chemistry guide',
     'O Level Chemistry preparation',
-    'O Level Chemistry study tips',
     'O Level Chemistry tuition Singapore',
-    'Chemistry revision techniques',
-    'O Level Chemistry syllabus'
   ],
   openGraph: {
     images: [DEFAULT_OG_IMAGE],
@@ -46,7 +46,7 @@ const tableOfContents = [
   { id: 'inorganic', label: 'Inorganic chemistry' },
   { id: 'organic', label: 'Organic chemistry' },
   { id: 'exam-strategies', label: 'Paper-by-paper exam strategy' },
-  { id: 'mistakes', label: 'Common mistakes to avoid' },
+  { id: 'mistakes', label: '10 common mistakes' },
   { id: 'schedule', label: 'Weekly study schedule' },
   { id: 'resources', label: 'Essential resources' },
   { id: 'practical', label: 'Practical & lab skills' },
@@ -99,6 +99,62 @@ const timeline = [
       'Final consolidation of all formulae and key concepts',
       'Mental preparation and stress management strategies',
     ],
+  },
+];
+
+// The mistakes our tutors correct most often on Chemistry scripts. Chemistry
+// rewards precise terminology more than most subjects, so several of these are
+// about how the answer is written rather than what the student knows.
+const commonMistakes = [
+  {
+    mistake: 'A shaky mole concept, which then breaks four other topics',
+    detail: 'Weak mole fundamentals do not stay contained. They resurface in stoichiometry, in concentration, in gas volumes and in every titration calculation — so a student can appear to be weak at four topics when the gap is really one.',
+    fix: 'Repair the mole concept before anything else. It is the highest-leverage fix in the entire syllabus, because one foundation repairs several topics at once.',
+  },
+  {
+    mistake: 'Taking the mole ratio from an unbalanced equation',
+    detail: 'The calculation is then carried out perfectly on the wrong numbers. Every subsequent step is consistent, which is exactly why it is so hard to catch when checking.',
+    fix: 'Balance the equation first, then circle the two species the question relates, and read the ratio from the balanced coefficients only.',
+  },
+  {
+    mistake: 'Equations with wrong formulae or wrong ionic charges',
+    detail: 'Writing NaCl₂ or giving sulfate a single negative charge produces an equation that cannot balance correctly no matter how carefully the coefficients are adjusted.',
+    fix: 'Get the formula of each species right before balancing. Learn the common ionic charges cold — they appear in nearly every inorganic question on the paper.',
+  },
+  {
+    mistake: 'Missing or incorrect state symbols',
+    detail: 'State symbols are marked, and they are frequently left off entirely on equations that are otherwise completely correct.',
+    fix: 'Add state symbols as you write each species rather than as a final pass. Precipitates in particular must be (s), and that is often the mark being tested.',
+  },
+  {
+    mistake: 'Mixing up cm³ and dm³',
+    detail: 'The factor of 1,000 between them appears in almost every concentration and gas-volume calculation, and it is the most common numerical error we see in Chemistry.',
+    fix: 'Convert every volume to dm³ in the first line of working. Do the same for grams and kilograms, and write the unit on each intermediate value.',
+  },
+  {
+    mistake: 'Describing the chemistry correctly in everyday language',
+    detail: 'A chemically sensible answer that avoids the required term frequently scores nothing. This is the most frustrating category, because the student genuinely understood the question.',
+    fix: 'Learn the syllabus’s phrasing, not just the idea. When revising, check your wording against the mark scheme rather than against whether it sounds right.',
+  },
+  {
+    mistake: 'Confusing observation with inference in qualitative analysis',
+    detail: 'An observation is what you see — a white precipitate forming, a gas evolving. An inference is what it tells you. Questions ask for one or the other, and students routinely supply an explanation where an observation was required.',
+    fix: 'Check the command word before answering. If it says "state what you observe", nothing about identity or reasoning belongs in the answer.',
+  },
+  {
+    mistake: 'Oxidation states worked out by guesswork',
+    detail: 'Oxidation and reduction get inverted, or the oxidation state of an element in a compound ion is assigned by pattern-matching rather than calculation, which then reverses the entire redox analysis.',
+    fix: 'Calculate oxidation states from the rules every time rather than recalling them. Then identify which species lost electrons before naming anything as oxidised.',
+  },
+  {
+    mistake: 'Electrolysis answered from memory of a single example',
+    detail: 'Cathode and anode get swapped, or the products of the example the student memorised are given for a different electrolyte entirely.',
+    fix: 'Work from the ions actually present in the solution, decide what is discharged at each electrode and why, then write the half-equations. Learn the reasoning, not one worked case.',
+  },
+  {
+    mistake: 'Organic chemistry memorised reaction by reaction',
+    detail: 'Individual reactions are learned in isolation, so an unfamiliar molecule with the same functional group becomes unanswerable, and reaction conditions are left off answers that are otherwise right.',
+    fix: 'Learn by functional group and reaction pattern rather than by specific example, and treat the conditions as part of the answer, not an optional extra.',
   },
 ];
 
@@ -340,32 +396,32 @@ Preferred days & timing: `;
             </section>
 
             <section id="mistakes" className="scroll-mt-24">
-              <SectionHeading icon={TriangleAlert}>Common O Level Chemistry Mistakes to Avoid</SectionHeading>
-              <GuideCard>
-                <h4 className="font-semibold text-gray-900 mb-3">Top 12 O Level Chemistry Pitfalls</h4>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3 text-sm">
-                  <div>
-                    <ol className="list-decimal ml-5 space-y-1 text-gray-700">
-                      <li>Incomplete or incorrect chemical equations</li>
-                      <li>Confusing exothermic and endothermic reactions</li>
-                      <li>Incorrect mole calculations</li>
-                      <li>Missing state symbols in equations</li>
-                      <li>Wrong significant figures in calculations</li>
-                      <li>Confusing oxidation and reduction</li>
-                    </ol>
-                  </div>
-                  <div>
-                    <ol className="list-decimal ml-5 space-y-1 text-gray-700" start="7">
-                      <li>Incorrect interpretation of experimental data</li>
-                      <li>Missing units in numerical answers</li>
-                      <li>Confusing different types of bonding</li>
-                      <li>Inadequate explanation of observations</li>
-                      <li>Poor time management across papers</li>
-                      <li>Not showing working for multi-step problems</li>
-                    </ol>
-                  </div>
-                </div>
-              </GuideCard>
+              <SectionHeading icon={TriangleAlert}>10 common O-Level Chemistry mistakes</SectionHeading>
+              <p className="text-gray-700 mb-5">
+                Chemistry rewards precise terminology more than almost any other subject, so a large share of the marks our tutors recover are lost on questions the student understood. These are the ten we correct most often, and what to do instead.
+              </p>
+              <div className="space-y-4">
+                {commonMistakes.map((item, index) => (
+                  <GuideCard key={item.mistake}>
+                    <div className="flex gap-4">
+                      <span
+                        className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm font-bold text-primary tabular-nums"
+                        aria-hidden="true"
+                      >
+                        {index + 1}
+                      </span>
+                      <div>
+                        <h4 className="font-semibold text-gray-900 mb-1.5">{item.mistake}</h4>
+                        <p className="text-sm text-gray-700 mb-2">{item.detail}</p>
+                        <p className="text-sm text-gray-700">
+                          <span className="font-semibold text-gray-900">The fix: </span>
+                          {item.fix}
+                        </p>
+                      </div>
+                    </div>
+                  </GuideCard>
+                ))}
+              </div>
             </section>
 
             <section id="schedule" className="scroll-mt-24">
