@@ -30,10 +30,14 @@ export default function FloatingTrustBadge({ onGetStarted }) {
   // corner — swallowing taps in exactly the thumb zone, with nothing visible to blame.
   if (!isVisible) return null;
 
+  // Rests VISIBLE and animates as keyframes. An `initial: { opacity: 0 }` here is a
+  // trap: framer drives this with rAF, which is paused in a background tab and
+  // throttled under load, so the element would sit at opacity 0 while still being a
+  // 384x222 click target parked in the thumb zone.
   return (
         <motion.div
-          initial={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 1, y: 0 }}
+          animate={prefersReducedMotion ? undefined : { opacity: [0, 1], y: [24, 0] }}
           transition={{ duration: DURATION.base, ease: EASE_STANDARD }}
           className="fixed bottom-6 right-6 z-40 max-w-sm"
         >

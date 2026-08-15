@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
+import { motion } from 'framer-motion';
+import { DURATION, EASE_STANDARD } from '@/lib/motion';
 import { X, AlertCircle, Info, Loader2, ArrowRight, DollarSign } from 'lucide-react';
 import RateValidator from '../utils/RateValidator.js';
 
@@ -94,21 +95,26 @@ const RateInputModal = ({
     }
   };
 
+  // The `exit` variant is gone along with the AnimatePresence wrapper that was meant
+  // to drive it. That wrapper never worked: AnimatePresence only defers the removal of
+  // *motion* children, and its direct child here is a plain <div>, so the backdrop
+  // always unmounted instantly and the exit never played. Removing it costs no
+  // behaviour and removes a footgun — the moment someone made that child a motion
+  // component, this modal would inherit the bug that left an invisible click-blocking
+  // sheet over the page (see TutorPopup and BackToTop).
   const modalVariants = {
-    hidden: { opacity: 0, scale: 0.95, y: 20 },
-    visible: { opacity: 1, scale: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 30 } },
-    exit: { opacity: 0, scale: 0.9, y: -20, transition: { duration: 0.2 } }
+    hidden: { opacity: 0, scale: 0.95, y: 16 },
+    visible: { opacity: 1, scale: 1, y: 0, transition: { duration: DURATION.base, ease: EASE_STANDARD } }
   };
 
+  if (!isOpen) return null;
+
   return (
-    <AnimatePresence>
-      {isOpen && (
         <div className="fixed inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center z-[100] p-4">
           <motion.div
             variants={modalVariants}
             initial="hidden"
             animate="visible"
-            exit="exit"
             className="bg-white rounded-2xl max-w-2xl w-full shadow-2xl transform transition-all max-h-[90vh] overflow-y-auto flex flex-col"
             role="dialog"
             aria-modal="true"
@@ -260,8 +266,6 @@ const RateInputModal = ({
             </div>
           </motion.div>
         </div>
-      )}
-    </AnimatePresence>
   );
 };
 
