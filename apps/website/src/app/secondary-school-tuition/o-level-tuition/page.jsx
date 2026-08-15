@@ -350,30 +350,6 @@ export default function OLevelTuition() {
             </div>
           </section>
   
-          {/* Section 6: Success Stories */}
-          <section className="bg-gradient-to-r from-blue-50 to-sky-50 p-12 rounded-2xl">
-            <h2 className="text-2xl md:text-3xl font-semibold mb-8 text-primary text-center">Success Stories from Our Secondary School Students</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div className="bg-white p-8 rounded-xl shadow-lg">
-                <div className="flex items-start space-x-4">
-                  <span className="text-3xl">📈</span>
-                  <div>
-                    <strong className="text-emerald-700 text-lg">Ryan (Sec 4):</strong>
-                    <p className="text-gray-600 mt-2">Jumped from C5 to A2 in Additional Mathematics in just 4 months</p>
-                  </div>
-                </div>
-              </div>
-              <div className="bg-white p-8 rounded-xl shadow-lg">
-                <div className="flex items-start space-x-4">
-                  <span className="text-3xl">🎯</span>
-                  <div>
-                    <strong className="text-blue-700 text-lg">Sarah (Sec 3):</strong>
-                    <p className="text-gray-600 mt-2">Achieved top 10% in school for English Literature after weekly writing clinics</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
   
           {/* Section 9: Service Areas */}
           <section className="bg-gray-50 p-6 rounded-2xl">

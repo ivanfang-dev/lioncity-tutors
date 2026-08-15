@@ -11,6 +11,7 @@ import useTuitionRequestForm from "@/components/useTuitionRequestForm";
 import FormBenefits from "@/components/FormBenefits";
 import { CheckCircle } from "lucide-react"; // Imported for consistency in the success message
 import GuideSchema from '@/components/seo/GuideSchema';
+import Reviews from "@/components/Reviews";
 import { RelatedGuides } from '@/components/guide';
 
 export default function JCTuition() {
@@ -1000,30 +1001,6 @@ export default function JCTuition() {
           <RelatedGuides slug="jc-tuition" heading="Comprehensive A-Level Study Guides" />
         </section>
 
-        {/* Section 5: Success Stories */}
-        <section className="bg-gradient-to-r from-blue-50 to-sky-50 p-12 rounded-2xl">
-          <h2 className="text-2xl md:text-3xl font-semibold mb-8 text-primary text-center">Success Stories from Our JC Students</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="bg-white p-8 rounded-xl shadow-lg">
-              <div className="flex items-start space-x-4">
-                <span className="text-3xl">📈</span>
-                <div>
-                  <strong className="text-emerald-700 text-lg">Wei Jie (JC2):</strong>
-                  <p className="text-gray-600 mt-2">Improved from U grade to A in H2 Mathematics</p>
-                </div>
-              </div>
-            </div>
-            <div className="bg-white p-8 rounded-xl shadow-lg">
-              <div className="flex items-start space-x-4">
-                <span className="text-3xl">🎯</span>
-                <div>
-                  <strong className="text-blue-700 text-lg">Sarah (JC1):</strong>
-                  <p className="text-gray-600 mt-2">Achieved top 10% in school for H2 Physics</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
 
         {/* Section 6: Teaching Methods */}
         <section>
@@ -1044,20 +1021,7 @@ export default function JCTuition() {
           </div>
         </section>
 
-        {/* Section 7: Testimonials */}
-        <section>
-          <h2 className="text-2xl md:text-3xl font-semibold mb-8 text-primary text-center">What Parents Say About Our JC Tuition</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <blockquote className="bg-gradient-to-br from-indigo-50 to-emerald-50 p-8 rounded-xl border-l-4 border-l-emerald-500 shadow-lg">
-              <p className="italic text-lg mb-4">"We saw our daughter's confidence grow week by week. By the time A-Levels arrived, she was ready—not just academically, but mentally."</p>
-              <cite className="text-emerald-700 font-semibold text-lg">– Mrs. Tan, Mother of a JC2 Student (RI)</cite>
-            </blockquote>
-            <blockquote className="bg-gradient-to-br from-purple-50 to-blue-50 p-8 rounded-xl border-l-4 border-l-blue-500 shadow-lg">
-              <p className="italic text-lg mb-4">"LionCity Tutors helped my son move from consistent 'S' grades to an A in H2 Chemistry. Worth every cent."</p>
-              <cite className="text-blue-700 font-semibold text-lg">– Mr. Lim</cite>
-            </blockquote>
-          </div>
-        </section>
+        <Reviews />
 
         {/* Section 8: Service Areas */}
         <section className="bg-gray-50 p-6 rounded-2xl">

@@ -6,6 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import biologyImage from '../../../public/biology.webp';
 import { GuideCTA, RelatedGuides } from "@/components/guide";
 import GuideSchema from "@/components/seo/GuideSchema";
+import Reviews from "@/components/Reviews";
 import { BIOLOGY_TUITION_FAQS } from "./faqs.mjs";
 
 export const metadata = {
@@ -534,24 +535,13 @@ export default function BiologyTuition() {
           </div>
         </section>
 
-        {/* Testimonials + trust */}
+        <Reviews />
+
+        {/* The vetting description is kept — it describes the service rather
+            than quoting an unverifiable person. Worth checking against the
+            actual process before /about-us documents it in full. */}
         <section>
-          <h2 className="text-3xl font-semibold text-green-700 text-center mb-4">Proven outcomes & student success stories</h2>
-          <p className="text-gray-700 text-center max-w-3xl mx-auto">Our matched tutors have helped many local families improve confidence and exam grades through targeted lessons, consistent feedback and exam-focused practice.</p>
-
-          <div className="grid md:grid-cols-2 gap-6 mt-6">
-            <blockquote className="bg-gradient-to-br from-green-50 to-blue-50 p-6 rounded-xl border-l-4 border-l-green-500 shadow-md">
-              <p className="italic mb-3">"After weekly tuition and focused IA support, my daughter improved across her practical and theory marks. The tutor’s structured feedback made all the difference."</p>
-              <cite className="text-green-700 font-semibold">– Mrs Lim, Tampines</cite>
-            </blockquote>
-
-            <blockquote className="bg-gradient-to-br from-blue-50 to-green-50 p-6 rounded-xl border-l-4 border-l-blue-500 shadow-md">
-              <p className="italic mb-3">"Clear explanations, regular past-paper practice and lab coaching helped my son move from average to distinction in O-Level Biology."</p>
-              <cite className="text-blue-700 font-semibold">– Mr Tan</cite>
-            </blockquote>
-          </div>
-
-          <div className="mt-6 text-sm text-gray-600">
+          <div className="text-sm text-gray-600">
             <p><strong>Tutor vetting:</strong> All tutors are degree-qualified and undergo a background check, demo lesson and vetting of pedagogy before joining our network.</p>
           </div>
         </section>

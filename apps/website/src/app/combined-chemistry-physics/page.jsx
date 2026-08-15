@@ -51,7 +51,7 @@ export default function CombinedChemistryPhysics() {
 
         <div className="flex items-center space-x-4 mb-8">
           <div>
-            <p className="font-semibold text-gray-800">By David Lim, Combined Chemistry-Physics Tutor</p>
+            <p className="font-semibold text-gray-800">By the LionCity Tutors science team</p>
             <p className="text-sm text-gray-500">Updated July 1, 2026 • Advanced Integration Guide, both levels • 18 min read</p>
           </div>
         </div>
@@ -612,14 +612,9 @@ const articleSchema = {
   "headline": "Combined Chemistry + Physics: O-Level & N-Level Guide with Advanced Integration Techniques",
   "description": "Excel in Combined Chemistry-Physics with our Singapore-focused guide, covering O-Level (5086) and N-Level (5105). Advanced integration strategies, molecular-atomic connections, Singapore applications, and proven A1 techniques.",
   "author": {
-    "@type": "Person",
-    "name": "David Lim",
-    "jobTitle": "Chemistry-Physics Tutor",
-    "worksFor": {
-      "@type": "Organization",
-      "name": "LionCity Tutors"
-        }
-    },
+    "@type": "Organization",
+    "name": "LionCity Tutors"
+  },
   "datePublished": "2026-03-23",
   "dateModified": "2026-07-01"
 }

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { GuideCTA, RelatedGuides } from "@/components/guide";
 import GuideSchema from "@/components/seo/GuideSchema";
+import Reviews from "@/components/Reviews";
 
 export const metadata = {
   title: 'Chinese Tuition Singapore: PSLE & O-Level | LionCity Tutors',
@@ -195,33 +196,6 @@ export default function ChineseTuition() {
           </div>
         </section>
 
-        {/* Section 4: Student Success Stories */}
-        <section className="bg-gradient-to-r from-blue-50 to-emerald-50 p-6 rounded-xl">
-          <h2 className="text-2xl font-semibold mb-4 text-blue-700">Proven Chinese Tuition Results</h2>
-          <p className="text-gray-700 mb-4">
-            Our Chinese tutors have helped students achieve remarkable improvements:
-          </p>
-          <ul className="text-gray-700 space-y-3">
-            <li className="flex items-start space-x-3">
-              <span className="text-2xl">📈</span>
-              <div>
-                <strong className="text-emerald-700">Wei Jie (Sec 4):</strong> Improved from C5 to A2 in O Level Chinese through focused composition and oral practice
-              </div>
-            </li>
-            <li className="flex items-start space-x-3">
-              <span className="text-2xl">🎯</span>
-              <div>
-                <strong className="text-blue-700">Xiao Mei (P6):</strong> Achieved AL1 in PSLE Chinese with enhanced vocabulary and writing skills
-              </div>
-            </li>
-            <li className="flex items-start space-x-3">
-              <span className="text-2xl">🧠</span>
-              <div>
-                <strong className="text-purple-700">Jia Hui (JC2):</strong> Excelled in H1 Chinese, moving from average to distinction level
-              </div>
-            </li>
-          </ul>
-        </section>
 
         {/* Section 5: What We Cover */}
         <section>
@@ -284,20 +258,7 @@ export default function ChineseTuition() {
           </p>
         </section>
 
-        {/* Section 7: Testimonials */}
-        <section>
-          <h2 className="text-2xl font-semibold mb-4 text-blue-700">What Parents Say About Our Chinese Tuition</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-gray-700">
-            <blockquote className="bg-gradient-to-br from-blue-50 to-emerald-50 p-6 rounded-xl border-l-4 border-l-emerald-500 shadow-md">
-              <p className="italic mb-3">"My daughter's Chinese composition has improved tremendously. The tutor's approach to teaching Chinese characters and idioms is very effective."</p>
-              <cite className="text-emerald-700 font-semibold">– Mrs Tan, Ang Mo Kio</cite>
-            </blockquote>
-            <blockquote className="bg-gradient-to-br from-purple-50 to-blue-50 p-6 rounded-xl border-l-4 border-l-blue-500 shadow-md">
-              <p className="italic mb-3">"The tutor's focus on oral communication has really helped my son gain confidence in speaking Chinese."</p>
-              <cite className="text-blue-700 font-semibold">– Mr Lim, Tampines</cite>
-            </blockquote>
-          </div>
-        </section>
+        <Reviews />
 
         {/* Section 8: Areas We Serve */}
         <section className="bg-gray-50 p-6 rounded-xl">

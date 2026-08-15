@@ -321,30 +321,6 @@ export default function NLevelTuition() {
           </div>
         </section>
 
-        {/* Section 6: Success Stories */}
-        <section className="bg-gradient-to-r from-blue-50 to-sky-50 p-12 rounded-2xl">
-          <h2 className="text-2xl md:text-3xl font-semibold mb-8 text-primary text-center">Success Stories from Our N-Level Students</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="bg-white p-8 rounded-xl shadow-lg">
-              <div className="flex items-start space-x-4">
-                <span className="text-3xl">📈</span>
-                <div>
-                  <strong className="text-emerald-700 text-lg">Alicia (Sec 4N):</strong>
-                  <p className="text-gray-600 mt-2">Improved from C6 to B3 in N(A) Math in just 4 months</p>
-                </div>
-              </div>
-            </div>
-            <div className="bg-white p-8 rounded-xl shadow-lg">
-              <div className="flex items-start space-x-4">
-                <span className="text-3xl">🎯</span>
-                <div>
-                  <strong className="text-blue-700 text-lg">Marcus (Sec 5N):</strong>
-                  <p className="text-gray-600 mt-2">Qualified for O-Levels after consistent improvement in Science and English</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
 
         {/* Section 9: Service Areas */}
         <section className="bg-gray-50 p-6 rounded-2xl">

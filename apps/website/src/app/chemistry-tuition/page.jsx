@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { GuideCTA, RelatedGuides } from "@/components/guide";
 import GuideSchema from "@/components/seo/GuideSchema";
+import Reviews from "@/components/Reviews";
 
 export const metadata = {
   title: 'Chemistry Tuition Singapore: O-Level & H2 | LionCity Tutors',
@@ -320,45 +321,6 @@ export default function ChemistryTuition() {
           </Card>
         </section>
 
-        {/* Section 3: Proven Chemistry Tuition Results */}
-        <section className="bg-gradient-to-r from-blue-50 to-emerald-50 p-4 sm:p-6 rounded-xl">
-          <h2 className="text-2xl sm:text-3xl font-semibold mb-3 sm:mb-4 text-emerald-700 text-center">Proven Chemistry Tuition Results in Singapore</h2>
-          <p className="text-sm sm:text-base text-gray-700 mb-4 sm:mb-6 text-center max-w-3xl mx-auto">
-            Our chemistry tutors have helped hundreds of Singapore students achieve remarkable grade improvements across all levels and curricula:
-          </p>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-            <div className="space-y-3 sm:space-y-4">
-              <div className="flex items-start space-x-2 sm:space-x-3">
-                <span className="text-xl sm:text-2xl">🏆</span>
-                <div className="text-sm sm:text-base">
-                  <strong className="text-emerald-700">Rachel (JC2 - RJC):</strong> Improved from E grade to A in H2 Chemistry in 8 months with intensive organic chemistry mechanism training and thermochemistry problem-solving
-                </div>
-              </div>
-              <div className="flex items-start space-x-2 sm:space-x-3">
-                <span className="text-xl sm:text-2xl">⚗️</span>
-                <div className="text-sm sm:text-base">
-                  <strong className="text-blue-700">Kevin (Sec 4 - ACSI):</strong> Jumped from F9 to B3 in O Level Chemistry after mastering chemical bonding concepts, stoichiometry calculations, and qualitative analysis
-                </div>
-              </div>
-            </div>
-            
-            <div className="space-y-3 sm:space-y-4">
-              <div className="flex items-start space-x-2 sm:space-x-3">
-                <span className="text-xl sm:text-2xl">🌟</span>
-                <div className="text-sm sm:text-base">
-                  <strong className="text-purple-700">Amanda (IB Year 2 - UWC):</strong> Achieved 7/7 in IB Chemistry HL with systematic approach to thermodynamics, kinetics, and successful completion of Internal Assessment
-                </div>
-              </div>
-              <div className="flex items-start space-x-2 sm:space-x-3">
-                <span className="text-xl sm:text-2xl">🎯</span>
-                <div className="text-sm sm:text-base">
-                  <strong className="text-emerald-700">Ben (IGCSE - ACS International):</strong> Scored A* in IGCSE Chemistry after overcoming difficulties with stoichiometry calculations and periodic table trends
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
 
         {/* Section 3: Detailed Chemistry Levels and Syllabus Coverage */}
         <section>
@@ -714,20 +676,7 @@ export default function ChemistryTuition() {
           </div>
         </section>
 
-        {/* Section 8: Testimonials */}
-        <section>
-          <h2 className="text-2xl font-semibold mb-4 text-emerald-700">Success Stories from Chemistry Students</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <blockquote className="bg-gradient-to-br from-emerald-50 to-blue-50 p-6 rounded-xl border-l-4 border-l-emerald-500 shadow-md">
-              <p className="italic mb-3">"My son was struggling with organic chemistry mechanisms until he met his tutor. The visual approach and step-by-step breakdowns made everything click. He got A in H2 Chemistry!"</p>
-              <cite className="text-emerald-700 font-semibold">– Mrs Lim, Tampines</cite>
-            </blockquote>
-            <blockquote className="bg-gradient-to-br from-blue-50 to-purple-50 p-6 rounded-xl border-l-4 border-l-blue-500 shadow-md">
-              <p className="italic mb-3">"The chemistry tutor explained equilibrium and kinetics so clearly. My daughter finally understood why reactions behave the way they do. Highly recommend!"</p>
-              <cite className="text-blue-700 font-semibold">– Mr Tan, Bishan</cite>
-            </blockquote>
-          </div>
-        </section>
+        <Reviews />
 
         {/* Section 9: Service Areas */}
         <section className="bg-gray-50 p-6 rounded-xl">

@@ -12,6 +12,7 @@ import useTuitionRequestForm from "@/components/useTuitionRequestForm";
 import FormBenefits from "@/components/FormBenefits";
 import { CheckCircle } from "lucide-react";
 import GuideSchema from '@/components/seo/GuideSchema';
+import Reviews from "@/components/Reviews";
 import { RelatedGuides } from '@/components/guide';
 
 export default function PrimarySchoolTuition() {
@@ -297,30 +298,6 @@ export default function PrimarySchoolTuition() {
           </div>
         </section>
 
-        {/* Section 6: Success Stories */}
-        <section className="bg-gradient-to-r from-blue-50 to-sky-50 p-12 rounded-2xl">
-          <h2 className="text-2xl md:text-3xl font-semibold mb-8 text-primary text-center">Success Stories from Our Primary School Students</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="bg-white p-8 rounded-xl shadow-lg">
-              <div className="flex items-start space-x-4">
-                <span className="text-3xl">📈</span>
-                <div>
-                  <strong className="text-emerald-700 text-lg">Amanda (P5):</strong>
-                  <p className="text-gray-600 mt-2">Jumped from borderline pass to Band 1 in Science within 2 terms</p>
-                </div>
-              </div>
-            </div>
-            <div className="bg-white p-8 rounded-xl shadow-lg">
-              <div className="flex items-start space-x-4">
-                <span className="text-3xl">🎯</span>
-                <div>
-                  <strong className="text-blue-700 text-lg">Megan (P6):</strong>
-                  <p className="text-gray-600 mt-2">PSLE English improved from AL6 to AL2 after weekly writing clinics</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
 
         {/* Section 7: Teaching Methods */}
         <section>
@@ -341,20 +318,7 @@ export default function PrimarySchoolTuition() {
           </div>
         </section>
 
-        {/* Section 8: Testimonials */}
-        <section>
-          <h2 className="text-2xl md:text-3xl font-semibold mb-8 text-primary text-center">What Parents Say About Our Primary School Tuition</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <blockquote className="bg-gradient-to-br from-indigo-50 to-emerald-50 p-8 rounded-xl border-l-4 border-l-emerald-500 shadow-lg">
-              <p className="italic text-lg mb-4">"The tutors really understand how to make learning fun while ensuring academic progress. My daughter looks forward to her lessons!"</p>
-              <cite className="text-emerald-700 font-semibold text-lg">– Mrs Tan</cite>
-            </blockquote>
-            <blockquote className="bg-gradient-to-br from-purple-50 to-blue-50 p-8 rounded-xl border-l-4 border-l-blue-500 shadow-lg">
-              <p className="italic text-lg mb-4">"The structured approach and regular feedback have helped my son build confidence and improve his grades significantly."</p>
-              <cite className="text-blue-700 font-semibold text-lg">– Mr Lim</cite>
-            </blockquote>
-          </div>
-        </section>
+        <Reviews />
 
         {/* Section 9: Service Areas */}
         <section className="bg-gray-50 p-6 rounded-2xl">

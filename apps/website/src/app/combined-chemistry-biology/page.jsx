@@ -52,7 +52,7 @@ export default function CombinedChemBioNA() {
 
         <div className="flex items-center space-x-4 mb-8">
           <div>
-            <p className="font-semibold text-gray-800">By Victor, Combined Chemistry/Biology Tutor</p>
+            <p className="font-semibold text-gray-800">By the LionCity Tutors science team</p>
             <p className="text-sm text-gray-500">Updated July 2, 2026 • O-Level &amp; N-Level Combined Science • 20+ min read</p>
           </div>
         </div>
@@ -588,12 +588,7 @@ const articleSchema = {
     'Combined Chemistry + Biology: O-Level (5088) & N-Level (5107) — Matter & Life Integrated',
   description:
     'Comprehensive Combined Chemistry–Biology guide for Secondary 4 students in Singapore, covering both O-Level and N(A). Accurate syllabi, integration strategies, sample questions, practical tips, and exam-focused techniques.',
-  author: {
-    "@type": "Person",
-    name: 'Victor',
-    jobTitle: 'Chemistry–Biology Tutor',
-    worksFor: { "@type": "Organization", name: 'LionCity Tutors' }
-  },
+  author: { "@type": "Organization", name: 'LionCity Tutors' },
   datePublished: '2026-03-26',
   dateModified: '2026-07-02',
 };

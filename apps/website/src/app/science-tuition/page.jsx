@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { GuideCTA, RelatedGuides } from "@/components/guide";
 import GuideSchema from "@/components/seo/GuideSchema";
+import Reviews from "@/components/Reviews";
 
 
 export const metadata = {
@@ -350,45 +351,6 @@ export default function ScienceTuition() {
           </div>
         </section>
 
-        {/* Section 4: Proven Results */}
-        <section className="bg-gradient-to-r from-emerald-50 to-blue-50 p-6 rounded-xl">
-          <h2 className="text-2xl font-semibold mb-4 text-blue-700">Outstanding Science Tuition Results</h2>
-          <p className="text-gray-700 mb-4">
-            Our science tutors have helped hundreds of Singapore students achieve remarkable improvements:
-          </p>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-4">
-              <div className="flex items-start space-x-3">
-                <span className="text-2xl">🏆</span>
-                <div>
-                  <strong className="text-blue-700">Sarah (Sec 4):</strong> Improved from F9 to B3 in O Level Chemistry in 6 months
-                </div>
-              </div>
-              <div className="flex items-start space-x-3">
-                <span className="text-2xl">⚡</span>
-                <div>
-                  <strong className="text-emerald-700">Marcus (JC2):</strong> Jumped from U grade to A in H2 Physics with targeted problem-solving techniques
-                </div>
-              </div>
-            </div>
-            
-            <div className="space-y-4">
-              <div className="flex items-start space-x-3">
-                <span className="text-2xl">🌟</span>
-                <div>
-                  <strong className="text-purple-700">Priya (P6):</strong> Scored 85+ in PSLE Science after struggling with scientific concepts
-                </div>
-              </div>
-              <div className="flex items-start space-x-3">
-                <span className="text-2xl">🎯</span>
-                <div>
-                  <strong className="text-blue-700">David (Sec 3):</strong> Became top 10% in school after our Biology tutor's systematic approach
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
 
         {/* Section 5: Why Choose Us */}
         <section>
@@ -458,20 +420,7 @@ export default function ScienceTuition() {
           </div>
         </section>
 
-        {/* Section 7: Testimonials */}
-        <section>
-          <h2 className="text-2xl font-semibold mb-4 text-blue-700">Success Stories from Science Students</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <blockquote className="bg-gradient-to-br from-blue-50 to-emerald-50 p-6 rounded-xl border-l-4 border-l-blue-500 shadow-md">
-              <p className="italic mb-3">"My daughter used to hate Chemistry, but her tutor made it so interesting with real-life examples. She went from failing to getting A2 in O Levels!"</p>
-              <cite className="text-blue-700 font-semibold">– Mrs Wong, Jurong</cite>
-            </blockquote>
-            <blockquote className="bg-gradient-to-br from-purple-50 to-emerald-50 p-6 rounded-xl border-l-4 border-l-emerald-500 shadow-md">
-              <p className="italic mb-3">"The Physics tutor didn't just teach formulas – he explained the 'why' behind everything. My son finally understood Physics and scored A in A Levels."</p>
-              <cite className="text-emerald-700 font-semibold">– Mr Chen, Ang Mo Kio</cite>
-            </blockquote>
-          </div>
-        </section>
+        <Reviews />
 
         {/* Section 8: Service Areas */}
         <section className="bg-gray-50 p-6 rounded-xl">

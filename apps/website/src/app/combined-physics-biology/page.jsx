@@ -59,7 +59,7 @@ export default function CombinedPhysicsBiology() {
 
         <div className="flex items-center space-x-4 mb-8">
           <div>
-            <p className="font-semibold text-gray-800">By Sarah Goh, Combined Physics–Biology Tutor</p>
+            <p className="font-semibold text-gray-800">By the LionCity Tutors science team</p>
             <p className="text-sm text-gray-500">Updated June 28, 2026 • O-Level &amp; N(A) Integration Guide • 16 min read</p>
           </div>
         </div>
@@ -567,12 +567,7 @@ const articleSchema = {
     'Combined Physics + Biology: O-Level (5087) & N-Level (5106) Life–Motion Integration',
   description:
     'Singapore-focused Combined Physics–Biology guide covering O-Level and N(A). Accurate topic lists, integration patterns, Singapore applications, and practical exam strategies.',
-  author: {
-    "@type": "Person",
-    name: 'Sarah Goh',
-    jobTitle: 'Combined Physics–Biology Tutor',
-    worksFor: { "@type": "Organization", name: 'LionCity Tutors' }
-  },
+  author: { "@type": "Organization", name: 'LionCity Tutors' },
   datePublished: '2026-03-21',
   dateModified: '2026-06-28',
 };

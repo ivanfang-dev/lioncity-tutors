@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { GuideCTA, RelatedGuides } from "@/components/guide";
 import GuideSchema from "@/components/seo/GuideSchema";
+import Reviews from "@/components/Reviews";
 
 
 export const metadata = {
@@ -609,45 +610,6 @@ export default function PhysicsTuition() {
           </div>
         </section>
 
-        {/* Section 5: Outstanding Results */}
-        <section className="bg-gradient-to-r from-purple-50 to-blue-50 p-6 rounded-xl">
-          <h2 className="text-3xl font-semibold mb-4 text-blue-700 text-center">Proven Physics Tuition Results in Singapore</h2>
-          <p className="text-gray-700 mb-6 text-center max-w-3xl mx-auto">
-            Our physics tutors have helped hundreds of Singapore students achieve remarkable grade improvements across all levels and curricula:
-          </p>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-4">
-              <div className="flex items-start space-x-3">
-                <span className="text-2xl">🏆</span>
-                <div>
-                  <strong className="text-blue-700">Marcus (JC2 - NJC):</strong> Improved from D grade to A in H2 Physics in 6 months with intensive mechanics problem-solving and electromagnetic field theory mastery
-                </div>
-              </div>
-              <div className="flex items-start space-x-3">
-                <span className="text-2xl">⚡</span>
-                <div>
-                  <strong className="text-purple-700">Sarah (Sec 4 - CHIJ):</strong> Jumped from F9 to B3 in O Level Physics after mastering kinematics, electricity concepts, and practical skills through systematic approach
-                </div>
-              </div>
-            </div>
-            
-            <div className="space-y-4">
-              <div className="flex items-start space-x-3">
-                <span className="text-2xl">🌟</span>
-                <div>
-                  <strong className="text-green-700">David (IB Year 2 - UWCSEA):</strong> Achieved 7/7 in IB Physics HL with mastery of quantum mechanics, relativity, and successful completion of Internal Assessment investigation
-                </div>
-              </div>
-              <div className="flex items-start space-x-3">
-                <span className="text-2xl">🎯</span>
-                <div>
-                  <strong className="text-blue-700">Emma (IGCSE - SAS):</strong> Scored A* in IGCSE Physics after overcoming difficulties with wave phenomena, electricity calculations, and radioactivity concepts
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
 
         {/* Section 6: Why Choose Us */}
         <section>
@@ -713,20 +675,7 @@ export default function PhysicsTuition() {
           </div>
         </section>
 
-        {/* Section 8: Testimonials */}
-        <section>
-          <h2 className="text-2xl font-semibold mb-4 text-blue-700">Success Stories from Physics Students</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <blockquote className="bg-gradient-to-br from-blue-50 to-purple-50 p-6 rounded-xl border-l-4 border-l-blue-500 shadow-md">
-              <p className="italic mb-3">"My daughter was struggling with electromagnetic induction until she met her physics tutor. The clear explanations and visual demonstrations made everything click. She improved from D to A in H2 Physics!"</p>
-              <cite className="text-blue-700 font-semibold">– Mrs Chen, Orchard</cite>
-            </blockquote>
-            <blockquote className="bg-gradient-to-br from-purple-50 to-green-50 p-6 rounded-xl border-l-4 border-l-purple-500 shadow-md">
-              <p className="italic mb-3">"The physics tutor explained kinematics and dynamics so clearly. My son finally understood Newton's laws and motion graphs. His O-Level Physics grades improved dramatically!"</p>
-              <cite className="text-purple-700 font-semibold">– Mr Kumar, Jurong East</cite>
-            </blockquote>
-          </div>
-        </section>
+        <Reviews />
 
         {/* Section 9: Service Areas */}
         <section className="bg-gray-50 p-6 rounded-xl">

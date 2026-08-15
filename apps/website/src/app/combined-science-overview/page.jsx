@@ -52,7 +52,7 @@ export default function CombinedScienceOverview() {
       <h1 className="text-4xl font-bold text-blue-800 mb-4">Combined Science 2026: Your Complete Guide to All Three Combinations at O-Level &amp; N-Level</h1>
       <div className="flex items-center space-x-4 mb-8">
           <div>
-            <p className="font-semibold text-gray-800">By Marcus Wong, Combined Science Tutor</p>
+            <p className="font-semibold text-gray-800">By the LionCity Tutors science team</p>
             <p className="text-sm text-gray-500">Updated June 24, 2026 • Comprehensive guide to all combinations, both levels • 15 min read</p>
           </div>
         </div>
@@ -595,13 +595,8 @@ const articleSchema = {
   "headline": "Combined Science 2026: Your Complete Guide to All Three Combinations at O-Level & N-Level",
   "description": "Master Combined Science with our comprehensive Singapore-focused guide, covering O-Level and N-Level. Physics-Chemistry, Physics-Biology, Chemistry-Biology combinations, local case studies, and proven exam techniques.",
   "author": {
-    "@type": "Person",
-    "name": "Marcus Wong",
-    "jobTitle": "Senior Science Tutor",
-    "worksFor": {
-      "@type": "Organization",
-      "name": "LionCity Tutors"
-    }
+    "@type": "Organization",
+    "name": "LionCity Tutors"
   },
   "publisher": {
     "@type": "Organization",

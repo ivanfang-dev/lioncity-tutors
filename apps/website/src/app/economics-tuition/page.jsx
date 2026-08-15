@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { GuideCTA, RelatedGuides } from "@/components/guide";
 import GuideSchema from "@/components/seo/GuideSchema";
+import Reviews from "@/components/Reviews";
 
 export const metadata = {
   title: 'Economics Tuition Singapore: H1 & H2 | LionCity Tutors',
@@ -217,33 +218,6 @@ export default function EconomicsTuition() {
           </div>
         </section>
 
-        {/* Section 4: Real Student Progress */}
-        <section className="bg-gradient-to-r from-blue-50 to-emerald-50 p-6 rounded-xl">
-          <h2 className="text-2xl font-semibold mb-4 text-blue-700">Proven Economics Tuition Results from Singapore Students</h2>
-          <p className="text-gray-700 mb-4">
-            Our economics tutors have helped hundreds of Singapore students achieve remarkable improvements in their economics grades:
-          </p>
-          <ul className="text-gray-700 space-y-3">
-            <li className="flex items-start space-x-3">
-              <span className="text-2xl">📈</span>
-              <div>
-                <strong className="text-emerald-700">Sarah (JC2):</strong> Improved from D grade to A in H2 Economics in 6 months with focused essay writing and case study practice
-              </div>
-            </li>
-            <li className="flex items-start space-x-3">
-              <span className="text-2xl">🎯</span>
-              <div>
-                <strong className="text-blue-700">Marcus (IB Year 2):</strong> Boosted IB HL Economics from 4 to 7 points with targeted IA and exam preparation support
-              </div>
-            </li>
-            <li className="flex items-start space-x-3">
-              <span className="text-2xl">🧠</span>
-              <div>
-                <strong className="text-purple-700">Li Wei (JC1):</strong> Gained confidence in H1 Economics analysis, moving from failing to consistent B+ grades
-              </div>
-            </li>
-          </ul>
-        </section>
 
         {/* Economics Subjects We Cover */}
         <section>
@@ -449,20 +423,7 @@ export default function EconomicsTuition() {
           </p>
         </section>
 
-        {/* Section 6: Testimonials */}
-        <section>
-          <h2 className="text-2xl font-semibold mb-4 text-blue-700">What Parents Say About Our Economics Tuition Service</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-gray-700">
-            <blockquote className="bg-gradient-to-br from-blue-50 to-emerald-50 p-6 rounded-xl border-l-4 border-l-emerald-500 shadow-md">
-              <p className="italic mb-3">"The economics tutor we found through Lion City Tutors transformed my daughter's understanding of the subject. Her essays improved dramatically and she actually enjoys economics now!"</p>
-              <cite className="text-emerald-700 font-semibold">– Mrs Chen, Orchard</cite>
-            </blockquote>
-            <blockquote className="bg-gradient-to-br from-purple-50 to-blue-50 p-6 rounded-xl border-l-4 border-l-blue-500 shadow-md">
-              <p className="italic mb-3">"Amazing IB Economics support! The tutor helped my son with his IA and he scored a 7 in HL Economics. The service was professional and completely free."</p>
-              <cite className="text-blue-700 font-semibold">– Mr Kumar, Bukit Timah</cite>
-            </blockquote>
-          </div>
-        </section>
+        <Reviews />
 
         {/* New Section: Areas We Serve */}
         <section className="bg-gray-50 p-6 rounded-xl">
