@@ -100,7 +100,9 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 h1 {
-  font-size: clamp(2.5rem, 5vw, 4rem);
+  /* 4.5rem ceiling, matching DESIGN.md's display step — it was raised there to match
+     the text-7xl hero but never updated here. */
+  font-size: clamp(2.5rem, 5vw, 4.5rem);
   line-height: 1.1;
   font-weight: 700;
 }
@@ -156,6 +158,21 @@ h4 {
   .hero-underline path {
     stroke-dashoffset: 0;
     animation: none;
+  }
+
+  /* Backstop for every CSS-driven animation and transition on the site — the Tailwind
+     `transition-*`/`animate-*` utilities, the popup keyframes, the hover sweeps. The
+     framer-motion components read `useReducedMotion()` themselves (inline styles are
+     out of CSS's reach), and DESIGN.md § Motion requires a real reduced-motion path,
+     not a best-effort one. Durations go to ~0 rather than `none` so state changes
+     still resolve and anything mid-flight lands on its final value. */
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }
 
@@ -255,7 +272,9 @@ h4 {
   touch-action: manipulation;
   cursor: pointer;
   border: 1px solid rgb(var(--color-border));
-  border-radius: 1.8rem;
+  /* Was an off-scale 1.8rem; at this control's height that already read as a pill,
+     so it now uses the documented `rounded.pill` value. */
+  border-radius: 9999px;
   display: flex;
   align-items: center;
   justify-content: center;

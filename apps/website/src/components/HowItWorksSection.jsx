@@ -7,7 +7,8 @@ import { SplitText } from "gsap/SplitText";
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
 import { Button } from '@/components/ui/button';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
+import { DURATION, EASE_STANDARD, enter } from '@/lib/motion';
 import { ArrowDown } from 'lucide-react';
 import Image from 'next/image';
 
@@ -18,6 +19,7 @@ if (typeof window !== 'undefined') {
 
 export default function HowItWorksSection({ formRef }) {
   const containerRef = useRef(null);
+  const prefersReducedMotion = useReducedMotion();
 
   const steps = [
     { 
@@ -107,14 +109,14 @@ export default function HowItWorksSection({ formRef }) {
             tl.from(splitTitle.chars, {
                 opacity: 0,
                 y: 20,
-                duration: 0.5,
+                duration: DURATION.base,
                 ease: "power2.out",
                 stagger: 0.02
               })
               .from(splitDesc.words, {
                 opacity: 0,
                 y: 20,
-                duration: 0.8,
+                duration: DURATION.draw,
                 ease: "power2.out",
                 stagger: 0.05
               }, "-=0.4");
@@ -138,14 +140,14 @@ export default function HowItWorksSection({ formRef }) {
             tl.from(splitTitle.chars, {
                 opacity: 0,
                 y: 20,
-                duration: 0.5,
+                duration: DURATION.base,
                 ease: "power2.out",
                 stagger: 0.02
               })
               .from(splitDesc.words, {
                 opacity: 0,
                 y: 20,
-                duration: 0.8,
+                duration: DURATION.draw,
                 ease: "power2.out",
                 stagger: 0.05
               }, "-=0.4");
@@ -154,7 +156,7 @@ export default function HowItWorksSection({ formRef }) {
               tl.from(ctaButton, {
                 y: 30,
                 opacity: 0,
-                duration: 0.6,
+                duration: DURATION.base,
                 ease: "power2.out"
               }, "-=0.3");
             }
@@ -182,10 +184,12 @@ export default function HowItWorksSection({ formRef }) {
         <p className="text-base md:text-lg text-slate-600 max-w-2xl mx-auto mb-6 md:mb-8">
           Our process is designed to be transparent, efficient, and tailored to your needs.
         </p>
+        {/* A loop with no end state is the least respectful motion on the page for
+            anyone sensitive to it, so it simply does not run under reduced motion. */}
         <motion.div
           className="hidden md:block"
-          animate={{ y: [0, 10, 0] }}
-          transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+          animate={prefersReducedMotion ? undefined : { y: [0, 10, 0] }}
+          transition={{ duration: 1.5, repeat: Infinity, ease: EASE_STANDARD }}
         >
           <ArrowDown className="w-8 h-8 text-slate-500" />
         </motion.div>
@@ -198,10 +202,7 @@ export default function HowItWorksSection({ formRef }) {
           {steps.map((step, index) => (
             <motion.div
               key={index}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
+              {...enter(index, prefersReducedMotion)}
               className="bg-white rounded-2xl overflow-hidden shadow-lg border border-slate-200"
             >
               {/* Image Section */}

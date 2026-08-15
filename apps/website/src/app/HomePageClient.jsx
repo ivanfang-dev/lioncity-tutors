@@ -4,9 +4,10 @@ import React, { useState, useEffect, useLayoutEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { motion, useScroll, useTransform, useAnimation, useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
+import { DURATION, EASE_STANDARD, LIFT, PRESS, STAGGER, enter } from "@/lib/motion";
 import Image from 'next/image';
-import UniqueFeaturesSection from "@/components/UniqueFeaturesSection";
+import MatchTimelineSection from "@/components/MatchTimelineSection";
 import { Step1, Step2, Step3 } from "@/components/FormSteps";
 import FormStepper from "@/components/FormStepper";
 import FormBenefits from "@/components/FormBenefits";
@@ -56,7 +57,7 @@ const useIsomorphicLayoutEffect = typeof window !== "undefined" ? useLayoutEffec
 // The count-up starts from the FINAL value, not from zero: the server-rendered HTML
 // (and any crawler or no-JS visitor) must show the real figure. The reset to 0 happens
 // in a layout effect, before the browser paints, so the animation is still seen.
-const Counter = ({ end, duration = 2.5, suffix = "", decimals = 0 }) => {
+const Counter = ({ end, duration = DURATION.draw, suffix = "", decimals = 0 }) => {
   const [count, setCount] = useState(end);
   const prefersReducedMotion = useReducedMotion();
 
@@ -79,7 +80,10 @@ const Counter = ({ end, duration = 2.5, suffix = "", decimals = 0 }) => {
     return () => cancelAnimationFrame(frame);
   }, [end, duration, decimals, prefersReducedMotion]);
 
-  return <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }}>{count}{suffix}</motion.span>;
+  // No entrance fade here: the figure is server-rendered at its real value, and an
+  // `initial: { opacity: 0 }` would ship it invisible to anyone whose JS never runs.
+  // The count-up is the animation.
+  return <span className="tabular-nums">{count}{suffix}</span>;
 };
 
 
@@ -129,8 +133,16 @@ export default function HomePageClient() {
     { initials: 'R.R', name: 'Mrs Rahman', relation: 'Parent of JC1', text: 'Great follow-up and tutor matched to learning style. Highly recommended.', subject: 'H2 Chemistry', location: 'Woodlands' }
   ];
 
-  const fadeUp = { hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } };
-  const fadeUpTransition = { duration: 0.6, ease: [0.16, 1, 0.3, 1] };
+  const prefersReducedMotion = useReducedMotion();
+
+  // `hidden` is deliberately empty. The hero is the whole pitch and the LCP element,
+  // and a populated hidden state ships the headline, both CTAs and the trust chips at
+  // opacity 0 in the server HTML — blank until hydration, blank forever if JS fails.
+  // Resting visible and expressing the entrance as keyframes keeps the movement while
+  // guaranteeing the hero is readable the moment the HTML lands. Travel only, no fade:
+  // a replayed opacity flash is far more noticeable than a replayed 16px slide.
+  const fadeUp = { hidden: {}, visible: { y: [16, 0] } };
+  const fadeUpTransition = { duration: DURATION.base, ease: EASE_STANDARD };
 
   const whatsappMessage = `Hi LionCity Tutors! I'd like help finding a tutor.
 
@@ -159,11 +171,10 @@ Preferred days & timing: `;
                 initial="hidden"
                 animate="visible"
                 variants={{
-                  hidden: { opacity: 0 },
-                  visible: {
-                    opacity: 1,
-                    transition: { staggerChildren: 0.12 },
-                  },
+                  // Empty hidden state, same reason as `fadeUp`: this container wraps
+                  // the entire hero copy block, so an opacity here blanks all of it.
+                  hidden: {},
+                  visible: { transition: { staggerChildren: STAGGER } },
                 }}
                 className="text-center lg:text-left order-2 lg:order-1"
               >
@@ -219,8 +230,7 @@ Preferred days & timing: `;
                   className="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start mb-8"
                 >
                   <motion.div
-                    whileHover={{ scale: 1.03 }}
-                    whileTap={{ scale: 0.97 }}
+                    {...PRESS}
                     className="w-full sm:w-auto"
                   >
                     <Button
@@ -269,9 +279,8 @@ Preferred days & timing: `;
 
               {/* Image */}
               <motion.div
-                initial={{ opacity: 0, scale: 0.97 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+                animate={prefersReducedMotion ? undefined : { scale: [0.97, 1] }}
+                transition={{ duration: DURATION.base, delay: STAGGER * 2, ease: EASE_STANDARD }}
                 className="relative h-[300px] sm:h-[400px] md:h-[450px] lg:h-[520px] rounded-2xl overflow-hidden shadow-xl order-1 lg:order-2"
               >
                 <Image
@@ -292,13 +301,9 @@ Preferred days & timing: `;
         {/* Stats */}
         <section className="py-16 sm:py-20 md:py-24 bg-background-default">
           <div className="max-w-7xl mx-auto px-4 sm:px-6">
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-              viewport={{ once: true, amount: 0.2 }}
-              className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8"
-            >
+            {/* The wrapper no longer animates: the four cards stagger themselves,
+                and moving the container too meant every stat travelled twice. */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
               {[
                 { icon: TrendingUp, end: 100, suffix: "+", label: "Successful Matches", sub: "Last 3 months" },
                 { icon: Users, end: TUTOR_COUNT_NUM, suffix: "+", label: "Qualified Tutors", sub: "Vetted professionals" },
@@ -309,11 +314,8 @@ Preferred days & timing: `;
                 return (
                   <motion.div
                     key={i}
-                    initial={{ opacity: 0, y: 20, scale: 0.95 }}
-                    whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                    transition={{ duration: 0.5, delay: i * 0.1 }}
-                    viewport={{ once: true }}
-                    whileHover={{ y: -4 }}
+                    {...enter(i, prefersReducedMotion)}
+                    whileHover={{ y: LIFT.card }}
                     className="relative bg-white p-5 sm:p-6 md:p-8 rounded-2xl shadow-sm hover:shadow-lg border border-gray-100 transition-all duration-300 overflow-hidden group text-center"
                   >
                     {/* Unified subtle gradient on hover */}
@@ -334,7 +336,7 @@ Preferred days & timing: `;
                   </motion.div>
                 );
               })}
-            </motion.div>
+            </div>
           </div>
         </section>
 
@@ -344,10 +346,7 @@ Preferred days & timing: `;
         <section className="section-padding bg-background-subtle relative">
           <div className="max-w-7xl z-10 mx-auto px-4 sm:px-6">
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-              viewport={{ once: true }}
+              {...enter(0, prefersReducedMotion)}
               className="text-center mb-10"
             >
               <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-primary">
@@ -395,7 +394,7 @@ Preferred days & timing: `;
             </div>
         </section>
         
-        <UniqueFeaturesSection />
+        <MatchTimelineSection />
         <SuccessStories />
         <SubjectSpotlightSection/>
 
@@ -405,10 +404,7 @@ Preferred days & timing: `;
   
       <motion.div
           className="form-card-container"
-          initial={{ opacity: 0, y: 50, scale: 0.95 }}
-          whileInView={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ duration: 0.7, ease: "easeOut" }}
-          viewport={{ once: true, amount: 0.3 }}
+          {...enter(0, prefersReducedMotion)}
       >
         <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center text-primary mb-4">
             Ready to Find The Perfect Tutor?
@@ -452,10 +448,7 @@ Preferred days & timing: `;
         <section ref={resourcesRef} className="section-padding bg-background-default px-4 sm:px-6">
           <div className="max-w-6xl mx-auto">
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              viewport={{ once: true }}
+              {...enter(0, prefersReducedMotion)}
               className="text-center mb-12"
             >
               <h2 className="text-3xl md:text-4xl font-bold text-primary mb-4">
@@ -469,11 +462,8 @@ Preferred days & timing: `;
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {/* Free Test Papers */}
               <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.1 }}
-                viewport={{ once: true }}
-                whileHover={{ y: -6 }}
+                {...enter(0, prefersReducedMotion)}
+                whileHover={{ y: LIFT.cardStrong }}
                 className="group relative p-8 bg-white rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer border border-gray-100 overflow-hidden"
                 onClick={() => router.push("/free-test-papers")}
               >
@@ -501,11 +491,8 @@ Preferred days & timing: `;
 
               {/* Free Notes */}
               <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-                viewport={{ once: true }}
-                whileHover={{ y: -6 }}
+                {...enter(1, prefersReducedMotion)}
+                whileHover={{ y: LIFT.cardStrong }}
                 className="group relative p-8 bg-white rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer border border-gray-100 overflow-hidden"
                 onClick={() => router.push("/free-notes")}
               >
@@ -548,7 +535,7 @@ Preferred days & timing: `;
             <p className="mb-8 text-white/80 text-lg">
               Get 3 qualified tutor profiles in {MATCH_TIME} — absolutely free.
             </p>
-            <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
+            <motion.div {...PRESS}>
               <Button
                 className="text-[18.7px] font-bold bg-accent-fill hover:bg-accent-fill-hover text-white px-10 py-4 rounded-full shadow-lg hover:shadow-xl transition-all"
                 onClick={scrollToForm}

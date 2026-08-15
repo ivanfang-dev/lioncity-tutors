@@ -3,7 +3,8 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
+import { DURATION, EASE_STANDARD, enter } from '@/lib/motion';
 import { Microscope, Atom, Calculator, ArrowRight, Radiation } from 'lucide-react';
 
 const subjects = [
@@ -37,21 +38,19 @@ const subjects = [
   },
 ];
 
+// A bounce curve was the only spring on the page. DESIGN.md § Motion calls for one
+// easing family, and "confident, springy, never a bounce" — so this is now the same
+// standard ease as every other entrance, at the same distance and duration.
 const cardVariants = {
-  offscreen: { y: 60, opacity: 0, scale: 0.95 },
+  offscreen: {},
   onscreen: {
-    y: 0,
-    opacity: 1,
-    scale: 1,
-    transition: {
-      type: "spring",
-      bounce: 0.3,
-      duration: 0.8
-    }
+    y: [16, 0],
+    transition: { duration: DURATION.base, ease: EASE_STANDARD }
   }
 };
 
 const SubjectSpotlightSection = () => {
+  const prefersReducedMotion = useReducedMotion();
   return (
     <section className="py-20 md:py-32 bg-gradient-to-b from-background-subtle to-background-default relative overflow-hidden">
       {/* Decorative elements */}
@@ -60,10 +59,7 @@ const SubjectSpotlightSection = () => {
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
         <motion.div 
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-          viewport={{ once: true, amount: 0.3 }}
+          {...enter(0, prefersReducedMotion)}
           className="text-center mb-16 md:mb-20"
         >
           <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-semibold text-primary mb-4 md:mb-6 tracking-tight">
@@ -93,13 +89,12 @@ const SubjectSpotlightSection = () => {
                     
                     {/* Icon with animated background */}
                     <div className="relative mb-6">
-                      <motion.div
-                        whileHover={{ rotate: 360, scale: 1.1 }}
-                        transition={{ duration: 0.6 }}
-                        className="w-16 h-16 bg-gradient-to-br from-primary/10 to-accent/10 rounded-2xl flex items-center justify-center group-hover:shadow-lg transition-shadow"
-                      >
-                        <Icon className="w-8 h-8 text-accent group-hover:text-primary transition-colors duration-300" />
-                      </motion.div>
+                      {/* The 360-degree spin is gone: a gesture applied uniformly to
+                          every icon reads as a template, not as character. The chip
+                          lifts one step on interest, like every other card. */}
+                      <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center transition-shadow duration-300 group-hover:shadow-md">
+                        <Icon className="w-8 h-8 text-primary" />
+                      </div>
                     </div>
                     
                     <h3 className="relative text-xl sm:text-2xl font-semibold text-primary mb-3 group-hover:text-accent transition-colors duration-300">
@@ -115,8 +110,7 @@ const SubjectSpotlightSection = () => {
                       <ArrowRight className="w-5 h-5 transform group-hover:translate-x-1 transition-transform duration-300" />
                     </div>
                     
-                    {/* Bottom accent line */}
-                    <div className="absolute bottom-0 left-0 w-0 h-1 bg-gradient-to-r from-primary to-accent group-hover:w-full transition-all duration-500" />
+
                   </div>
                 </Link>
               </motion.div>

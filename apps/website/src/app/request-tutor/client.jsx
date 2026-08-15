@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Step1, Step2, Step3 } from "@/components/FormSteps";
 import FormStepper from "@/components/FormStepper";
 import useTuitionRequestForm from "@/components/useTuitionRequestForm";
+import { PREFILL_KEY } from "@/components/TutorPopup";
 
 function RequestForTutorContent(){
   const searchParams = useSearchParams();
@@ -44,10 +45,27 @@ function RequestForTutorContent(){
     preferences: ''
   });
 
-  // Pre-fill name/mobile from URL parameters on page load.
+  // Pre-fill name/mobile handed over from the exit-intent popup.
+  //
+  // sessionStorage is read first and cleared immediately: a name and phone number in
+  // a query string would persist in browser history, leak in the referrer sent to any
+  // third-party asset, and land in server access logs. The URL parameters are still
+  // honoured so older links and bookmarks keep working, but nothing we build writes
+  // them any more.
   useEffect(() => {
-    const name = searchParams.get('name');
-    const mobile = searchParams.get('mobile');
+    let stored = null;
+    try {
+      const raw = sessionStorage.getItem(PREFILL_KEY);
+      if (raw) {
+        stored = JSON.parse(raw);
+        sessionStorage.removeItem(PREFILL_KEY);
+      }
+    } catch {
+      /* Unparseable or unavailable storage falls through to the URL parameters. */
+    }
+
+    const name = stored?.name || searchParams.get('name');
+    const mobile = stored?.mobile || searchParams.get('mobile');
     if (name || mobile) {
       setFormData(prevData => ({
         ...prevData,

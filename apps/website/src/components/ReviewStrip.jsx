@@ -2,9 +2,11 @@
 import { MATCH_TIME } from '@/data/promises';
 import React from 'react';
 import { Star, Award, Clock, Shield } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
+import { DURATION, EASE_STANDARD, STAGGER } from '@/lib/motion';
 
 export default function ReviewStrip() {
+  const prefersReducedMotion = useReducedMotion();
   const features = [
     {
       icon: Award,
@@ -39,9 +41,8 @@ export default function ReviewStrip() {
             {features.map((feature, index) => (
               <motion.div
                 key={index}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
+                animate={prefersReducedMotion ? undefined : { y: [16, 0] }}
+                transition={{ duration: DURATION.base, delay: index * STAGGER, ease: EASE_STANDARD }}
                 className="flex items-center gap-3 group"
               >
                 <div className="w-12 h-12 bg-white/10 backdrop-blur-sm rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:bg-white/20 transition-all duration-300 group-hover:scale-110">
@@ -57,9 +58,8 @@ export default function ReviewStrip() {
 
           {/* Google Rating */}
           <motion.a
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
+            animate={prefersReducedMotion ? undefined : { y: [16, 0] }}
+            transition={{ duration: DURATION.base, delay: STAGGER * 3, ease: EASE_STANDARD }}
             href="https://search.google.com/local/reviews?placeid=ChIJz5sczNYR2jERc_4Ka3tDwyY" 
             target="_blank" 
             rel="noreferrer"

@@ -1,9 +1,11 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
+import { DURATION, EASE_STANDARD } from '@/lib/motion';
 import { Star, X } from 'lucide-react';
 
 export default function FloatingTrustBadge({ onGetStarted }) {
+  const prefersReducedMotion = useReducedMotion();
   const [isVisible, setIsVisible] = useState(false);
   const [isDismissed, setIsDismissed] = useState(false);
 
@@ -23,14 +25,16 @@ export default function FloatingTrustBadge({ onGetStarted }) {
     setIsDismissed(true);
   };
 
+  // Same reasoning as TutorPopup: no AnimatePresence. If the exit animation's
+  // unmount fails to fire, this leaves an invisible card pinned over the bottom-right
+  // corner — swallowing taps in exactly the thumb zone, with nothing visible to blame.
+  if (!isVisible) return null;
+
   return (
-    <AnimatePresence>
-      {isVisible && (
         <motion.div
-          initial={{ opacity: 0, y: 100, scale: 0.8 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={{ opacity: 0, y: 100, scale: 0.8 }}
-          transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+          initial={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: DURATION.base, ease: EASE_STANDARD }}
           className="fixed bottom-6 right-6 z-40 max-w-sm"
         >
           <div className="bg-white rounded-3xl shadow-2xl p-6 border border-border/50 relative overflow-hidden">
@@ -83,7 +87,5 @@ export default function FloatingTrustBadge({ onGetStarted }) {
             <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-gradient-to-br from-primary/10 to-accent/10 rounded-full blur-2xl" />
           </div>
         </motion.div>
-      )}
-    </AnimatePresence>
   );
 }

@@ -1,5 +1,6 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { motion, animate, useReducedMotion } from "framer-motion";
+import { DURATION, EASE_STANDARD, enter } from "@/lib/motion";
 import { Star, TrendingUp, Award, Quote } from "lucide-react";
 
 // Runs before paint on the client, but falls back to useEffect during SSR so React
@@ -11,7 +12,7 @@ const useIsomorphicLayoutEffect = typeof window !== "undefined" ? useLayoutEffec
 // crawlers and no-JS visitors. Only once JS runs do we drop to 0 (before paint) and
 // count up when the element scrolls into view — so a stat that is never scrolled to
 // still reads correctly instead of being stuck at 0.
-const Counter = ({ end, duration = 2, suffix = "", decimals = 0 }) => {
+const Counter = ({ end, duration = DURATION.draw, suffix = "", decimals = 0 }) => {
   const [count, setCount] = useState(end);
   const ref = useRef(null);
   const hasAnimated = useRef(false);
@@ -35,7 +36,7 @@ const Counter = ({ end, duration = 2, suffix = "", decimals = 0 }) => {
           // Use Framer Motion's animate function
           animate(0, end, {
             duration: duration,
-            ease: "easeOut",
+            ease: EASE_STANDARD,
             onUpdate: (latest) => {
               setCount(decimals > 0 ? Number(latest).toFixed(decimals) : Math.floor(latest));
             }
@@ -60,6 +61,7 @@ const Counter = ({ end, duration = 2, suffix = "", decimals = 0 }) => {
 };
 
 export default function SuccessStoriesSection() {
+  const prefersReducedMotion = useReducedMotion();
   const stories = [
     {
       name: "Jonathan Goh",
@@ -98,10 +100,7 @@ export default function SuccessStoriesSection() {
 
       <div className="max-w-7xl mx-auto relative z-10">
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.7 }}
+          {...enter(0, prefersReducedMotion)}
           className="text-center mb-16"
         >
           <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium mb-4">
@@ -117,10 +116,7 @@ export default function SuccessStoriesSection() {
         </motion.div>
 
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.2 }}
+          {...enter(0, prefersReducedMotion)}
           className="grid grid-cols-1 sm:grid-cols-3 gap-8 mb-16 max-w-4xl mx-auto"
         >
           {stats.map((stat, index) => (
@@ -142,10 +138,7 @@ export default function SuccessStoriesSection() {
           {stories.map((story, index) => (
             <motion.div
               key={index}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.7, delay: index * 0.2 + 0.3 }}
+              {...enter(index, prefersReducedMotion)}
               className="group"
             >
               <div className="bg-background-card rounded-2xl md:rounded-3xl shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 overflow-hidden border border-border h-full flex flex-col">
@@ -182,19 +175,22 @@ export default function SuccessStoriesSection() {
                         </div>
                     </div>
                   <div className="relative h-2.5 w-full bg-border rounded-full overflow-hidden">
+                    {/* Both of these rest at their FINAL position and sweep only as a
+                        keyframe, so a bar whose reveal never fires reads as complete
+                        rather than empty. */}
                     <motion.div
-                      className="absolute top-0 left-0 h-full bg-gradient-to-r from-red-400 via-yellow-400 to-emerald-400 rounded-full"
-                      initial={{ width: "0%" }}
-                      whileInView={{ width: "100%" }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 1.5, ease: "easeInOut", delay: 0.5 }}
+                      className="absolute top-0 left-0 h-full w-full origin-left bg-gradient-to-r from-red-400 via-yellow-400 to-emerald-400 rounded-full"
+                      initial={{ scaleX: 1 }}
+                      whileInView={prefersReducedMotion ? undefined : { scaleX: [0, 1] }}
+                      viewport={{ once: true, amount: 'some' }}
+                      transition={{ duration: DURATION.draw, ease: EASE_STANDARD }}
                     />
                     <motion.div
                         className="absolute top-0 h-full w-2"
-                        initial={{ left: "0%" }}
-                        whileInView={{ left: "100%" }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 1.5, ease: "easeInOut", delay: 0.5 }}
+                        initial={{ left: '100%' }}
+                        whileInView={prefersReducedMotion ? undefined : { left: ['0%', '100%'] }}
+                        viewport={{ once: true, amount: 'some' }}
+                        transition={{ duration: DURATION.draw, ease: EASE_STANDARD }}
                     >
                         <div className="w-2.5 h-2.5 bg-white rounded-full absolute -right-1 top-0 shadow-md"></div>
                     </motion.div>

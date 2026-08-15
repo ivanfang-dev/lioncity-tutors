@@ -1,17 +1,19 @@
 "use client";
 import React from "react";
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import { Star } from "lucide-react";
 
 export const TestimonialsColumn = (props) => {
   const repeatCount = Math.max(4, Math.ceil(8 / props.testimonials.length));
+  // An endless scroll is the hardest motion on this page to ignore. Under reduced
+  // motion the column simply sits still — every review is still readable, and the
+  // duplicated copies below are just extra height.
+  const prefersReducedMotion = useReducedMotion();
 
   return (
     <div className={props.className}>
       <motion.div
-        animate={{
-          translateY: "-50%",
-        }}
+        animate={prefersReducedMotion ? undefined : { translateY: "-50%" }}
         transition={{
           duration: props.duration || 10,
           repeat: Infinity,

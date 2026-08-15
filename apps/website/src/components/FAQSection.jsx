@@ -1,6 +1,7 @@
 import { MATCH_TIME } from '@/data/promises';
 import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { DURATION, EASE_STANDARD, LIFT, enter } from "@/lib/motion";
 import { ChevronDown } from "lucide-react";
 
 // SEO & Best Practice: FAQ data is kept separate. No changes needed here.
@@ -29,12 +30,12 @@ function FAQItem({ faq, isOpen, onClick }) {
     open: {
       opacity: 1,
       height: "auto",
-      transition: { duration: 0.4, ease: [0.16, 1, 0.3, 1] }
+      transition: { duration: DURATION.base, ease: EASE_STANDARD }
     },
     closed: {
       opacity: 0,
       height: 0,
-      transition: { duration: 0.3, ease: [0.16, 1, 0.3, 1] }
+      transition: { duration: DURATION.fast, ease: EASE_STANDARD }
     }
   };
 
@@ -48,8 +49,8 @@ function FAQItem({ faq, isOpen, onClick }) {
         e.preventDefault();
         onClick();
       }}
-      whileHover={{ y: -2 }}
-      transition={{ duration: 0.2 }}
+      whileHover={{ y: LIFT.card }}
+      transition={{ duration: DURATION.fast, ease: EASE_STANDARD }}
     >
       <summary
         className="w-full flex justify-between items-start sm:items-center gap-4 p-5 sm:p-6 md:p-8 text-left cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 group"
@@ -59,7 +60,7 @@ function FAQItem({ faq, isOpen, onClick }) {
         </h3>
         <motion.div
           animate={{ rotate: isOpen ? 180 : 0 }}
-          transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: DURATION.fast, ease: EASE_STANDARD }}
           className="flex-shrink-0"
         >
           <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center transition-colors duration-300 ${
@@ -94,6 +95,7 @@ function FAQItem({ faq, isOpen, onClick }) {
 
 
 export default function FAQSection() {
+  const prefersReducedMotion = useReducedMotion();
   const [openIndex, setOpenIndex] = useState(null);
 
   const toggleFAQ = (index) => {
@@ -123,10 +125,7 @@ export default function FAQSection() {
       />
       <div className="max-w-4xl mx-auto">
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-          viewport={{ once: true }}
+          {...enter(0, prefersReducedMotion)}
           className="text-center mb-12 md:mb-16"
         >
           <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-semibold text-primary mb-4 tracking-tight">
@@ -138,10 +137,7 @@ export default function FAQSection() {
         </motion.div>
         <motion.div 
           className="space-y-3 sm:space-y-4"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, staggerChildren: 0.1 }}
-          viewport={{ once: true }}
+          {...enter(0, prefersReducedMotion)}
         >
           {faqs.map((faq, index) => (
             <FAQItem
