@@ -16,7 +16,13 @@ export const HUBS = {
       'psle-math', 'psle-english', 'psle-science', 'psle-chinese', 'primary-school-tuition',
       'chinese-tuition', 'tuition-rates', 'free-test-papers',
       'how-to-choose-a-tuition-agency-singapore',
-    ],
+    
+      'navigating-psle-anxiety',
+      'improve-primary-english-composition',
+      'pinpointing-learning-gaps',
+      'focus-and-concentration-issues',
+      'what-to-look-for-in-a-tutor',
+      'benefits-of-private-tuition',],
   },
   'o-level-prep': {
     slug: 'o-level-prep',
@@ -33,7 +39,11 @@ export const HUBS = {
       'secondary-school-tuition', 'tuition-rates',
       'free-test-papers', 'free-notes',
       'how-to-choose-a-tuition-agency-singapore',
-    ],
+    
+      'pinpointing-learning-gaps',
+      'focus-and-concentration-issues',
+      'what-to-look-for-in-a-tutor',
+      'benefits-of-private-tuition',],
   },
   'n-level-prep': {
     slug: 'n-level-prep',
@@ -45,7 +55,8 @@ export const HUBS = {
       'combined-chemistry-biology', 'combined-physics-biology',
       'secondary-school-tuition', 'tuition-rates', 'free-test-papers',
       'how-to-choose-a-tuition-agency-singapore',
-    ],
+    
+      'focus-and-concentration-issues',],
   },
   'a-level-prep': {
     slug: 'a-level-prep',
@@ -59,7 +70,8 @@ export const HUBS = {
       'biology-tuition', 'economics-tuition', 'tuition-rates',
       'free-notes', 'free-test-papers',
       'how-to-choose-a-tuition-agency-singapore',
-    ],
+    
+      'what-to-look-for-in-a-tutor',],
   },
   'find-a-tutor': {
     slug: 'find-a-tutor',
@@ -84,7 +96,9 @@ export const HUBS = {
       'tuition-jurong-bukit-batok',
       'how-to-choose-a-tuition-agency-singapore',
       'tuition-rates',
-    ],
+    
+      'what-to-look-for-in-a-tutor',
+      'benefits-of-private-tuition',],
   },
   'ib-igcse': {
     slug: 'ib-igcse',
@@ -359,6 +373,64 @@ export const SPOKES = {
     title: 'Tuition Rates', anchor: 'tuition rates in Singapore',
     blurb: 'What tutors charge by level and experience, with no agency fee.',
   },
+  // ── Parent-advice posts ────────────────────────────────────────────────────
+  // These six sat outside the registry until August 2026, which left each of them
+  // with exactly one editorial inbound link (from /blog) against a sitewide median
+  // of eight. Google had crawled several and declined to index them. Registering
+  // them puts them in the same reciprocal link graph as everything else.
+  'what-to-look-for-in-a-tutor': {
+    slug: 'what-to-look-for-in-a-tutor',
+    url: '/blog/what-to-look-for-in-a-tutor',
+    hub: 'find-a-tutor',
+    alsoIn: ['psle-prep', 'o-level-prep', 'a-level-prep'],
+    title: 'Choosing a Tutor',
+    anchor: 'what to look for in a private tutor',
+    blurb: 'Credentials, teaching style and the questions worth asking before you commit.',
+  },
+  'benefits-of-private-tuition': {
+    slug: 'benefits-of-private-tuition',
+    url: '/blog/benefits-of-private-tuition',
+    hub: 'find-a-tutor',
+    alsoIn: ['psle-prep', 'o-level-prep'],
+    title: 'Why Private Tuition',
+    anchor: 'the case for private tuition',
+    blurb: 'Where one-to-one teaching actually helps, and where it does not.',
+  },
+  'navigating-psle-anxiety': {
+    slug: 'navigating-psle-anxiety',
+    url: '/blog/navigating-psle-anxiety',
+    hub: 'psle-prep',
+    title: 'PSLE Anxiety',
+    anchor: 'helping a child through PSLE anxiety',
+    blurb: 'Spotting exam stress early, and what helps more than extra drilling.',
+  },
+  'improve-primary-english-composition': {
+    slug: 'improve-primary-english-composition',
+    url: '/blog/improve-primary-english-composition',
+    hub: 'psle-prep',
+    title: 'Primary Composition',
+    anchor: 'fixing primary English composition',
+    blurb: 'Five common weaknesses in a child\u2019s writing, and how to work on each.',
+  },
+  'pinpointing-learning-gaps': {
+    slug: 'pinpointing-learning-gaps',
+    url: '/blog/pinpointing-learning-gaps',
+    hub: 'psle-prep',
+    alsoIn: ['o-level-prep'],
+    title: 'Finding Learning Gaps',
+    anchor: 'pinpointing a learning gap',
+    blurb: 'How to tell a careless-mistake problem from a missing-foundation one.',
+  },
+  'focus-and-concentration-issues': {
+    slug: 'focus-and-concentration-issues',
+    url: '/blog/focus-and-concentration-issues',
+    hub: 'psle-prep',
+    alsoIn: ['o-level-prep', 'n-level-prep'],
+    title: 'Focus & Concentration',
+    anchor: 'a child who cannot focus on studies',
+    blurb: 'Study-habit fixes for a child who cannot sit with the work.',
+  },
+
   'how-to-choose-a-tuition-agency-singapore': {
     slug: 'how-to-choose-a-tuition-agency-singapore',
     url: '/how-to-choose-a-tuition-agency-singapore',

@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { RelatedGuides } from '@/components/guide';
 import { DEFAULT_OG_IMAGE } from '@/lib/seo/openGraph';
 import GuideSchema from '@/components/seo/GuideSchema';
 
@@ -114,7 +115,13 @@ export default function PinpointingLearningGaps() {
             </Link>
           </div>
         </article>
-      </main>
+      
+      {/* Reciprocal cluster links. This post is a registry spoke as of
+          Aug 2026; before that it had a single inbound editorial link. */}
+      <div className="max-w-4xl mx-auto px-4 pb-16">
+        <RelatedGuides slug="pinpointing-learning-gaps" heading="Continue your revision" hubLimit={4} />
+      </div>
+    </main>
     </>
   );
 }

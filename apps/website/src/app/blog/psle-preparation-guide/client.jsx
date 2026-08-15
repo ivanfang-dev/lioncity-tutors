@@ -502,7 +502,7 @@ export default function PSLEPreparationGuideClient() {
               <Resources setActivePdf={setActivePdf} />
             </section>
 
-            <RelatedGuides slug="psle-prep" heading="In-depth PSLE subject guides" showHub={false} />
+            <RelatedGuides slug="psle-prep" heading="In-depth PSLE subject guides" showHub={false} limit={20} />
 
             <section id="faq" aria-labelledby="faq-heading">
               <h2 id="faq-heading" className="text-3xl md:text-4xl font-bold mb-8 border-l-4 border-primary pl-4 flex items-center"><HelpCircle className="mr-3 h-8 w-8 text-primary shrink-0" />Frequently Asked Questions</h2>

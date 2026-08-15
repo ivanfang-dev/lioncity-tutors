@@ -736,7 +736,7 @@ export default function OLevelPrepGuideClient() {
                 </div>
             </section>
             
-            <RelatedGuides slug="o-level-prep" heading="In-depth O-Level subject guides" showHub={false} />
+            <RelatedGuides slug="o-level-prep" heading="In-depth O-Level subject guides" showHub={false} limit={30} />
 
             {/* SECTION: Managing Stress and Maintaining Well-being */}
             <section id="well-being" aria-labelledby="well-being-heading">

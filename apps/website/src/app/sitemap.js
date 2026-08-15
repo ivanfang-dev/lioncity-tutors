@@ -5,18 +5,16 @@ import { HUBS, SPOKES } from '@/lib/seo/clusters.mjs';
 const SITE_URL = 'https://www.lioncitytutors.com';
 
 // Non-registry public pages not covered by the hub/spoke registry.
+//
+// The six parent-advice posts moved OUT of this list in August 2026 when they were
+// registered as spokes — the registry already emits them, so leaving them here
+// duplicated every one of them in the sitemap.
 // Excludes: /ops/*, /api/*, /not-found (soft-404, never indexable), and the
 // three /guides/* pages that canonicalise to their /blog/* twin (see Task 7
 // in docs/seo-action-plan.md).
 const NON_REGISTRY_PAGES = [
   { path: '/', priority: 1.0 },
   { path: '/blog', priority: 0.7 },
-  { path: '/blog/benefits-of-private-tuition', priority: 0.6 },
-  { path: '/blog/focus-and-concentration-issues', priority: 0.6 },
-  { path: '/blog/improve-primary-english-composition', priority: 0.6 },
-  { path: '/blog/navigating-psle-anxiety', priority: 0.6 },
-  { path: '/blog/pinpointing-learning-gaps', priority: 0.6 },
-  { path: '/blog/what-to-look-for-in-a-tutor', priority: 0.6 },
   { path: '/contact-us', priority: 0.5 },
   { path: '/guides', priority: 0.6 },
   { path: '/register-tutor', priority: 0.6 },

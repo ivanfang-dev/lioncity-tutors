@@ -26,6 +26,11 @@ import { ICON_STROKE } from './constants';
  * @param {string} slug - registry slug of the page rendering this block
  * @param {string} [heading]
  * @param {boolean} [showHub] - pass false on a hub page
+ * A HUB should override `limit` to cover its whole spoke list: the default is sized
+ * for a spoke page (where linking eighteen others reads as a link farm), but a hub
+ * exists precisely to link its spokes, and any spoke past the cap gets no link from
+ * its own hub — which is what left the parent-advice posts on one inbound link.
+ *
  * @param {number} [limit] - maximum sibling cards
  * @param {number} [hubLimit] - maximum hub cards
  */

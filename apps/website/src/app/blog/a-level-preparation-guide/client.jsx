@@ -621,7 +621,7 @@ Preferred days & timing: `;
                 </GuideCard>
               </section>
 
-              <RelatedGuides slug="a-level-prep" heading="Explore Our Other A-Level Resources" showHub={false} />
+              <RelatedGuides slug="a-level-prep" heading="Explore Our Other A-Level Resources" showHub={false} limit={20} />
 
               <section id="faq" className="scroll-mt-24">
                 <SectionHeading icon={HelpCircle}>A-Level FAQs</SectionHeading>
