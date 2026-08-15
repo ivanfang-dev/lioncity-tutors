@@ -5,7 +5,56 @@ import Image from 'next/image';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { GuideCTA, RelatedGuides } from "@/components/guide";
-import GuideSchema from "@/components/seo/GuideSchema";     
+import GuideSchema from "@/components/seo/GuideSchema";
+import Reviews from "@/components/Reviews";
+import { RATE_CARD, RATES_REVIEWED } from '../tuition-rates/rates.mjs';
+import {
+  PLACEMENT_SAMPLE, PLACEMENTS_REVIEWED, observedSpan, sampleLabel,
+} from '../tuition-rates/placements.mjs';
+
+// The rate card has no per-subject slice — the observed budgets in
+// placements.mjs are cut by level only. So these are all-subject figures and
+// every surface here says so; inventing a maths-specific band would be making
+// up data we do not have.
+const RATE_LEVELS = ['primary', 'secondary', 'jc'];
+
+const mathDecisions = [
+  {
+    q: 'E-Math or E-Math plus A-Math?',
+    a: 'A-Math is close to mandatory for several JC routes and engineering-adjacent Polytechnic courses, so dropping it closes doors that are hard to reopen. It also assumes fluent Sec 3 algebra — which is where our tutors see A-Math grades actually decided, not in the calculus itself.',
+  },
+  {
+    q: 'Why a student who understands maths still loses marks',
+    a: 'Far more marks go to execution than to gaps in knowledge: dropped negative signs, rounding partway through the working, a number copied wrongly out of the question, the calculator left in the wrong angle mode. These need a different fix from a concept gap, which is why they have to be logged separately.',
+  },
+  {
+    q: 'Why more past papers alone often does not work',
+    a: 'It is possible to get very good at recognising questions you have already practised without getting better at recognising the concept underneath them. Papers only pay off when every wrong answer is categorised, corrected and re-attempted a few days later.',
+  },
+];
+
+const mathFaqs = [
+  {
+    q: 'How much does maths tuition cost in Singapore?',
+    a: `Our rates run from $${RATE_CARD.find((b) => b.id === 'primary').rates[0].min} an hour for an undergraduate tutor at primary level to $${RATE_CARD.find((b) => b.id === 'jc').rates[2].max} for an MOE-trained teacher at JC. The table above breaks this down by level and tutor type.`,
+  },
+  {
+    q: 'Which tutor type should I choose for maths?',
+    a: 'Undergraduates are usually the right call for building confidence and covering foundations. Full-time tutors suit students who need consistent structure across a whole year. MOE-trained teachers are worth the premium mainly when a student is close to their target grade and needs marking-standard precision.',
+  },
+  {
+    q: 'Can I change tutors if it is not working out?',
+    a: 'Yes, at no cost — parents never pay us an agency fee in the first place. Tell us what is not working and we will match a replacement.',
+  },
+  {
+    q: 'Is there a trial lesson?',
+    a: 'Yes. A first lesson lets both sides check the fit. With maths in particular, whether a tutor can explain a method a second way — rather than louder — is usually obvious within one session.',
+  },
+  {
+    q: 'How fast can you find a maths tutor?',
+    a: `Usually within ${MATCH_TIME}. A specific school, an unusual timing window, or a location far from most tutors can take longer.`,
+  },
+];
 
 export const metadata = {
   title: 'Maths Tuition Singapore: PSLE to A-Level | LionCity Tutors',
@@ -321,8 +370,8 @@ export default function MathTuition() {
             </Card>
             <Card className="border-l-4 border-l-blue-500 shadow-lg hover:shadow-xl transition-shadow duration-200">
               <CardContent className="p-6">
-                <h3 className="font-bold text-lg text-blue-700">Fast Tutor Matching (Within 8h)</h3>
-                <p className="text-gray-600 mt-2">Submit a math tuition request and we'll match you with suitable qualified tutors in under a day, so your child can start improving immediately.</p>
+                <h3 className="font-bold text-lg text-blue-700">Fast tutor matching (usually {MATCH_TIME})</h3>
+                <p className="text-gray-600 mt-2">Submit a math tuition request and we&apos;ll hand-match you with suitable tutors, usually within {MATCH_TIME}, so your child can start without waiting on a queue.</p>
               </CardContent>
             </Card>
             <Card className="border-l-4 border-l-purple-500 shadow-lg hover:shadow-xl transition-shadow duration-200">
@@ -334,33 +383,6 @@ export default function MathTuition() {
           </div>
         </section>
 
-        {/* Section 4: Real Student Progress */}
-        <section className="bg-gradient-to-r from-blue-50 to-emerald-50 p-6 rounded-xl">
-          <h2 className="text-2xl font-semibold mb-4 text-blue-700">Proven Math Tuition Results from Singapore Students</h2>
-          <p className="text-gray-700 mb-4">
-            Our math tutors have helped hundreds of Singapore students achieve remarkable improvements in their math grades:
-          </p>
-          <ul className="text-gray-700 space-y-3">
-            <li className="flex items-start space-x-3">
-              <span className="text-2xl">📈</span>
-              <div>
-                <strong className="text-emerald-700">Ryan (Sec 4):</strong> Jumped from C5 to A2 in Additional Mathematics in just 4 months of weekly tuition
-              </div>
-            </li>
-            <li className="flex items-start space-x-3">
-              <span className="text-2xl">🎯</span>
-              <div>
-                <strong className="text-blue-700">Clara (P6):</strong> Improved from 60 to 88 marks in PSLE Math prelims – confidence skyrocketed
-              </div>
-            </li>
-            <li className="flex items-start space-x-3">
-              <span className="text-2xl">🧠</span>
-              <div>
-                <strong className="text-purple-700">Wei Jie (JC2):</strong> Advanced from 20th percentile to top 5 in H2 Mathematics with targeted tuition
-              </div>
-            </li>
-          </ul>
-        </section>
 
         {/*Math Subjects We Cover */}
         <section>
@@ -715,20 +737,8 @@ export default function MathTuition() {
           </p>
         </section>
 
-        {/* Section 6: Testimonials */}
-        <section>
-          <h2 className="text-2xl font-semibold mb-4 text-blue-700">What Parents Say About Our Math Tuition Service</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-gray-700">
-            <blockquote className="bg-gradient-to-br from-blue-50 to-emerald-50 p-6 rounded-xl border-l-4 border-l-emerald-500 shadow-md">
-              <p className="italic mb-3">"Amazing service – I received 3 qualified math tutor profiles within a day. My son actually looks forward to math lessons now and his grades have improved significantly!"</p>
-              <cite className="text-emerald-700 font-semibold">– Mrs Tan, Tampines</cite>
-            </blockquote>
-            <blockquote className="bg-gradient-to-br from-purple-50 to-blue-50 p-6 rounded-xl border-l-4 border-l-blue-500 shadow-md">
-              <p className="italic mb-3">"Compared to other tuition agencies I tried before, Lion City Tutors really understood my daughter's specific math learning needs and found the perfect tutor."</p>
-              <cite className="text-blue-700 font-semibold">– Mr Lim, Bishan</cite>
-            </blockquote>
-          </div>
-        </section>
+        {/* Section 6: Reviews — real, verbatim, traceable to their platform */}
+        <Reviews />
 
         {/* New Section: Areas We Serve */}
         <section className="bg-gray-50 p-6 rounded-xl">
@@ -749,6 +759,108 @@ export default function MathTuition() {
             <span className="bg-white px-3 py-2 rounded-lg shadow-sm border-l-2 border-l-blue-400">• Sembawang</span>
             <span className="bg-white px-3 py-2 rounded-lg shadow-sm border-l-2 border-l-emerald-400">• Tampines</span>
             <span className="bg-white px-3 py-2 rounded-lg shadow-sm border-l-2 border-l-purple-400">• Woodlands</span>
+          </div>
+        </section>
+
+        {/* What maths tuition costs */}
+        <section className="space-y-4">
+          <h2 className="text-2xl font-semibold text-blue-700">What maths tuition costs</h2>
+          <p className="text-gray-700">
+            Two numbers are worth knowing, and they answer different questions: what we charge, and what other parents actually decided to spend.
+          </p>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm border-collapse">
+              <caption className="sr-only">LionCity Tutors hourly rates by level and tutor type</caption>
+              <thead>
+                <tr className="border-b border-gray-300 text-left">
+                  <th scope="col" className="py-2 pr-4 font-semibold text-gray-900">Level</th>
+                  <th scope="col" className="py-2 pr-4 font-semibold text-gray-900">Undergraduate</th>
+                  <th scope="col" className="py-2 pr-4 font-semibold text-gray-900">Full-time tutor</th>
+                  <th scope="col" className="py-2 font-semibold text-gray-900">MOE-trained teacher</th>
+                </tr>
+              </thead>
+              <tbody>
+                {RATE_LEVELS.map((id) => {
+                  const band = RATE_CARD.find((b) => b.id === id);
+                  return (
+                    <tr key={id} className="border-b border-gray-200">
+                      <th scope="row" className="py-2 pr-4 text-left font-medium text-gray-900">{band.level}</th>
+                      {band.rates.map((row) => (
+                        <td key={row.type} className="py-2 pr-4 text-gray-700 tabular-nums">
+                          ${row.min}&ndash;${row.max}
+                        </td>
+                      ))}
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+          <p className="text-sm text-gray-500">
+            LionCity Tutors&apos; own rates per hour, reviewed {RATES_REVIEWED}. Our figures, not an industry benchmark.
+          </p>
+          <p className="text-gray-700">
+            For context on what families actually commit to: across {PLACEMENT_SAMPLE} of our assignments, parents budgeted {observedSpan('primary')} at primary level ({sampleLabel('primary')}), {observedSpan('secondary')} at secondary ({sampleLabel('secondary')}) and {observedSpan('jc')} at JC ({sampleLabel('jc')}). Those are budgets parents asked for rather than rates finally agreed, they cover all subjects rather than maths alone, and they were last reviewed {PLACEMENTS_REVIEWED}.
+          </p>
+          <p className="text-gray-700">
+            <Link href="/tuition-rates" className="text-blue-700 underline underline-offset-2">
+              Full 2026 tuition rates by level
+            </Link>
+          </p>
+        </section>
+
+        {/* Maths-specific substance */}
+        <section className="space-y-4">
+          <h2 className="text-2xl font-semibold text-blue-700">What actually decides a maths grade</h2>
+          <p className="text-gray-700">
+            Three things come up in almost every maths assignment we place. They are worth understanding before choosing a tutor, because they change what you should be asking a tutor to do.
+          </p>
+          <div className="space-y-4">
+            {mathDecisions.map((item) => (
+              <Card key={item.q} className="shadow-sm">
+                <CardContent className="p-6">
+                  <h3 className="font-semibold text-lg text-gray-900 mb-2">{item.q}</h3>
+                  <p className="text-sm text-gray-700">{item.a}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+          <p className="text-gray-700">
+            The{' '}
+            <Link href="/o-level-math" className="text-blue-700 underline underline-offset-2">
+              O-Level Maths guide
+            </Link>{' '}
+            sets out the ten mistakes our tutors correct most across E-Math and A-Math, with the fix for each.
+          </p>
+        </section>
+
+        {/* How we match */}
+        <section className="space-y-4">
+          <h2 className="text-2xl font-semibold text-blue-700">How we match a maths tutor</h2>
+          <p className="text-gray-700">
+            Matching is done by hand rather than by dropping your request onto a job board, and it usually takes about {MATCH_TIME}.
+          </p>
+          <ol className="list-decimal pl-5 space-y-2 text-gray-700">
+            <li><strong>You tell us the specifics.</strong> Level, whether it is E-Math, A-Math or H2, the current grade, location and timing.</li>
+            <li><strong>We shortlist by hand</strong> from tutors who have taught that syllabus at that level — not whoever happens to be free.</li>
+            <li><strong>You get profiles to choose from</strong>, with rates, experience and availability. The choice stays yours.</li>
+            <li><strong>A first lesson checks the fit.</strong> If it is not right, tell us and we will match someone else at no cost.</li>
+          </ol>
+          <p className="text-gray-700">
+            Parents pay the tutor directly at the tutor&apos;s rate. There is no agency fee at any point.
+          </p>
+        </section>
+
+        {/* FAQ */}
+        <section className="space-y-4">
+          <h2 className="text-2xl font-semibold text-blue-700">Maths tuition FAQs</h2>
+          <div className="space-y-5">
+            {mathFaqs.map((item) => (
+              <div key={item.q}>
+                <h3 className="font-semibold text-gray-900 mb-1">{item.q}</h3>
+                <p className="text-gray-700">{item.a}</p>
+              </div>
+            ))}
           </div>
         </section>
 
