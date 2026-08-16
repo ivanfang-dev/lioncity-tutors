@@ -94,33 +94,70 @@ body {
   font-feature-settings: 'liga' 1, 'calt' 1, 'cv11' 1;
 }
 
-h1, h2, h3, h4, h5, h6 {
-  font-weight: 600;
-  letter-spacing: -0.02em;
+/* ── Heading scale ────────────────────────────────────────────────────────────
+   These MUST stay inside `@layer base`. Tailwind v4 emits its utilities into
+   `@layer utilities`, and in the cascade ANY unlayered rule beats EVERY layered
+   one no matter how specific — so while these lived outside a layer they silently
+   overrode every `text-2xl`/`text-xl` a page put on a heading. That is how the
+   assignment cards ended up rendering their `text-lg sm:text-xl` titles at 40px,
+   and why the guide components had to reach for `text-4xl!`/`text-base!` to get
+   a size to stick. Layering them restores the normal order:
+       base (these)  <  components (.page-title/.section-title)  <  utilities */
+@layer base {
+  h1, h2, h3, h4, h5, h6 {
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+
+  h1 {
+    /* The DISPLAY step — short, page-defining hero copy only (the home page hero).
+       Long SEO headlines use .page-title instead; see the roles below. */
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    line-height: 1.1;
+    font-weight: 700;
+  }
+
+  h2 {
+    font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+    line-height: 1.2;
+    font-weight: 700;
+  }
+
+  h3 {
+    font-size: 1.25rem;
+    line-height: 1.4;
+  }
+
+  h4 {
+    font-size: 1.125rem;
+    line-height: 1.4;
+  }
 }
 
-h1 {
-  /* 4.5rem ceiling, matching DESIGN.md's display step — it was raised there to match
-     the text-7xl hero but never updated here. */
-  font-size: clamp(2.5rem, 5vw, 4.5rem);
-  line-height: 1.1;
-  font-weight: 700;
-}
+/* ── Heading roles for the content pages ──────────────────────────────────────
+   The display/headline steps above are sized for the home page's short hero
+   ("The right tutor, matched in hours"). The subject, guide, and location pages
+   carry long SEO headlines — 80+ characters — which turn into a wall at those
+   sizes, which is why every page had grown its own ad-hoc `text-*xl` stack.
+   That drift is what these two roles replace: one scale, in one place.
 
-h2 {
-  font-size: clamp(1.75rem, 3.5vw, 2.5rem);
-  line-height: 1.2;
-  font-weight: 700;
-}
+   Pages set colour and alignment on them; pages do not set size or weight. */
+@layer components {
+  .page-title {
+    font-size: clamp(1.875rem, 3.4vw, 2.5rem);   /* 30px → 40px */
+    line-height: 1.15;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
 
-h3 {
-  font-size: 1.25rem;
-  line-height: 1.4;
-}
-
-h4 {
-  font-size: 1.125rem;
-  line-height: 1.4;
+  .section-title {
+    font-size: clamp(1.375rem, 2.4vw, 1.875rem); /* 22px → 30px */
+    line-height: 1.25;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
 }
 
 /* No global heading color override — each heading gets its color from its own utility class or parent context */

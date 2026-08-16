@@ -130,7 +130,7 @@ export default function MatchTimelineSection() {
     <section className="bg-background-default py-20 sm:py-28 md:py-32 px-4 sm:px-6">
       <div className="max-w-7xl mx-auto">
         <div className="max-w-2xl mb-14 md:mb-20">
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-primary tracking-tight text-balance">
+          <h2 className="text-primary text-balance">
             What happens after you hit send
           </h2>
           <p className="mt-5 text-lg text-text-secondary leading-relaxed text-pretty">

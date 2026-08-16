@@ -83,7 +83,7 @@ export default function EnglishTuitionPage() {
 
         {/* Section 1: Hero */}
         <section className="text-center space-y-4">
-          <h1 className="text-4xl md:text-5xl font-bold text-blue-800">Expert English Tuition in Singapore for PSLE, O & A Levels</h1>
+          <h1 className="page-title text-primary">Expert English Tuition in Singapore for PSLE, O & A Levels</h1>
           <p className="text-lg text-gray-700 max-w-3xl mx-auto">
             Struggling with composition, comprehension, or GP essays? Lion City Tutors connects you with <strong className="text-blue-700">MOE-trained teachers and top-tier tutors</strong> who deliver results. Get your ideal tutor match in {MATCH_TIME}—<strong className="text-emerald-600">it's fast and completely free.</strong>
           </p>
@@ -106,7 +106,7 @@ export default function EnglishTuitionPage() {
 
         {/* Section 2: Comprehensive English Guides */}
         <section className="space-y-8">
-          <h2 className="text-3xl font-semibold mb-6 text-blue-700">Complete English Guides for Every Level</h2>
+          <h2 className="section-title text-primary mb-6">Complete English Guides for Every Level</h2>
           <p className="text-lg text-gray-700 mb-8">
             Access our comprehensive guides for each English subject and level, designed to help students excel in their examinations. Each guide includes detailed exam formats, scoring strategies, and expert tips.
           </p>
@@ -287,7 +287,7 @@ export default function EnglishTuitionPage() {
 
         {/* Section 3: Tackling Common English Challenges */}
         <section>
-          <h2 className="text-3xl font-semibold mb-6 text-center text-blue-800">Tackling Common English Challenges Head-On</h2>
+          <h2 className="section-title text-primary mb-6 text-center">Tackling Common English Challenges Head-On</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <ChallengeCard
               title="Primary & PSLE English"
@@ -314,7 +314,7 @@ export default function EnglishTuitionPage() {
 
         {/* Section 4: Tuition Rates */}
         <section className="bg-gray-50 p-8 rounded-xl">
-          <h2 className="text-3xl font-semibold mb-4 text-center text-blue-800">Transparent English Tuition Rates</h2>
+          <h2 className="section-title text-primary mb-4 text-center">Transparent English Tuition Rates</h2>
           <p className="text-lg text-gray-700 text-center max-w-3xl mx-auto mb-6">
             No hidden costs. Find a qualified English tutor that fits your budget. Rates are based on tutor experience and academic level.
           </p>
@@ -350,7 +350,7 @@ export default function EnglishTuitionPage() {
 
         {/* Section 5: Why Parents Trust Us */}
         <section>
-          <h2 className="text-3xl font-semibold mb-6 text-center text-blue-800">The Lion City Tutors Advantage</h2>
+          <h2 className="section-title text-primary mb-6 text-center">The Lion City Tutors Advantage</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
             <AdvantageCard
               icon="🎯"
@@ -374,7 +374,7 @@ export default function EnglishTuitionPage() {
             markup claims these answers are on the page, and a Radix accordion
             unmounts closed content, so they were absent from the HTML. */}
         <section>
-          <h2 className="text-3xl font-semibold mb-6 text-center text-blue-800">Frequently Asked Questions</h2>
+          <h2 className="section-title text-primary mb-6 text-center">Frequently Asked Questions</h2>
           <div className="w-full max-w-3xl mx-auto space-y-6">
             {faqData.map((item) => (
               <div key={item.question}>

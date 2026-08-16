@@ -269,7 +269,7 @@ export default function OLevelPrepGuideClient() {
       <header className="bg-muted/30 border-b">
         <div className="container mx-auto px-6 py-16 md:py-24 text-center">
           <p className="font-semibold text-primary">THE 2026 GCE O-LEVELS</p>
-          <h1 className="mt-2 text-4xl md:text-6xl font-extrabold text-primary leading-tight tracking-tighter">
+          <h1 className="page-title text-primary mt-2">
             How to Prepare for the O-Levels
           </h1>
           <p className="mt-4 text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">

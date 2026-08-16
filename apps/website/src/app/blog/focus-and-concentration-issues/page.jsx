@@ -44,7 +44,7 @@ export default function FocusAndConcentration() {
         }}
       />
       <main className="px-4 py-12 max-w-3xl mx-auto">
-        <h1 className="text-3xl font-bold text-blue-800 mb-4">Focus is a Muscle: A Parent's Guide to Training Your Child's Concentration</h1>
+        <h1 className="page-title text-primary mb-4">Focus is a Muscle: A Parent's Guide to Training Your Child's Concentration</h1>
         <p className="text-sm text-gray-500 mb-8">Updated July 8, 2026 • 10 min read</p>
 
         <article className="space-y-8 text-gray-700 leading-relaxed">
@@ -56,7 +56,7 @@ export default function FocusAndConcentration() {
           </p>
 
           <section>
-            <h2 className="text-2xl font-semibold text-blue-700 mb-3">The Homework Battleground: Does This Sound Familiar?</h2>
+            <h2 className="section-title text-primary mb-3">The Homework Battleground: Does This Sound Familiar?</h2>
              <div className="bg-red-50 p-6 rounded-lg mt-4 border-l-4 border-red-300">
               <ul className="list-disc ml-4 space-y-2 text-sm">
                 <li>A simple 30-minute worksheet stretches into a two-hour ordeal.</li>
@@ -69,7 +69,7 @@ export default function FocusAndConcentration() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold text-blue-700 mb-3">Focus Training: Exercises for the Home</h2>
+            <h2 className="section-title text-primary mb-3">Focus Training: Exercises for the Home</h2>
             <p>Before you can train the muscle, you need the right "gym." Here are three expert-backed environmental changes you can make today.</p>
             <div className="grid md:grid-cols-3 gap-6 mt-6">
               {/* Card 1 */}
@@ -91,7 +91,7 @@ export default function FocusAndConcentration() {
           </section>
 
            <section>
-            <h2 className="text-2xl font-semibold text-blue-700 mb-3">A Tale of Two Environments: Why Setting Matters</h2>
+            <h2 className="section-title text-primary mb-3">A Tale of Two Environments: Why Setting Matters</h2>
             <p>Sometimes, even the best home gym isn't enough. The environment where learning happens is just as important as the technique.</p>
             <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Classroom Card */}

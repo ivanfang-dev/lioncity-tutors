@@ -37,7 +37,7 @@ export default function BenefitsOfPrivateTuition() {
       }}
     />
     <main className="px-4 py-12 max-w-3xl mx-auto">
-      <h1 className="text-3xl font-bold text-blue-800 mb-4">Benefits of Private Tuition in Singapore's Education Landscape</h1>
+      <h1 className="page-title text-primary mb-4">Benefits of Private Tuition in Singapore's Education Landscape</h1>
       <p className="text-sm text-gray-500 mb-8">Updated May 16, 2026 • 5 min read</p>
 
       <article className="space-y-6 text-gray-700 leading-relaxed">
@@ -46,7 +46,7 @@ export default function BenefitsOfPrivateTuition() {
         </p>
 
         <section>
-          <h2 className="text-2xl font-semibold text-blue-700 mb-3">1. Personalized Learning Pace</h2>
+          <h2 className="section-title text-primary mb-3">1. Personalized Learning Pace</h2>
           <p>
             Unlike classroom settings where teachers must cater to 30+ students, private tuition allows for completely customized pacing. Your child can spend extra time mastering challenging concepts like algebraic equations or chemical bonding, while accelerating through topics they grasp quickly.
           </p>
@@ -56,7 +56,7 @@ export default function BenefitsOfPrivateTuition() {
         </section>
 
         <section>
-          <h2 className="text-2xl font-semibold text-blue-700 mb-3">2. Addressing Learning Gaps Early</h2>
+          <h2 className="section-title text-primary mb-3">2. Addressing Learning Gaps Early</h2>
           <p>
             Singapore's education system builds concepts progressively. A student struggling with Primary 4 fractions will find Primary 5 decimals exponentially harder. Private tuition identifies and fills these gaps before they compound.
           </p>
@@ -66,7 +66,7 @@ export default function BenefitsOfPrivateTuition() {
         </section>
 
         <section>
-          <h2 className="text-2xl font-semibold text-blue-700 mb-3">3. Exam Strategy and Technique</h2>
+          <h2 className="section-title text-primary mb-3">3. Exam Strategy and Technique</h2>
           <p>
             Beyond content knowledge, Singapore's high-stakes examinations require specific strategies. Private tutors teach time management for 2-hour papers, question analysis techniques, and how to maximize marks even with partial knowledge.
           </p>
@@ -76,14 +76,14 @@ export default function BenefitsOfPrivateTuition() {
         </section>
 
         <section>
-          <h2 className="text-2xl font-semibold text-blue-700 mb-3">4. Flexible Scheduling for Singapore's Busy Families</h2>
+          <h2 className="section-title text-primary mb-3">4. Flexible Scheduling for Singapore's Busy Families</h2>
           <p>
             With parents working long hours and children juggling CCAs, enrichment classes, and family time, private tuition offers unmatched flexibility. Weekend sessions, holiday intensive courses, or even early morning slots can accommodate your family's unique schedule.
           </p>
         </section>
 
         <section>
-          <h2 className="text-2xl font-semibold text-blue-700 mb-3">5. Building Confidence and Reducing Exam Anxiety</h2>
+          <h2 className="section-title text-primary mb-3">5. Building Confidence and Reducing Exam Anxiety</h2>
           <p>
             Singapore students often face immense pressure, particularly during PSLE year. The individualized attention and supportive environment of private tuition can significantly boost self-confidence. When students understand concepts thoroughly, test anxiety naturally decreases.
           </p>
@@ -93,7 +93,7 @@ export default function BenefitsOfPrivateTuition() {
         </section>
 
         <section>
-          <h2 className="text-2xl font-semibold text-blue-700 mb-3">6. Preparing for Subject-Specific Challenges</h2>
+          <h2 className="section-title text-primary mb-3">6. Preparing for Subject-Specific Challenges</h2>
           <p>
             Each level in Singapore's education system presents unique challenges:
           </p>
@@ -108,7 +108,7 @@ export default function BenefitsOfPrivateTuition() {
         </section>
 
         <section>
-          <h2 className="text-2xl font-semibold text-blue-700 mb-3">Making the Investment Worthwhile</h2>
+          <h2 className="section-title text-primary mb-3">Making the Investment Worthwhile</h2>
           <p>
             The key to maximizing private tuition benefits lies in choosing the right tutor—one who understands both the Singapore education landscape and your child's individual needs. Look for tutors who can demonstrate measurable improvements in their students' performance and who communicate regularly with parents about progress.
           </p>

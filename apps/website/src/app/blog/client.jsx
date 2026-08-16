@@ -298,7 +298,7 @@ export default function BlogClient() {
       {/* Hero Section */}
       <div className="bg-white border-b border-slate-200">
         <div className="px-4 sm:px-6 py-12 sm:py-16 max-w-6xl mx-auto text-center">
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 tracking-tight mb-4">
+          <h1 className="page-title text-primary mb-4">
             LionCity Tutors Blog
           </h1>
           <p className="text-lg sm:text-xl text-slate-600 max-w-2xl mx-auto leading-relaxed">

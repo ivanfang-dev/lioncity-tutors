@@ -193,7 +193,7 @@ const NLevelPrepClient = () => {
             deliberately not animated-in, so the answer is the first thing read. */}
         <section id="what-is-n-level" className="py-16 px-4 border-b border-gray-100">
           <div className="max-w-3xl mx-auto">
-            <h2 className="text-3xl md:text-4xl font-bold text-blue-900 mb-4">
+            <h2 className="section-title text-primary mb-4">
               What does GCE N-Level mean?
             </h2>
             <p className="text-lg text-gray-800 leading-relaxed mb-6">
@@ -226,7 +226,7 @@ const NLevelPrepClient = () => {
         {/* 2026 Timetable Section — all dates read from examCalendar2026.mjs */}
         <section id="timetable" className="py-16 px-4 bg-gray-50">
           <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl md:text-4xl font-bold text-blue-900 mb-4">
+            <h2 className="section-title text-primary mb-4">
               When are the 2026 N-Level exams?
             </h2>
             <p className="text-lg text-gray-800 leading-relaxed mb-8">
@@ -252,7 +252,7 @@ const NLevelPrepClient = () => {
         >
           <div className="max-w-5xl mx-auto">
             <div className="text-center mb-12">
-              <h2 className="text-4xl font-bold text-blue-900 mb-4">Why the GCE N-Levels Are a Critical Milestone</h2>
+              <h2 className="section-title text-primary mb-4">Why the GCE N-Levels Are a Critical Milestone</h2>
               <p className="text-lg text-gray-600">
                 Understanding the significance of this examination is the first step toward success.
               </p>
@@ -277,7 +277,7 @@ const NLevelPrepClient = () => {
         <section className="py-20 px-4 bg-gray-50">
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-16">
-              <h2 className="text-4xl font-bold text-blue-900 mb-4">In-Depth Subject Strategies</h2>
+              <h2 className="section-title text-primary mb-4">In-Depth Subject Strategies</h2>
               <p className="text-lg text-gray-600 max-w-3xl mx-auto">
                 Tailor your revision with these proven techniques for core N-Level subjects to maximize your scores.
               </p>
@@ -317,7 +317,7 @@ const NLevelPrepClient = () => {
         <section className="py-20 px-4">
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-16">
-              <h2 className="text-4xl font-bold text-blue-900 mb-4">Your N-Level Success Roadmap</h2>
+              <h2 className="section-title text-primary mb-4">Your N-Level Success Roadmap</h2>
               <p className="text-lg text-gray-600">A strategic timeline to guide your preparation from start to finish.</p>
             </div>
             <div className="relative">
@@ -355,7 +355,7 @@ const NLevelPrepClient = () => {
         <section className="py-20 px-4 bg-red-50">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16">
-              <h2 className="text-4xl font-bold text-red-800 mb-4 flex items-center justify-center">
+              <h2 className="section-title text-primary mb-4 flex items-center justify-center">
                   <AlertTriangle className="h-10 w-10 mr-4"/>
                   Common Pitfalls to Avoid
               </h2>
@@ -392,7 +392,7 @@ const NLevelPrepClient = () => {
         <section className="py-20 px-4 bg-white">
           <div className="max-w-5xl mx-auto">
             <div className="text-center mb-16">
-              <h2 className="text-4xl font-bold text-blue-900 mb-4">Prioritizing Your Well-being</h2>
+              <h2 className="section-title text-primary mb-4">Prioritizing Your Well-being</h2>
               <p className="text-lg text-gray-600">A healthy mind and body are your greatest assets during the exam period.</p>
             </div>
             <div className="grid md:grid-cols-3 gap-8 text-center">
@@ -431,7 +431,7 @@ const NLevelPrepClient = () => {
         <section className="py-20 px-4 bg-gray-50">
             <div className="max-w-6xl mx-auto">
                 <div className="text-center mb-16">
-                    <h2 className="text-4xl font-bold text-blue-900 mb-4">Pathways After the N-Levels</h2>
+                    <h2 className="section-title text-primary mb-4">Pathways After the N-Levels</h2>
                     <p className="text-lg text-gray-600 max-w-3xl mx-auto">Your N-Level results unlock a variety of exciting educational and vocational routes. Explore the main options available.</p>
                 </div>
                 <div className="grid md:grid-cols-3 gap-8">
@@ -482,7 +482,7 @@ const NLevelPrepClient = () => {
               viewport={{ once: true, amount: 0.5 }}
               transition={{ duration: 0.7 }}
             >
-              <h2 className="text-4xl font-bold text-blue-900 mb-6">Can Private Tuition Make a Critical Difference?</h2>
+              <h2 className="section-title text-primary mb-6">Can Private Tuition Make a Critical Difference?</h2>
               <p className="text-lg text-gray-700 mb-6">
                 For many students, targeted guidance is the key to unlocking their full potential. A qualified and experienced tutor can provide personalized attention that is often not possible in a large classroom setting, making a significant impact on results.
               </p>
@@ -511,7 +511,7 @@ const NLevelPrepClient = () => {
         <section className="py-20 px-4 bg-gray-50">
             <div className="max-w-5xl mx-auto">
                 <div className="text-center mb-16">
-                    <h2 className="text-4xl font-bold text-blue-900 mb-4">Final Countdown: The Last 48 Hours</h2>
+                    <h2 className="section-title text-primary mb-4">Final Countdown: The Last 48 Hours</h2>
                     <p className="text-lg text-gray-600">Your strategy in the final days is just as important as the months of preparation.</p>
                 </div>
                 <div className="grid md:grid-cols-3 gap-8">
@@ -539,7 +539,7 @@ const NLevelPrepClient = () => {
             feeds the FAQPage JSON-LD in page.jsx. */}
         <section id="faq" className="py-16 px-4 bg-gray-50">
           <div className="max-w-3xl mx-auto">
-            <h2 className="text-3xl md:text-4xl font-bold text-blue-900 mb-8">
+            <h2 className="section-title text-primary mb-8">
               N-Level questions, answered
             </h2>
             <div className="space-y-8">
@@ -573,7 +573,7 @@ const NLevelPrepClient = () => {
           className="py-24 px-4 bg-gradient-to-r from-blue-700 to-indigo-800 text-white"
         >
           <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-4xl md:text-5xl font-extrabold mb-6 tracking-tight">
+            <h2 className="section-title text-primary mb-6">
               Ready to Secure Your Success in the N-Levels?
             </h2>
             <p className="text-lg md:text-xl text-blue-100 mb-10 max-w-2xl mx-auto">

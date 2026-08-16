@@ -178,7 +178,7 @@ export default function HowItWorksSection({ formRef }) {
     <section className="relative overflow-hidden bg-white">
       {/* Intro panel */}
       <div className="w-full flex flex-col justify-center items-center text-center py-16 md:py-32 px-4">
-        <h2 className="text-3xl md:text-5xl font-bold text-slate-800 mb-3 md:mb-4">
+        <h2 className="text-primary mb-3 md:mb-4">
           Your Simple Path to the Perfect Tutor
         </h2>
         <p className="text-base md:text-lg text-slate-600 max-w-2xl mx-auto mb-6 md:mb-8">

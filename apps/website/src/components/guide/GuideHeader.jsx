@@ -14,7 +14,7 @@ import Image from 'next/image';
 export default function GuideHeader({ title, author, meta, imageSrc, imageAlt }) {
   return (
     <header className="border-b border-gray-100 pb-8 mb-10">
-      <h1 className="text-4xl! leading-tight! font-bold text-gray-900 tracking-tight mb-4 text-balance">
+      <h1 className="page-title text-primary mb-4">
         {title}
       </h1>
       <p className="text-sm text-gray-500 tabular-nums">

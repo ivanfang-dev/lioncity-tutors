@@ -17,7 +17,7 @@ export default function RequestForTutor() {
           useSearchParams), so the page's only <h1> is part of the static
           server-rendered HTML rather than trapped behind hydration. */}
       <div className="bg-gradient-to-r from-blue-50 via-white to-blue-50 py-6 text-center">
-        <h1 className="text-2xl md:text-3xl font-bold text-blue-800 mb-2">Request a Tutor in Singapore</h1>
+        <h1 className="page-title text-primary mb-2">Request a Tutor in Singapore</h1>
         <p className="text-gray-600 text-sm max-w-xl mx-auto">Complete this form - 100% Free, Fast Response Guaranteed</p>
       </div>
       <RequestForTutorClient />

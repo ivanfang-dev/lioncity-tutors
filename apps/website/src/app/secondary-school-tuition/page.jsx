@@ -98,7 +98,7 @@ export default function SecondarySchoolTuition() {
           {/* The explicit space matters: <br> is a visual break but not a word
               separator, so without it the heading extracts as
               "…in SingaporeO-Level & N-Level…" for crawlers and screen readers. */}
-          <h1 className="text-4xl font-bold text-primary">Secondary School Tuition in Singapore{' '}<br />O-Level &amp; N-Level Specialist Tutors</h1>
+          <h1 className="page-title text-primary">Secondary School Tuition in Singapore{' '}<br />O-Level &amp; N-Level Specialist Tutors</h1>
           <p className="text-lg text-gray-700 max-w-2xl mx-auto">
             Hand-matched tutors for Sec 1 to Sec 5, across Posting Groups, G1&ndash;G3 subject levels and the O-Level and N-Level tracks. Tutors are matched in about {MATCH_TIME}, and parents never pay an agency fee.
           </p>
@@ -116,7 +116,7 @@ export default function SecondarySchoolTuition() {
 
         {/* Streams / Posting Groups — the differentiated explainer */}
         <section className="space-y-4">
-          <h2 className="text-3xl font-bold text-primary">Posting Groups, G-levels and the old streams</h2>
+          <h2 className="section-title text-primary">Posting Groups, G-levels and the old streams</h2>
           <p className="text-gray-700">
             Singapore&apos;s secondary system is part-way through a change, so parents of a Sec 1 student and parents of a Sec 4 student are currently describing two different systems. Full Subject-Based Banding replaced the old Express, Normal (Academic) and Normal (Technical) streams with <strong>Posting Groups</strong> at entry and <strong>subject levels G1, G2 and G3</strong> thereafter.
           </p>
@@ -141,7 +141,7 @@ export default function SecondarySchoolTuition() {
 
         {/* Sec 2 subject decisions */}
         <section className="space-y-4">
-          <h2 className="text-3xl font-bold text-primary">The Sec 2 subject decisions that matter most</h2>
+          <h2 className="section-title text-primary">The Sec 2 subject decisions that matter most</h2>
           <p className="text-gray-700">
             End of Sec 2 is where the consequential choices get made, and they narrow what is available at 16 more than most families expect at the time. Three decisions carry the most weight.
           </p>
@@ -162,7 +162,7 @@ export default function SecondarySchoolTuition() {
 
         {/* Cost */}
         <section className="space-y-4">
-          <h2 className="text-3xl font-bold text-primary">What secondary tuition costs</h2>
+          <h2 className="section-title text-primary">What secondary tuition costs</h2>
           <p className="text-gray-700">
             Two different numbers are worth knowing, and they answer different questions. The first is what we charge. The second is what other parents actually decided to spend.
           </p>
@@ -210,7 +210,7 @@ export default function SecondarySchoolTuition() {
 
         {/* Level routing */}
         <section className="space-y-4">
-          <h2 className="text-3xl font-bold text-primary">Where students need the most help</h2>
+          <h2 className="section-title text-primary">Where students need the most help</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Card className="shadow-sm">
               <CardContent className="p-6">
@@ -288,7 +288,7 @@ export default function SecondarySchoolTuition() {
 
         {/* How matching works */}
         <section className="space-y-4">
-          <h2 className="text-3xl font-bold text-primary">How we match a secondary tutor</h2>
+          <h2 className="section-title text-primary">How we match a secondary tutor</h2>
           <p className="text-gray-700">
             Matching is done by hand, not by an algorithm dropping your request into a job board. It usually takes about {MATCH_TIME}.
           </p>
@@ -305,7 +305,7 @@ export default function SecondarySchoolTuition() {
 
         {/* FAQ */}
         <section className="space-y-4">
-          <h2 className="text-3xl font-bold text-primary">Secondary tuition FAQs</h2>
+          <h2 className="section-title text-primary">Secondary tuition FAQs</h2>
           <div className="space-y-5">
             {faqs.map((item) => (
               <div key={item.q}>
@@ -319,7 +319,7 @@ export default function SecondarySchoolTuition() {
         {/* Request form */}
         <section className="bg-gradient-to-br from-blue-50 to-sky-50 p-8 rounded-2xl shadow-lg">
           <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl font-bold text-center text-primary mb-2">Request a Secondary School Tutor</h2>
+            <h2 className="section-title text-primary text-center mb-2">Request a Secondary School Tutor</h2>
             <p className="text-gray-600 text-center mb-8 max-w-2xl mx-auto">
               Tell us the subject and the level it is taken at, and we will match a tutor — fast, free, and with no obligation.
             </p>

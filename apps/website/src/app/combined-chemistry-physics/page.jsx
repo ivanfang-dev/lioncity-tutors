@@ -47,7 +47,7 @@ export default function CombinedChemistryPhysics() {
       />
 
       <main className="px-4 py-12 max-w-4xl mx-auto">
-        <h1 className="text-4xl font-bold text-indigo-800 mb-4">Combined Chemistry + Physics: O-Level &amp; N-Level Science, Mastered</h1>
+        <h1 className="page-title text-primary mb-4">Combined Chemistry + Physics: O-Level &amp; N-Level Science, Mastered</h1>
 
         <div className="flex items-center space-x-4 mb-8">
           <div>
@@ -79,7 +79,7 @@ export default function CombinedChemistryPhysics() {
         <article className="space-y-8 text-gray-700 leading-relaxed">
           
           <section className="bg-emerald-50 p-6 rounded-lg border-l-4 border-emerald-400">
-            <h2 className="text-2xl font-semibold text-emerald-800 mb-3">🎯 Why Combined Chemistry/Physics is Singapore's Engineering Gateway</h2>
+            <h2 className="section-title text-primary mb-3">🎯 Why Combined Chemistry/Physics is Singapore's Engineering Gateway</h2>
             <p className="mb-4">
               Among the three Combined Science combinations, Combined Chemistry/Physics offers the most direct
               pathway to Singapore's thriving engineering and technology sectors. Unlike other combinations, Combined
@@ -122,7 +122,7 @@ export default function CombinedChemistryPhysics() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold text-blue-700 mb-4">🔬 N-Level (5105) Assessment Breakdown</h2>
+            <h2 className="section-title text-primary mb-4">🔬 N-Level (5105) Assessment Breakdown</h2>
 
             <div className="bg-blue-50 p-5 rounded-lg mb-4">
               <h3 className="font-semibold text-blue-800 mb-3">📋 Paper Structure & Timing Strategy</h3>
@@ -186,7 +186,7 @@ export default function CombinedChemistryPhysics() {
           </section>
 
           <section className="bg-sky-50 p-6 rounded-lg border-l-4 border-[#0474BA]">
-            <h2 className="text-2xl font-semibold text-[#0474BA] mb-4">❓ What is O-Level Combined Chemistry/Physics?</h2>
+            <h2 className="section-title text-primary mb-4">❓ What is O-Level Combined Chemistry/Physics?</h2>
             <p className="mb-4">
               O-Level Combined Chemistry/Physics (syllabus 5086) is sat by Secondary 4 Express-stream students, not
               N(A) students. It shares one multiple-choice paper across Chemistry and Physics, then a separate
@@ -224,7 +224,7 @@ export default function CombinedChemistryPhysics() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold text-blue-700 mb-4">📅 2026 Exam Timetables — Both Levels</h2>
+            <h2 className="section-title text-primary mb-4">📅 2026 Exam Timetables — Both Levels</h2>
             <div className="space-y-6">
               <div>
                 <h3 className="font-semibold text-[#0474BA] mb-2">O-Level Combined Chemistry/Physics</h3>
@@ -246,7 +246,7 @@ export default function CombinedChemistryPhysics() {
           </section>
 
           <section className="bg-violet-50 p-6 rounded-xl">
-            <h2 className="text-2xl font-semibold text-violet-800 mb-4">⚡ The Integration Advantage: Where Chemistry Meets Physics</h2>
+            <h2 className="section-title text-primary mb-4">⚡ The Integration Advantage: Where Chemistry Meets Physics</h2>
             
             <p className="mb-4">
               The secret to Combined Chemistry/Physics excellence lies in recognizing the fundamental connections. Every physics concept 
@@ -303,7 +303,7 @@ export default function CombinedChemistryPhysics() {
           </section>
 
           <section className="bg-teal-50 p-6 rounded-xl">
-            <h2 className="text-2xl font-semibold text-teal-800 mb-4">🇸🇬 Singapore Applications: Real-World Integration</h2>
+            <h2 className="section-title text-primary mb-4">🇸🇬 Singapore Applications: Real-World Integration</h2>
             
             <p className="mb-4">
               Combined Chemistry/Physics questions frequently feature Singapore contexts where chemistry and physics intersect. 
@@ -350,7 +350,7 @@ export default function CombinedChemistryPhysics() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold text-red-700 mb-4">📈 Advanced Topic Mastery Map</h2>
+            <h2 className="section-title text-primary mb-4">📈 Advanced Topic Mastery Map</h2>
             
             <div className="space-y-4">
               <div className="bg-red-50 p-4 rounded-lg border-l-4 border-red-400">
@@ -420,7 +420,7 @@ export default function CombinedChemistryPhysics() {
           </section>
 
           <section className="bg-orange-50 p-6 rounded-xl">
-            <h2 className="text-2xl font-semibold text-orange-800 mb-4">🎯 A1 Mastery Strategies</h2>
+            <h2 className="section-title text-primary mb-4">🎯 A1 Mastery Strategies</h2>
             
             <div className="space-y-4">
               <div className="bg-white p-4 rounded-lg border-l-3 border-green-400">
@@ -482,7 +482,7 @@ export default function CombinedChemistryPhysics() {
           </section>
 
           <section className="bg-gray-50 p-6 rounded-xl">
-            <h2 className="text-2xl font-semibold text-gray-800 mb-4">❓ Advanced Combined Chemistry/Physics Questions & Answers</h2>
+            <h2 className="section-title text-primary mb-4">❓ Advanced Combined Chemistry/Physics Questions & Answers</h2>
             
             <div className="space-y-4">
               <div className="bg-white p-4 rounded-lg">
@@ -524,7 +524,7 @@ export default function CombinedChemistryPhysics() {
           </section>
 
           <section className="bg-gradient-to-r from-indigo-50 to-purple-50 p-8 rounded-xl text-center">
-            <h2 className="text-3xl font-bold text-indigo-800 mb-4">🚀 Your Combined Chemistry/Physics Mastery Journey</h2>
+            <h2 className="section-title text-primary mb-4">🚀 Your Combined Chemistry/Physics Mastery Journey</h2>
             
             <p className="text-lg text-gray-700 mb-6 max-w-3xl mx-auto">
               Combined Chemistry/Physics Chemistry-Physics represents the pinnacle of Combined Science integration, at O-Level and N-Level. By mastering the
@@ -587,7 +587,7 @@ export default function CombinedChemistryPhysics() {
         <RelatedGuides slug="combined-chemistry-physics" />
 
         <section className="bg-gradient-to-r from-primary to-primary/90 text-white py-12 px-6 sm:px-8 rounded-2xl text-center space-y-4 shadow-xl">
-          <h2 className="text-2xl sm:text-3xl font-bold text-white">Ready to Excel in Combined Chemistry/Physics?</h2>
+          <h2 className="section-title text-white">Ready to Excel in Combined Chemistry/Physics?</h2>
           <p className="text-base sm:text-lg max-w-2xl mx-auto text-white/80">
             Connect with our specialized combined chemistry/physics tutors who make complex concepts clear and help you achieve your academic goals.
           </p>

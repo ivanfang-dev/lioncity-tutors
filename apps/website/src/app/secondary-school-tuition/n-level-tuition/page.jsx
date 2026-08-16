@@ -59,7 +59,7 @@ export default function NLevelTuition() {
       <div className="p-6 max-w-5xl mx-auto space-y-12">
         {/* Section 1: Headline */}
         <section className="text-center space-y-4">
-          <h1 className="text-4xl font-bold text-blue-800">N-Level Tuition: Expert Guidance for Normal Academic & Technical Streams</h1>
+          <h1 className="page-title text-primary">N-Level Tuition: Expert Guidance for Normal Academic & Technical Streams</h1>
           <p className="text-lg text-gray-700 max-w-2xl mx-auto">
             Trusted by over 200 families. We help N(A) and N(T) students build confidence, master key concepts, and achieve their best results.
           </p>
@@ -71,7 +71,7 @@ export default function NLevelTuition() {
         {/* Tutor Request Form Section */}
         <section ref={formRef} className="bg-gradient-to-br from-blue-50 to-sky-50 p-8 rounded-2xl shadow-lg">
           <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl font-bold text-center text-primary mb-4">Request an N-Level Tutor</h2>
+            <h2 className="section-title text-primary text-center mb-4">Request an N-Level Tutor</h2>
 
             <FormBenefits />
 
@@ -134,7 +134,7 @@ export default function NLevelTuition() {
 
         {/* Section 2: Why N-Levels Matter */}
         <section className="bg-gradient-to-br from-blue-50 to-sky-50 p-12 rounded-2xl">
-          <h2 className="text-2xl md:text-3xl font-semibold mb-4 text-primary text-center">Why N-Level Success Matters</h2>
+          <h2 className="section-title text-primary mb-4 text-center">Why N-Level Success Matters</h2>
           <p className="text-gray-600 text-center max-w-3xl mx-auto mb-8">
             The N-Level exams are a key milestone for students in the Normal Academic and Normal Technical streams. Good results open doors to O-Levels, ITE, and Polytechnic pathways. We help your child build the skills and confidence needed to excel.
           </p>
@@ -165,7 +165,7 @@ export default function NLevelTuition() {
 
         {/* Section 3: Subjects We Cover (N-Level) */}
         <section>
-          <h2 className="text-2xl md:text-3xl font-semibold mb-8 text-primary text-center">Comprehensive N-Level Subjects</h2>
+          <h2 className="section-title text-primary mb-8 text-center">Comprehensive N-Level Subjects</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {/* Languages */}
             <Card className="border-t-4 border-t-emerald-500 shadow-lg">
@@ -298,7 +298,7 @@ export default function NLevelTuition() {
 
         {/* Section 5: Teaching Methods */}
         <section>
-          <h2 className="text-2xl md:text-3xl font-semibold mb-8 text-primary text-center">Our Proven Teaching Methods</h2>
+          <h2 className="section-title text-primary mb-8 text-center">Our Proven Teaching Methods</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="bg-white p-8 rounded-xl shadow-lg">
               <h3 className="text-xl font-bold text-emerald-700 mb-4">📚 Interactive Learning</h3>
@@ -324,7 +324,7 @@ export default function NLevelTuition() {
 
         {/* Section 9: Service Areas */}
         <section className="bg-gray-50 p-6 rounded-2xl">
-          <h2 className="text-2xl font-semibold mb-6 text-primary text-center">N-Level Tuition Available Across Singapore</h2>
+          <h2 className="section-title text-primary mb-6 text-center">N-Level Tuition Available Across Singapore</h2>
           <p className="text-gray-700 text-center mb-6">
             Our experienced tutors serve families island-wide, including:
           </p>
@@ -387,7 +387,7 @@ export default function NLevelTuition() {
 
         {/* Section 10: Final CTA - UPDATED */}
         <section className="text-center space-y-6 bg-gradient-to-r from-primary to-primary/90 text-white p-12 rounded-2xl shadow-xl">
-            <h2 className="text-3xl md:text-4xl font-bold text-white">Start Your Journey To N-Level Success Today</h2>
+            <h2 className="section-title text-white">Start Your Journey To N-Level Success Today</h2>
             <p className="text-text-inverse text-lg max-w-2xl mx-auto">
                 Experience the difference with our handpicked tutors. We'll match you within {MATCH_TIME}.
             </p>

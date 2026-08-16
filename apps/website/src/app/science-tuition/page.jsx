@@ -59,7 +59,7 @@ export default function ScienceTuition() {
       <div className="p-4 sm:p-6 max-w-5xl mx-auto space-y-8 sm:space-y-12">
         {/* Section 1: Hero with Image */}
         <section className="text-center space-y-4 sm:space-y-6">
-          <h1 className="text-2xl sm:text-4xl font-bold text-blue-800">Science Made Simple: Find Your Perfect Science Tutor Today</h1>
+          <h1 className="page-title text-primary">Science Made Simple: Find Your Perfect Science Tutor Today</h1>
           <p className="text-base sm:text-lg text-gray-700 max-w-2xl mx-auto">
             From PSLE Science to A-Level Physics, Chemistry, and Biology – our expert tutors make complex concepts crystal clear for Singapore students.
           </p>
@@ -85,7 +85,7 @@ export default function ScienceTuition() {
 
         {/* Section 2: Comprehensive Science Guides */}
         <section className="space-y-6 sm:space-y-8">
-          <h2 className="text-2xl sm:text-3xl font-semibold mb-4 sm:mb-6 text-blue-700">Complete Science Guides for Every Level</h2>
+          <h2 className="section-title text-primary mb-4 sm:mb-6">Complete Science Guides for Every Level</h2>
           <p className="text-base sm:text-lg text-gray-700 mb-6 sm:mb-8">
             Access our comprehensive guides for each science subject and level, designed to help students excel in their examinations. Each guide includes detailed exam formats, scoring strategies, and expert tips.
           </p>
@@ -322,7 +322,7 @@ export default function ScienceTuition() {
 
         {/* Section 3: What Makes Our Science Tutors Different */}
         <section className="bg-gradient-to-r from-blue-50 to-purple-50 p-8 rounded-xl">
-          <h2 className="text-2xl font-semibold mb-6 text-blue-700">What Makes LionCity's Science Tutors Different</h2>
+          <h2 className="section-title text-primary mb-6">What Makes LionCity's Science Tutors Different</h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div>
@@ -354,7 +354,7 @@ export default function ScienceTuition() {
 
         {/* Section 5: Why Choose Us */}
         <section>
-          <h2 className="text-2xl font-semibold mb-4 text-blue-700">Why Singapore Families Trust Us for Science Tuition</h2>
+          <h2 className="section-title text-primary mb-4">Why Singapore Families Trust Us for Science Tuition</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <Card className="border-l-4 border-l-blue-500 shadow-lg hover:shadow-xl transition-shadow duration-200">
               <CardContent className="p-6">
@@ -379,7 +379,7 @@ export default function ScienceTuition() {
 
         {/* Section 6: Teaching Methods */}
         <section>
-          <h2 className="text-2xl font-semibold mb-4 text-blue-700">Our Proven Science Teaching Methods</h2>
+          <h2 className="section-title text-primary mb-4">Our Proven Science Teaching Methods</h2>
           <div className="my-8 relative w-full max-w-3xl mx-auto aspect-video overflow-hidden rounded-xl shadow-lg"> 
             <Image
               src="/science2.webp"
@@ -424,7 +424,7 @@ export default function ScienceTuition() {
 
         {/* Section 8: Service Areas */}
         <section className="bg-gray-50 p-6 rounded-xl">
-          <h2 className="text-2xl font-semibold mb-4 text-blue-700">Science Tuition Available Island-Wide</h2>
+          <h2 className="section-title text-primary mb-4">Science Tuition Available Island-Wide</h2>
           <p className="text-gray-700 mb-4">
             Our experienced science tutors serve families across Singapore:
           </p>

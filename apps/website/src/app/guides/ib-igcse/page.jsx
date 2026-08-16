@@ -40,7 +40,7 @@ export default function IbIgcseHub() {
 
       <main className="mx-auto max-w-3xl px-6 py-16">
         <header className="mb-10 border-b border-gray-100 pb-8">
-          <h1 className="mb-4 text-4xl font-bold leading-tight tracking-tight text-gray-900 text-balance">
+          <h1 className="page-title text-primary mb-4">
             IB &amp; IGCSE Guides for Singapore Students
           </h1>
           <p className="text-sm text-gray-500">
@@ -49,7 +49,7 @@ export default function IbIgcseHub() {
         </header>
 
         <section id="how-they-differ" className="mb-12">
-          <h2 className="mb-4 text-2xl font-bold text-gray-900">
+          <h2 className="section-title text-primary mb-4">
             How do IB and IGCSE differ from the Singapore national track?
           </h2>
           <p className="mb-4 text-lg leading-relaxed text-gray-800">
@@ -69,7 +69,7 @@ export default function IbIgcseHub() {
         </section>
 
         <section id="faq" className="mb-4">
-          <h2 className="mb-6 text-2xl font-bold text-gray-900">
+          <h2 className="section-title text-primary mb-6">
             IB and IGCSE questions, answered
           </h2>
           <div className="space-y-8">

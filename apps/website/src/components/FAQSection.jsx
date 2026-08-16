@@ -128,7 +128,7 @@ export default function FAQSection() {
           {...enter(0, prefersReducedMotion)}
           className="text-center mb-12 md:mb-16"
         >
-          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-semibold text-primary mb-4 tracking-tight">
+          <h2 className="text-primary mb-4">
             Frequently Asked<br className="sm:hidden" /> Questions
           </h2>
           <p className="text-lg md:text-xl text-text-default/80 max-w-2xl mx-auto">

@@ -13,7 +13,7 @@ export default function SectionHeading({ id, icon: Icon, children }) {
       <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
         <Icon className="h-5 w-5" strokeWidth={ICON_STROKE} aria-hidden="true" />
       </span>
-      <h2 id={id} className="scroll-mt-24 text-2xl! leading-8! font-bold tracking-tight text-primary text-balance">
+      <h2 id={id} className="section-title text-primary scroll-mt-24">
         {children}
       </h2>
     </div>

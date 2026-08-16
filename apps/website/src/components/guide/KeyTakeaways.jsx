@@ -13,7 +13,7 @@ export default function KeyTakeaways({ title = 'The short version', items = [] }
     <div className="rounded-xl border border-primary/15 bg-primary/5 p-5 sm:p-6">
       <div className="flex items-center gap-2 mb-4">
         <Sparkles className="h-5 w-5 text-primary" strokeWidth={ICON_STROKE} aria-hidden="true" />
-        <h2 className="text-base! leading-6! font-semibold text-gray-900">{title}</h2>
+        <h2 className="text-base leading-6 font-semibold text-gray-900">{title}</h2>
       </div>
       <ul className="space-y-2.5 text-sm text-gray-700">
         {items.map((item, index) => (

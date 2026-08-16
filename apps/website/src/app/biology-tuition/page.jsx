@@ -89,7 +89,7 @@ export default function BiologyTuition() {
       <div className="p-6 max-w-6xl mx-auto space-y-12">
         {/* Hero */}
         <section className="text-center space-y-6">
-          <h1 className="text-4xl font-bold text-green-800">Master Biology — Expert Tutors for Every Level in Singapore</h1>
+          <h1 className="page-title text-primary">Master Biology — Expert Tutors for Every Level in Singapore</h1>
           <p className="text-lg text-gray-700 max-w-3xl mx-auto">
             From Secondary (O/N) Biology and Combined Science to IGCSE, JC H1/H2 and IB Biology — our specialised tutors translate complex ideas like cell biology, genetics, physiology and ecology into clear concepts and exam-ready answers.
           </p>
@@ -123,7 +123,7 @@ export default function BiologyTuition() {
 
         {/* Overview & Value Proposition */}
         <section id="why-tuition" className="space-y-4">
-          <h2 className="text-3xl font-semibold text-green-700 text-center">Why families choose LionCity Tutors for Biology</h2>
+          <h2 className="section-title text-primary text-center">Why families choose LionCity Tutors for Biology</h2>
           <p className="text-gray-700 max-w-4xl mx-auto text-center">
             Biology is both conceptual and practical — success requires strong understanding of biological systems, confident practical skills, and polished exam technique. Our tutors combine subject expertise with proven teaching frameworks to help students build conceptual clarity, practical competence and consistent exam performance.
           </p>
@@ -152,7 +152,7 @@ export default function BiologyTuition() {
 
         {/* Comprehensive Biology Guides */}
         <section className="space-y-8">
-          <h2 className="text-3xl font-semibold mb-6 text-green-700">Complete Biology Guides for Every Level</h2>
+          <h2 className="section-title text-primary mb-6">Complete Biology Guides for Every Level</h2>
           <p className="text-lg text-gray-700 mb-8">
             Access our comprehensive guides for each biology subject and level, designed to help students excel in their examinations. Each guide includes detailed exam formats, practical skills, and expert tips.
           </p>
@@ -387,7 +387,7 @@ export default function BiologyTuition() {
 
         {/* Detailed levels */}
         <section>
-          <h2 className="text-3xl font-semibold mb-6 text-green-700 text-center">Comprehensive coverage for every exam board and level</h2>
+          <h2 className="section-title text-primary mb-6 text-center">Comprehensive coverage for every exam board and level</h2>
           <p className="text-gray-700 max-w-4xl mx-auto text-center mb-6">We tailor lessons for: Secondary (O & N), Combined Science, IGCSE, JC H1/H2 and IB Biology. Below are highlighted focus areas for each level.</p>
 
           <div className="space-y-8">
@@ -487,7 +487,7 @@ export default function BiologyTuition() {
 
         {/* How we teach */}
         <section>
-          <h2 className="text-3xl font-semibold text-green-700 text-center mb-4">How our biology tuition works — the LionCity method</h2>
+          <h2 className="section-title text-primary text-center mb-4">How our biology tuition works — the LionCity method</h2>
 
           <div className="grid md:grid-cols-3 gap-6">
             <Card className="shadow-md">
@@ -548,7 +548,7 @@ export default function BiologyTuition() {
 
         {/* FAQs */}
         <section>
-          <h2 className="text-3xl font-semibold text-green-700 text-center mb-4">Frequently asked questions</h2>
+          <h2 className="section-title text-primary text-center mb-4">Frequently asked questions</h2>
           <div className="grid md:grid-cols-2 gap-6">
             {BIOLOGY_TUITION_FAQS.map((faq) => (
               <Card className="shadow-sm" key={faq.question}>

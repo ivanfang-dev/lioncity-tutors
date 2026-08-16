@@ -55,7 +55,7 @@ const PDFModal = ({ title, children, onClose }) => (
 const WeeklyStudyPlannerPDF = () => (
     <div>
         <div className="text-center mb-6">
-            <h1 className="text-3xl font-bold text-primary">Weekly PSLE Study Planner</h1>
+            <h1 className="page-title text-primary">Weekly PSLE Study Planner</h1>
             <p className="text-text-default/80 mt-2">A balanced schedule is a sustainable schedule. Adjust this based on your child's energy levels.</p>
         </div>
         <div className="overflow-x-auto">
@@ -84,7 +84,7 @@ const WeeklyStudyPlannerPDF = () => (
 const MathHeuristicsChecklistPDF = () => (
     <div>
         <div className="text-center mb-6">
-            <h1 className="text-3xl font-bold text-primary">Top 10 PSLE Math Heuristics Checklist</h1>
+            <h1 className="page-title text-primary">Top 10 PSLE Math Heuristics Checklist</h1>
             <p className="text-text-default/80 mt-2">Heuristics are problem-solving tools. Mastering them is the key to unlocking difficult word problems.</p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
@@ -115,7 +115,7 @@ const MathHeuristicsChecklistPDF = () => (
 const ParentStressFreeGuidePDF = () => (
     <div>
         <div className="text-center mb-6">
-            <h1 className="text-3xl font-bold text-primary">A Parent's Guide to a Stress-Free(er) PSLE</h1>
+            <h1 className="page-title text-primary">A Parent's Guide to a Stress-Free(er) PSLE</h1>
             <p className="text-text-default/80 mt-2">Your well-being is the foundation of your child's success. Here are tips to foster a positive environment.</p>
         </div>
         <div className="space-y-4">
@@ -272,7 +272,7 @@ export default function PSLEPreparationGuideClient() {
       {renderPdfContent()}
       <header className="bg-background-card border-b">
         <div className="container mx-auto px-6 py-16 md:py-24 text-center">
-          <h1 className="text-4xl md:text-6xl font-extrabold text-primary leading-tight tracking-tighter">
+          <h1 className="page-title text-primary">
             The Ultimate Parent’s Guide to PSLE Preparation (2026)
           </h1>
           <p className="mt-4 text-lg md:text-xl text-text-default/80 max-w-3xl mx-auto">
@@ -295,7 +295,7 @@ export default function PSLEPreparationGuideClient() {
           <article className="space-y-16">
             
             <section id="al-scoring">
-              <h2 className="text-3xl md:text-4xl font-bold mb-6 border-l-4 border-primary pl-4">Decoding the PSLE Format & AL Scoring</h2>
+              <h2 className="section-title text-primary mb-6 border-l-4 border-primary pl-4">Decoding the PSLE Format & AL Scoring</h2>
               <p className="mb-6 text-lg">
                 Since 2021, the PSLE has used the Achievement Level (AL) system to reduce the fine differentiation of students by T-score. This system encourages students to focus on their own mastery of subjects rather than competing with their peers. Your child’s final PSLE Score is the sum of their ALs across the four main subjects.
               </p>
@@ -342,7 +342,7 @@ export default function PSLEPreparationGuideClient() {
             </section>
 
             <section id="timetable">
-              <h2 className="text-3xl md:text-4xl font-bold mb-6 border-l-4 border-primary pl-4 flex items-center"><CalendarClock className="mr-3 h-8 w-8 text-primary shrink-0" />When is the PSLE in 2026?</h2>
+              <h2 className="section-title text-primary mb-6 border-l-4 border-primary pl-4 flex items-center"><CalendarClock className="mr-3 h-8 w-8 text-primary shrink-0" />When is the PSLE in 2026?</h2>
               <p className="mb-6 text-lg">
                 {PSLE_FAQS[0].answer}
               </p>
@@ -354,12 +354,12 @@ export default function PSLEPreparationGuideClient() {
             </section>
 
             <section id="timeline">
-              <h2 className="text-3xl md:text-4xl font-bold mb-8 border-l-4 border-primary pl-4">The 12-Month PSLE Preparation Timeline</h2>
+              <h2 className="section-title text-primary mb-8 border-l-4 border-primary pl-4">The 12-Month PSLE Preparation Timeline</h2>
               <Timeline />
             </section>
 
             <section id="subject-strategies" className="space-y-8">
-              <h2 className="text-3xl md:text-4xl font-bold mb-6 border-l-4 border-primary pl-4">Subject-Specific Strategies</h2>
+              <h2 className="section-title text-primary mb-6 border-l-4 border-primary pl-4">Subject-Specific Strategies</h2>
               
               <Card>
                   <CardHeader>
@@ -452,7 +452,7 @@ export default function PSLEPreparationGuideClient() {
             
             <section id="common-pitfalls">
               <div className="bg-red-50 border-l-4 border-red-500 text-red-900 p-6 rounded-r-lg shadow-lg">
-                <h2 className="text-3xl font-bold flex items-center mb-4 text-red-700"><AlertTriangle className="mr-3" />Top 5 PSLE Pitfalls to Avoid</h2>
+                <h2 className="section-title text-primary flex items-center mb-4"><AlertTriangle className="mr-3" />Top 5 PSLE Pitfalls to Avoid</h2>
                 <ol className="list-decimal list-inside space-y-3">
                   <li><strong>Neglecting Paper 1 for 'Harder' Papers:</strong> Forgetting that Paper 1 (e.g., MCQ in Math/Science) is crucial for securing a good grade. Speed and accuracy here are easy wins often overlooked.</li>
                   <li><strong>Memorizing Without Understanding:</strong> Especially in Science, memorizing answers from past papers fails when question scenarios are changed. Focus on the 'why' behind the concept.</li>
@@ -464,7 +464,7 @@ export default function PSLEPreparationGuideClient() {
             </section>
             
             <section id="parents-role">
-              <h2 className="text-3xl md:text-4xl font-bold mb-8 border-l-4 border-primary pl-4">A Parent’s Role: Beyond Academics</h2>
+              <h2 className="section-title text-primary mb-8 border-l-4 border-primary pl-4">A Parent’s Role: Beyond Academics</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <Card className="flex items-start p-6">
                     <CheckCircle className="h-8 w-8 text-green-500 mr-4 shrink-0" />
@@ -498,7 +498,7 @@ export default function PSLEPreparationGuideClient() {
             </section>
             
             <section id="resources">
-              <h2 className="text-3xl md:text-4xl font-bold mb-8 border-l-4 border-primary pl-4">Downloadable Resources</h2>
+              <h2 className="section-title text-primary mb-8 border-l-4 border-primary pl-4">Downloadable Resources</h2>
               <Resources setActivePdf={setActivePdf} />
             </section>
 
@@ -517,13 +517,13 @@ export default function PSLEPreparationGuideClient() {
             </section>
 
             <section id="testimonials">
-              <h2 className="text-3xl md:text-4xl font-bold mb-8 border-l-4 border-primary pl-4">Success Stories</h2>
+              <h2 className="section-title text-primary mb-8 border-l-4 border-primary pl-4">Success Stories</h2>
               <Testimonials />
             </section>
 
             <section id="final-cta">
               <div className="bg-background-card rounded-lg shadow-2xl p-8 md:p-12 text-center">
-                <h2 className="text-3xl md:text-4xl font-extrabold text-primary">Ready to Give Your Child the PSLE Advantage?</h2>
+                <h2 className="section-title text-primary">Ready to Give Your Child the PSLE Advantage?</h2>
                 <p className="mt-4 text-text-default/80 max-w-2xl mx-auto">
                   If your child is struggling with specific topics, lacking confidence, or if you need expert guidance navigating the syllabus, a specialist PSLE tutor can make all the difference.
                 </p>

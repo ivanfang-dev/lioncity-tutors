@@ -33,7 +33,7 @@ export default function ContactUs() {
   />
   <main>
     <div className="max-w-4xl mx-auto px-6 py-16">
-      <h1 className="text-4xl font-bold text-center text-blue-700 mb-7">Contact Us</h1>
+      <h1 className="page-title text-primary text-center mb-7">Contact Us</h1>
       <p className="text-center text-gray-600 mb-12 max-w-2xl mx-auto">
         We'd love to hear from you! Reach out via any of the methods below and our team will get back to you as soon as possible.
       </p>

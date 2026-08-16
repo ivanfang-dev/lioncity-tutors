@@ -189,7 +189,7 @@ Preferred days & timing: `;
                 <motion.h1
                   variants={fadeUp}
                   transition={fadeUpTransition}
-                  className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-gray-900 leading-[0.98] tracking-tight mb-6"
+                  className="text-gray-900 leading-[0.98] mb-6"
                 >
                   <span className="block">The <span className="text-primary">Right</span> Tutor.</span>
                   <span className="block">
@@ -349,7 +349,7 @@ Preferred days & timing: `;
               {...enter(0, prefersReducedMotion)}
               className="text-center mb-10"
             >
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-primary">
+              <h2 className="text-primary">
                 Trusted by Parents Across Singapore
               </h2>
               <p className="mt-4 text-gray-600 text-lg max-w-xl mx-auto">
@@ -406,7 +406,7 @@ Preferred days & timing: `;
           className="form-card-container"
           {...enter(0, prefersReducedMotion)}
       >
-        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center text-primary mb-4">
+        <h2 className="text-center text-primary mb-4">
             Ready to Find The Perfect Tutor?
         </h2>
         <p className="text-center text-gray-600 mb-10 text-lg">
@@ -451,7 +451,7 @@ Preferred days & timing: `;
               {...enter(0, prefersReducedMotion)}
               className="text-center mb-12"
             >
-              <h2 className="text-3xl md:text-4xl font-bold text-primary mb-4">
+              <h2 className="text-primary mb-4">
                 Access Our Free Resources
               </h2>
               <p className="text-gray-600 mt-4 text-lg max-w-2xl mx-auto">
@@ -529,7 +529,7 @@ Preferred days & timing: `;
         {/* Final CTA Banner */}
         <section className="bg-gradient-to-r from-primary to-primary/90 text-white py-16 sm:py-20 px-6 text-center">
           <div className="max-w-2xl mx-auto">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 text-white">
+            <h2 className="mb-4 text-white">
               Ready to Find the Perfect Tutor?
             </h2>
             <p className="mb-8 text-white/80 text-lg">

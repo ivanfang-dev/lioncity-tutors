@@ -61,7 +61,7 @@ export default function ChemistryTuition() {
       <div className="p-4 sm:p-6 max-w-5xl mx-auto space-y-8 sm:space-y-12">
         {/* Section 1: Headline */}
         <section className="text-center space-y-3 sm:space-y-4">
-          <h1 className="text-2xl sm:text-4xl font-bold text-blue-800">Chemistry Made Simple: Find Your Perfect Chemistry Tutor Today</h1>
+          <h1 className="page-title text-primary">Chemistry Made Simple: Find Your Perfect Chemistry Tutor Today</h1>
           <p className="text-base sm:text-lg text-gray-700 max-w-2xl mx-auto">
             From O-Level to A-Level Chemistry – our expert tutors make complex concepts crystal clear for Singapore students.
           </p>
@@ -88,7 +88,7 @@ export default function ChemistryTuition() {
 
         {/* Section 2: Comprehensive Chemistry Guides */}
         <section className="space-y-8">
-          <h2 className="text-3xl font-semibold mb-6 text-emerald-700">Complete Chemistry Guides for Every Level</h2>
+          <h2 className="section-title text-primary mb-6">Complete Chemistry Guides for Every Level</h2>
           <p className="text-lg text-gray-700 mb-8">
             Access our comprehensive guides for each chemistry subject and level, designed to help students excel in their examinations. Each guide includes detailed exam formats, problem-solving strategies, and expert tips.
           </p>
@@ -324,7 +324,7 @@ export default function ChemistryTuition() {
 
         {/* Section 3: Detailed Chemistry Levels and Syllabus Coverage */}
         <section>
-          <h2 className="text-3xl font-semibold mb-6 text-emerald-700 text-center">Complete Chemistry Tuition Coverage Across All Levels</h2>
+          <h2 className="section-title text-primary mb-6 text-center">Complete Chemistry Tuition Coverage Across All Levels</h2>
           <p className="text-gray-700 mb-8 text-center max-w-3xl mx-auto">
             Our chemistry tutors are experts in Singapore's MOE curriculum and international programs, providing comprehensive coverage of all chemistry topics from atomic structure to advanced organic chemistry reactions.
           </p>
@@ -534,7 +534,7 @@ export default function ChemistryTuition() {
 
         {/* Section 3: Chemistry Topics We Specialize In */}
         <section className="bg-gradient-to-r from-emerald-50 to-blue-50 p-8 rounded-xl">
-          <h2 className="text-3xl font-semibold mb-6 text-emerald-700 text-center">Chemistry Topics Our Expert Tutors Master</h2>
+          <h2 className="section-title text-primary mb-6 text-center">Chemistry Topics Our Expert Tutors Master</h2>
           <p className="text-gray-700 mb-8 text-center max-w-3xl mx-auto">
             Our tutors specialize in breaking down complex chemistry concepts into manageable, understandable segments with practical examples and exam-focused strategies.
           </p>
@@ -583,7 +583,7 @@ export default function ChemistryTuition() {
 
         {/* Section 4: What Makes Our Chemistry Tutors Different */}
         <section>
-          <h2 className="text-3xl font-semibold mb-6 text-emerald-700 text-center">Why LionCity's Chemistry Tutors Excel in Singapore</h2>
+          <h2 className="section-title text-primary mb-6 text-center">Why LionCity's Chemistry Tutors Excel in Singapore</h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div>
@@ -614,7 +614,7 @@ export default function ChemistryTuition() {
 
         {/* Section 5: Why Choose Us */}
         <section>
-          <h2 className="text-3xl font-semibold mb-6 text-emerald-700 text-center">Why Singapore Families Choose Us for Chemistry Tuition</h2>
+          <h2 className="section-title text-primary mb-6 text-center">Why Singapore Families Choose Us for Chemistry Tuition</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <Card className="border-l-4 border-l-emerald-500 shadow-lg hover:shadow-xl transition-shadow duration-200">
               <CardContent className="p-6">
@@ -639,7 +639,7 @@ export default function ChemistryTuition() {
 
         {/* Section 7: Teaching Methods */}
         <section>
-          <h2 className="text-3xl font-semibold mb-6 text-emerald-700 text-center">Our Proven Chemistry Teaching Methods</h2>
+          <h2 className="section-title text-primary mb-6 text-center">Our Proven Chemistry Teaching Methods</h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="space-y-6">
@@ -680,7 +680,7 @@ export default function ChemistryTuition() {
 
         {/* Section 9: Service Areas */}
         <section className="bg-gray-50 p-6 rounded-xl">
-          <h2 className="text-2xl font-semibold mb-4 text-emerald-700">Chemistry Tuition Available Island-Wide</h2>
+          <h2 className="section-title text-primary mb-4">Chemistry Tuition Available Island-Wide</h2>
           <p className="text-gray-700 mb-4">
             Our experienced chemistry tutors serve families across Singapore:
           </p>

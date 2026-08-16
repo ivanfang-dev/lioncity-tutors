@@ -49,7 +49,7 @@ export default function CombinedScienceOverview() {
 
     <main className="px-4 py-12 max-w-4xl mx-auto">
 
-      <h1 className="text-4xl font-bold text-blue-800 mb-4">Combined Science 2026: Your Complete Guide to All Three Combinations at O-Level &amp; N-Level</h1>
+      <h1 className="page-title text-primary mb-4">Combined Science 2026: Your Complete Guide to All Three Combinations at O-Level &amp; N-Level</h1>
       <div className="flex items-center space-x-4 mb-8">
           <div>
             <p className="font-semibold text-gray-800">By the LionCity Tutors science team</p>
@@ -82,7 +82,7 @@ export default function CombinedScienceOverview() {
       <article className="space-y-8 text-gray-700 leading-relaxed">
         
         <section className="bg-amber-50 p-6 rounded-lg border-l-4 border-amber-400">
-          <h2 className="text-2xl font-semibold text-amber-800 mb-3">🎯 Understanding Combined Science</h2>
+          <h2 className="section-title text-primary mb-3">🎯 Understanding Combined Science</h2>
           <p className="mb-4">
             Combined Science offers three distinct combinations, each designed to provide students
             with a solid foundation in two complementary science subjects. It is offered at both O-Level
@@ -110,7 +110,7 @@ export default function CombinedScienceOverview() {
         </section>
 
         <section>
-          <h2 className="text-2xl font-semibold text-blue-700 mb-4">📋 N-Level Combined Science Structure (Syllabus 5105-5107)</h2>
+          <h2 className="section-title text-primary mb-4">📋 N-Level Combined Science Structure (Syllabus 5105-5107)</h2>
 
           <div className="bg-blue-50 p-5 rounded-lg mb-4">
             <h3 className="font-semibold text-blue-800 mb-3">📚 Assessment Overview (All Combinations)</h3>
@@ -177,7 +177,7 @@ export default function CombinedScienceOverview() {
         </section>
 
         <section className="bg-sky-50 p-6 rounded-lg border-l-4 border-[#0474BA]">
-          <h2 className="text-2xl font-semibold text-[#0474BA] mb-4">❓ What is O-Level Combined Science?</h2>
+          <h2 className="section-title text-primary mb-4">❓ What is O-Level Combined Science?</h2>
           <p className="mb-4">
             O-Level Combined Science covers the same three pairings — Physics/Chemistry (5086), Physics/Biology (5087)
             and Chemistry/Biology (5088) — but is sat by Secondary 4 Express-stream students. Each pairing shares one
@@ -223,7 +223,7 @@ export default function CombinedScienceOverview() {
         </section>
 
         <section>
-          <h2 className="text-2xl font-semibold text-blue-700 mb-4">📅 2026 Exam Timetables — Both Levels (All Combinations)</h2>
+          <h2 className="section-title text-primary mb-4">📅 2026 Exam Timetables — Both Levels (All Combinations)</h2>
           <div className="space-y-6">
             <div>
               <h3 className="font-semibold text-[#0474BA] mb-2">O-Level Combined Science</h3>
@@ -245,7 +245,7 @@ export default function CombinedScienceOverview() {
         </section>
 
         <section className="bg-green-50 p-6 rounded-lg">
-          <h2 className="text-2xl font-semibold text-green-800 mb-4">🎯 Choosing Your Combined Science Combination</h2>
+          <h2 className="section-title text-primary mb-4">🎯 Choosing Your Combined Science Combination</h2>
           
           <div className="space-y-6">
             <div className="bg-white p-5 rounded-lg border-l-4 border-blue-400">
@@ -347,7 +347,7 @@ export default function CombinedScienceOverview() {
         </section>
 
         <section className="bg-orange-50 p-6 rounded-xl">
-          <h2 className="text-2xl font-semibold text-orange-800 mb-4">🇸🇬 Singapore Context in Combined Science</h2>
+          <h2 className="section-title text-primary mb-4">🇸🇬 Singapore Context in Combined Science</h2>
           <p className="mb-4">
             Combined Science papers, at both O-Level and N-Level, regularly include Singapore contexts. Understanding local
             applications gives you a significant advantage regardless of your combination.
@@ -376,7 +376,7 @@ export default function CombinedScienceOverview() {
         </section>
 
         <section>
-          <h2 className="text-2xl font-semibold text-blue-700 mb-4">📅 Universal Study Timeline for All Combinations</h2>
+          <h2 className="section-title text-primary mb-4">📅 Universal Study Timeline for All Combinations</h2>
           
           <div className="space-y-4">
             <div className="bg-green-50 p-4 rounded-lg border-l-4 border-green-400">
@@ -443,7 +443,7 @@ export default function CombinedScienceOverview() {
         </section>
 
         <section className="bg-teal-50 p-6 rounded-xl">
-          <h2 className="text-2xl font-semibold text-teal-800 mb-4">📊 Grade Achievement Strategies (All Combinations)</h2>
+          <h2 className="section-title text-primary mb-4">📊 Grade Achievement Strategies (All Combinations)</h2>
           
           <div className="space-y-4">
             <div className="bg-white p-4 rounded-lg border-l-3 border-yellow-400">
@@ -482,7 +482,7 @@ export default function CombinedScienceOverview() {
         </section>
 
         <section className="bg-gray-50 p-6 rounded-xl">
-          <h2 className="text-2xl font-semibold text-gray-800 mb-4">❓ Frequently Asked Questions</h2>
+          <h2 className="section-title text-primary mb-4">❓ Frequently Asked Questions</h2>
           
           <div className="space-y-4">
             <div className="bg-white p-4 rounded-lg">
@@ -520,7 +520,7 @@ export default function CombinedScienceOverview() {
         </section>
 
         <section className="bg-gradient-to-r from-blue-50 to-green-50 p-8 rounded-xl text-center">
-          <h2 className="text-3xl font-bold text-blue-800 mb-4">🚀 Your Combined Science Journey Starts Here</h2>
+          <h2 className="section-title text-primary mb-4">🚀 Your Combined Science Journey Starts Here</h2>
           
           <p className="text-lg text-gray-700 mb-6 max-w-3xl mx-auto">
             Combined Science, at O-Level and N-Level, opens doors to diverse career pathways while developing critical thinking
@@ -570,7 +570,7 @@ export default function CombinedScienceOverview() {
         <RelatedGuides slug="combined-science-overview" />
 
         <section className="bg-gradient-to-r from-primary to-primary/90 text-white py-12 px-6 sm:px-8 rounded-2xl text-center space-y-4 shadow-xl">
-          <h2 className="text-2xl sm:text-3xl font-bold text-white">Ready to Excel in Combined Science?</h2>
+          <h2 className="section-title text-white">Ready to Excel in Combined Science?</h2>
           <p className="text-base sm:text-lg max-w-2xl mx-auto text-white/80">
             Connect with our specialized combined science tutors who make complex concepts clear and help you score your A1
           </p>

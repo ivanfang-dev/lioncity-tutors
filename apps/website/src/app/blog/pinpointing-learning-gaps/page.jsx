@@ -44,7 +44,7 @@ export default function PinpointingLearningGaps() {
         }}
       />
       <main className="px-4 py-12 max-w-3xl mx-auto">
-        <h1 className="text-3xl font-bold text-blue-800 mb-4">The Parent's Diagnostic Toolkit: Find Out Exactly Why Your Child is Struggling in School</h1>
+        <h1 className="page-title text-primary mb-4">The Parent's Diagnostic Toolkit: Find Out Exactly Why Your Child is Struggling in School</h1>
         <p className="text-sm text-gray-500 mb-8">Updated July 5, 2026 • 9 min read</p>
 
         <article className="space-y-8 text-gray-700 leading-relaxed">

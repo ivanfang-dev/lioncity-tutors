@@ -60,7 +60,7 @@ export default function EconomicsTuition() {
       <div className="p-4 sm:p-6 max-w-5xl mx-auto space-y-8 sm:space-y-12">
         {/* Section 1: Headline */}
         <section className="text-center space-y-4">
-          <h1 className="text-2xl sm:text-4xl font-bold text-blue-800">Struggling with Economics? We'll Find You the Perfect Tutor – Fast & Free</h1>
+          <h1 className="page-title text-primary">Struggling with Economics? We'll Find You the Perfect Tutor – Fast & Free</h1>
           <p className="text-base sm:text-lg text-gray-700 max-w-2xl mx-auto">
             Whether it's H1, H2, or IB Economics, Lion City Tutors connects you with handpicked private tutors in Singapore – at no cost to you.
           </p>
@@ -85,7 +85,7 @@ export default function EconomicsTuition() {
 
         {/* New Section: Why Economics Matters */}
         <section className="bg-gradient-to-br from-blue-50 to-purple-50 p-4 sm:p-8 rounded-xl">
-          <h2 className="text-xl sm:text-2xl font-semibold mb-4 sm:mb-6 text-blue-700">Why Strong Economics Skills Matter for Your Child's Future</h2>
+          <h2 className="section-title text-primary mb-4 sm:mb-6">Why Strong Economics Skills Matter for Your Child's Future</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
             <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md">
               <div className="text-3xl sm:text-4xl mb-3 sm:mb-4">🏛️</div>
@@ -107,7 +107,7 @@ export default function EconomicsTuition() {
 
         {/* Section 2: Comprehensive Economics Guides */}
         <section className="space-y-8">
-          <h2 className="text-3xl font-semibold mb-6 text-blue-700">Complete Economics Guides for Every Level</h2>
+          <h2 className="section-title text-primary mb-6">Complete Economics Guides for Every Level</h2>
           <p className="text-lg text-gray-700 mb-8">
             Access our comprehensive guides for each economics subject and level, designed to help students excel in their examinations. Each guide includes detailed exam formats, essay techniques, and expert tips.
           </p>
@@ -180,7 +180,7 @@ export default function EconomicsTuition() {
 
         {/* Section 3: Who We Help */}
         <section>
-          <h2 className="text-2xl font-semibold mb-4 text-blue-700">Expert Economics Tuition for Every Level in Singapore</h2>
+          <h2 className="section-title text-primary mb-4">Expert Economics Tuition for Every Level in Singapore</h2>
           <p className="text-gray-700 mb-4">
             Our experienced economics tutors specialize in Singapore's education system and international curricula, helping students excel across all levels.
           </p>
@@ -195,7 +195,7 @@ export default function EconomicsTuition() {
 
         {/* Section 3: Why Parents Trust Lion City Tutors */}
         <section>
-          <h2 className="text-2xl font-semibold mb-4 text-blue-700">Why Singapore Parents Choose Lion City Tutors for Economics Tuition</h2>
+          <h2 className="section-title text-primary mb-4">Why Singapore Parents Choose Lion City Tutors for Economics Tuition</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <Card className="border-l-4 border-l-emerald-500 shadow-lg hover:shadow-xl transition-shadow duration-200">
               <CardContent className="p-6">
@@ -221,7 +221,7 @@ export default function EconomicsTuition() {
 
         {/* Economics Subjects We Cover */}
         <section>
-          <h2 className="text-2xl font-semibold mb-4 text-blue-700">Comprehensive Economics Tuition Coverage</h2>
+          <h2 className="section-title text-primary mb-4">Comprehensive Economics Tuition Coverage</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Card className="border-t-4 border-t-emerald-500 shadow-lg">
               <CardContent className="p-6">
@@ -417,7 +417,7 @@ export default function EconomicsTuition() {
 
         {/* Section 5: Our Tutor Philosophy */}
         <section>
-          <h2 className="text-2xl font-semibold mb-4 text-blue-700">Beyond Academic Excellence – We Look for Real-World Application in Economics Teaching</h2>
+          <h2 className="section-title text-primary mb-4">Beyond Academic Excellence – We Look for Real-World Application in Economics Teaching</h2>
           <p className="text-gray-700">
             We believe effective economics tutors don't just teach theory – they connect economic concepts to current events and real-world scenarios. That's why we carefully screen for teaching experience, analytical skills, and the ability to make economics relevant and engaging. Our economics tutors understand both Singapore A Level requirements and IB assessment criteria thoroughly.
           </p>
@@ -427,7 +427,7 @@ export default function EconomicsTuition() {
 
         {/* New Section: Areas We Serve */}
         <section className="bg-gray-50 p-6 rounded-xl">
-          <h2 className="text-2xl font-semibold mb-4 text-blue-700">Economics Tuition Available Across Singapore</h2>
+          <h2 className="section-title text-primary mb-4">Economics Tuition Available Across Singapore</h2>
           <p className="text-gray-700 mb-4">
             Our network of qualified economics tutors serves families island-wide, including:
           </p>

@@ -96,7 +96,7 @@ function RequestForTutorContent(){
                         {status.submitted ? (
                             <div className="text-center py-10">
                                 <CheckCircle className="text-green-500 w-16 h-16 mx-auto mb-4" />
-                                <h2 className="text-2xl font-semibold mb-2">Thank you!</h2>
+                                <h2 className="section-title text-primary mb-2">Thank you!</h2>
                                 <p className="text-text-default/80 mb-4">We'll send you tutor profiles shortly.</p>
                                 <Button
                                     className="bg-accent text-text-inverse hover:bg-accent/90"

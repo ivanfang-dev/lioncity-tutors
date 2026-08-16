@@ -48,7 +48,7 @@ export default function CombinedChemBioNA() {
       />
 
       <main className="px-4 py-12 max-w-4xl mx-auto">
-        <h1 className="text-4xl font-bold text-indigo-800 mb-4">Combined Chemistry/Biology: Matter &amp; Life — O-Level &amp; N-Level Mastery</h1>
+        <h1 className="page-title text-primary mb-4">Combined Chemistry/Biology: Matter &amp; Life — O-Level &amp; N-Level Mastery</h1>
 
         <div className="flex items-center space-x-4 mb-8">
           <div>
@@ -81,7 +81,7 @@ export default function CombinedChemBioNA() {
         <article className="space-y-8 text-gray-700 leading-relaxed">
 
           <section className="bg-emerald-50 p-6 rounded-lg border-l-4 border-emerald-400">
-            <h2 className="text-2xl font-semibold text-emerald-800 mb-3">🎯 Who benefits most from Combined Chemistry + Biology?</h2>
+            <h2 className="section-title text-primary mb-3">🎯 Who benefits most from Combined Chemistry + Biology?</h2>
             <p className="mb-4">
               This combination is ideal for students curious about healthcare, nutrition, environmental science, forensic science and laboratory-based careers. It emphasizes the chemistry of molecules together with biological function — a practical pathway to polytechnic diplomas and technical health careers.
             </p>
@@ -103,7 +103,7 @@ export default function CombinedChemBioNA() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold text-blue-700 mb-4">📚 Syllabus-Aligned Topics (Sec 4 N(A))</h2>
+            <h2 className="section-title text-primary mb-4">📚 Syllabus-Aligned Topics (Sec 4 N(A))</h2>
 
             <div className="grid md:grid-cols-2 gap-6">
               <div className="bg-blue-50 p-5 rounded-lg border-l-4 border-blue-400">
@@ -138,7 +138,7 @@ export default function CombinedChemBioNA() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold text-indigo-700 mb-4">🧪 N-Level (5107) Assessment Overview & Exam Rhythm</h2>
+            <h2 className="section-title text-primary mb-4">🧪 N-Level (5107) Assessment Overview & Exam Rhythm</h2>
 
             <div className="bg-indigo-50 p-5 rounded-lg mb-4">
               <h3 className="font-semibold text-indigo-800 mb-3">Paper Structure (N-Level general guide)</h3>
@@ -163,7 +163,7 @@ export default function CombinedChemBioNA() {
           </section>
 
           <section className="bg-sky-50 p-6 rounded-lg border-l-4 border-[#0474BA]">
-            <h2 className="text-2xl font-semibold text-[#0474BA] mb-4">❓ What is O-Level Combined Chemistry/Biology?</h2>
+            <h2 className="section-title text-primary mb-4">❓ What is O-Level Combined Chemistry/Biology?</h2>
             <p className="mb-4">
               O-Level Combined Chemistry/Biology (syllabus 5088) is sat by Secondary 4 Express-stream students, not
               N(A) students. It shares one multiple-choice paper across Chemistry and Biology, then a separate
@@ -201,7 +201,7 @@ export default function CombinedChemBioNA() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold text-blue-700 mb-4">📅 2026 Exam Timetables — Both Levels</h2>
+            <h2 className="section-title text-primary mb-4">📅 2026 Exam Timetables — Both Levels</h2>
             <div className="space-y-6">
               <div>
                 <h3 className="font-semibold text-[#0474BA] mb-2">O-Level Combined Chemistry/Biology</h3>
@@ -223,7 +223,7 @@ export default function CombinedChemBioNA() {
           </section>
 
           <section className="bg-violet-50 p-6 rounded-xl">
-            <h2 className="text-2xl font-semibold text-violet-800 mb-4">⚡ Integration Patterns: Where Chemistry Meets Biology</h2>
+            <h2 className="section-title text-primary mb-4">⚡ Integration Patterns: Where Chemistry Meets Biology</h2>
             <p className="mb-4">High-scoring integrated answers explain the chemical basis of biological processes. Use the following short patterns for exam-ready links.</p>
 
             <div className="space-y-6">
@@ -291,7 +291,7 @@ export default function CombinedChemBioNA() {
           </section>
 
           <section className="bg-teal-50 p-6 rounded-xl">
-            <h2 className="text-2xl font-semibold text-teal-800 mb-4">🇸🇬 Singapore Contexts & Applications</h2>
+            <h2 className="section-title text-primary mb-4">🇸🇬 Singapore Contexts & Applications</h2>
             <p className="mb-4">Exam questions reward localised examples. Use Singapore-relevant cases to demonstrate understanding.</p>
 
             <div className="grid md:grid-cols-2 gap-4">
@@ -328,7 +328,7 @@ export default function CombinedChemBioNA() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold text-red-700 mb-4">📈 Mastery Map: What to prioritise</h2>
+            <h2 className="section-title text-primary mb-4">📈 Mastery Map: What to prioritise</h2>
 
             <div className="space-y-4">
               <div className="bg-red-50 p-4 rounded-lg border-l-4 border-red-400">
@@ -392,7 +392,7 @@ export default function CombinedChemBioNA() {
           </section>
 
           <section className="bg-orange-50 p-6 rounded-xl">
-            <h2 className="text-2xl font-semibold text-orange-800 mb-4">🎯 A1 Strategies & Examiner-Focused Tips</h2>
+            <h2 className="section-title text-primary mb-4">🎯 A1 Strategies & Examiner-Focused Tips</h2>
 
             <div className="space-y-4">
               <div className="bg-white p-4 rounded-lg border-l-3 border-green-400">
@@ -426,7 +426,7 @@ export default function CombinedChemBioNA() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold text-gray-800 mb-4">✏️ Sample Questions & Model Answers</h2>
+            <h2 className="section-title text-primary mb-4">✏️ Sample Questions & Model Answers</h2>
 
             <div className="space-y-4">
               <div className="bg-white p-4 rounded-lg">
@@ -468,7 +468,7 @@ export default function CombinedChemBioNA() {
           </section>
 
           <section className="bg-gradient-to-r from-indigo-50 to-purple-50 p-8 rounded-xl text-center">
-            <h2 className="text-3xl font-bold text-indigo-800 mb-4">🚀 Your Chemistry–Biology Mastery Plan</h2>
+            <h2 className="section-title text-primary mb-4">🚀 Your Chemistry–Biology Mastery Plan</h2>
             <p className="text-lg text-gray-700 mb-6 max-w-3xl mx-auto">
               Combine clear chemical explanations with accurate biological terms. Practise integrated questions weekly, simulate timed papers, and use local examples to score higher in your O-Level or N(A) Combined Science papers.
             </p>
@@ -497,7 +497,7 @@ export default function CombinedChemBioNA() {
           </section>
 
           <section className="bg-gray-50 p-6 rounded-xl">
-            <h2 className="text-2xl font-semibold text-gray-800 mb-4">❓ Frequently Asked Questions</h2>
+            <h2 className="section-title text-primary mb-4">❓ Frequently Asked Questions</h2>
             <div className="space-y-4">
               <FAQ q="Should I memorise chemical equations?" a="Yes: memorise the core equations (photosynthesis, respiration, neutralisation). But focus on being able to explain what each part of the equation means." />
               <FAQ q="How can I improve in practical skills?" a="Practice by writing step-by-step methods, listing variables and controls, and explaining likely sources of error and improvements." />
@@ -534,7 +534,7 @@ export default function CombinedChemBioNA() {
             <RelatedGuides slug="combined-chemistry-biology" />
 
             <section className="bg-gradient-to-r from-primary to-primary/90 text-white py-12 px-6 sm:px-8 rounded-2xl text-center space-y-4 shadow-xl">
-            <h2 className="text-2xl sm:text-3xl font-bold text-white">Ready to Excel in Combined Chemistry/Biology?</h2>
+            <h2 className="section-title text-white">Ready to Excel in Combined Chemistry/Biology?</h2>
             <p className="text-base sm:text-lg max-w-2xl mx-auto text-white/80">
                 Connect with our specialized combined chemistry/biology tutors who make complex concepts clear and help you achieve your academic goals.
             </p>

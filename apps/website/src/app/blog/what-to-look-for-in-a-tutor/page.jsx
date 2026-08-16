@@ -43,7 +43,7 @@ export default function WhatToLookForInATutor() {
       }}
     />
     <main className="px-4 py-12 max-w-3xl mx-auto">
-      <h1 className="text-3xl font-bold text-blue-800 mb-4">What to Look for in a Private Tutor in Singapore</h1>
+      <h1 className="page-title text-primary mb-4">What to Look for in a Private Tutor in Singapore</h1>
       <p className="text-sm text-gray-500 mb-8">Updated May 12, 2026 • 6 min read</p>
 
       <p className="mb-8 text-gray-700">
@@ -59,7 +59,7 @@ export default function WhatToLookForInATutor() {
         </p>
 
         <section>
-          <h2 className="text-2xl font-semibold text-blue-700 mb-3">1. Academic Qualifications and Subject Expertise</h2>
+          <h2 className="section-title text-primary mb-3">1. Academic Qualifications and Subject Expertise</h2>
           <p>
             While a degree doesn't guarantee great teaching, it's essential for credibility. Look for tutors with:
           </p>
@@ -74,7 +74,7 @@ export default function WhatToLookForInATutor() {
         </section>
 
         <section>
-          <h2 className="text-2xl font-semibold text-blue-700 mb-3">2. Teaching Experience and Track Record</h2>
+          <h2 className="section-title text-primary mb-3">2. Teaching Experience and Track Record</h2>
           <p>
             Experience matters, but the right type of experience matters more. Prioritize tutors who have:
           </p>
@@ -89,7 +89,7 @@ export default function WhatToLookForInATutor() {
         </section>
 
         <section>
-          <h2 className="text-2xl font-semibold text-blue-700 mb-3">3. Communication Style and Personality Fit</h2>
+          <h2 className="section-title text-primary mb-3">3. Communication Style and Personality Fit</h2>
           <p>
             Academic excellence means nothing if your child doesn't connect with the tutor. Consider:
           </p>
@@ -110,7 +110,7 @@ export default function WhatToLookForInATutor() {
         </section>
 
         <section>
-          <h2 className="text-2xl font-semibold text-blue-700 mb-3">4. Structured Approach and Progress Tracking</h2>
+          <h2 className="section-title text-primary mb-3">4. Structured Approach and Progress Tracking</h2>
           <p>
             Professional tutors don't just "help with homework." They should provide:
           </p>
@@ -123,7 +123,7 @@ export default function WhatToLookForInATutor() {
         </section>
 
         <section>
-          <h2 className="text-2xl font-semibold text-blue-700 mb-3">5. Practical Considerations</h2>
+          <h2 className="section-title text-primary mb-3">5. Practical Considerations</h2>
           <div className="space-y-4">
             <div>
               <h4 className="font-semibold text-gray-800">Scheduling Flexibility</h4>
@@ -141,7 +141,7 @@ export default function WhatToLookForInATutor() {
         </section>
 
         <section>
-          <h2 className="text-2xl font-semibold text-blue-700 mb-3">Questions to Ask Potential Tutors</h2>
+          <h2 className="section-title text-primary mb-3">Questions to Ask Potential Tutors</h2>
           <div className="bg-blue-50 p-5 rounded-lg">
             <ul className="space-y-2">
               <li>• "How do you typically help students who are struggling with [specific topic]?"</li>
@@ -155,7 +155,7 @@ export default function WhatToLookForInATutor() {
         </section>
 
         <section>
-          <h2 className="text-2xl font-semibold text-blue-700 mb-3">The Trial Period Advantage</h2>
+          <h2 className="section-title text-primary mb-3">The Trial Period Advantage</h2>
           <p>
             Many excellent tutors offer trial sessions or short-term arrangements before committing to longer contracts. Use this time to evaluate:
           </p>

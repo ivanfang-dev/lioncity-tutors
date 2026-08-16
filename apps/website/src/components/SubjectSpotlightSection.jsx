@@ -62,7 +62,7 @@ const SubjectSpotlightSection = () => {
           {...enter(0, prefersReducedMotion)}
           className="text-center mb-16 md:mb-20"
         >
-          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-semibold text-primary mb-4 md:mb-6 tracking-tight">
+          <h2 className="text-primary mb-4 md:mb-6">
             Find a Tutor for<br className="hidden sm:block" /> Every Subject
           </h2>
           <p className="text-lg md:text-xl text-text-default/80 max-w-3xl mx-auto leading-relaxed px-4">

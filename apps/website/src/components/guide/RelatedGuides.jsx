@@ -51,7 +51,7 @@ export default function RelatedGuides({
 
   return (
     <section aria-labelledby={`related-${slug}`} className="mt-16 border-t border-gray-100 pt-10">
-      <h2 id={`related-${slug}`} className="flex items-center gap-2 text-2xl font-bold text-gray-900 mb-6">
+      <h2 id={`related-${slug}`} className="section-title text-primary flex items-center gap-2 mb-6">
         <Compass className="h-6 w-6 text-[#0474BA]" strokeWidth={ICON_STROKE} aria-hidden="true" />
         {heading}
       </h2>

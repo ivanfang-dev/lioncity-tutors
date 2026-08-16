@@ -62,7 +62,7 @@ export default function PhysicsTuition() {
       <div className="p-4 sm:p-6 max-w-5xl mx-auto space-y-8 sm:space-y-12">
         {/* Section 1: Hero with Image */}
         <section className="text-center space-y-4 sm:space-y-6">
-          <h1 className="text-2xl sm:text-4xl font-bold text-blue-800">Master Physics: Expert Tutors for Every Level in Singapore</h1>
+          <h1 className="page-title text-primary">Master Physics: Expert Tutors for Every Level in Singapore</h1>
           <p className="text-base sm:text-lg text-gray-700 max-w-2xl mx-auto">
             From Secondary Pure/Combined Physics to JC H1/H2, IGCSE and IB Physics – our specialized tutors transform complex physical concepts including mechanics, electromagnetism, thermodynamics, and quantum physics into clear, understandable knowledge.
           </p>
@@ -87,7 +87,7 @@ export default function PhysicsTuition() {
 
         {/* Section 2: Comprehensive Physics Guides */}
         <section className="space-y-8">
-          <h2 className="text-3xl font-semibold mb-6 text-blue-700">Complete Physics Guides for Every Level</h2>
+          <h2 className="section-title text-primary mb-6">Complete Physics Guides for Every Level</h2>
           <p className="text-lg text-gray-700 mb-8">
             Access our comprehensive guides for each physics subject and level, designed to help students excel in their examinations. Each guide includes detailed exam formats, problem-solving strategies, and expert tips.
           </p>
@@ -322,7 +322,7 @@ export default function PhysicsTuition() {
 
         {/* Section 3: Detailed Physics Levels and Syllabus Coverage */}
         <section>
-          <h2 className="text-3xl font-semibold mb-6 text-blue-700 text-center">Complete Physics Tuition Coverage Across All Levels</h2>
+          <h2 className="section-title text-primary mb-6 text-center">Complete Physics Tuition Coverage Across All Levels</h2>
           <p className="text-gray-700 mb-8 text-center max-w-3xl mx-auto">
             Our physics tutors are experts in Singapore's MOE curriculum and international programs, providing comprehensive coverage of all physics topics from kinematics to advanced quantum mechanics and relativity.
           </p>
@@ -532,7 +532,7 @@ export default function PhysicsTuition() {
 
         {/* Section 3: Physics Topics We Specialize In */}
         <section className="bg-gradient-to-r from-blue-50 to-purple-50 p-8 rounded-xl">
-          <h2 className="text-3xl font-semibold mb-6 text-blue-700 text-center">Physics Topics Our Expert Tutors Master</h2>
+          <h2 className="section-title text-primary mb-6 text-center">Physics Topics Our Expert Tutors Master</h2>
           <p className="text-gray-700 mb-8 text-center max-w-3xl mx-auto">
             Our tutors specialize in breaking down complex physics concepts into manageable, understandable segments with practical examples, visual demonstrations, and exam-focused problem-solving strategies.
           </p>
@@ -581,7 +581,7 @@ export default function PhysicsTuition() {
 
         {/* Section 4: What Makes Our Physics Tutors Different */}
         <section>
-          <h2 className="text-3xl font-semibold mb-6 text-blue-700 text-center">Why LionCity's Physics Tutors Excel in Singapore</h2>
+          <h2 className="section-title text-primary mb-6 text-center">Why LionCity's Physics Tutors Excel in Singapore</h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div>
@@ -613,7 +613,7 @@ export default function PhysicsTuition() {
 
         {/* Section 6: Why Choose Us */}
         <section>
-          <h2 className="text-3xl font-semibold mb-6 text-blue-700 text-center">Why Singapore Families Choose Us for Physics Tuition</h2>
+          <h2 className="section-title text-primary mb-6 text-center">Why Singapore Families Choose Us for Physics Tuition</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <Card className="border-l-4 border-l-blue-500 shadow-lg hover:shadow-xl transition-shadow duration-200">
               <CardContent className="p-6">
@@ -638,7 +638,7 @@ export default function PhysicsTuition() {
 
         {/* Section 7: Teaching Methods */}
         <section>
-          <h2 className="text-3xl font-semibold mb-6 text-blue-700 text-center">Our Proven Physics Teaching Methods</h2>
+          <h2 className="section-title text-primary mb-6 text-center">Our Proven Physics Teaching Methods</h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="space-y-6">
@@ -679,7 +679,7 @@ export default function PhysicsTuition() {
 
         {/* Section 9: Service Areas */}
         <section className="bg-gray-50 p-6 rounded-xl">
-          <h2 className="text-2xl font-semibold mb-4 text-blue-700">Physics Tuition Available Island-Wide</h2>
+          <h2 className="section-title text-primary mb-4">Physics Tuition Available Island-Wide</h2>
           <p className="text-gray-700 mb-4">
             Our experienced physics tutors serve families across Singapore with specialized expertise in mechanics, electromagnetism, thermodynamics, and quantum physics:
           </p>
@@ -705,7 +705,7 @@ export default function PhysicsTuition() {
 
         {/* Section 10: Physics Tuition FAQ */}
         <section>
-          <h2 className="text-2xl font-semibold mb-6 text-blue-700 text-center">Frequently Asked Questions About Physics Tuition</h2>
+          <h2 className="section-title text-primary mb-6 text-center">Frequently Asked Questions About Physics Tuition</h2>
           <div className="space-y-4">
             <Card className="shadow-md hover:shadow-lg transition-shadow">
               <CardContent className="p-6">

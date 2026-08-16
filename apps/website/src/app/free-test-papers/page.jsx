@@ -48,7 +48,7 @@ export default function FreeTestPapersPage() {
       <div className="bg-gray-50 min-h-screen">
         <div className="p-4 sm:p-6 md:p-8 max-w-7xl mx-auto space-y-16">
           <section className="text-center py-8 space-y-6">
-            <h1 className="text-4xl md:text-6xl font-extrabold text-gray-900 tracking-tight text-balance">
+            <h1 className="page-title text-primary">
               Free Test Papers
             </h1>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed text-pretty">

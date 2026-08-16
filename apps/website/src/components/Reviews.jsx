@@ -21,7 +21,7 @@ export default function Reviews({ heading = 'What parents say', limit = 4 }) {
   return (
     <section className="space-y-4">
       <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-        <h2 className="text-2xl font-semibold text-blue-700">{heading}</h2>
+        <h2 className="section-title text-primary">{heading}</h2>
         {headline?.rating ? (
           <p className="flex items-baseline gap-1.5 text-sm text-gray-600">
             <Star className="h-4 w-4 self-center fill-amber-400 text-amber-400" aria-hidden="true" />

@@ -55,7 +55,7 @@ export default function TuitionRequestForm() {
           viewport={{ once: true, amount: 0.3 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
         >
-          <h2 className="text-4xl font-bold text-center text-primary mb-4">
+          <h2 className="section-title text-primary text-center mb-4">
             Ready to Find The Perfect Tutor?
           </h2>
           <p className="text-center text-text-default/80 mb-10 text-lg">
@@ -67,7 +67,7 @@ export default function TuitionRequestForm() {
                 <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring" }}>
                   <CheckCircle className="text-green-500 w-20 h-20 mx-auto mb-4" />
                 </motion.div>
-                <h2 className="text-2xl font-semibold mb-2 text-primary">Thank You!</h2>
+                <h2 className="section-title text-primary mb-2">Thank You!</h2>
                 <p className="text-text-default/80 mb-6">We&apos;ve received your request and will send tutor profiles shortly.</p>
                 <Button
                   className="bg-accent text-text-inverse hover:opacity-90"

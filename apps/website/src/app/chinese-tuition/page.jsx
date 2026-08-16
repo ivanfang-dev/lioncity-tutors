@@ -60,7 +60,7 @@ export default function ChineseTuition() {
       <div className="p-6 max-w-5xl mx-auto space-y-12">
         {/* Section 1: Headline */}
         <section className="text-center space-y-4">
-          <h1 className="text-4xl font-bold text-blue-800">Excel in Chinese with Singapore's Top Tutors – Fast & Free</h1>
+          <h1 className="page-title text-primary">Excel in Chinese with Singapore's Top Tutors – Fast & Free</h1>
           <p className="text-lg text-gray-700 max-w-2xl mx-auto">
             From PSLE to A-Levels, Lion City Tutors connects you with expert Chinese tutors who understand Singapore's bilingual education system – at no cost to you.
           </p>
@@ -85,7 +85,7 @@ export default function ChineseTuition() {
 
         {/* Section 2: Comprehensive Chinese Guides */}
         <section className="space-y-8">
-          <h2 className="text-3xl font-semibold mb-6 text-blue-700">Complete Chinese Guides for Every Level</h2>
+          <h2 className="section-title text-primary mb-6">Complete Chinese Guides for Every Level</h2>
           <p className="text-lg text-gray-700 mb-8">
             Access our comprehensive guides for each Chinese subject and level, designed to help students excel in their examinations. Each guide includes detailed exam formats, writing strategies, and expert tips.
           </p>
@@ -158,7 +158,7 @@ export default function ChineseTuition() {
 
         {/* Section 3: Who We Help */}
         <section>
-          <h2 className="text-2xl font-semibold mb-4 text-blue-700">Comprehensive Chinese Tuition for Every Level</h2>
+          <h2 className="section-title text-primary mb-4">Comprehensive Chinese Tuition for Every Level</h2>
           <p className="text-gray-700 mb-4">
             Our experienced Chinese tutors specialize in Singapore's education system, helping students excel in all aspects of Chinese language learning.
           </p>
@@ -173,7 +173,7 @@ export default function ChineseTuition() {
 
         {/* Section 3: Why Parents Trust Us */}
         <section>
-          <h2 className="text-2xl font-semibold mb-4 text-blue-700">Why Singapore Parents Choose Lion City Tutors for Chinese</h2>
+          <h2 className="section-title text-primary mb-4">Why Singapore Parents Choose Lion City Tutors for Chinese</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <Card className="border-l-4 border-l-emerald-500 shadow-lg hover:shadow-xl transition-shadow duration-200">
               <CardContent className="p-6">
@@ -199,7 +199,7 @@ export default function ChineseTuition() {
 
         {/* Section 5: What We Cover */}
         <section>
-          <h2 className="text-2xl font-semibold mb-4 text-blue-700">Comprehensive Chinese Tuition Coverage</h2>
+          <h2 className="section-title text-primary mb-4">Comprehensive Chinese Tuition Coverage</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Card className="border-t-4 border-t-emerald-500 shadow-lg">
               <CardContent className="p-6">
@@ -252,7 +252,7 @@ export default function ChineseTuition() {
 
         {/* Section 6: Our Approach */}
         <section>
-          <h2 className="text-2xl font-semibold mb-4 text-blue-700">Beyond Language – We Build Cultural Understanding</h2>
+          <h2 className="section-title text-primary mb-4">Beyond Language – We Build Cultural Understanding</h2>
           <p className="text-gray-700">
             Our Chinese tutors don't just teach the syllabus – they inspire a love for the language and culture. We carefully select tutors who excel in both academic excellence and cultural understanding, ensuring they can make learning Chinese engaging and meaningful for students of all levels.
           </p>
@@ -262,7 +262,7 @@ export default function ChineseTuition() {
 
         {/* Section 8: Areas We Serve */}
         <section className="bg-gray-50 p-6 rounded-xl">
-          <h2 className="text-2xl font-semibold mb-4 text-blue-700">Chinese Tuition Available Across Singapore</h2>
+          <h2 className="section-title text-primary mb-4">Chinese Tuition Available Across Singapore</h2>
           <p className="text-gray-700 mb-4">
             Our network of qualified Chinese tutors serves families island-wide, including:
           </p>

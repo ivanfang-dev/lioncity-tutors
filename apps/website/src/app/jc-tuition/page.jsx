@@ -58,7 +58,7 @@ export default function JCTuition() {
       <div className="p-6 max-w-5xl mx-auto space-y-12">
         {/* Section 1: Headline */}
         <section className="text-center space-y-4">
-          <h1 className="text-4xl font-bold text-blue-800">Achieve Top A-Level Results with Singapore's Trusted JC Tutors</h1>
+          <h1 className="page-title text-primary">Achieve Top A-Level Results with Singapore's Trusted JC Tutors</h1>
           <p className="text-lg text-gray-700 max-w-2xl mx-auto">
             Support from experienced educators who know how to help your child thrive – academically and confidently.
           </p>
@@ -83,7 +83,7 @@ export default function JCTuition() {
         {/* Tutor Request Form Section */}
         <section ref={formRef} className="bg-gradient-to-br from-blue-50 to-sky-50 p-8 rounded-2xl shadow-lg">
           <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl font-bold text-center text-primary mb-4">Request a JC Tutor</h2>
+            <h2 className="section-title text-primary text-center mb-4">Request a JC Tutor</h2>
             <FormBenefits />
             <div className="bg-white rounded-xl shadow-lg p-8">
               {status.submitted ? (
@@ -144,7 +144,7 @@ export default function JCTuition() {
 
         {/* Section 2: Why A-Levels Matter */}
         <section className="bg-gradient-to-br from-blue-50 to-sky-50 p-12 rounded-2xl">
-          <h2 className="text-2xl md:text-3xl font-semibold mb-8 text-primary text-center">Why A-Level Success Matters for Your Child's Future</h2>
+          <h2 className="section-title text-primary mb-8 text-center">Why A-Level Success Matters for Your Child's Future</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="bg-white p-8 rounded-xl shadow-lg transform hover:scale-105 transition-all duration-200">
               <div className="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -172,7 +172,7 @@ export default function JCTuition() {
 
         {/* Section 3: Our Approach */}
         <section>
-          <h2 className="text-2xl md:text-3xl font-semibold mb-4 text-primary text-center">Our Comprehensive JC Tuition Approach</h2>
+          <h2 className="section-title text-primary mb-4 text-center">Our Comprehensive JC Tuition Approach</h2>
           <p className="text-gray-600 text-center max-w-3xl mx-auto mb-8">
             Our approach blends academic expertise with motivational support—so students improve not just in grades, but in confidence and exam-readiness.
           </p>
@@ -200,7 +200,7 @@ export default function JCTuition() {
 
         {/* Section 4: Subjects We Cover */}
         <section>
-          <h2 className="text-2xl md:text-3xl font-semibold mb-8 text-primary text-center">Comprehensive A-Level Subjects Coverage</h2>
+          <h2 className="section-title text-primary mb-8 text-center">Comprehensive A-Level Subjects Coverage</h2>
          
           {/* Stream Tabs */}
           <div className="flex justify-center mb-8">
@@ -1004,7 +1004,7 @@ export default function JCTuition() {
 
         {/* Section 6: Teaching Methods */}
         <section>
-          <h2 className="text-2xl md:text-3xl font-semibold mb-8 text-primary text-center">Our Proven Teaching Methods</h2>
+          <h2 className="section-title text-primary mb-8 text-center">Our Proven Teaching Methods</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="bg-white p-8 rounded-xl shadow-lg">
               <h3 className="text-xl font-bold text-emerald-700 mb-4">📚 Advanced Learning</h3>
@@ -1025,7 +1025,7 @@ export default function JCTuition() {
 
         {/* Section 8: Service Areas */}
         <section className="bg-gray-50 p-6 rounded-2xl">
-          <h2 className="text-2xl font-semibold mb-6 text-primary text-center">JC Tuition Available Across Singapore</h2>
+          <h2 className="section-title text-primary mb-6 text-center">JC Tuition Available Across Singapore</h2>
           <p className="text-gray-700 text-center mb-6">
             Our experienced tutors serve families island-wide, including:
           </p>
@@ -1085,7 +1085,7 @@ export default function JCTuition() {
 
         {/* Section 9: Final CTA - Option 3: High-Impact & Contrasting */}
         <section className="text-center space-y-6 bg-gradient-to-r from-primary to-primary/90 text-white py-14 px-8 rounded-2xl shadow-xl">
-            <h2 className="text-3xl md:text-4xl font-bold text-white">Start Your Journey To A-Level Success Today</h2>
+            <h2 className="section-title text-white">Start Your Journey To A-Level Success Today</h2>
             <p className="text-white/80 text-lg max-w-2xl mx-auto">
                 Experience the difference with our handpicked tutors. We&apos;ll match you within {MATCH_TIME}.
             </p>

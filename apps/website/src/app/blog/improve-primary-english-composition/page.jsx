@@ -55,7 +55,7 @@ export default function ImproveEnglishComposition() {
         {/* Post Header */}
         <header className="mb-8">
           <p className="text-sm text-blue-600 font-semibold">Parent Guide</p>
-          <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mt-2 leading-tight">
+          <h1 className="page-title text-primary mt-2">
             5 Signs Your Child is Struggling with English Composition (and How to Help)
           </h1>
           <p className="text-md text-gray-500 mt-4">
@@ -73,7 +73,7 @@ export default function ImproveEnglishComposition() {
           </p>
 
           {/* The 5 Signs Section */}
-          <h2 className="text-2xl font-bold mt-10 mb-4">The 5 Observable Signs</h2>
+          <h2 className="section-title text-primary mt-10 mb-4">The 5 Observable Signs</h2>
 
           <h3>Sign 1: The Blank Page Paralysis</h3>
           <p>
@@ -101,7 +101,7 @@ export default function ImproveEnglishComposition() {
           </p>
 
           {/* Actionable Tips Section */}
-          <h2 className="text-2xl font-bold mt-10 mb-4">Actionable Tips for Parents</h2>
+          <h2 className="section-title text-primary mt-10 mb-4">Actionable Tips for Parents</h2>
 
           <p>Here are practical ways you can help your child overcome each of these challenges:</p>
           <ul>
@@ -112,7 +112,7 @@ export default function ImproveEnglishComposition() {
           </ul>
 
           {/* The Bridge to Your Service */}
-          <h2 className="text-2xl font-bold mt-10 mb-4">When You Need Expert Guidance</h2>
+          <h2 className="section-title text-primary mt-10 mb-4">When You Need Expert Guidance</h2>
           <p>
             While these home strategies build a great foundation, overcoming deep-seated writing challenges often requires personalized guidance. A specialist tutor can do more than just correct grammar; they can pinpoint your child's exact weaknesses and provide the focused practice and encouragement they need to transform their writing.
           </p>

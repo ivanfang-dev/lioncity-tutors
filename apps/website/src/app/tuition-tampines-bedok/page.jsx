@@ -104,7 +104,7 @@ export default function TampinesBedokPage() {
                 id={section.id}
                 className="scroll-mt-24 rounded-2xl border border-border bg-background-card p-6 sm:p-8 shadow-sm"
               >
-                <h2 className="text-2xl font-bold text-primary text-balance">{section.question}</h2>
+                <h2 className="section-title text-primary">{section.question}</h2>
                 <p className="mt-3 text-text-default/85 leading-relaxed text-pretty">{section.answer}</p>
                 {section.table ?? null}
                 {section.link ? (
@@ -123,7 +123,7 @@ export default function TampinesBedokPage() {
                 id="schools"
                 className="scroll-mt-24 rounded-2xl border border-border bg-background-card p-6 sm:p-8 shadow-sm"
               >
-                <h2 className="text-2xl font-bold text-primary text-balance">
+                <h2 className="section-title text-primary">
                   Which schools do we cover in {region.name}?
                 </h2>
                 <SchoolList schools={region.schools} />
@@ -134,7 +134,7 @@ export default function TampinesBedokPage() {
               id="getting-to-you"
               className="scroll-mt-24 rounded-2xl border border-border bg-background-card p-6 sm:p-8 shadow-sm"
             >
-              <h2 className="text-2xl font-bold text-primary text-balance">Getting to you</h2>
+              <h2 className="section-title text-primary">Getting to you</h2>
               <TransportNote transport={region.transport} />
             </section>
           </div>

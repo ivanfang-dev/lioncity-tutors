@@ -483,7 +483,7 @@ export default function RegisterAsTutor() {
 
         {/* Telegram Assignments Section - ADDED AT TOP */}
         <div className="mb-12 bg-blue-50 p-8 rounded-xl shadow-md text-center">
-          <h2 className="text-2xl font-bold text-blue-700 mb-4">View Available Assignments</h2>
+          <h2 className="section-title text-primary mb-4">View Available Assignments</h2>
           <p className="font-medium mb-2">Fill up the form below to start signing up for available assignments 🙂</p>
           <p className="mb-4">(Join our Telegram Group for full-listing & daily updates of assignments)</p>
           
@@ -497,7 +497,7 @@ export default function RegisterAsTutor() {
           </a>
           <p className="text-sm mt-2 text-gray-600 italic">(Don't forget to fill up the form below!)</p>
         </div>
-        <h1 className="text-4xl font-extrabold text-center text-blue-700 mb-6">Register as a Tutor</h1>
+        <h1 className="page-title text-primary text-center mb-6">Register as a Tutor</h1>
         <p className="text-center text-gray-600 mb-8">Fill out the form below to register as a tutor with LionCity Tutors.</p>
 
         <form onSubmit={handleSubmit} className="bg-white p-8 rounded-xl shadow-lg">
@@ -518,7 +518,7 @@ export default function RegisterAsTutor() {
             <>
               {/* Section 1: Personal Information */}
               <div className="border-b border-gray-200 pb-6">
-                <h2 className="text-2xl font-semibold mb-6 text-blue-700">1. Personal Information</h2>
+                <h2 className="section-title text-primary mb-6">1. Personal Information</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-sm font-medium mb-1">Full Name <span className="text-red-500">*</span></label>
@@ -742,7 +742,7 @@ export default function RegisterAsTutor() {
 
               {/* Section 2: Teaching Levels & Subjects */}
               <div className="border-b border-gray-200 pb-6 mb-6">
-                <h2 className="text-2xl font-semibold mb-6 text-blue-700">2. Teaching Levels & Subjects</h2>
+                <h2 className="section-title text-primary mb-6">2. Teaching Levels & Subjects</h2>
                 <p className="text-gray-600 mb-4">Select all the levels and subjects you are qualified to teach:</p>
                 
                 <div className="space-y-4">
@@ -778,7 +778,7 @@ export default function RegisterAsTutor() {
               {/* Section 3: Preferred Teaching Locations */}
               <div className="border-b border-gray-200 pb-6">
                 <p className="mb-4"></p>
-                <h2 className="text-2xl font-semibold mb-6 text-blue-700">3. Preferred Teaching Locations</h2>
+                <h2 className="section-title text-primary mb-6">3. Preferred Teaching Locations</h2>
                 <p className="text-gray-600 mb-4">Select all areas where you are willing to travel for lessons:</p>
                 
                 <div className="space-y-6">
@@ -914,7 +914,7 @@ export default function RegisterAsTutor() {
               {/* Section 4: Qualifications & Experience */}
               <div className="border-b border-gray-200 pb-6">
                 <p className="mb-4"></p>
-                <h2 className="text-2xl font-semibold mb-6 text-blue-700">4. Qualifications & Experience</h2>
+                <h2 className="section-title text-primary mb-6">4. Qualifications & Experience</h2>
                 
                 <div className="space-y-6">
                   <div>
@@ -1055,7 +1055,7 @@ export default function RegisterAsTutor() {
               {/* Section 5: Fee Structure */}
               <div className="border-b border-gray-200 pb-6">
               < p className="mb-4"></p>
-                <h2 className="text-2xl font-semibold mb-6 text-blue-700">5. Fee Structure</h2>
+                <h2 className="section-title text-primary mb-6">5. Fee Structure</h2>
                 <p className="text-gray-600 mb-4">Indicate your hourly rate (SGD) for each educational level. Fill for the levels you teach:</p>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -1204,7 +1204,7 @@ export default function RegisterAsTutor() {
               {/* Section 6: Tutor Profile */}
               <div className="border-b border-gray-200 pb-6">
                 <p className="mb-4"></p>
-                <h2 className="text-2xl font-semibold mb-6 text-blue-700">6. Tutor Profile (Important)</h2>
+                <h2 className="section-title text-primary mb-6">6. Tutor Profile (Important)</h2>
                 <p className="text-gray-600 mb">This section will be a key factor in your success rate of assignment matching.</p>
                 <p className="text-gray-600 mb-6">Create a compelling profile to attract potential students:</p>
                 
@@ -1249,7 +1249,7 @@ export default function RegisterAsTutor() {
               {/* Section 7: Availability */}
               <div className="border-b border-gray-200 pb-6">
                 <p className="mb-4"></p>
-                <h2 className="text-2xl font-semibold mb-6 text-blue-700">7. Availability</h2>
+                <h2 className="section-title text-primary mb-6">7. Availability</h2>
                 <p className="text-gray-600 mb-4">Select your available time slots for tutoring:</p>
                 
                 <div className="space-y-4">

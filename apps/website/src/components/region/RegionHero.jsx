@@ -6,7 +6,7 @@ import { MATCH_TIME } from '@/data/promises';
 export default function RegionHero({ region }) {
   return (
     <div className="text-center mb-16">
-      <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tighter mb-6 text-primary text-balance">
+      <h1 className="page-title text-primary mb-6">
         Tuition in {region.headline}
       </h1>
       <p className="text-lg md:text-xl text-text-default/80 max-w-3xl mx-auto mb-10 text-pretty">

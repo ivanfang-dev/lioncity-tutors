@@ -27,7 +27,7 @@ export default function GuideCTA({
 }) {
   return (
     <div className="rounded-2xl border border-gray-200 bg-white shadow-sm p-8 sm:p-10 text-center">
-      <h2 className="text-2xl! sm:text-3xl! font-bold text-gray-900 tracking-tight mb-3 text-balance">
+      <h2 className="section-title text-primary mb-3">
         {title}
       </h2>
       <p className="text-gray-700 max-w-xl mx-auto mb-6 text-pretty">{description}</p>

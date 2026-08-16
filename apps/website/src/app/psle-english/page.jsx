@@ -456,7 +456,7 @@ export default function PSLEEnglish() {
             transition={{ duration: 0.7, ease: "easeOut" }}
             viewport={{ once: true, amount: 0.3 }}
           >
-            <h2 className="text-4xl font-bold text-center text-primary mb-4">
+            <h2 className="section-title text-primary text-center mb-4">
               Ready to Find The Perfect Tutor?
             </h2>
             <p className="text-center text-text-default/80 mb-10 text-lg">

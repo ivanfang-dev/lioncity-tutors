@@ -117,7 +117,7 @@ export default function MathTuition() {
       <div className="p-6 max-w-5xl mx-auto space-y-12">
         {/* Section 1: Headline */}
         <section className="text-center space-y-4">
-          <h1 className="text-4xl font-bold text-blue-800">Struggling with Math? We'll Find You the Perfect Tutor – Fast & Free</h1>
+          <h1 className="page-title text-primary">Struggling with Math? We'll Find You the Perfect Tutor – Fast & Free</h1>
           <p className="text-lg text-gray-700 max-w-2xl mx-auto">
             Whether it's PSLE, O-Level, or JC H2 Math, Lion City Tutors connects you with handpicked private tutors in Singapore – at no cost to you.
           </p>
@@ -142,7 +142,7 @@ export default function MathTuition() {
 
         {/* New Section: Why Math Matters */}
         <section className="bg-gradient-to-br from-blue-50 to-purple-50 p-8 rounded-xl">
-          <h2 className="text-2xl font-semibold mb-6 text-blue-700">Why Strong Math Skills Matter for Your Child's Future</h2>
+          <h2 className="section-title text-primary mb-6">Why Strong Math Skills Matter for Your Child's Future</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="bg-white p-6 rounded-lg shadow-md">
               <div className="text-4xl mb-4">🎓</div>
@@ -164,7 +164,7 @@ export default function MathTuition() {
 
         {/* Section 2: Who We Help */}
         <section>
-          <h2 className="text-2xl font-semibold mb-4 text-blue-700">Expert Math Tuition for Every Level in Singapore</h2>
+          <h2 className="section-title text-primary mb-4">Expert Math Tuition for Every Level in Singapore</h2>
           <p className="text-gray-700 mb-4">
             Our experienced math tutors specialize in Singapore's education system, helping students excel across all levels and curricula.
           </p>
@@ -179,7 +179,7 @@ export default function MathTuition() {
 
         {/* New Section: Comprehensive Math Guides */}
         <section className="space-y-8">
-          <h2 className="text-3xl font-semibold mb-6 text-blue-700">Complete Math Guides for Every Level</h2>
+          <h2 className="section-title text-primary mb-6">Complete Math Guides for Every Level</h2>
           <p className="text-lg text-gray-700 mb-8">
             Access our comprehensive guides for each math subject and level, designed to help students excel in their examinations. Each guide includes detailed exam formats, scoring strategies, and expert tips.
           </p>
@@ -360,7 +360,7 @@ export default function MathTuition() {
 
         {/* Section 3: Why Parents Trust Lion City Tutors */}
         <section>
-          <h2 className="text-2xl font-semibold mb-4 text-blue-700">Why Singapore Parents Choose Lion City Tutors for Math Tuition</h2>
+          <h2 className="section-title text-primary mb-4">Why Singapore Parents Choose Lion City Tutors for Math Tuition</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <Card className="border-l-4 border-l-emerald-500 shadow-lg hover:shadow-xl transition-shadow duration-200">
               <CardContent className="p-6">
@@ -386,7 +386,7 @@ export default function MathTuition() {
 
         {/*Math Subjects We Cover */}
         <section>
-          <h2 className="text-2xl font-semibold mb-4 text-blue-700">Comprehensive Math Tuition Coverage</h2>
+          <h2 className="section-title text-primary mb-4">Comprehensive Math Tuition Coverage</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <Card className="border-t-4 border-t-emerald-500 shadow-lg">
               <CardContent className="p-6">
@@ -731,7 +731,7 @@ export default function MathTuition() {
 
         {/* Section 5: Our Tutor Philosophy */}
         <section>
-          <h2 className="text-2xl font-semibold mb-4 text-blue-700">Beyond Academic Excellence – We Look for Patience and Passion in Math Teaching</h2>
+          <h2 className="section-title text-primary mb-4">Beyond Academic Excellence – We Look for Patience and Passion in Math Teaching</h2>
           <p className="text-gray-700">
             We believe effective math tutors aren't just academically strong – they inspire confidence and make complex concepts accessible. That's why we carefully screen for teaching experience, communication skills, and student testimonials before any tutor joins our network. Our math tutors understand the Singapore education system and MOE syllabus requirements thoroughly.
           </p>
@@ -742,7 +742,7 @@ export default function MathTuition() {
 
         {/* New Section: Areas We Serve */}
         <section className="bg-gray-50 p-6 rounded-xl">
-          <h2 className="text-2xl font-semibold mb-4 text-blue-700">Math Tuition Available Across Singapore</h2>
+          <h2 className="section-title text-primary mb-4">Math Tuition Available Across Singapore</h2>
           <p className="text-gray-700 mb-4">
             Our network of qualified math tutors serves families island-wide, including:
           </p>
@@ -764,7 +764,7 @@ export default function MathTuition() {
 
         {/* What maths tuition costs */}
         <section className="space-y-4">
-          <h2 className="text-2xl font-semibold text-blue-700">What maths tuition costs</h2>
+          <h2 className="section-title text-primary">What maths tuition costs</h2>
           <p className="text-gray-700">
             Two numbers are worth knowing, and they answer different questions: what we charge, and what other parents actually decided to spend.
           </p>
@@ -811,7 +811,7 @@ export default function MathTuition() {
 
         {/* Maths-specific substance */}
         <section className="space-y-4">
-          <h2 className="text-2xl font-semibold text-blue-700">What actually decides a maths grade</h2>
+          <h2 className="section-title text-primary">What actually decides a maths grade</h2>
           <p className="text-gray-700">
             Three things come up in almost every maths assignment we place. They are worth understanding before choosing a tutor, because they change what you should be asking a tutor to do.
           </p>
@@ -836,7 +836,7 @@ export default function MathTuition() {
 
         {/* How we match */}
         <section className="space-y-4">
-          <h2 className="text-2xl font-semibold text-blue-700">How we match a maths tutor</h2>
+          <h2 className="section-title text-primary">How we match a maths tutor</h2>
           <p className="text-gray-700">
             Matching is done by hand rather than by dropping your request onto a job board, and it usually takes about {MATCH_TIME}.
           </p>
@@ -853,7 +853,7 @@ export default function MathTuition() {
 
         {/* FAQ */}
         <section className="space-y-4">
-          <h2 className="text-2xl font-semibold text-blue-700">Maths tuition FAQs</h2>
+          <h2 className="section-title text-primary">Maths tuition FAQs</h2>
           <div className="space-y-5">
             {mathFaqs.map((item) => (
               <div key={item.q}>

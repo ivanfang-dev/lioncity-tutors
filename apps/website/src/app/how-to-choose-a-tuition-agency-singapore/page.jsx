@@ -60,7 +60,7 @@ export default function ChooseAgencyPage() {
       <div className="bg-background-default text-text-default">
         <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-24">
           <div className="text-center mb-16">
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tighter mb-6 text-primary text-balance">
+            <h1 className="page-title text-primary mb-6">
               How to Choose a Tuition Agency in Singapore
             </h1>
             <p className="text-lg md:text-xl text-text-default/80 max-w-3xl mx-auto mb-4 text-pretty">
@@ -100,7 +100,7 @@ export default function ChooseAgencyPage() {
                 id={section.id}
                 className="scroll-mt-24 rounded-2xl border border-border bg-background-card p-6 sm:p-8 shadow-sm"
               >
-                <h2 className="text-2xl font-bold text-primary text-balance">{section.question}</h2>
+                <h2 className="section-title text-primary">{section.question}</h2>
                 <p className="mt-3 text-text-default/85 leading-relaxed text-pretty">{section.answer}</p>
                 {section.id === 'agency-centre-or-tutor' ? <ComparisonTable /> : null}
                 {section.id === 'agency-centre-or-tutor' ? (

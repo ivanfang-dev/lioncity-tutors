@@ -40,7 +40,7 @@ const GuideSection = ({ title, level, sectionDescription }) => {
   return (
     <section className="mb-16">
       <div className="mb-8">
-        <h2 className="text-3xl font-bold text-gray-900 border-b-4 border-red-200 pb-2 inline-block">
+        <h2 className="section-title text-primary border-b-4 border-red-200 pb-2 inline-block">
           {title}
         </h2>
         {sectionDescription && <p className="text-gray-600 mt-3 text-lg">{sectionDescription}</p>}
@@ -71,7 +71,7 @@ export default function GuidesHubPage() {
       <main className="bg-gray-50">
         {/* Hero Section */}
         <div className="text-center py-16 px-4 bg-white">
-          <h1 className="text-4xl md:text-5xl font-extrabold text-red-500 mb-4">
+          <h1 className="page-title text-primary mb-4">
             Parent & Student Resource Hub
           </h1>
           <p className="text-lg text-gray-700 max-w-3xl mx-auto">
@@ -108,7 +108,7 @@ export default function GuidesHubPage() {
 
          {/* Final CTA Section */}
         <section className="text-center py-16 px-4 bg-red-500">
-             <h2 className="text-3xl font-bold text-white">Ready to Turn Knowledge into Results?</h2>
+             <h2 className="section-title text-white">Ready to Turn Knowledge into Results?</h2>
              <p className="text-red-100 mt-4 mb-8 max-w-2xl mx-auto">
                 Our guides give you the strategy. Our expert tutors provide the personalized coaching to make it happen. Let's build your child's confidence and grades together.
              </p>
