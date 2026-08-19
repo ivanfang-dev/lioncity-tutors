@@ -421,6 +421,8 @@ function getPersonalInfoMenu(tutor) {
       [{ text: '👨‍🏫 Tutor Type', callback_data: 'edit_tutor_type' }],
       [{ text: '🏫 Current School', callback_data: 'edit_current_school' }],
       [{ text: '📝 Introduction', callback_data: 'edit_introduction' }],
+      [{ text: '👨‍🏫 Teaching Experience', callback_data: 'edit_teaching_experience' }],
+      [{ text: '🏆 Track Record', callback_data: 'edit_track_record' }],
       [{ text: '🔙 Back', callback_data: 'profile_edit' }]
     ]
   };

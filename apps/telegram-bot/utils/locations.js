@@ -14,7 +14,8 @@ export const REGIONS = [
   'north', 'south', 'east', 'west', 'central', 'northeast', 'northwest', 'online'
 ];
 
-// Order here == order the towns appear in the Telegram menu (grouped by region).
+// Grouped by region for editing convenience; the Telegram menu re-sorts these
+// alphabetically (see SINGAPORE_LOCATIONS below), so order here does not matter.
 export const LOCATIONS = [
   // Northeast
   { town: 'Sengkang', region: 'northeast' },
@@ -105,7 +106,15 @@ export const LOCATIONS = [
 ];
 
 // Town strings for the Telegram inline keyboard (assignment creation, Step 4).
-export const SINGAPORE_LOCATIONS = LOCATIONS.map((l) => l.town);
+// Sorted A-Z so the picker is quick to scan; 'Online' is pinned last because it
+// is not a town and belongs with the odd-one-out option, not between N and O.
+export const SINGAPORE_LOCATIONS = LOCATIONS
+  .map((l) => l.town)
+  .sort((a, b) => {
+    if (a === 'Online') return 1;
+    if (b === 'Online') return -1;
+    return a.localeCompare(b);
+  });
 
 // Town -> tutor-region key, used as the hard matching filter in tutorMatcher.
 export const LOCATION_TO_REGION = Object.fromEntries(
