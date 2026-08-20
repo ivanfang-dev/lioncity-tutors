@@ -280,7 +280,7 @@ export default function PSLEPreparationGuideClient() {
           </p>
           <div className="mt-8">
             <Link href="#final-cta">
-              <Button size="lg" className="bg-accent text-text-inverse hover:bg-accent/90 shadow-lg transform hover:scale-105 transition-transform">
+              <Button size="lg" className="bg-accent-fill text-text-inverse hover:bg-accent-fill-hover shadow-lg transform hover:scale-105 transition-transform">
                 Get Expert PSLE Support Today
               </Button>
             </Link>
@@ -532,7 +532,7 @@ export default function PSLEPreparationGuideClient() {
                 </blockquote>
                 <div className="mt-8">
                    <Link href="/request-tutor">
-                    <Button size="lg" className="text-lg bg-accent text-text-inverse hover:bg-accent/90">
+                    <Button size="lg" className="text-xl bg-accent-fill text-text-inverse hover:bg-accent-fill-hover">
                       Request a Specialist Tutor
                     </Button>
                   </Link>

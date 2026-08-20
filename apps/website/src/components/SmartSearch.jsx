@@ -142,8 +142,8 @@ export default function SmartSearch({ isMobile = false }) {
           isMobile ? 'w-full' : ''
         }`}
       >
-        <Search className="w-4 h-4 text-text-default/60" />
-        <span className="text-sm text-text-default/60">Search subjects, levels...</span>
+        <Search className="w-4 h-4 text-text-secondary" />
+        <span className="text-sm text-text-secondary">Search subjects, levels...</span>
       </button>
 
       {/* Search Modal */}
@@ -208,7 +208,7 @@ export default function SmartSearch({ isMobile = false }) {
                       ))}
                     </div>
                   ) : (
-                    <div className="p-8 text-center text-text-default/60">
+                    <div className="p-8 text-center text-text-secondary">
                       <p>No results found for "{query}"</p>
                       <p className="text-sm mt-2">Try searching for subjects like "Math" or levels like "PSLE"</p>
                     </div>
@@ -270,7 +270,7 @@ export default function SmartSearch({ isMobile = false }) {
 
               {/* Footer Tip */}
               <div className="p-3 bg-background-subtle border-t border-border">
-                <p className="text-xs text-text-default/60 text-center">
+                <p className="text-xs text-text-secondary text-center">
                   💡 Tip: Try searching for "PSLE", "O-Level", or specific subjects
                 </p>
               </div>

@@ -291,7 +291,11 @@ export default function HowItWorksSection({ formRef }) {
                     {step.highlight.text ? (
                       <>
                         {step.highlight.before}
-                        <span className="font-bold text-accent">{step.highlight.text}</span>
+                        {/* Harbour Blue, not the brand orange: #F17720 on white measures
+                            2.84:1 and this is 30px text, so it fails even the 3:1
+                            large-text bar. DESIGN.md: emphasis comes from weight or
+                            solid blue; the bright orange is a graphic accent only. */}
+                        <span className="font-bold text-primary">{step.highlight.text}</span>
                         {step.highlight.after}
                       </>
                     ) : (

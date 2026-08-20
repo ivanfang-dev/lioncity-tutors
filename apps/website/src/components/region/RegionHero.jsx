@@ -15,7 +15,7 @@ export default function RegionHero({ region }) {
       </p>
       <Link
         href="/request-tutor"
-        className="group inline-flex items-center gap-2 bg-accent hover:opacity-90 text-text-inverse font-bold px-8 py-4 rounded-full shadow-lg text-lg"
+        className="group inline-flex items-center gap-2 bg-accent-fill hover:bg-accent-fill-hover text-text-inverse font-bold px-8 py-4 rounded-full shadow-lg text-xl"
       >
         Request a Tutor
         <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" aria-hidden="true" />

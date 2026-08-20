@@ -276,7 +276,7 @@ export default function OLevelPrepGuideClient() {
             The 2026 timetable and a term-by-term study plan, 21 exam-tested tips from our tutors, and what to do if your prelims went badly.
           </p>
           <div className="mt-8">
-            <Button size="lg" className="bg-accent text-text-inverse hover:bg-accent/90 shadow-lg transform hover:scale-105 transition-transform">
+            <Button size="lg" className="bg-accent-fill text-text-inverse hover:bg-accent-fill-hover shadow-lg transform hover:scale-105 transition-transform">
               <Link href="/request-tutor">Request a Specialist O-Level Tutor</Link>
             </Button>
           </div>
@@ -880,7 +880,7 @@ export default function OLevelPrepGuideClient() {
                     Navigating the O-Levels requires more than just hard work—it requires a smart strategy. If you need help mastering key subjects, refining exam techniques, or building confidence, our specialist tutors are here to guide you to success.
                   </p>
                   <div className="mt-8">
-                    <Button size="lg" className="bg-accent text-text-inverse hover:bg-accent/90 shadow-lg transform hover:scale-105 transition-transform">
+                    <Button size="lg" className="bg-accent-fill text-text-inverse hover:bg-accent-fill-hover shadow-lg transform hover:scale-105 transition-transform">
                       <Link href="/request-tutor">Find Your Specialist O-Level Tutor Today</Link>
                     </Button>
                     <p className="text-sm mt-3 text-muted-foreground">Get a no-obligation consultation to find the perfect match.</p>

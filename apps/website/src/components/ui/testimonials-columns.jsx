@@ -26,7 +26,9 @@ export const TestimonialsColumn = (props) => {
           ...new Array(repeatCount).fill(0).map((_, index) => (
             <React.Fragment key={index}>
               {props.testimonials.map(({ text, initials, name, relation }, i) => (
-                <div className="p-10 rounded-3xl border shadow-lg shadow-primary/10 max-w-xs w-full" key={i}>
+                // p-10 (40px) inside a 320px card left ~240px of measure, which
+                // on a phone wrapped review text to three or four words a line.
+                <div className="p-6 sm:p-8 rounded-3xl border border-border bg-white shadow-lg shadow-primary/10 max-w-xs w-full text-pretty" key={i}>
                   <div className="flex gap-0.5 mb-3">
                     {[...Array(5)].map((_, s) => (
                       <Star key={s} size={16} className="fill-amber-400 text-amber-400" />

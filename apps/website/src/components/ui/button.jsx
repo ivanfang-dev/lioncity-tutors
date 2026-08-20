@@ -34,6 +34,13 @@ const buttonVariants = cva(
         sm: "h-8 rounded-md gap-1.5 px-3 has-[>svg]:px-2.5",
         lg: "h-10 rounded-md px-6 has-[>svg]:px-4",
         icon: "size-9",
+        // Marketing CTA. The other sizes are shadcn's compact in-app steps and
+        // pin an explicit `h-*`, which silently wins over any padding a caller
+        // adds: the home page hero button asked for `px-8 py-5` and rendered
+        // 40px tall, roughly half the 20px/32px DESIGN.md specifies for the
+        // primary CTA. `h-auto` lets the padding decide, which is what a
+        // marketing button needs and what makes it a comfortable thumb target.
+        cta: "h-auto px-8 py-5",
       },
     },
     defaultVariants: {

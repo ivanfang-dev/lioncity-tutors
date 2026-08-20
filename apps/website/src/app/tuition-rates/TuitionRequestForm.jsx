@@ -70,7 +70,7 @@ export default function TuitionRequestForm() {
                 <h2 className="section-title text-primary mb-2">Thank You!</h2>
                 <p className="text-text-default/80 mb-6">We&apos;ve received your request and will send tutor profiles shortly.</p>
                 <Button
-                  className="bg-accent text-text-inverse hover:opacity-90"
+                  className="bg-accent-fill text-text-inverse hover:bg-accent-fill-hover"
                   onClick={resetForm}
                 >
                   Make Another Request

@@ -10,6 +10,23 @@ export default function FloatingTrustBadge({ onGetStarted }) {
   const [isDismissed, setIsDismissed] = useState(false);
 
   useEffect(() => {
+    // Desktop only, and deliberately so.
+    //
+    // This card is `max-w-sm` pinned to the bottom-right. On a desktop viewport
+    // that is a small corner card. On a 390px phone it resolves to 366x222 —
+    // 94% of the screen width and the entire bottom quarter of the viewport —
+    // parked over the thumb zone. Measured on the live page it covered the
+    // floating WhatsApp button outright, overlapped the back-to-top control,
+    // and sat directly on top of the request form's first fields. A promo card
+    // obscuring the conversion form is worse than no promo card, and everything
+    // it says (4.8/5, 100+ families, the CTA) is already on the page twice: in
+    // the hero trust chips and in the blue review strip below them.
+    //
+    // Gated on hover + fine pointer rather than width alone, so a touch laptop
+    // or a tablet in landscape is treated as the touch device it is.
+    if (typeof window === "undefined") return;
+    if (!window.matchMedia("(min-width: 1024px) and (hover: hover) and (pointer: fine)").matches) return;
+
     // Show badge after 10 seconds (after TutorPopup has had time to show)
     const timer = setTimeout(() => {
       if (!isDismissed) {

@@ -48,9 +48,15 @@ export default function ReviewStrip() {
                 <div className="w-12 h-12 bg-white/10 backdrop-blur-sm rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:bg-white/20 transition-all duration-300 group-hover:scale-110">
                   <feature.icon className="w-6 h-6 text-white" />
                 </div>
+                {/* Full white, not `white/80`. Dimmed white on Harbour Blue
+                    measures 3.77:1 and fails AA for normal-size text — and even
+                    `white/90` only reaches 4.35:1, so opacity cannot carry body
+                    copy on this surface at all. The title/subtitle hierarchy is
+                    the size and weight step instead, which is how DESIGN.md says
+                    to build it anyway. */}
                 <div>
                   <p className="font-semibold text-white text-lg">{feature.title}</p>
-                  <p className="text-sm text-white/80">{feature.subtitle}</p>
+                  <p className="text-sm text-white">{feature.subtitle}</p>
                 </div>
               </motion.div>
             ))}
@@ -77,7 +83,7 @@ export default function ReviewStrip() {
             <div className="font-bold text-white text-lg">
               4.8/5 Google Rating
             </div>
-            <div className="text-xs text-white/70">
+            <div className="text-xs font-medium text-white">
               Click to read reviews →
             </div>
           </motion.a>

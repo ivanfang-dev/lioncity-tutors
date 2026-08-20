@@ -97,7 +97,11 @@ const SubjectSpotlightSection = () => {
                       </div>
                     </div>
                     
-                    <h3 className="relative text-xl sm:text-2xl font-semibold text-primary mb-3 group-hover:text-accent transition-colors duration-300">
+                    {/* Hover deepens the blue rather than switching to the brand
+                        orange. #F17720 measures 2.84:1 on white and DESIGN.md
+                        reserves it for graphic accents precisely because it
+                        cannot legally carry text at any size. */}
+                    <h3 className="relative text-xl sm:text-2xl font-semibold text-primary mb-3 group-hover:text-primary/80 transition-colors duration-300">
                       {subject.name}
                     </h3>
                     <p className="relative text-base text-text-default/80 flex-grow leading-relaxed mb-4">
@@ -105,7 +109,7 @@ const SubjectSpotlightSection = () => {
                     </p>
                     
                     {/* CTA with arrow animation */}
-                    <div className="relative flex items-center text-accent font-semibold group-hover:gap-2 gap-1 transition-all duration-300">
+                    <div className="relative flex items-center text-primary font-semibold group-hover:gap-2 gap-1 transition-all duration-300">
                       <span>Learn More</span>
                       <ArrowRight className="w-5 h-5 transform group-hover:translate-x-1 transition-transform duration-300" />
                     </div>

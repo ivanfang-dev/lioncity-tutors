@@ -12,7 +12,7 @@ export default function FormStepper({ currentStep }) {
                 {STEP_LABELS.map((label, i) => (
                     <span
                         key={label}
-                        className={`text-sm font-medium ${currentStep >= i + 1 ? "text-primary" : "text-gray-400"}`}
+                        className={`text-sm font-medium ${currentStep >= i + 1 ? "text-primary" : "text-text-tertiary"}`}
                     >
                         {label}
                     </span>
@@ -27,12 +27,12 @@ export default function FormStepper({ currentStep }) {
                         <div key={num} className="flex flex-col items-center gap-1">
                             <div
                                 className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold transition-colors ${
-                                    currentStep >= num ? "bg-primary text-white" : "bg-gray-200 text-gray-500"
+                                    currentStep >= num ? "bg-primary text-white" : "bg-gray-200 text-text-secondary"
                                 }`}
                             >
                                 {num}
                             </div>
-                            <span className="text-xs text-gray-500">Step {num}</span>
+                            <span className="text-xs text-text-secondary">Step {num}</span>
                         </div>
                     );
                 })}

@@ -38,6 +38,12 @@ export const viewport = {
   width: 'device-width',
   initialScale: 1,
   themeColor: '#0474BA',
+  // Without `cover`, every `env(safe-area-inset-*)` on the site resolves to 0 —
+  // which is what the (previously unused) safe-area helpers in globals.css were
+  // silently doing. The floating WhatsApp and back-to-top controls sit exactly
+  // in the home-indicator band, so this is what keeps them thumb-reachable on a
+  // notched iPhone instead of half-under the system gesture bar.
+  viewportFit: 'cover',
 };
 
 export default function RootLayout({ children }) {

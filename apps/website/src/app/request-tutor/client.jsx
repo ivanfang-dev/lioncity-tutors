@@ -3,8 +3,9 @@
 import { MATCH_TIME } from '@/data/promises';
 import React, { Suspense, useEffect, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { Info, CheckCircle, Loader2 } from "lucide-react";
-import { motion } from "framer-motion";
+import { Check, Info, CheckCircle, Loader2 } from "lucide-react";
+import { motion, useReducedMotion } from "framer-motion";
+import { DURATION, EASE_STANDARD } from "@/lib/motion";
 import { Button } from "@/components/ui/button";
 import { Step1, Step2, Step3 } from "@/components/FormSteps";
 import FormStepper from "@/components/FormStepper";
@@ -14,6 +15,7 @@ import { PREFILL_KEY } from "@/components/TutorPopup";
 function RequestForTutorContent(){
   const searchParams = useSearchParams();
   const formRef = useRef(null);
+  const prefersReducedMotion = useReducedMotion();
   const {
     currentStep,
     formData,
@@ -78,28 +80,41 @@ function RequestForTutorContent(){
   return (
     <>
     <main>
-    <div className="bg-gray-50 min-h-screen">
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    {/* `min-h-dvh`, not `min-h-screen`: `100vh` on mobile Safari is the tall
+        layout viewport measured with the address bar collapsed, so a
+        `min-h-screen` panel always overshoots the real screen by ~60-100px and
+        introduces a stretch of dead scroll below the content. */}
+    <div className="bg-gray-50 min-h-dvh">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
           
           {/* Left Column: Form */}
           <div className="lg:col-span-2">
             <section ref={formRef} className="form-section-gradient">
+                {/* Rests VISIBLE and expresses the entrance as keyframes.
+                    `initial={{opacity:0}}` is server-rendered as an inline style,
+                    so the entire form shipped invisible and stayed that way
+                    until framer-motion's observer fired. On a 390px viewport
+                    this reproduced every time: the card measured opacity 0.103
+                    two seconds after load — the primary conversion form on the
+                    page whose only job is that form, effectively blank, with the
+                    visitor given nothing to blame. `amount: 0.3` made it worse
+                    by demanding 30% of a very tall card be on screen at once.
+                    See DESIGN.md § Motion, "Never ship a hidden start state". */}
                 <motion.div
                     className="form-card-container"
-                    initial={{ opacity: 0, y: 50, scale: 0.95 }}
-                    whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                    transition={{ duration: 0.7, ease: "easeOut" }}
-                    viewport={{ once: true, amount: 0.3 }}
+                    initial={{ opacity: 1, y: 0 }}
+                    animate={prefersReducedMotion ? undefined : { y: [16, 0] }}
+                    transition={{ duration: DURATION.base, ease: EASE_STANDARD }}
                 >
-                    <div className="bg-background-card rounded-xl shadow-lg p-8">
+                    <div className="bg-background-card rounded-xl shadow-lg p-5 sm:p-8">
                         {status.submitted ? (
                             <div className="text-center py-10">
                                 <CheckCircle className="text-green-500 w-16 h-16 mx-auto mb-4" />
                                 <h2 className="section-title text-primary mb-2">Thank you!</h2>
                                 <p className="text-text-default/80 mb-4">We'll send you tutor profiles shortly.</p>
                                 <Button
-                                    className="bg-accent text-text-inverse hover:bg-accent/90"
+                                    className="bg-accent-fill text-text-inverse hover:bg-accent-fill-hover"
                                     onClick={resetForm}
                                 >
                                     Submit Another Request
@@ -120,49 +135,52 @@ function RequestForTutorContent(){
             </section>
           </div>
 
-          {/* Right Column: Trust Indicators & Info */}
+          {/* Right Column: Trust Indicators & Info.
+              `top-24` clears the sticky navbar — at `top-8` this column slid
+              under it on desktop. On mobile the grid collapses and it simply
+              follows the form, which is the right order on a page whose one job
+              is the form. */}
           <div className="lg:col-span-1">
-            <div className="sticky top-8 space-y-6">
-              
+            <div className="lg:sticky lg:top-24 space-y-4 sm:space-y-6">
+
               {/* Trust Indicators */}
-              <div className="bg-white rounded-xl shadow-lg p-6">
+              <div className="bg-white rounded-xl shadow-lg p-5 sm:p-6">
                 <h3 className="text-lg font-semibold text-gray-800 mb-4">Why Choose Us?</h3>
                 <div className="space-y-4">
-                  <div className="flex items-start space-x-3">
-                    <div className="text-green-500 mt-1">✓</div>
-                    <div>
-                      <h4 className="font-semibold text-blue-600">100+ Successful Matches</h4>
-                      <p className="text-sm text-gray-600">Helped over 100 students find qualified tutors</p>
+                  {[
+                    { title: '100+ Successful Matches', body: 'Helped over 100 students find qualified tutors' },
+                    { title: '100% Free Service', body: 'No hidden fees or charges' },
+                    { title: 'Fast Response', body: `Tutor profiles within ${MATCH_TIME}` },
+                  ].map(({ title, body }) => (
+                    <div key={title} className="flex items-start gap-3">
+                      {/* A drawn icon at a consistent stroke, not a "✓" text
+                          glyph — the glyph rendered at a different weight and
+                          baseline on every platform and could not be aligned. */}
+                      <span className="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-primary/10" aria-hidden="true">
+                        <Check className="h-3 w-3 text-primary" strokeWidth={2.5} />
+                      </span>
+                      <div>
+                        <h4 className="font-semibold text-primary">{title}</h4>
+                        <p className="text-sm text-text-secondary">{body}</p>
+                      </div>
                     </div>
-                  </div>
-                  <div className="flex items-start space-x-3">
-                    <div className="text-green-500 mt-1">✓</div>
-                    <div>
-                      <h4 className="font-semibold text-blue-600">100% Free Service</h4>
-                      <p className="text-sm text-gray-600">No hidden fees or charges</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start space-x-3">
-                    <div className="text-green-500 mt-1">✓</div>
-                    <div>
-                      <h4 className="font-semibold text-blue-600">Fast Response</h4>
-                      <p className="text-sm text-gray-600">Tutor profiles within {MATCH_TIME}</p>
-                    </div>
-                  </div>
+                  ))}
                 </div>
               </div>
 
-              {/* Additional Info */}
-              <div className="bg-blue-50 rounded-xl p-6">
-                <div className="flex items-start space-x-3">
-                  <Info className="text-blue-600 mt-1" size={20} />
+              {/* Additional Info. Tokens throughout — the stock `blue-50/600/700/800`
+                  ramp is a different blue from Harbour Blue and read as a second,
+                  unowned brand colour sitting next to the real one. */}
+              <div className="bg-primary/5 border border-primary/10 rounded-xl p-5 sm:p-6">
+                <div className="flex items-start gap-3">
+                  <Info className="text-primary mt-0.5 flex-shrink-0" size={20} aria-hidden="true" />
                   <div>
-                    <h4 className="font-semibold text-blue-800 mb-2">How It Works</h4>
-                    <ol className="text-sm text-blue-700 space-y-1">
-                      <li>1. Fill out this form</li>
-                      <li>2. We match you with suitable tutors</li>
-                      <li>3. Review tutor profiles & choose</li>
-                      <li>4. Start learning!</li>
+                    <h4 className="font-semibold text-primary mb-2">How It Works</h4>
+                    <ol className="text-sm text-text-secondary space-y-1 list-decimal pl-4 marker:text-primary marker:font-semibold">
+                      <li>Fill out this form</li>
+                      <li>We match you with suitable tutors</li>
+                      <li>Review tutor profiles &amp; choose</li>
+                      <li>Start learning</li>
                     </ol>
                   </div>
                 </div>
@@ -182,7 +200,17 @@ function RequestForTutorContent(){
 
 export default function RequestForTutorClient() {
   return (
-    <Suspense fallback={<div>Loading form...</div>}>
+    <Suspense
+      fallback={
+        // Reserves roughly the form's height so the page does not jolt when the
+        // real card replaces it, instead of collapsing to one line of raw text.
+        <div className="bg-gray-50 min-h-dvh">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+            <div className="h-[640px] rounded-xl bg-white shadow-lg animate-pulse" />
+          </div>
+        </div>
+      }
+    >
       <RequestForTutorContent />
     </Suspense>
   );

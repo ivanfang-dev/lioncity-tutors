@@ -16,9 +16,16 @@ export default function RequestForTutor() {
       {/* Outside the client component's Suspense boundary (it wraps
           useSearchParams), so the page's only <h1> is part of the static
           server-rendered HTML rather than trapped behind hydration. */}
-      <div className="bg-gradient-to-r from-blue-50 via-white to-blue-50 py-6 text-center">
+      {/* `px-4` is not cosmetic here: this block had no horizontal padding at
+          all, so the h1 ran from x=0 to x=390 on a phone with the text touching
+          both screen edges. Neutral surface rather than the old blue-tinted
+          gradient — DESIGN.md § The No Blue Wash Rule: trust comes from the blue
+          ink, not from bathing the surface in it. */}
+      <div className="bg-background-subtle border-b border-border py-6 sm:py-8 px-4 sm:px-6 text-center">
         <h1 className="page-title text-primary mb-2">Request a Tutor in Singapore</h1>
-        <p className="text-gray-600 text-sm max-w-xl mx-auto">Complete this form - 100% Free, Fast Response Guaranteed</p>
+        <p className="text-text-secondary text-sm sm:text-base max-w-xl mx-auto text-pretty">
+          Complete this form — 100% free, fast response guaranteed.
+        </p>
       </div>
       <RequestForTutorClient />
       {/* Outside the client component's Suspense boundary (it wraps

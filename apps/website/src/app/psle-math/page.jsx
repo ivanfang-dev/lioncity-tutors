@@ -429,7 +429,7 @@ export default function PSLEMath() {
                   <h2 className="text-2xl font-semibold text-gray-900 mb-2">Thank you!</h2>
                   <p className="text-gray-600 mb-4">Our team will be in touch with suitable tutor profiles shortly via WhatsApp.</p>
                   <Button
-                    className="bg-accent text-text-inverse hover:bg-accent/90"
+                    className="bg-accent-fill text-text-inverse hover:bg-accent-fill-hover"
                     onClick={resetForm}
                   >
                     Submit Another Request

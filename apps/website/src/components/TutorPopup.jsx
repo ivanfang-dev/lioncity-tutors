@@ -5,6 +5,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import { Check, X } from "lucide-react";
 import { DURATION, EASE_STANDARD } from "@/lib/motion";
 import { MATCH_TIME } from "@/data/promises";
+import { normalizeSgMobile } from "@/lib/phone";
 
 /**
  * The last-chance tutor request.
@@ -40,11 +41,13 @@ const BENEFITS = [
 export default function TutorPopup() {
   const [isOpen, setIsOpen] = useState(false);
   const [values, setValues] = useState({ name: "", mobile: "" });
+  const [mobileError, setMobileError] = useState(null);
   const router = useRouter();
   const prefersReducedMotion = useReducedMotion();
 
   const panelRef = useRef(null);
   const nameRef = useRef(null);
+  const mobileRef = useRef(null);
   const returnFocusRef = useRef(null);
   const armedAt = useRef(0);
 
@@ -154,17 +157,32 @@ export default function TutorPopup() {
 
   const handleChange = (event) => {
     const { name, value } = event.target;
+    if (name === "mobile" && mobileError) setMobileError(null);
     setValues((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
+
+    // Validate here, with the same parser the request form uses. Without this
+    // the popup accepted any string and handed it over as a prefill, and the
+    // form on the next page then rejected the very value this one had just
+    // told the visitor was fine — asking them to re-type a number they had
+    // already given us once.
+    const mobile = normalizeSgMobile(values.mobile);
+    if (!mobile) {
+      setMobileError("That doesn't look like a Singapore mobile number — it should be 8 digits starting with 8 or 9.");
+      mobileRef.current?.focus();
+      return;
+    }
+    setMobileError(null);
+
     markActioned();
     // The name and number travel in sessionStorage, not a query string: a URL
     // carrying a parent's phone number ends up in browser history, in the referrer
     // sent to any third party, and in server logs.
     try {
-      sessionStorage.setItem(PREFILL_KEY, JSON.stringify(values));
+      sessionStorage.setItem(PREFILL_KEY, JSON.stringify({ ...values, mobile }));
     } catch {
       /* If storage fails the visitor simply retypes two fields on the next page. */
     }
@@ -184,8 +202,14 @@ export default function TutorPopup() {
   if (!isOpen) return null;
 
   return (
+    // The overlay scrolls, and the panel is top-aligned until there is room to
+    // centre it. Centring unconditionally in a non-scrolling `inset-0` box means
+    // that the moment the panel is taller than the viewport it is clipped at
+    // BOTH ends with no way to reach either — which is the normal case on a
+    // phone the instant the keyboard opens and takes ~45% of the screen: the
+    // name field gets focus on mount, so the submit button was unreachable.
     <div
-      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 p-4 backdrop-blur-sm"
+      className="fixed inset-0 z-[100] flex items-start sm:items-center justify-center overflow-y-auto overscroll-contain bg-black/40 p-4 py-8 backdrop-blur-sm"
       onMouseDown={(event) => {
         if (event.target === event.currentTarget) close();
       }}
@@ -196,7 +220,7 @@ export default function TutorPopup() {
             aria-modal="true"
             aria-labelledby="tutor-popup-title"
             aria-describedby="tutor-popup-description"
-            className="relative w-full max-w-lg rounded-xl bg-background-card p-6 shadow-xl sm:p-8"
+            className="relative my-auto w-full max-w-lg shrink-0 rounded-xl bg-background-card p-5 shadow-xl sm:p-8"
             {...panelMotion}
             transition={{ duration: DURATION.base, ease: EASE_STANDARD }}
           >
@@ -271,16 +295,28 @@ export default function TutorPopup() {
                   Mobile number
                 </label>
                 <input
+                  ref={mobileRef}
                   id="tutor-popup-mobile"
                   type="tel"
                   name="mobile"
-                  inputMode="numeric"
+                  inputMode="tel"
                   autoComplete="tel"
                   required
+                  aria-invalid={mobileError ? "true" : undefined}
+                  aria-describedby={mobileError ? "tutor-popup-mobile-error" : undefined}
                   value={values.mobile}
                   onChange={handleChange}
-                  className="mt-1.5 w-full rounded-md border border-input bg-background px-3 py-2.5 text-base text-text-default shadow-xs outline-none transition-colors focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/40"
+                  className={`mt-1.5 w-full rounded-md border bg-background px-3 py-2.5 text-base text-text-default shadow-xs outline-none transition-colors focus-visible:ring-2 ${
+                    mobileError
+                      ? "border-error focus-visible:border-error focus-visible:ring-error/40"
+                      : "border-input focus-visible:border-ring focus-visible:ring-ring/40"
+                  }`}
                 />
+                {mobileError && (
+                  <p id="tutor-popup-mobile-error" className="mt-1.5 text-sm text-error-text">
+                    {mobileError}
+                  </p>
+                )}
               </div>
 
               {/* accent-fill at 18.7px/700 — the smallest compliant label the brand

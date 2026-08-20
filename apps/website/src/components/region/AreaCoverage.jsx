@@ -13,7 +13,7 @@ export default function AreaCoverage({ region }) {
           <Chip key={area}>{area}</Chip>
         ))}
       </div>
-      <p className="mt-4 text-xs text-text-default/60">Tutor coverage, reviewed {REGIONS_REVIEWED}.</p>
+      <p className="mt-4 text-xs text-text-secondary">Tutor coverage, reviewed {REGIONS_REVIEWED}.</p>
     </div>
   );
 }

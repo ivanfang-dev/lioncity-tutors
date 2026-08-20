@@ -1,4 +1,5 @@
 import { getExam } from '@/data/examCalendar2026.mjs';
+import ScrollTable from '@/components/ui/scroll-table';
 
 const LONG_DATE = new Intl.DateTimeFormat('en-SG', {
   weekday: 'short', day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC',
@@ -27,7 +28,7 @@ export default function ExamTimetable({ examSlug, subjectSlugs, caption }) {
   if (subjects.length === 0) return null;
 
   return (
-    <div className="overflow-x-auto">
+    <ScrollTable label={caption || `${examSlug.toUpperCase()} examination timetable`}>
       <table className="w-full min-w-[36rem] border-collapse text-left text-sm">
         {caption ? (
           <caption className="mb-3 text-left text-sm text-gray-600">{caption}</caption>
@@ -66,6 +67,6 @@ export default function ExamTimetable({ examSlug, subjectSlugs, caption }) {
           )}
         </tbody>
       </table>
-    </div>
+    </ScrollTable>
   );
 }

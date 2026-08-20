@@ -45,17 +45,23 @@ function FAQItem({ faq, isOpen, onClick }) {
         isOpen ? 'border-primary/50' : 'border-border/50'
       }`}
       open={isOpen}
-      onClick={(e) => {
-        e.preventDefault();
-        onClick();
-      }}
       whileHover={{ y: LIFT.card }}
       transition={{ duration: DURATION.fast, ease: EASE_STANDARD }}
     >
+      {/* The toggle handler belongs on the <summary>, not on the <details>.
+          On the parent it also caught every click that bubbled up from the
+          ANSWER, so on a phone — where selecting text means touching the
+          paragraph — reading an answer collapsed it. `preventDefault` still
+          suppresses the native toggle so React stays the single source of
+          truth for `open`. */}
       <summary
+        onClick={(e) => {
+          e.preventDefault();
+          onClick();
+        }}
         className="w-full flex justify-between items-start sm:items-center gap-4 p-5 sm:p-6 md:p-8 text-left cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 group"
       >
-        <h3 className="text-base sm:text-lg md:text-xl font-semibold text-primary group-hover:text-accent transition-colors duration-300 leading-snug">
+        <h3 className="text-base sm:text-lg md:text-xl font-semibold text-primary group-hover:text-primary/80 transition-colors duration-300 leading-snug">
           {faq.question}
         </h3>
         <motion.div
@@ -67,7 +73,7 @@ function FAQItem({ faq, isOpen, onClick }) {
             isOpen ? 'bg-primary/10' : 'bg-background-subtle'
           }`}>
             <ChevronDown className={`w-5 h-5 transition-colors duration-300 ${
-              isOpen ? 'text-primary' : 'text-text-default/60'
+              isOpen ? 'text-primary' : 'text-text-secondary'
             }`} />
           </div>
         </motion.div>

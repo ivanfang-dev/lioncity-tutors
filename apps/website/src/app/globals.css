@@ -41,7 +41,13 @@
 
   /* ── Semantic States ── */
   --color-success: #22c55e;
-  --color-error: #ef4444;
+  --color-error: #ef4444;        /* Borders, rings, fills — NON-TEXT only. 3.76:1 on white:
+                                    fine as a 3:1 non-text indicator, fails 4.5:1 as text. */
+  --color-error-text: #C81E1E;   /* The text-safe red — 5.74:1 on white. Every error MESSAGE
+                                    and every required-field marker uses this one.
+                                    Same split, and the same reason, as accent / accent-fill:
+                                    the value that reads best is not the value that passes,
+                                    so the palette carries both and names which is which. */
   --color-rating: #FFA630;
 
   /* ── shadcn/ui semantic aliases ──
@@ -92,6 +98,29 @@ body {
   text-rendering: optimizeLegibility;
   /* Micro-typography: Inter ligatures + contextual alternates + single-story 'a' (cv11) */
   font-feature-settings: 'liga' 1, 'calt' 1, 'cv11' 1;
+}
+
+/* ── Browser surfaces ─────────────────────────────────────────────────────────
+   The parts we do not draw still carry the brand. Left at their defaults these
+   ship a stock iOS/Chrome blue that belongs to no design system — most visibly
+   on the request form's checkboxes and radios, which a parent taps on every
+   visit. `accent-color` recolours those natively (no custom control needed),
+   and it is the single cheapest premium tell on the whole form. */
+:root {
+  accent-color: var(--color-primary);
+  caret-color: var(--color-primary);
+}
+
+::selection {
+  background-color: color-mix(in srgb, var(--color-primary) 18%, transparent);
+  color: var(--color-text-default);
+}
+
+html {
+  /* iOS Safari inflates text when a phone is rotated to landscape unless this is
+     pinned, which silently breaks every carefully-measured line length. */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 /* ── Heading scale ────────────────────────────────────────────────────────────
@@ -178,10 +207,6 @@ body {
   color: var(--color-text-inverse);
 }
 
-.hero-image {
-  will-change: transform;
-}
-
 /* Hand-drawn underline that draws itself once the word lands */
 .hero-underline path {
   stroke-dasharray: 320;
@@ -220,17 +245,22 @@ body {
   overflow: hidden; /* Ensures the pseudo-elements don't bleed out */
 }
 
-/* Subtle glow that draws the eye to the form card */
+/* Subtle glow that draws the eye to the form card.
+   Sized in viewport units rather than a flat 800px: an 800x800 surface under an
+   80px blur is a large offscreen composite for a phone GPU to repaint on every
+   scroll frame, and on a 390px-wide screen most of it was never visible anyway.
+   The radial gradient already carries the whole effect; the blur only softens
+   its edge, so a smaller radius costs nothing visually. */
 .form-section-gradient::before {
   content: '';
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 800px; /* Adjust size as needed */
-  height: 800px;
+  width: min(800px, 140vw);
+  height: min(800px, 140vw);
   background-image: radial-gradient(circle, color-mix(in srgb, var(--color-primary) 8%, transparent), transparent 70%);
   transform: translate(-50%, -50%);
-  filter: blur(80px); /* Creates the soft glow */
+  filter: blur(clamp(32px, 8vw, 80px));
   z-index: 1;
 }
 
@@ -324,9 +354,14 @@ body {
   min-width: 7rem;
 }
 
-/* Smooth scrolling for the entire page */
+/* Smooth scrolling for the entire page.
+   `scroll-padding-top` is load-bearing on mobile: the navbar is `sticky top-0`,
+   so every in-page jump (the hero's "Request tutors", the FAQ and resources
+   scroll-tos, any #anchor) used to land the target underneath it and hide the
+   first ~58px of whatever the visitor just asked to see. */
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
 }
 
 /* Section spacing utility */
@@ -366,54 +401,75 @@ a:focus-visible {
   overflow: hidden;
 }
 
-/* Mobile-specific enhancements */
-@media (max-width: 640px) {
-  /* Larger touch targets for mobile */
-  button, a {
+/* ── Touch targets ────────────────────────────────────────────────────────────
+   Keyed off the INPUT METHOD, not the viewport. The previous rule was
+   `max-width: 640px`, which left every finger-driven device between 641px and
+   the desktop nav breakpoint — tablets, phones in landscape, large Androids —
+   with the desktop's small hit areas, including a 26px hamburger. A finger is
+   the same size at every width, so `pointer: coarse` is the honest query.
+
+   Only `min-height` is universal. Forcing `min-width: 44px` on every anchor
+   also stretched short inline-block links and chips, so the width floor is
+   scoped to icon-only controls, which are the ones that actually measure
+   under 44px wide. */
+@media (pointer: coarse) {
+  button,
+  a,
+  summary,
+  [role="button"],
+  input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]),
+  select {
     min-height: 44px;
+  }
+
+  /* Icon-only controls: no text to give them width, so they need the floor. */
+  :is(button, a, [role="button"]):has(> svg:only-child),
+  :is(button, a, [role="button"]):has(> img:only-child) {
     min-width: 44px;
   }
 
-  /* Better spacing for mobile */
-  .mobile-spacing {
-    padding-left: 1rem;
-    padding-right: 1rem;
-  }
-
-  /* Prevent text selection on tap */
-  .no-select {
-    -webkit-user-select: none;
-    user-select: none;
+  /* Checkboxes and radios keep their drawn size but gain a finger-sized
+     surround, so the box a parent is aiming at is bigger than the box they see. */
+  input[type="checkbox"],
+  input[type="radio"] {
+    outline-offset: 2px;
   }
 }
 
-/* Smooth momentum scrolling on iOS */
-@supports (-webkit-overflow-scrolling: touch) {
-  * {
-    -webkit-overflow-scrolling: touch;
-  }
-}
-
-/* Prevent zoom on input focus (iOS) */
-@media screen and (max-width: 640px) {
+/* Prevent zoom on input focus (iOS). Safari zooms the whole page whenever a
+   focused field's text is under 16px, which then leaves the page scrolled
+   sideways — the most common way a mobile form feels broken. */
+@media screen and (max-width: 767px) {
   input[type="text"],
   input[type="email"],
   input[type="tel"],
   input[type="number"],
+  input[type="search"],
+  input[type="url"],
+  input[type="password"],
+  input[type="date"],
+  input[type="time"],
+  input:not([type]),
   textarea,
   select {
-    font-size: 16px !important;
+    font-size: 16px;
   }
 }
 
-/* Safe area insets for notched devices */
-@supports (padding: max(0px)) {
-  .safe-area-inset-bottom {
-    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+/* Safe areas for the fixed controls that live in the notch/home-indicator
+   band. Paired with `viewportFit: 'cover'` in layout.jsx — without that the
+   env() values all resolve to 0 and this does nothing. */
+@layer utilities {
+  .safe-bottom {
+    bottom: max(1.5rem, env(safe-area-inset-bottom));
   }
 
-  .safe-area-inset-top {
-    padding-top: max(1rem, env(safe-area-inset-top));
+  .safe-right {
+    right: max(1rem, env(safe-area-inset-right));
+  }
+
+  .safe-left {
+    left: max(1.5rem, env(safe-area-inset-left));
   }
 }
 

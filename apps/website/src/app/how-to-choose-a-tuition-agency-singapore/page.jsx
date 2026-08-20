@@ -68,13 +68,13 @@ export default function ChooseAgencyPage() {
               Here&apos;s how to tell them apart, what a good agency should do for you, and the
               warning signs of a bad one &mdash; including the case for skipping an agency entirely.
             </p>
-            <p className="text-sm text-text-default/60 mb-10">
+            <p className="text-sm text-text-secondary mb-10">
               LionCity Tutors charges parents no agency fee, so we can be honest about how the rest
               of the market makes its money.
             </p>
             <a
               href="#request-tutor-cta"
-              className="group inline-flex items-center gap-2 bg-accent hover:opacity-90 text-text-inverse font-bold px-8 py-4 rounded-full shadow-lg text-lg"
+              className="group inline-flex items-center gap-2 bg-accent-fill hover:bg-accent-fill-hover text-text-inverse font-bold px-8 py-4 rounded-full shadow-lg text-xl"
             >
               Request a Tutor
               <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" aria-hidden="true" />
@@ -104,7 +104,7 @@ export default function ChooseAgencyPage() {
                 <p className="mt-3 text-text-default/85 leading-relaxed text-pretty">{section.answer}</p>
                 {section.id === 'agency-centre-or-tutor' ? <ComparisonTable /> : null}
                 {section.id === 'agency-centre-or-tutor' ? (
-                  <p className="mt-3 text-xs text-text-default/60">
+                  <p className="mt-3 text-xs text-text-secondary">
                     Tuition centre and independent-tutor figures are market estimates for comparison,
                     not LionCity Tutors&apos; own data. Only the agency row above is ours.
                   </p>

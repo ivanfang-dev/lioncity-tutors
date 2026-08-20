@@ -7,6 +7,7 @@ import TuitionRequestForm from './TuitionRequestForm';
 import {
   RATE_CARD, RATES_REVIEWED, TUTOR_TYPES, bandFor, rangeFor, priceLabel, overallRange,
 } from './rates.mjs';
+import ScrollTable from '@/components/ui/scroll-table';
 import { RATE_ANSWERS, SERVICE_FAQS, TUITION_RATES_FAQS } from './faqs.mjs';
 import { PLACEMENT_SAMPLE, PLACEMENTS_REVIEWED, observedFor, observedSpan, sampleLabel } from './placements.mjs';
 
@@ -16,7 +17,7 @@ const SLUG = 'tuition-rates';
 function RateTable({ id }) {
   const band = bandFor(id);
   return (
-    <div className="mt-5 overflow-x-auto">
+    <ScrollTable className="mt-5" label={`${band.level} tuition rates per hour, by tutor type`}>
       <table className="w-full min-w-[20rem] border-collapse text-left text-sm">
         <caption className="sr-only">
           {band.level} tuition rates per hour, by tutor type
@@ -32,14 +33,14 @@ function RateTable({ id }) {
             <tr key={rate.type} className="border-b border-border/60 last:border-0">
               <td className="py-3 pr-4">
                 <span className="block font-medium text-text-default">{rate.type}</span>
-                <span className="block text-xs text-text-default/60">{rate.details}</span>
+                <span className="block text-xs text-text-secondary">{rate.details}</span>
               </td>
               <td className="py-3 font-bold text-primary whitespace-nowrap">{priceLabel(rate)}</td>
             </tr>
           ))}
         </tbody>
       </table>
-    </div>
+    </ScrollTable>
   );
 }
 
@@ -50,7 +51,7 @@ function RateTable({ id }) {
  */
 function ObservedTable() {
   return (
-    <div className="mt-5 overflow-x-auto">
+    <ScrollTable className="mt-5" label="What parents budget per hour, by level, beside our published range">
       <table className="w-full min-w-[32rem] border-collapse text-left text-sm">
         <caption className="sr-only">
           What parents actually budget per hour, by level, compared with LionCity Tutors&apos;
@@ -91,7 +92,7 @@ function ObservedTable() {
           })}
         </tbody>
       </table>
-    </div>
+    </ScrollTable>
   );
 }
 
@@ -104,7 +105,7 @@ function TierTable() {
     'MOE-Trained Teacher': 'Diagnosing why a grade is stuck; marking-scheme insight',
   };
   return (
-    <div className="mt-5 overflow-x-auto">
+    <ScrollTable className="mt-5" label="Tuition rate comparison by level">
       <table className="w-full min-w-[32rem] border-collapse text-left text-sm">
         <caption className="sr-only">
           Hourly tuition rates by tutor type and level: undergraduate, full-time tutor and
@@ -151,7 +152,7 @@ function TierTable() {
           </tr>
         </tbody>
       </table>
-    </div>
+    </ScrollTable>
   );
 }
 
@@ -185,13 +186,13 @@ export default function TuitionRatesPage() {
               experienced the tutor is. Every rate below is what the tutor charges &mdash; parents
               pay no agency fee.
             </p>
-            <p className="text-sm text-text-default/60 mb-10">
+            <p className="text-sm text-text-secondary mb-10">
               LionCity Tutors&apos; own rate card, reviewed {RATES_REVIEWED}. Rates elsewhere in the
               market will differ.
             </p>
             <a
               href="#request"
-              className="group inline-flex items-center gap-2 bg-accent hover:opacity-90 text-text-inverse font-bold px-8 py-4 rounded-full shadow-lg text-lg"
+              className="group inline-flex items-center gap-2 bg-accent-fill hover:bg-accent-fill-hover text-text-inverse font-bold px-8 py-4 rounded-full shadow-lg text-xl"
             >
               Request a Tutor
               <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" aria-hidden="true" />
@@ -236,7 +237,7 @@ export default function TuitionRatesPage() {
               choice, not the norm.
             </p>
             <ObservedTable />
-            <p className="mt-4 text-sm text-text-default/60">
+            <p className="mt-4 text-sm text-text-secondary">
               LionCity Tutors&apos; own assignments, {PLACEMENT_SAMPLE} with a stated budget, reviewed{' '}
               {PLACEMENTS_REVIEWED}. This is what parents asked to pay, not a national average.
             </p>

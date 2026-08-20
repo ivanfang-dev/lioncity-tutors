@@ -63,13 +63,13 @@ export default function Footer() {
               </li>
             </ul>
             <div className="flex items-center gap-1 mt-6 -ml-3">
-              <a href="https://www.instagram.com/lioncitytutors/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="text-gray-400 hover:text-primary transition-colors p-3">
+              <a href="https://www.instagram.com/lioncitytutors/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="text-text-tertiary hover:text-primary transition-colors p-3">
                 <FaInstagram className="w-5 h-5" />
               </a>
-              <a href="https://www.facebook.com/LionCityTutors/" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="text-gray-400 hover:text-primary transition-colors p-3">
+              <a href="https://www.facebook.com/LionCityTutors/" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="text-text-tertiary hover:text-primary transition-colors p-3">
                 <FaFacebook className="w-5 h-5" />
               </a>
-              <a href="https://www.carousell.sg/u/lioncity_tutors/" target="_blank" rel="noopener noreferrer" aria-label="Carousell" className="text-gray-400 hover:text-primary transition-colors p-3">
+              <a href="https://www.carousell.sg/u/lioncity_tutors/" target="_blank" rel="noopener noreferrer" aria-label="Carousell" className="text-text-tertiary hover:text-primary transition-colors p-3">
                 <img src="/carousell_fixed.svg" alt="Carousell" className="w-5 h-5 opacity-50 hover:opacity-100 transition-opacity" />
               </a>
             </div>
@@ -77,11 +77,11 @@ export default function Footer() {
         </div>
 
         {/* Footer bottom */}
-        <div className="mt-12 pt-6 border-t border-gray-200 flex flex-col sm:flex-row justify-between items-center text-center text-xs text-gray-400">
+        <div className="mt-12 pt-6 border-t border-gray-200 flex flex-col sm:flex-row justify-between items-center gap-3 text-center text-xs text-text-tertiary">
           <p>&copy; {new Date().getFullYear()} LionCity Tutors. All Rights Reserved.</p>
-          <div className="flex gap-4 mt-3 sm:mt-0">
-            <Link href="/terms-and-conditions-for-clients" className="hover:text-primary transition-colors min-h-11 flex items-center">Client T&Cs</Link>
-            <Link href="/privacy-policy" className="hover:text-primary transition-colors min-h-11 flex items-center">Privacy Policy</Link>
+          <div className="flex gap-4">
+            <Link href="/terms-and-conditions-for-clients" className="text-text-secondary hover:text-primary transition-colors min-h-11 flex items-center">Client T&Cs</Link>
+            <Link href="/privacy-policy" className="text-text-secondary hover:text-primary transition-colors min-h-11 flex items-center">Privacy Policy</Link>
           </div>
         </div>
       </div>

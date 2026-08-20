@@ -3,6 +3,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { normalizeSgMobile } from '@/lib/phone';
 
 // Safe localStorage wrapper with error handling
 const safeLocalStorage = {
@@ -38,8 +39,11 @@ const validateStep = (step, data) => {
         if (!data.name.trim()) newErrors.name = "Name is required.";
         if (!data.mobile.trim()) {
             newErrors.mobile = "Mobile number is required.";
-        } else if (!/^[689]\d{7}$/.test(data.mobile.trim())) {
-            newErrors.mobile = "Please enter a valid 8-digit Singapore mobile number.";
+        } else if (!normalizeSgMobile(data.mobile)) {
+            // The number is parsed before it is judged, so spaces, hyphens and a
+            // +65 prefix all pass. The message names the problem rather than
+            // restating the rule the visitor thinks they already followed.
+            newErrors.mobile = "That doesn't look like a Singapore mobile number — it should be 8 digits starting with 8 or 9.";
         }
         const filledSubjects = (data.levelSubjects || []).map(s => s.trim()).filter(Boolean);
         if (filledSubjects.length === 0) newErrors.levelSubjects = "At least one level & subject is required.";
@@ -168,6 +172,11 @@ const useTuitionRequestForm = (initialFormData) => {
                 ...formData,
                 levelSubjects: cleanedSubjects,
                 level: cleanedSubjects.join('; '),
+                // Send the bare 8 digits regardless of how it was typed. Now that
+                // "+65 9123 4567" is accepted at the door, the backend and the
+                // WhatsApp outreach must not have to cope with four spellings of
+                // the same number — one shape goes over the wire.
+                mobile: normalizeSgMobile(formData.mobile) || formData.mobile.trim(),
                 // The form tracks budget as { type, customAmount }, but the backend Contact
                 // schema/notification expect { marketRate, custom, customAmount } booleans.
                 budget: {

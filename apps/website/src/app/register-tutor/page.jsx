@@ -1,5 +1,6 @@
 "use client";
 
+import { normalizeSgMobile } from '@/lib/phone';
 import React, { useState } from 'react';
 import { FaTelegram } from "react-icons/fa";
 
@@ -439,6 +440,20 @@ export default function RegisterAsTutor() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // This form had no format check at all — the "(Fill Accurately)" in the
+    // label was doing the work a validator should. The number is the only way
+    // outreach reaches this tutor, so an unusable one costs a real assignment.
+    const contactNumber = normalizeSgMobile(formData.contactNumber);
+    if (!contactNumber) {
+      setStatus({
+        submitting: false,
+        submitted: false,
+        error: "That contact number doesn't look right — it should be 8 digits starting with 8 or 9.",
+      });
+      return;
+    }
+
     setStatus({ submitting: true, submitted: false, error: null });
 
     try {
@@ -447,7 +462,7 @@ export default function RegisterAsTutor() {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ ...formData, formType: 'register' })
+        body: JSON.stringify({ ...formData, contactNumber, formType: 'register' })
       });
 
       if (!response.ok) throw new Error(await response.text());
@@ -460,7 +475,7 @@ export default function RegisterAsTutor() {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          phone: formData.contactNumber,
+          phone: contactNumber,
           email: formData.email,
           firstName,
           lastName,
@@ -482,7 +497,7 @@ export default function RegisterAsTutor() {
       <div className="max-w-4xl mx-auto px-6 py-12">
 
         {/* Telegram Assignments Section - ADDED AT TOP */}
-        <div className="mb-12 bg-blue-50 p-8 rounded-xl shadow-md text-center">
+        <div className="mb-12 bg-primary/5 border border-primary/10 p-6 sm:p-8 rounded-xl shadow-md text-center">
           <h2 className="section-title text-primary mb-4">View Available Assignments</h2>
           <p className="font-medium mb-2">Fill up the form below to start signing up for available assignments 🙂</p>
           <p className="mb-4">(Join our Telegram Group for full-listing & daily updates of assignments)</p>
@@ -491,7 +506,7 @@ export default function RegisterAsTutor() {
             href="https://t.me/LionCityTutors" 
             target="_blank" 
             rel="noopener noreferrer" 
-            className="inline-flex items-center justify-center bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg shadow-md font-medium transition-colors duration-300"
+            className="inline-flex items-center justify-center bg-primary hover:bg-primary/90 text-white px-6 py-3 rounded-lg shadow-md font-medium transition-colors duration-300"
           >
             <FaTelegram size={20} className="mr-2" /> Join Our Telegram Group
           </a>
@@ -521,7 +536,7 @@ export default function RegisterAsTutor() {
                 <h2 className="section-title text-primary mb-6">1. Personal Information</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-medium mb-1">Full Name <span className="text-red-500">*</span></label>
+                    <label className="block text-sm font-medium mb-1">Full Name <span className="text-error-text" aria-hidden="true">*</span><span className="sr-only"> (required)</span></label>
                     <input 
                       name="fullName" 
                       value={formData.fullName} 
@@ -532,11 +547,14 @@ export default function RegisterAsTutor() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-1">Contact Number (Fill Accurately) <span className="text-red-500">*</span></label>
+                    <label className="block text-sm font-medium mb-1">Contact Number (Fill Accurately) <span className="text-error-text" aria-hidden="true">*</span><span className="sr-only"> (required)</span></label>
                     <input 
-                      name="contactNumber" 
-                      value={formData.contactNumber} 
-                      placeholder='e.g. 81234567'
+                      name="contactNumber"
+                      type="tel"
+                      inputMode="tel"
+                      autoComplete="tel"
+                      value={formData.contactNumber}
+                      placeholder='e.g. 8123 4567'
                       onChange={handleInputChange} 
                       className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" 
                       required 
@@ -544,7 +562,7 @@ export default function RegisterAsTutor() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-1">Email <span className="text-red-500">*</span></label>
+                    <label className="block text-sm font-medium mb-1">Email <span className="text-error-text" aria-hidden="true">*</span><span className="sr-only"> (required)</span></label>
                     <input 
                       name="email" 
                       type="email" 
@@ -556,7 +574,7 @@ export default function RegisterAsTutor() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-1">Date of Birth <span className="text-red-500">*</span></label>
+                    <label className="block text-sm font-medium mb-1">Date of Birth <span className="text-error-text" aria-hidden="true">*</span><span className="sr-only"> (required)</span></label>
                     <div className="flex space-x-2">
                       <input 
                         type="number" 
@@ -592,7 +610,7 @@ export default function RegisterAsTutor() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-1">Gender <span className="text-red-500">*</span></label>
+                    <label className="block text-sm font-medium mb-1">Gender <span className="text-error-text" aria-hidden="true">*</span><span className="sr-only"> (required)</span></label>
                     <div className="flex space-x-6 items-center">
                       <label className="inline-flex items-center">
                         <input 
@@ -621,7 +639,7 @@ export default function RegisterAsTutor() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-1">Age <span className="text-red-500">*</span></label>
+                    <label className="block text-sm font-medium mb-1">Age <span className="text-error-text" aria-hidden="true">*</span><span className="sr-only"> (required)</span></label>
                     <input 
                       name="age" 
                       type="number" 
@@ -635,7 +653,7 @@ export default function RegisterAsTutor() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-1">Nationality <span className="text-red-500">*</span></label>
+                    <label className="block text-sm font-medium mb-1">Nationality <span className="text-error-text" aria-hidden="true">*</span><span className="sr-only"> (required)</span></label>
                     <div className="space-y-2">
                       <label className="inline-flex items-center">
                         <input 
@@ -688,7 +706,7 @@ export default function RegisterAsTutor() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-1">Race <span className="text-red-500">*</span></label>
+                    <label className="block text-sm font-medium mb-1">Race <span className="text-error-text" aria-hidden="true">*</span><span className="sr-only"> (required)</span></label>
                     <select 
                       name="race" 
                       value={formData.race} 
@@ -708,7 +726,7 @@ export default function RegisterAsTutor() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-1">NRIC (Last 4 Digits) <span className="text-red-500">*</span></label>
+                    <label className="block text-sm font-medium mb-1">NRIC (Last 4 Digits) <span className="text-error-text" aria-hidden="true">*</span><span className="sr-only"> (required)</span></label>
                     <input 
                       name="nricLast4" 
                       maxLength={4} 
@@ -918,7 +936,7 @@ export default function RegisterAsTutor() {
                 
                 <div className="space-y-6">
                   <div>
-                    <label className="block text-sm font-medium mb-1">Tutor Type <span className="text-red-500">*</span></label>
+                    <label className="block text-sm font-medium mb-1">Tutor Type <span className="text-error-text" aria-hidden="true">*</span><span className="sr-only"> (required)</span></label>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                       <label className="inline-flex items-center">
                         <input 
@@ -991,7 +1009,7 @@ export default function RegisterAsTutor() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-1">Years of Teaching Experience <span className="text-red-500">*</span></label>
+                    <label className="block text-sm font-medium mb-1">Years of Teaching Experience <span className="text-error-text" aria-hidden="true">*</span><span className="sr-only"> (required)</span></label>
                     <select 
                       name="yearsOfExperience" 
                       value={formData.yearsOfExperience} 
@@ -1009,7 +1027,7 @@ export default function RegisterAsTutor() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-1">Highest Education Level <span className="text-red-500">*</span></label>
+                    <label className="block text-sm font-medium mb-1">Highest Education Level <span className="text-error-text" aria-hidden="true">*</span><span className="sr-only"> (required)</span></label>
                     <select 
                       name="highestEducation" 
                       value={formData.highestEducation} 
@@ -1028,7 +1046,7 @@ export default function RegisterAsTutor() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-1">Current School/University/Workplace <span className="text-red-500">*</span></label>
+                    <label className="block text-sm font-medium mb-1">Current School/University/Workplace <span className="text-error-text" aria-hidden="true">*</span><span className="sr-only"> (required)</span></label>
                     <input 
                       name="currentSchool" 
                       value={formData.currentSchool} 
@@ -1210,7 +1228,7 @@ export default function RegisterAsTutor() {
                 
                 <div className="space-y-6">
                   <div>
-                    <label className="block text-sm font-medium mb-1">Brief Introduction <span className="text-red-500">*</span></label>
+                    <label className="block text-sm font-medium mb-1">Brief Introduction <span className="text-error-text" aria-hidden="true">*</span><span className="sr-only"> (required)</span></label>
                     <textarea 
                       name="introduction" 
                       value={formData.introduction} 
@@ -1222,7 +1240,7 @@ export default function RegisterAsTutor() {
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-medium mb-1">Teaching Experience <span className="text-red-500">*</span></label>
+                    <label className="block text-sm font-medium mb-1">Teaching Experience <span className="text-error-text" aria-hidden="true">*</span><span className="sr-only"> (required)</span></label>
                     <textarea 
                       name="teachingExperience" 
                       value={formData.teachingExperience} 
@@ -1234,7 +1252,7 @@ export default function RegisterAsTutor() {
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-medium mb-1">Track Record & Achievements<span className="text-red-500">*</span></label>
+                    <label className="block text-sm font-medium mb-1">Track Record & Achievements<span className="text-error-text" aria-hidden="true">*</span><span className="sr-only"> (required)</span></label>
                     <textarea 
                       name="trackRecord" 
                       value={formData.trackRecord} 
@@ -1331,7 +1349,7 @@ export default function RegisterAsTutor() {
                   />
                   <span className="ml-2 text-sm" >
                   I agree to receiving SMS/WhatsApp/Emails regarding new tuition assignments.
-                  <span className="text-red-500">*</span>
+                  <span className="text-error-text" aria-hidden="true">*</span><span className="sr-only"> (required)</span>
                   </span>
                 </label>
               </div>

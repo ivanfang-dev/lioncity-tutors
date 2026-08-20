@@ -116,6 +116,11 @@ export default function HomePageClient() {
       preferredTime: '',
       tutorType: { partTime: true, fullTime: false, moeTeacher: false },
       budget: { type: 'marketRate', customAmount: '' },
+      // These two were present in /request-tutor's state and absent here, so the
+      // same endpoint received two different payload shapes depending on which
+      // copy of the form a parent happened to use. Both forms now send both.
+      genderPreference: 'No preference',
+      bilingualRequired: 'No',
       preferences: ''
   });
 
@@ -176,7 +181,14 @@ Preferred days & timing: `;
                   hidden: {},
                   visible: { transition: { staggerChildren: STAGGER } },
                 }}
-                className="text-center lg:text-left order-2 lg:order-1"
+                // Copy first on every width. The photo used to be `order-1` on
+                // mobile, which put a 300px image between the navbar and the
+                // headline: a parent opening the site on a phone saw a stock-ish
+                // photo and had to scroll ~470px before reaching "The Right
+                // Tutor. Matched in hours." — the entire pitch, and the first
+                // CTA, below the fold. The two-column desktop layout is
+                // unaffected; only the stacking order changed.
+                className="text-center lg:text-left order-1"
               >
                 <motion.p
                   variants={fadeUp}
@@ -234,7 +246,8 @@ Preferred days & timing: `;
                     className="w-full sm:w-auto"
                   >
                     <Button
-                      className="text-[18.7px] font-bold bg-accent-fill hover:bg-accent-fill-hover text-white px-8 py-5 rounded-full shadow-md hover:shadow-lg transition-all duration-200 w-full sm:w-auto"
+                      size="cta"
+                      className="text-[18.7px] font-bold bg-accent-fill hover:bg-accent-fill-hover text-white rounded-full shadow-md hover:shadow-lg transition-all duration-200 w-full sm:w-auto"
                       onClick={scrollToForm}
                     >
                       Request tutors
@@ -258,21 +271,29 @@ Preferred days & timing: `;
                 <motion.div
                   variants={fadeUp}
                   transition={fadeUpTransition}
-                  className="inline-flex flex-wrap items-center gap-x-3 gap-y-1 max-w-full bg-white px-4 py-2 rounded-3xl shadow-sm border border-gray-100 text-sm text-gray-600 justify-center lg:justify-start"
+                  // The three proof points used to sit in one wrapping row
+                  // separated by literal "|" spans. Below ~560px the row wraps
+                  // and every separator strands itself at the end of its line —
+                  // "4.8/5 on Google |" — which reads as a rendering fault on
+                  // the single most trust-bearing element of the page. Below sm
+                  // the chips stack and the separators are simply not there;
+                  // from sm up, where the row provably fits on one line, they
+                  // come back and do their job.
+                  className="inline-flex flex-col sm:flex-row sm:flex-wrap items-start sm:items-center gap-x-3 gap-y-2 max-w-full bg-white px-4 py-3 sm:py-2 rounded-2xl sm:rounded-3xl shadow-sm border border-gray-100 text-sm text-gray-600 justify-center lg:justify-start"
                 >
                   <div className="flex items-center gap-1.5">
-                    <Star className="w-4 h-4 text-amber-400 fill-current" />
-                    <span className="font-medium">4.8/5 on Google</span>
+                    <Star className="w-4 h-4 shrink-0 text-rating fill-current" aria-hidden="true" />
+                    <span className="font-medium tabular-nums">4.8/5 on Google</span>
                   </div>
-                  <span className="text-gray-300">|</span>
+                  <span aria-hidden="true" className="hidden sm:inline text-gray-300">|</span>
                   <div className="flex items-center gap-1.5">
-                    <CheckCircle className="w-4 h-4 text-primary" />
-                    <span className="font-medium">100+ families matched</span>
+                    <CheckCircle className="w-4 h-4 shrink-0 text-primary" aria-hidden="true" />
+                    <span className="font-medium tabular-nums">100+ families matched</span>
                   </div>
-                  <span className="text-gray-300">|</span>
+                  <span aria-hidden="true" className="hidden sm:inline text-gray-300">|</span>
                   <div className="flex items-center gap-1.5">
-                    <Users className="w-4 h-4 text-primary" />
-                    <span className="font-medium">{TUTOR_COUNT_LABEL}</span>
+                    <Users className="w-4 h-4 shrink-0 text-primary" aria-hidden="true" />
+                    <span className="font-medium tabular-nums">{TUTOR_COUNT_LABEL}</span>
                   </div>
                 </motion.div>
               </motion.div>
@@ -281,7 +302,7 @@ Preferred days & timing: `;
               <motion.div
                 animate={prefersReducedMotion ? undefined : { scale: [0.97, 1] }}
                 transition={{ duration: DURATION.base, delay: STAGGER * 2, ease: EASE_STANDARD }}
-                className="relative h-[300px] sm:h-[400px] md:h-[450px] lg:h-[520px] rounded-2xl overflow-hidden shadow-xl order-1 lg:order-2"
+                className="relative h-[260px] sm:h-[400px] md:h-[450px] lg:h-[520px] rounded-2xl overflow-hidden shadow-xl order-2"
               >
                 <Image
                   src="/final.webp"
@@ -357,7 +378,12 @@ Preferred days & timing: `;
               </p>
             </motion.div>
 
-            <div className="flex justify-center gap-6 [mask-image:linear-gradient(to_bottom,transparent,black_25%,black_75%,transparent)] max-h-[740px] overflow-hidden">
+            {/* The mask fades the top and bottom of the column, so a 25% fade
+                against a 740px window spent ~370px of a phone screen on text
+                that is too faint to read. On mobile the window is shorter and
+                the fade is tighter, which puts more legible reviews in the same
+                scroll distance; the desktop composition is unchanged. */}
+            <div className="flex justify-center gap-6 [mask-image:linear-gradient(to_bottom,transparent,black_12%,black_88%,transparent)] sm:[mask-image:linear-gradient(to_bottom,transparent,black_25%,black_75%,transparent)] max-h-[560px] sm:max-h-[740px] overflow-hidden">
               <TestimonialsColumn testimonials={testimonials.slice(0, 3)} duration={30} />
               <TestimonialsColumn testimonials={testimonials.slice(3, 6)} className="hidden md:block" duration={31} />
               <TestimonialsColumn testimonials={testimonials.slice(6, 9)} className="hidden lg:block" duration={33} />
@@ -366,7 +392,8 @@ Preferred days & timing: `;
             <div className="mt-10 text-center">
               <Button
                 onClick={() => window.open('https://search.google.com/local/reviews?placeid=ChIJz5sczNYR2jERc_4Ka3tDwyY','_blank')}
-                className="bg-transparent text-primary border-2 border-primary hover:bg-primary hover:text-white font-semibold px-8 py-3 rounded-full shadow-sm hover:shadow-md transition-all text-base"
+                size="cta"
+                className="bg-transparent text-primary border-2 border-primary hover:bg-primary hover:text-white font-semibold py-3 rounded-full shadow-sm hover:shadow-md transition-all text-base"
               >
                 Read More Google Reviews
               </Button>
@@ -375,7 +402,7 @@ Preferred days & timing: `;
         </section>
         
         <section className="bg-primary/5 py-8 border-y border-primary/10">
-            <div className="max-w-4xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
+            <div className="max-w-4xl mx-auto px-4 sm:px-6 flex flex-col md:flex-row items-center justify-between gap-5 text-center md:text-left">
                 <div className="flex flex-col md:flex-row items-center gap-4">
                     <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0">
                         <Award className="w-5 h-5 text-primary" />
@@ -399,8 +426,8 @@ Preferred days & timing: `;
         <SubjectSpotlightSection/>
 
     {/* --- Form Section with Corrected Props --- */}
-    <section ref={formRef} className="section-padding form-section-gradient"> 
-      <div className="max-w-4xl mx-auto px-6"> 
+    <section ref={formRef} className="section-padding form-section-gradient">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6">
   
       <motion.div
           className="form-card-container"
@@ -415,14 +442,14 @@ Preferred days & timing: `;
         
         {/* Benefits */}
         <FormBenefits />
-            <div className="bg-background-card rounded-xl shadow-lg p-8">
+            <div className="bg-background-card rounded-xl shadow-lg p-5 sm:p-8">
                 {status.submitted ? (
                     <div className="text-center py-10">
                         <CheckCircle className="text-primary w-16 h-16 mx-auto mb-4" />
                         <h2 className="text-2xl font-semibold text-gray-900 mb-2">Thank you!</h2>
                         <p className="text-gray-600 mb-4">Our team will be in touch with suitable tutor profiles shortly via WhatsApp.</p>
                         <Button 
-                            className="bg-accent text-text-inverse hover:bg-accent/90" 
+                            className="bg-accent-fill text-text-inverse hover:bg-accent-fill-hover" 
                             onClick={resetForm}
                         >
                             Submit Another Request
@@ -527,17 +554,20 @@ Preferred days & timing: `;
         </div>
 
         {/* Final CTA Banner */}
-        <section className="bg-gradient-to-r from-primary to-primary/90 text-white py-16 sm:py-20 px-6 text-center">
+        <section className="bg-gradient-to-r from-primary to-primary/90 text-white py-16 sm:py-20 px-4 sm:px-6 text-center">
           <div className="max-w-2xl mx-auto">
             <h2 className="mb-4 text-white">
               Ready to Find the Perfect Tutor?
             </h2>
-            <p className="mb-8 text-white/80 text-lg">
+            {/* Full white: white/80 on this blue is 3.77:1 and 18px/400 does not
+                 qualify as WCAG large text (that needs 24px, or 18.66px bold). */}
+            <p className="mb-8 text-white text-lg">
               Get 3 qualified tutor profiles in {MATCH_TIME} — absolutely free.
             </p>
             <motion.div {...PRESS}>
               <Button
-                className="text-[18.7px] font-bold bg-accent-fill hover:bg-accent-fill-hover text-white px-10 py-4 rounded-full shadow-lg hover:shadow-xl transition-all"
+                size="cta"
+                className="text-[18.7px] font-bold bg-accent-fill hover:bg-accent-fill-hover text-white px-10 rounded-full shadow-lg hover:shadow-xl transition-all"
                 onClick={scrollToForm}
               >
                 Request My Tutor Now
