@@ -43,7 +43,7 @@ const PaperListItem = ({ paper, onDownloadClick, tint }) => (
     <Button
       variant="outline"
       size="sm"
-      className={`flex items-center gap-2 transition-colors duration-200 flex-shrink-0 w-full sm:w-auto justify-center ${tint.action}`}
+      className={`flex min-h-11 items-center gap-2 transition-colors duration-200 flex-shrink-0 w-full sm:w-auto justify-center sm:min-h-0 ${tint.action}`}
       onClick={onDownloadClick}
       aria-label={`Download ${paper.title}`}
     >
@@ -115,12 +115,13 @@ const SubjectCard = ({ subjectTitle, subjectData, onDownloadClick, searchTerm, t
         
         {hasExamTypes ? (
           <Tabs defaultValue={examTypes[0]} className="w-full">
-            <TabsList className="flex flex-wrap gap-2 bg-gray-100 p-2 rounded-lg w-full">
+            {/* `h-auto` overrides the base `h-9`/`h-[calc(100%-1px)]`, which clip a wrapped second row. */}
+            <TabsList className="flex h-auto flex-wrap gap-2 bg-gray-100 p-2 rounded-lg w-full">
               {examTypes.map((type) => (
                 <TabsTrigger
                   key={type}
                   value={type}
-                  className={`rounded-full px-3 py-2 text-xs font-semibold transition-all ${tint.tab}`}
+                  className={`h-auto flex-none rounded-full px-3 py-2 text-xs font-semibold transition-all ${tint.tab}`}
                 >
                   {type.replace(/_/g, ' ').toUpperCase()}
                 </TabsTrigger>

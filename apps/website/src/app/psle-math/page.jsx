@@ -3,6 +3,7 @@
 import { MATCH_TIME } from '@/data/promises';
 import { useRef } from "react";
 import { motion } from "framer-motion";
+import { enter } from "@/lib/motion";
 import { Button } from "@/components/ui/button";
 import { Step1, Step2, Step3 } from "@/components/FormSteps";
 import FormStepper from "@/components/FormStepper";
@@ -409,10 +410,7 @@ export default function PSLEMath() {
         <div className="max-w-4xl mx-auto px-6 py-16 sm:py-24">
           <motion.div
             className="form-card-container"
-            initial={{ opacity: 0, y: 50, scale: 0.95 }}
-            whileInView={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 0.7, ease: "easeOut" }}
-            viewport={{ once: true, amount: 0.3 }}
+            {...enter()}
           >
             <h2 className="section-title text-primary text-center mb-4">
               Ready to Find The Perfect Tutor?

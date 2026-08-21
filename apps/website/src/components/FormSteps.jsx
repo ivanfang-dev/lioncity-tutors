@@ -1,5 +1,6 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useMemo} from 'react';
 import { Info, Loader2, Plus, X } from 'lucide-react';
+import { RATE_CARD, RATES_REVIEWED, bandFor, bandForLevelText, spanFor, hourlyLabel } from '@/app/tuition-rates/rates.mjs';
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
@@ -196,25 +197,27 @@ export const Step2 = ({ nextStep, prevStep, formData, handleChange, errors }) =>
 // ===================================
 // STEP 3: Tutor Preferences
 // ===================================
+// `rateType` maps each checkbox to a row in the rate card (src/app/tuition-rates/rates.mjs).
+// Figures are read from there per level, so the form can't drift from /tuition-rates.
 const TUTOR_TYPES = [
   {
     key: 'partTime',
     label: 'Part-Time Tutors',
-    rate: '$25–$40/hr',
+    rateType: 'Undergraduate',
     title: 'Part-Time Tutors',
     points: ['University undergraduates', 'Budget-friendly', 'Relatable for students'],
   },
   {
     key: 'fullTime',
     label: 'Full-Time Tutors',
-    rate: '$40–$60/hr',
+    rateType: 'Full-Time Tutor',
     title: 'Full-Time Tutors',
     points: ['At least 5 years of experience', 'High level of commitment', 'Often provide own materials'],
   },
   {
     key: 'moeTeacher',
     label: 'Ex/Current MOE Teachers',
-    rate: '$60–$120/hr',
+    rateType: 'MOE-Trained Teacher',
     title: 'Ex/Current MOE Teachers',
     points: ['MOE & NIE trained', 'Familiar with exam marking', 'Most qualified and experienced'],
   },
@@ -226,7 +229,23 @@ export const Step3 = ({ prevStep, formData, handleChange, status }) => {
   // fetched from the bot's aggregate rate-guide. Informational only — it never gates the budget the
   // parent can enter. Silent when the level is unrecognized or data is sparse (typical stays null).
   const [rateHint, setRateHint] = useState(null);
-  const levelSubject = (formData.levelSubjects || [])[0] || '';
+  const levelSubjects = formData.levelSubjects || [];
+  const levelSubject = levelSubjects[0] || '';
+
+  // Rate bands for the levels named in Step 1. Multiple levels span every matching
+  // band; an unrecognised level falls back to spanning all of them.
+  const rateBands = useMemo(() => {
+    const ids = [...new Set(levelSubjects.map(bandForLevelText).filter(Boolean))];
+    const ordered = RATE_CARD.map((b) => b.id).filter((id) => ids.includes(id));
+    return {
+      ids: ordered,
+      caption: ordered.length === 1
+        ? bandFor(ordered[0]).level
+        : ordered.length > 1
+          ? ordered.map((id) => bandFor(id).level).join(' and ')
+          : 'all levels',
+    };
+  }, [levelSubjects.join('|')]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     const level = levelSubject.trim();
@@ -251,8 +270,11 @@ export const Step3 = ({ prevStep, formData, handleChange, status }) => {
           {/* Tutor Type Section */}
           <div className="border border-border rounded-xl p-4 sm:p-6 space-y-5">
               <h4 className="text-lg font-semibold text-text-default">Tutor Type (Select all that apply)</h4>
+              <p className="-mt-3 text-sm text-text-tertiary text-pretty">
+                  Our rates for <span className="font-medium text-text-secondary">{rateBands.caption}</span>, reviewed {RATES_REVIEWED}.
+              </p>
 
-              {TUTOR_TYPES.map(({ key, label, rate, title, points }) => (
+              {TUTOR_TYPES.map(({ key, label, rateType, title, points }) => (
                   <div key={key} className="flex items-start gap-3">
                       <input
                           type="checkbox"
@@ -270,7 +292,9 @@ export const Step3 = ({ prevStep, formData, handleChange, status }) => {
                               had nowhere to go. */}
                           <Label htmlFor={`tutorType.${key}`} className="text-base flex flex-wrap items-baseline gap-x-2">
                               <span>{label}</span>
-                              <span className="text-sm text-text-tertiary tabular-nums">{rate}</span>
+                              <span className="text-sm text-text-tertiary tabular-nums">
+                                  {hourlyLabel(spanFor(rateBands.ids, rateType))}
+                              </span>
                           </Label>
                           <TypeInfo
                               id={`tutorType.${key}`}

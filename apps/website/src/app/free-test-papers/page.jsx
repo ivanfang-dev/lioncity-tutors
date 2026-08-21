@@ -56,12 +56,12 @@ export default function FreeTestPapersPage() {
               papers from Singapore schools, {paperStats.firstYear} to {paperStats.lastYear},
               sorted by level, subject and exam.
             </p>
-            <nav aria-label="Jump to a level" className="flex flex-wrap justify-center gap-2">
+            <nav aria-label="Jump to a level" className="flex flex-wrap items-center justify-center gap-2">
               {PAPER_SECTIONS.map((section) => (
                 <a
                   key={section.id}
                   href={`#${section.id}`}
-                  className="rounded-full border border-[#0474BA]/25 bg-white px-4 py-2 text-sm font-semibold text-[#0474BA] shadow-sm transition-colors hover:border-[#0474BA] hover:bg-[#0474BA]/5"
+                  className="rounded-full border border-[#0474BA]/25 bg-white px-4 py-2 text-center text-sm font-semibold text-[#0474BA] shadow-sm transition-colors hover:border-[#0474BA] hover:bg-[#0474BA]/5"
                 >
                   {section.label}
                 </a>

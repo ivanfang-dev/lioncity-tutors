@@ -53,7 +53,7 @@ const NoteListItem = ({ note, onDownloadClick, tint }) => (
     <Button
       variant="outline"
       size="sm"
-      className={`flex items-center gap-2 transition-colors duration-200 flex-shrink-0 w-full sm:w-auto justify-center ${tint.action}`}
+      className={`flex min-h-11 items-center gap-2 transition-colors duration-200 flex-shrink-0 w-full sm:w-auto justify-center sm:min-h-0 ${tint.action}`}
       onClick={onDownloadClick}
       aria-label={`Download ${note.title}`}
     >

@@ -80,7 +80,7 @@ export default function ChemistryTuition() {
           </div>
           
           <Link href="/request-tutor">
-            <Button className="text-[18.7px] font-bold px-6 sm:px-8 py-3 sm:py-4 mt-3 sm:mt-4 bg-accent-fill hover:bg-accent-fill-hover text-white rounded-full shadow-lg transform hover:scale-105 transition-all duration-200">
+            <Button className="h-auto text-[18.7px] font-bold px-6 sm:px-8 py-3 sm:py-4 mt-3 sm:mt-4 bg-accent-fill hover:bg-accent-fill-hover text-white rounded-full shadow-lg transform hover:scale-105 transition-all duration-200">
               Request a Chemistry Tutor
             </Button>
           </Link>

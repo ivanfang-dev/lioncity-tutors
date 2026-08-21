@@ -98,7 +98,7 @@ export default function EnglishTuitionPage() {
             />
           </div>
           <Link href="/request-tutor">
-            <Button size="lg" className="text-[18.7px] font-bold px-8 py-6 bg-accent-fill hover:bg-accent-fill-hover text-white rounded-full shadow-lg transform hover:scale-105 transition-transform">
+            <Button size="lg" className="h-auto text-[18.7px] font-bold max-w-full whitespace-normal px-6 py-4 sm:px-8 sm:py-6 bg-accent-fill hover:bg-accent-fill-hover text-white rounded-full shadow-lg transform hover:scale-105 transition-transform">
               Request Your English Tutor Now
             </Button>
           </Link>

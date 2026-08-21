@@ -22,7 +22,6 @@ import { TestimonialsColumn } from "@/components/ui/testimonials-columns";
 import SubjectSpotlightSection from "@/components/SubjectSpotlightSection";
 import FloatingTrustBadge from "@/components/FloatingTrustBadge";
 import ScrollProgress from "@/components/ScrollProgress";
-import BackToTop from "@/components/BackToTop";
 
 // Loading spinner component
 const LoadingSpinner = () => (
@@ -161,7 +160,6 @@ Preferred days & timing: `;
   return (
     <>
       <ScrollProgress />
-      <BackToTop />
       <main ref={main} className="bg-background-default text-text-default">
         <TutorPopup />
         <FloatingTrustBadge onGetStarted={scrollToForm} />
@@ -247,7 +245,8 @@ Preferred days & timing: `;
                   >
                     <Button
                       size="cta"
-                      className="text-[18.7px] font-bold bg-accent-fill hover:bg-accent-fill-hover text-white rounded-full shadow-md hover:shadow-lg transition-all duration-200 w-full sm:w-auto"
+                      // Shorter padding on mobile; label stays 18.7px/700 for WCAG large-text contrast.
+                      className="text-[18.7px] font-bold bg-accent-fill hover:bg-accent-fill-hover text-white rounded-full shadow-md hover:shadow-lg transition-all duration-200 w-full sm:w-auto px-6 py-3.5 sm:px-8 sm:py-5"
                       onClick={scrollToForm}
                     >
                       Request tutors

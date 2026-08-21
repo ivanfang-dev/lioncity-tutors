@@ -52,7 +52,7 @@ export default function SecondaryTutorRequestForm() {
             <p className="text-gray-600 mb-6">Our team will be in touch with suitable tutor profiles shortly via WhatsApp.</p>
             <Button
               onClick={resetForm}
-              className="text-[18.7px] font-bold bg-accent-fill text-white px-6 py-2 rounded-full hover:bg-accent-fill-hover transition-colors"
+              className="h-auto text-[18.7px] font-bold bg-accent-fill text-white px-6 py-2 rounded-full hover:bg-accent-fill-hover transition-colors"
             >
               Submit Another Request
             </Button>

@@ -1,6 +1,7 @@
 'use client';
 
 import { motion, MotionConfig } from 'framer-motion';
+import { enter } from '@/lib/motion';
 import TableOfContents from '@/components/TableOfContents';
 import {
   GuideHeader, SectionHeading, GuideCard, GuideTimeline, KeyTakeaways, GuideCTA,
@@ -14,25 +15,11 @@ import {
 } from 'lucide-react';
 import { A_LEVEL_FAQS } from './faqs.mjs';
 
-// Motion tokens per DESIGN.md (duration.base 0.3s, standard easing). One
-// shared variant, applied selectively — not on every section — so entrance
-// motion stays a quiet accent rather than a sprinkle of one-off timings.
-const EASE = [0.4, 0, 0.2, 1];
-
-const fadeUp = {
-  hidden: { opacity: 0, y: 16 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.3, ease: EASE } },
-};
-
+// Scroll entrance via the shared `enter()` helper, which rests at the final value —
+// a reveal that never fires (tall sections on mobile) leaves content visible.
 function Reveal({ children, className }) {
   return (
-    <motion.div
-      className={className}
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, amount: 0.2 }}
-      variants={fadeUp}
-    >
+    <motion.div className={className} {...enter()}>
       {children}
     </motion.div>
   );

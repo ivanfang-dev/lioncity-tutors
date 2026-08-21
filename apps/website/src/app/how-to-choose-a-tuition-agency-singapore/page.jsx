@@ -81,12 +81,12 @@ export default function ChooseAgencyPage() {
             </a>
           </div>
 
-          <nav aria-label="Jump to a question" className="flex flex-wrap justify-center gap-2 mb-16">
+          <nav aria-label="Jump to a question" className="flex flex-wrap items-center justify-center gap-2 mb-16">
             {AGENCY_ANSWERS.map((section) => (
               <a
                 key={section.id}
                 href={`#${section.id}`}
-                className="rounded-full border border-border bg-background-card px-4 py-2 text-sm font-semibold text-primary shadow-sm transition-colors hover:border-primary"
+                className="rounded-full border border-border bg-background-card px-4 py-2 text-center text-sm font-semibold text-primary shadow-sm transition-colors hover:border-primary"
               >
                 {section.label}
               </a>

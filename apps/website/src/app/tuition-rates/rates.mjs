@@ -80,3 +80,31 @@ export const rangeFor = (id) => {
   const { rates } = bandFor(id);
   return { min: Math.min(...rates.map((r) => r.min)), max: Math.max(...rates.map((r) => r.max)) };
 };
+
+/**
+ * Maps the request form's free-text level ("Secondary 3 A-Math", "P4 Science") to a
+ * RATE_CARD id. Returns null for an unrecognised level.
+ */
+export const bandForLevelText = (text) => {
+  const t = String(text || '').toLowerCase();
+  if (!t.trim()) return null;
+  // Most specific first: "IB", "IP" and "IGCSE" all also contain level words.
+  if (/\b(ib|ibdp|igcse|ip|integrated programme|university|uni|poly|polytechnic)\b/.test(t)) return 'ib';
+  if (/\b(jc|jc1|jc2|j1|j2|junior college|a[- ]?level|a[- ]?lvl|h1|h2|h3)\b/.test(t)) return 'jc';
+  if (/\b(sec|secondary|s[1-5]|sec[1-5]|o[- ]?level|n[- ]?level|express|normal academic|normal technical)\b/.test(t)) return 'secondary';
+  if (/\b(pri|primary|p[1-6]|psle|lower pri|upper pri)\b/.test(t)) return 'primary';
+  return null;
+};
+
+/** The rate span for one tutor type across a set of bands. */
+export const spanFor = (bandIds, type) => {
+  const ids = bandIds && bandIds.length ? bandIds : RATE_CARD.map((b) => b.id);
+  const rows = ids
+    .map((id) => bandFor(id)?.rates.find((r) => r.type === type))
+    .filter(Boolean);
+  if (!rows.length) return null;
+  return { min: Math.min(...rows.map((r) => r.min)), max: Math.max(...rows.map((r) => r.max)) };
+};
+
+/** "$35–$50/hr" — the form's compact form of a span (en dash, no spaces). */
+export const hourlyLabel = ({ min, max }) => `$${min}–$${max}/hr`;

@@ -92,7 +92,7 @@ export default function PrimarySchoolTuition() {
                   <p className="text-gray-600 mb-4">Our team will be in touch with suitable tutor profiles shortly via WhatsApp.</p>
                   <Button
                     onClick={resetForm}
-                    className="text-[18.7px] font-bold bg-accent-fill text-white px-6 py-2 rounded-full hover:bg-accent-fill-hover transition-colors"
+                    className="h-auto text-[18.7px] font-bold bg-accent-fill text-white px-6 py-2 rounded-full hover:bg-accent-fill-hover transition-colors"
                   >
                     Submit Another Request
                   </Button>
@@ -117,27 +117,27 @@ export default function PrimarySchoolTuition() {
         </section>
 
         {/* Section 2: Why Primary Education Matters */}
-        <section className="bg-gradient-to-br from-blue-50 to-sky-50 p-12 rounded-2xl">
+        <section className="bg-gradient-to-br from-blue-50 to-sky-50 p-6 sm:p-12 rounded-2xl">
           <h2 className="section-title text-primary mb-4 text-center">Why Primary Education Matters</h2>
           <p className="text-gray-600 text-center max-w-3xl mx-auto mb-8">
             Primary school years are where habits, confidence, and academic discipline take root. We help your child thrive in this crucial stage — academically and emotionally.
           </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="bg-white p-8 rounded-xl shadow-lg transform hover:scale-105 transition-all duration-200">
+            <div className="bg-white p-6 sm:p-8 rounded-xl shadow-lg transform hover:scale-105 transition-all duration-200">
               <div className="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-6">
                 <span className="text-3xl">🎓</span>
               </div>
               <h3 className="font-bold text-xl text-primary text-center mb-4">Academic Foundation</h3>
               <p className="text-gray-600 text-center">Builds strong fundamentals for future academic success</p>
             </div>
-            <div className="bg-white p-8 rounded-xl shadow-lg transform hover:scale-105 transition-all duration-200">
+            <div className="bg-white p-6 sm:p-8 rounded-xl shadow-lg transform hover:scale-105 transition-all duration-200">
               <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-6">
                 <span className="text-3xl">💼</span>
               </div>
               <h3 className="font-bold text-xl text-primary text-center mb-4">Future Opportunities</h3>
               <p className="text-gray-600 text-center">Opens doors to top secondary schools and programs</p>
             </div>
-            <div className="bg-white p-8 rounded-xl shadow-lg transform hover:scale-105 transition-all duration-200">
+            <div className="bg-white p-6 sm:p-8 rounded-xl shadow-lg transform hover:scale-105 transition-all duration-200">
               <div className="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-6">
                 <span className="text-3xl">🧠</span>
               </div>
@@ -371,7 +371,7 @@ export default function PrimarySchoolTuition() {
           <div className="inline-block">
             <Button
               onClick={() => formRef.current?.scrollIntoView({ behavior: 'smooth' })}
-              className="text-[18.7px] font-bold px-8 py-4 bg-accent-fill text-white hover:bg-accent-fill-hover rounded-full shadow-lg transform hover:scale-105 transition-all duration-200"
+              className="h-auto text-[18.7px] font-bold max-w-full whitespace-normal px-6 py-3.5 sm:px-8 sm:py-4 bg-accent-fill text-white hover:bg-accent-fill-hover rounded-full shadow-lg transform hover:scale-105 transition-all duration-200"
             >
               Request a PSLE Tutor Now
             </Button>

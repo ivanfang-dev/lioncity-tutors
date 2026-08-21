@@ -143,24 +143,24 @@ export default function JCTuition() {
         </section>
 
         {/* Section 2: Why A-Levels Matter */}
-        <section className="bg-gradient-to-br from-blue-50 to-sky-50 p-12 rounded-2xl">
+        <section className="bg-gradient-to-br from-blue-50 to-sky-50 p-6 sm:p-12 rounded-2xl">
           <h2 className="section-title text-primary mb-8 text-center">Why A-Level Success Matters for Your Child's Future</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="bg-white p-8 rounded-xl shadow-lg transform hover:scale-105 transition-all duration-200">
+            <div className="bg-white p-6 sm:p-8 rounded-xl shadow-lg transform hover:scale-105 transition-all duration-200">
               <div className="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-6">
                 <span className="text-3xl">🎓</span>
               </div>
               <h3 className="font-bold text-xl text-primary text-center mb-4">Unlock University Doors</h3>
               <p className="text-gray-600 text-center">Secure admission to top local and overseas universities with strong A-Level results</p>
             </div>
-            <div className="bg-white p-8 rounded-xl shadow-lg transform hover:scale-105 transition-all duration-200">
+            <div className="bg-white p-6 sm:p-8 rounded-xl shadow-lg transform hover:scale-105 transition-all duration-200">
               <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-6">
                 <span className="text-3xl">💼</span>
               </div>
               <h3 className="font-bold text-xl text-primary text-center mb-4">Set Stage for Success</h3>
               <p className="text-gray-600 text-center">Build a strong foundation for a rewarding career in your chosen field</p>
             </div>
-            <div className="bg-white p-8 rounded-xl shadow-lg transform hover:scale-105 transition-all duration-200">
+            <div className="bg-white p-6 sm:p-8 rounded-xl shadow-lg transform hover:scale-105 transition-all duration-200">
               <div className="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-6">
                 <span className="text-3xl">🧠</span>
               </div>
@@ -997,7 +997,7 @@ export default function JCTuition() {
         </section>
 
         {/* Section 5: A-Level Study Guides */}
-        <section className="bg-gradient-to-br from-blue-50 to-indigo-50 p-12 rounded-2xl">
+        <section className="bg-gradient-to-br from-blue-50 to-indigo-50 p-6 sm:p-12 rounded-2xl">
           <RelatedGuides slug="jc-tuition" heading="Comprehensive A-Level Study Guides" />
         </section>
 
@@ -1091,7 +1091,7 @@ export default function JCTuition() {
             </p>
             <Button
                 onClick={() => formRef.current?.scrollIntoView({ behavior: 'smooth' })}
-                className="text-[18.7px] font-bold px-10 py-4 bg-accent-fill text-white hover:bg-accent-fill-hover rounded-full shadow-lg transform hover:scale-105 transition-all duration-200"
+                className="h-auto text-[18.7px] font-bold max-w-full whitespace-normal px-6 py-3.5 sm:px-10 sm:py-4 bg-accent-fill text-white hover:bg-accent-fill-hover rounded-full shadow-lg transform hover:scale-105 transition-all duration-200"
             >
                 Request a JC Tutor Now
             </Button>

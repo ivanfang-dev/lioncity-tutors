@@ -106,15 +106,16 @@ export default function BiologyTuition() {
             />
           </div>
 
-          <div className="flex justify-center gap-4">
-            <Link href="/request-tutor">
-              <Button className="text-[18.7px] font-bold px-8 py-4 bg-accent-fill hover:bg-accent-fill-hover text-white rounded-full shadow-lg transform hover:scale-105 transition-all duration-200">
+          {/* Stacked below sm: the two pills are 476px side by side and overflow a phone. */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <Link href="/request-tutor" className="w-full sm:w-auto">
+              <Button className="h-auto w-full sm:w-auto text-[18.7px] font-bold max-w-full whitespace-normal px-6 py-3.5 sm:px-8 sm:py-4 bg-accent-fill hover:bg-accent-fill-hover text-white rounded-full shadow-lg transform hover:scale-105 transition-all duration-200">
                 Request a Biology Tutor
               </Button>
             </Link>
 
-            <Link href="#why-tuition" className="inline-block">
-              <Button className="text-lg px-6 py-4 bg-white border border-primary text-primary hover:bg-blue-50 font-semibold rounded-full shadow-sm transition-all duration-200">
+            <Link href="#why-tuition" className="w-full sm:w-auto">
+              <Button className="h-auto w-full sm:w-auto text-lg max-w-full whitespace-normal px-6 py-3.5 sm:py-4 bg-white border border-primary text-primary hover:bg-blue-50 font-semibold rounded-full shadow-sm transition-all duration-200">
                 Why Biology Tuition?
               </Button>
             </Link>

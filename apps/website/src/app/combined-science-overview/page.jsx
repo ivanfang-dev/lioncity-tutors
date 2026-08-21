@@ -116,7 +116,7 @@ export default function CombinedScienceOverview() {
             <h3 className="font-semibold text-blue-800 mb-3">📚 Assessment Overview (All Combinations)</h3>
             
             <div className="overflow-x-auto">
-              <table className="w-full bg-white rounded-lg shadow-sm">
+              <table className="w-full min-w-[34rem] bg-white rounded-lg shadow-sm">
                 <thead className="bg-blue-100">
                   <tr className="text-sm">
                     <th className="p-3 text-left font-semibold">Combination</th>
@@ -188,7 +188,7 @@ export default function CombinedScienceOverview() {
           <div className="bg-white p-4 rounded-lg">
             <h4 className="font-semibold text-[#0474BA] mb-3">O-Level Combined Science paper structure:</h4>
             <div className="overflow-x-auto">
-              <table className="w-full bg-white rounded-lg shadow-sm">
+              <table className="w-full min-w-[34rem] bg-white rounded-lg shadow-sm">
                 <thead className="bg-sky-100">
                   <tr className="text-sm">
                     <th className="p-3 text-left font-semibold">Combination</th>

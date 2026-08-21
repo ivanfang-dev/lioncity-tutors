@@ -66,7 +66,7 @@ const SubjectSpotlightSection = () => {
             Find a Tutor for<br className="hidden sm:block" /> Every Subject
           </h2>
           <p className="text-lg md:text-xl text-text-default/80 max-w-3xl mx-auto leading-relaxed px-4">
-            We have specialists for all core subjects and levels. Get started with one of our most requested subjects.
+            We have specialists for all core subjects and levels. Get started with some of our most requested subjects.
           </p>
         </motion.div>
 

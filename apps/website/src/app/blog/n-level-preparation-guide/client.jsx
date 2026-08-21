@@ -1,6 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import { enter, mount } from '@/lib/motion';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
@@ -150,37 +151,29 @@ const NLevelPrepClient = () => {
       <main>
         {/* Hero Section */}
         <motion.section
-          initial={{ opacity: 0, y: -50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: 'easeOut' }}
+          {...mount()}
           className="relative text-center py-35 px-4 shadow-lg overflow-hidden bg-cover bg-top"
           style={{ backgroundImage: "url('/final.webp')" }}
         >
           <div className="absolute inset-0 bg-black opacity-50"></div>
           <div className="relative z-10">
             <motion.h1
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
+              {...mount(1)}
               className="text-5xl md:text-6xl font-extrabold text-white mb-4 tracking-tight"
             >
               Master the N Levels in 2026
             </motion.h1>
             <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.4 }}
+              {...mount(2)}
               className="text-lg md:text-xl text-gray-200 mb-10 max-w-3xl mx-auto"
             >
               Your complete guide to expert strategies, proven study plans, and essential tips for excelling in the Singapore GCE N-Level examinations.
             </motion.p>
             <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.5, delay: 0.6 }}
+              {...mount(3)}
             >
                 <Link href="/request-tutor" passHref>
-                    <Button size="lg" className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 px-8 text-lg rounded-full shadow-lg transform hover:scale-105 transition-transform duration-300">
+                    <Button size="lg" className="h-auto bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 px-8 text-lg rounded-full shadow-lg transform hover:scale-105 transition-transform duration-300">
                         Get a Free Consultation <ArrowRight className="ml-2 h-5 w-5" />
                     </Button>
                 </Link>
@@ -244,10 +237,7 @@ const NLevelPrepClient = () => {
 
         {/* Introduction Section */}
         <motion.section
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true, amount: 0.3 }}
-          transition={{ duration: 0.7 }}
+          {...enter()}
           className="py-20 px-4"
         >
           <div className="max-w-5xl mx-auto">
@@ -257,9 +247,9 @@ const NLevelPrepClient = () => {
                 Understanding the significance of this examination is the first step toward success.
               </p>
             </div>
-            <Card className="bg-white p-8 rounded-xl shadow-md border-l-4 border-blue-500">
-              <CardContent className="text-lg text-gray-700 space-y-6">
-                  <div className="flex items-start space-x-4">
+            <Card className="bg-white p-5 sm:p-8 rounded-xl shadow-md border-l-4 border-blue-500">
+              <CardContent className="px-0 text-lg text-gray-700 space-y-6">
+                  <div className="flex items-start gap-3 sm:gap-4">
                       <BookOpenCheck className="h-8 w-8 text-blue-500 mt-1 flex-shrink-0" />
                       <p>
                       The GCE N-Level (Normal Level) examinations represent a pivotal moment in a student's academic life in Singapore. Far more than just another test, the N-Levels serve as a crucial gateway, influencing future educational pathways and career opportunities. A strong performance can unlock doors to various post-secondary options, providing a solid foundation for continued learning and personal growth.
@@ -286,10 +276,7 @@ const NLevelPrepClient = () => {
               {Object.entries(subjectData).map(([subject, data], index) => (
                 <motion.div
                   key={subject}
-                  initial={{ opacity: 0, y: 50 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, amount: 0.5 }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  {...enter(index)}
                 >
                   <Card className="h-full shadow-lg hover:shadow-2xl transition-shadow duration-300 rounded-xl overflow-hidden">
                     <CardHeader className="bg-blue-600 text-white p-6">
@@ -320,29 +307,28 @@ const NLevelPrepClient = () => {
               <h2 className="section-title text-primary mb-4">Your N-Level Success Roadmap</h2>
               <p className="text-lg text-gray-600">A strategic timeline to guide your preparation from start to finish.</p>
             </div>
+            {/* Alternating two-column below md gave each card a 97px text column.
+                On mobile the spine moves left and every row is one full-width column. */}
             <div className="relative">
-              <div className="absolute left-1/2 top-0 bottom-0 w-1 bg-gray-200 transform -translate-x-1/2"></div>
+              <div className="absolute left-6 md:left-1/2 top-0 bottom-0 w-1 bg-gray-200 -translate-x-1/2"></div>
               {timelineData.map((item, index) => (
                 <motion.div
                   key={index}
-                  className="mb-12 flex items-center w-full"
-                  initial={{ opacity: 0, x: index % 2 === 0 ? -100 : 100 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true, amount: 0.5 }}
-                  transition={{ duration: 0.6 }}
+                  className="relative mb-12 flex w-full flex-col items-start gap-2 pl-16 md:flex-row md:items-center md:gap-0 md:pl-0"
+                  {...enter(index)}
                 >
-                  <div className={`w-1/2 ${index % 2 === 0 ? 'pr-8 text-right' : 'pl-8'}`}>
+                  <div className={`w-full md:w-1/2 ${index % 2 === 0 ? 'md:pr-8 md:text-right' : 'md:pl-8'}`}>
                     <div className="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
                       <h3 className="text-xl font-bold text-blue-800 mb-2">{item.title}</h3>
                       <p className="text-gray-600">{item.description}</p>
                     </div>
                   </div>
-                  <div className="w-12 h-12 rounded-full flex items-center justify-center z-10 absolute left-1/2 transform -translate-x-1/2">
+                  <div className="absolute left-6 top-0 z-10 flex h-12 w-12 -translate-x-1/2 items-center justify-center rounded-full md:left-1/2 md:top-1/2 md:-translate-y-1/2">
                       <div className={`w-12 h-12 rounded-full flex items-center justify-center ${item.bgColor} shadow-md`}>
                           {item.icon}
                       </div>
                   </div>
-                  <div className={`w-1/2 ${index % 2 === 0 ? 'pl-8' : 'pr-8 text-right'}`}>
+                  <div className={`order-first w-full md:order-none md:w-1/2 ${index % 2 === 0 ? 'md:pl-8' : 'md:pr-8 md:text-right'}`}>
                        <p className="text-lg font-semibold text-gray-500">{item.period}</p>
                   </div>
                 </motion.div>
@@ -367,10 +353,7 @@ const NLevelPrepClient = () => {
               {mistakes.map((mistake, index) => (
                 <motion.div
                   key={index}
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true, amount: 0.5 }}
-                  transition={{ duration: 0.5 }}
+                  {...enter(index)}
                 >
                   <div className="bg-white p-6 rounded-lg shadow-md border border-gray-200 h-full">
                     <h3 className="text-2xl font-bold text-red-700 mb-3 flex items-center">
@@ -396,7 +379,7 @@ const NLevelPrepClient = () => {
               <p className="text-lg text-gray-600">A healthy mind and body are your greatest assets during the exam period.</p>
             </div>
             <div className="grid md:grid-cols-3 gap-8 text-center">
-              <motion.div initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.1 }} className="p-6">
+              <motion.div {...enter(0)} className="p-6">
                 <div className="flex justify-center mb-4">
                   <div className="bg-green-100 p-4 rounded-full">
                     <Brain className="h-12 w-12 text-green-600" />
@@ -405,7 +388,7 @@ const NLevelPrepClient = () => {
                 <h3 className="text-2xl font-semibold text-gray-800 mb-2">Manage Stress Effectively</h3>
                 <p className="text-gray-600">Incorporate short, regular breaks (Pomodoro Technique) into your study schedule. Practice mindfulness or deep breathing exercises when you feel overwhelmed. Talking about your anxieties with family, friends, or a school counsellor can also be very helpful.</p>
               </motion.div>
-              <motion.div initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.2 }} className="p-6">
+              <motion.div {...enter(1)} className="p-6">
                 <div className="flex justify-center mb-4">
                   <div className="bg-blue-100 p-4 rounded-full">
                     <Moon className="h-12 w-12 text-blue-600" />
@@ -414,7 +397,7 @@ const NLevelPrepClient = () => {
                 <h3 className="text-2xl font-semibold text-gray-800 mb-2">Ensure Quality Sleep</h3>
                 <p className="text-gray-600">Aim for 7-9 hours of quality sleep per night. Sleep is not a luxury; it is crucial for memory consolidation and cognitive function. Avoid screens an hour before bed and establish a consistent sleep schedule to improve sleep quality. Last-minute cramming is less effective than a well-rested brain.</p>
               </motion.div>
-              <motion.div initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.3 }} className="p-6">
+              <motion.div {...enter(2)} className="p-6">
                 <div className="flex justify-center mb-4">
                   <div className="bg-red-100 p-4 rounded-full">
                     <Heart className="h-12 w-12 text-red-600" />
@@ -438,10 +421,7 @@ const NLevelPrepClient = () => {
                     {pathways.map((path, index) => (
                         <motion.div
                             key={index}
-                            initial={{ opacity: 0, y: 50 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true, amount: 0.5 }}
-                            transition={{ duration: 0.5, delay: index * 0.1 }}
+                            {...enter(index)}
                         >
                             <Card className="h-full shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-lg overflow-hidden flex flex-col">
                                 <CardHeader className={`bg-gradient-to-br ${path.color} text-white p-6 flex flex-row items-center space-x-4`}>
@@ -462,10 +442,7 @@ const NLevelPrepClient = () => {
         <section className="py-20 px-4">
           <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
             <motion.div
-              initial={{ opacity: 0, x: -50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true, amount: 0.5 }}
-              transition={{ duration: 0.7 }}
+              {...enter()}
             >
             <Image 
               src="/jc-tuition_optimized.webp" 
@@ -477,10 +454,7 @@ const NLevelPrepClient = () => {
             />
             </motion.div>
             <motion.div
-              initial={{ opacity: 0, x: 50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true, amount: 0.5 }}
-              transition={{ duration: 0.7 }}
+              {...enter(1)}
             >
               <h2 className="section-title text-primary mb-6">Can Private Tuition Make a Critical Difference?</h2>
               <p className="text-lg text-gray-700 mb-6">
@@ -500,7 +474,7 @@ const NLevelPrepClient = () => {
                   <span><strong className="font-semibold">Master Exam-Oriented Strategies:</strong> Learn effective answering techniques, keyword usage, and time management skills directly from an expert who understands the N-Level marking criteria inside and out.</span>
                 </li>
               </ul>
-              <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white font-bold">
+              <Button asChild size="lg" className="h-auto py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold">
                 <Link href="/request-tutor">Find a Specialist N-Level Tutor</Link>
               </Button>
             </motion.div>
@@ -515,17 +489,17 @@ const NLevelPrepClient = () => {
                     <p className="text-lg text-gray-600">Your strategy in the final days is just as important as the months of preparation.</p>
                 </div>
                 <div className="grid md:grid-cols-3 gap-8">
-                    <motion.div initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.1 }} className="p-6 bg-white rounded-lg shadow-md text-center">
+                    <motion.div {...enter(0)} className="p-6 bg-white rounded-lg shadow-md text-center">
                         <ClipboardCheck className="h-12 w-12 text-blue-500 mx-auto mb-4" />
                         <h3 className="text-xl font-semibold text-gray-800 mb-2">Organize Your Materials</h3>
                         <p className="text-gray-600">The day before, pack your bag with everything you need: student ID, entry proof, stationery (pens, pencils, ruler, calculator), and a watch. Double-check the exam venue and time. This simple step prevents last-minute panic and stress.</p>
                     </motion.div>
-                    <motion.div initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.2 }} className="p-6 bg-white rounded-lg shadow-md text-center">
+                    <motion.div {...enter(1)} className="p-6 bg-white rounded-lg shadow-md text-center">
                         <Bell className="h-12 w-12 text-yellow-500 mx-auto mb-4" />
                         <h3 className="text-xl font-semibold text-gray-800 mb-2">Light Revision, No Cramming</h3>
                         <p className="text-gray-600">Do not try to learn anything new. Your brain needs time to consolidate information. Focus on light revision of your summary notes, key formulas, and the "mistake book" you've kept. The goal is to feel confident, not overwhelmed.</p>
                     </motion.div>
-                    <motion.div initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.3 }} className="p-6 bg-white rounded-lg shadow-md text-center">
+                    <motion.div {...enter(2)} className="p-6 bg-white rounded-lg shadow-md text-center">
                         <Briefcase className="h-12 w-12 text-green-500 mx-auto mb-4" />
                         <h3 className="text-xl font-semibold text-gray-800 mb-2">Rest, Relax, and Execute</h3>
                         <p className="text-gray-600">Get a full night of quality sleep. On the exam day, have a nutritious, balanced breakfast. Arrive at the examination hall at least 30 minutes early to settle in and calm your nerves. Stay positive, trust your preparation, and read every question carefully.</p>
@@ -566,10 +540,7 @@ const NLevelPrepClient = () => {
 
         {/* Call to Action Section */}
         <motion.section
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true, amount: 0.5 }}
-          transition={{ duration: 0.8 }}
+          {...enter()}
           className="py-24 px-4 bg-gradient-to-r from-blue-700 to-indigo-800 text-white"
         >
           <div className="max-w-4xl mx-auto text-center">
@@ -580,8 +551,9 @@ const NLevelPrepClient = () => {
               Don't leave your future to chance. Our team of specialist N-Level tutors at LionCity Tutors is ready to provide the personalized support and expert guidance you need to achieve your academic goals and unlock your desired post-secondary pathway.
             </p>
             <Button
+              asChild
               size="lg"
-              className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 px-10 text-lg rounded-full shadow-lg transform hover:scale-105 transition-transform duration-300"
+              className="h-auto bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 px-10 text-lg rounded-full shadow-lg transform hover:scale-105 transition-transform duration-300"
             >
               <Link href="/request-tutor">Request a Tutor Now</Link>
             </Button>

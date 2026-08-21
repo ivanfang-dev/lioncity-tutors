@@ -197,7 +197,7 @@ const Resources = ({ setActivePdf }) => (
         <CardDescription>A customizable template to balance study, breaks, and family time.</CardDescription>
       </CardHeader>
       <CardContent>
-          <Button className="w-full bg-primary text-text-inverse hover:bg-primary/90" onClick={() => setActivePdf('planner')}>
+          <Button className="min-h-11 w-full bg-primary text-text-inverse hover:bg-primary/90" onClick={() => setActivePdf('planner')}>
             <Download className="mr-2 h-4 w-4" /> View & Print PDF
           </Button>
       </CardContent>
@@ -208,7 +208,7 @@ const Resources = ({ setActivePdf }) => (
         <CardDescription>A checklist of the top 10 problem-solving heuristics for PSLE Math.</CardDescription>
       </CardHeader>
       <CardContent>
-          <Button className="w-full bg-primary text-text-inverse hover:bg-primary/90" onClick={() => setActivePdf('heuristics')}>
+          <Button className="min-h-11 w-full bg-primary text-text-inverse hover:bg-primary/90" onClick={() => setActivePdf('heuristics')}>
             <Download className="mr-2 h-4 w-4" /> View & Print PDF
           </Button>
       </CardContent>
@@ -219,7 +219,7 @@ const Resources = ({ setActivePdf }) => (
         <CardDescription>Actionable tips for managing your child's (and your own) anxiety.</CardDescription>
       </CardHeader>
       <CardContent>
-          <Button variant="outline" className="w-full bg-primary text-text-inverse hover:bg-primary/90" onClick={() => setActivePdf('guide')}>
+          <Button variant="outline" className="min-h-11 w-full bg-primary text-text-inverse hover:bg-primary/90" onClick={() => setActivePdf('guide')}>
             <Download className="mr-2 h-4 w-4" /> View & Print PDF
           </Button>
       </CardContent>
@@ -280,7 +280,7 @@ export default function PSLEPreparationGuideClient() {
           </p>
           <div className="mt-8">
             <Link href="#final-cta">
-              <Button size="lg" className="bg-accent-fill text-text-inverse hover:bg-accent-fill-hover shadow-lg transform hover:scale-105 transition-transform">
+              <Button size="lg" className="h-auto py-3 px-6 text-[18.7px] font-bold rounded-full max-w-full whitespace-normal bg-accent-fill text-text-inverse hover:bg-accent-fill-hover shadow-lg transform hover:scale-105 transition-transform">
                 Get Expert PSLE Support Today
               </Button>
             </Link>
@@ -532,7 +532,7 @@ export default function PSLEPreparationGuideClient() {
                 </blockquote>
                 <div className="mt-8">
                    <Link href="/request-tutor">
-                    <Button size="lg" className="text-xl bg-accent-fill text-text-inverse hover:bg-accent-fill-hover">
+                    <Button size="lg" className="text-xl font-bold h-auto max-w-full whitespace-normal py-3 bg-accent-fill text-text-inverse hover:bg-accent-fill-hover">
                       Request a Specialist Tutor
                     </Button>
                   </Link>

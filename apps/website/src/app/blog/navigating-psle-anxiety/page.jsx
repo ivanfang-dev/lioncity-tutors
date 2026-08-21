@@ -85,8 +85,8 @@ export default function NavigatingPSLEAnxiety() {
             <p>In a system graded by numbers, it's vital to shift the focus at home. This builds a "growth mindset" and detaches your child's self-worth from their final AL score.</p>
             <div className="bg-green-50 p-6 rounded-lg mt-4">
                 <h4 className="font-semibold text-green-800 mb-2">Practical Language Shifts:</h4>
-                <div className="grid grid-cols-2 gap-4 text-sm">
-                    <div className="border-r pr-4">
+                <div className="grid grid-cols-1 gap-4 text-sm sm:grid-cols-2">
+                    <div className="border-b pb-4 sm:border-b-0 sm:border-r sm:pb-0 sm:pr-4">
                         <p className="font-bold text-red-600">Instead of asking this:</p>
                         <p className="mt-2 italic">"Did you get AL1 on your practice paper?"</p>
                     </div>

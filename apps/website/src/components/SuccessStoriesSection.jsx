@@ -160,16 +160,17 @@ export default function SuccessStoriesSection() {
                 </div>
 
                 <div className="px-6 md:px-8">
-                    <div className="flex justify-between items-center mb-2 text-sm font-semibold">
+                    {/* Stacked below sm: the two pairs don't fit one row on a phone. */}
+                    <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between mb-2 text-sm font-semibold">
                         <div className="flex items-center gap-2">
                             <span className="text-text-default/70">Before:</span>
-                            <span className="bg-red-100 text-red-700 px-2.5 py-1 rounded-full">
+                            <span className="bg-red-100 text-red-700 px-2.5 py-1 rounded-full whitespace-nowrap">
                                 {story.before}
                             </span>
                         </div>
                         <div className="flex items-center gap-2">
                             <span className="text-primary">After:</span>
-                            <span className="bg-primary/10 text-primary px-2.5 py-1 rounded-full">
+                            <span className="bg-primary/10 text-primary px-2.5 py-1 rounded-full whitespace-nowrap">
                                 {story.after}
                             </span>
                         </div>

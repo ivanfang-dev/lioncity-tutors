@@ -69,3 +69,24 @@ export function enter(index = 0, reduced = false) {
     }
   };
 }
+
+/**
+ * The on-load entrance, for elements above the fold that animate on mount rather
+ * than on scroll. Same safety rule as `enter()`: rests at the final value, so the
+ * server-rendered HTML is never `opacity: 0`.
+ *
+ * @param {number} index sibling position, for the stagger
+ * @param {boolean} reduced result of framer's `useReducedMotion()`
+ */
+export function mount(index = 0, reduced = false) {
+  if (reduced) return {};
+  return {
+    initial: { y: 0 },
+    animate: { y: [16, 0] },
+    transition: {
+      duration: DURATION.base,
+      delay: index * STAGGER,
+      ease: EASE_STANDARD
+    }
+  };
+}
