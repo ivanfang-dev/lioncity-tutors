@@ -30,7 +30,7 @@ export const HUBS = {
     title: 'O-Level Preparation Guide',
     anchor: 'Complete O-Level preparation guide',
     spokes: [
-      'o-level-english', 'o-level-math', 'o-level-physics', 'o-level-chemistry',
+      'o-level-english', 'o-level-chinese', 'o-level-math', 'o-level-physics', 'o-level-chemistry',
       'o-level-biology', 'o-level-history',
       'combined-science-overview', 'combined-chemistry-physics',
       'combined-chemistry-biology', 'combined-physics-biology', 'o-level-tuition',
@@ -122,6 +122,11 @@ export const SPOKES = {
     slug: 'o-level-english', url: '/o-level-english', hub: 'o-level-prep',
     title: 'O-Level English', anchor: 'O-Level English paper strategies',
     blurb: 'Essay, comprehension and oral technique, paper by paper.',
+  },
+  'o-level-chinese': {
+    slug: 'o-level-chinese', url: '/o-level-chinese', hub: 'o-level-prep',
+    title: 'O-Level Chinese', anchor: 'O-Level Chinese guide',
+    blurb: 'Paper weightings, the 实用文 email format and 口试 technique.',
   },
   'o-level-math': {
     slug: 'o-level-math', url: '/o-level-math', hub: 'o-level-prep',

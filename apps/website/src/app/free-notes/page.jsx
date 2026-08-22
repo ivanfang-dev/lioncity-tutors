@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ArrowRight, FileText, HelpCircle } from 'lucide-react';
+import { ArrowRight, ExternalLink, FileText, HelpCircle } from 'lucide-react';
 import GuideSchema from '@/components/seo/GuideSchema';
 import { GuideCTA, SectionHeading, ICON_STROKE } from '@/components/guide';
 import { getPage } from '@/lib/seo/links.mjs';
@@ -7,6 +7,8 @@ import { MATCH_TIME } from '@/data/promises';
 import NoteLibrary from './NoteLibrary';
 import { NOTE_SECTIONS } from './sections.mjs';
 import { FREE_NOTES_FAQS } from './faqs.mjs';
+import { EXTERNAL_NOTES } from './externalResources.mjs';
+import { NOTES_DISCLAIMER } from './disclaimer.mjs';
 
 const SLUG = 'free-notes';
 
@@ -119,6 +121,47 @@ export default function FreeNotesPage() {
 
           <NoteLibrary />
 
+          {/* Collections hosted elsewhere: described here, downloaded there. */}
+          <section aria-labelledby="elsewhere" className="mx-auto max-w-5xl">
+            <SectionHeading id="elsewhere" icon={ExternalLink}>
+              Where else to find free notes
+            </SectionHeading>
+            <p className="mb-6 text-gray-700 leading-relaxed text-pretty">
+              These collections are hosted and maintained by other people, not by us. We have read
+              through each one and summarised what is inside so you know whether it is worth your
+              time. Links open in a new tab.
+            </p>
+            <div className="grid gap-6 sm:grid-cols-2">
+              {EXTERNAL_NOTES.map((resource) => (
+                <article
+                  key={resource.id}
+                  id={resource.id}
+                  className="flex flex-col scroll-mt-24 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm"
+                >
+                  <h3 className="text-lg font-bold text-gray-900 text-balance">{resource.subject}</h3>
+                  <p className="mt-1 text-xs font-semibold uppercase tracking-wide text-gray-500">
+                    {resource.host} &middot; {resource.fileCount}
+                  </p>
+                  <p className="mt-3 flex-1 text-gray-700 leading-relaxed text-pretty">{resource.summary}</p>
+                  <a
+                    href={resource.url}
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                    className="group mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-[#F17720]"
+                  >
+                    <ExternalLink className="h-4 w-4" strokeWidth={ICON_STROKE} aria-hidden="true" />
+                    Open the {resource.subject} folder
+                    <ArrowRight
+                      className="h-4 w-4 transition-transform group-hover:translate-x-0.5"
+                      strokeWidth={ICON_STROKE}
+                      aria-hidden="true"
+                    />
+                  </a>
+                </article>
+              ))}
+            </div>
+          </section>
+
           <section aria-labelledby="faq" className="mx-auto max-w-3xl">
             <SectionHeading id="faq" icon={HelpCircle}>
               Free study notes: common questions
@@ -141,6 +184,23 @@ export default function FreeNotesPage() {
               whatsappHref={whatsappHref}
             />
           </div>
+
+          {/* Small print: notice on third-party material plus a takedown address. */}
+          <section aria-labelledby="notes-disclaimer" className="mx-auto max-w-3xl border-t border-gray-200 pt-8 pb-4">
+            <h2 id="notes-disclaimer" className="text-sm font-semibold text-gray-900">
+              About these materials
+            </h2>
+            <dl className="mt-4 space-y-3">
+              {NOTES_DISCLAIMER.map((item) => (
+                <div key={item.title}>
+                  <dt className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+                    {item.title}
+                  </dt>
+                  <dd className="mt-1 text-sm leading-relaxed text-gray-600 text-pretty">{item.body}</dd>
+                </div>
+              ))}
+            </dl>
+          </section>
         </div>
       </div>
     </>
