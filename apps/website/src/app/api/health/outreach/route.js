@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server';
-import mongoose from 'mongoose';
 import { dbConnect } from '@/lib/mongoose';
 import { Assignment, Meta } from '@lioncity/shared/server-exports.js';
 import { assessOutreachHealth, formatHealthAlert } from '@lioncity/shared/utils/outreachHealth.js';
