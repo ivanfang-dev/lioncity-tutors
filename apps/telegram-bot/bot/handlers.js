@@ -923,7 +923,7 @@ function getNationalityMenu() {
 }
 
 function getDOBMenu(tutor) {
-  const dob = tutor.dateOfBirth || { day: null, month: null, year: null };
+  const dob = tutor.dob || { day: null, month: null, year: null };
   const dayText = dob.day ? `📅 Day: ${dob.day}` : '📅 Set Day';
   const monthText = dob.month ? `📅 Month: ${dob.month}` : '📅 Set Month';
   const yearText = dob.year ? `📅 Year: ${dob.year}` : '📅 Set Year';
@@ -2653,11 +2653,8 @@ async function handleDOBDayEdit(bot, chatId, text, userSessions, Tutor) {
       return await safeSend(bot, chatId, '❌ Please enter a valid day (1-31):');
     }
     
-    if (!tutor.dateOfBirth) {
-      tutor.dateOfBirth = { day: null, month: null, year: null };
-    }
-    
-    tutor.dateOfBirth.day = day;
+    // Schema field is `dob`, and it stores day/month/year as strings.
+    tutor.dob.day = String(day);
     await tutor.save();
     
     session.state = ApplicationStates.IDLE;
@@ -2685,11 +2682,7 @@ async function handleDOBMonthEdit(bot, chatId, text, userSessions, Tutor) {
       return await safeSend(bot, chatId, '❌ Please enter a valid month (1-12):');
     }
     
-    if (!tutor.dateOfBirth) {
-      tutor.dateOfBirth = { day: null, month: null, year: null };
-    }
-    
-    tutor.dateOfBirth.month = month;
+    tutor.dob.month = String(month);
     await tutor.save();
     
     session.state = ApplicationStates.IDLE;
@@ -2718,11 +2711,7 @@ async function handleDOBYearEdit(bot, chatId, text, userSessions, Tutor) {
       return await safeSend(bot, chatId, `❌ Please enter a valid birth year (${currentYear - 80}-${currentYear - 16}):`);
     }
     
-    if (!tutor.dateOfBirth) {
-      tutor.dateOfBirth = { day: null, month: null, year: null };
-    }
-    
-    tutor.dateOfBirth.year = year;
+    tutor.dob.year = String(year);
     await tutor.save();
     
     session.state = ApplicationStates.IDLE;
