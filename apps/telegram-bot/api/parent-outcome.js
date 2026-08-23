@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 import { waitUntil } from '@vercel/functions';
 import { recordParentPick, recordParentReject, resumeOutreach, REJECT_REASONS } from '../utils/parentOutcome.js';
 import { notifyOwner } from '../utils/ownerAlert.js';
+import { escapeMd } from '../utils/markdown.js';
 
 // Lets the ops console record a parent outcome through the SAME recorder the Telegram buttons use
 // (utils/parentOutcome.js) — the console never writes outreach state itself, so the two surfaces
@@ -68,11 +69,11 @@ export default async function handler(req, res) {
         try {
           const wave = await resumeOutreach(result.assignment, { botUsername: BOT_USERNAME });
           await notifyOwner(wave.exhausted
-            ? `📭 *No fresh matching tutors left* for *${result.assignment.title}* — you've contacted everyone in the pool. You'll need to follow up manually.`
-            : `🔄 *Resuming outreach* for *${result.assignment.title}* — reason logged: _${reason}_. Messaging more tutors.`);
+            ? `📭 *No fresh matching tutors left* for *${escapeMd(result.assignment.title)}* — you've contacted everyone in the pool. You'll need to follow up manually.`
+            : `🔄 *Resuming outreach* for *${escapeMd(result.assignment.title)}* — reason logged: _${reason}_. Messaging more tutors.`);
         } catch (err) {
           console.error('parent-outcome: resume outreach failed:', err.message);
-          await notifyOwner(`❌ Couldn't resume outreach for *${result.assignment.title}* — please retry from Telegram.`);
+          await notifyOwner(`❌ Couldn't resume outreach for *${escapeMd(result.assignment.title)}* — please retry from Telegram.`);
         }
       })());
       return res.status(200).json({ ok: true, status: 'Open', rejectedCount: result.rejectedCount });

@@ -39,11 +39,31 @@ export async function notifyOwner(text, replyMarkup, { parseMode = 'Markdown', d
     // Suppress the link preview card when the body carries a wa.me paste-fallback link.
     if (disableWebPagePreview) body.disable_web_page_preview = true;
     if (replyMarkup) body.reply_markup = replyMarkup;
-    await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+    const send = (payload) => fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
+      body: JSON.stringify(payload)
     });
+
+    const res = await send(body);
+    if (res.ok) return;
+
+    // Telegram answered but refused. Almost always "can't parse entities": these alerts
+    // interpolate owner-typed titles and tutor names, and one stray _ or * in them is enough.
+    // The response was previously ignored, so the alert vanished — and the alert that vanishes
+    // is the one that matters (a shortlist is ready, outreach ran dry). Re-send it as plain
+    // text: worse-looking beats unsent.
+    const detail = await res.json().catch(() => ({}));
+    console.warn(`notifyOwner: Telegram rejected the alert (HTTP ${res.status}): ${detail.description || 'no description'}`);
+    if (!parseMode) return;
+
+    const plain = { ...body };
+    delete plain.parse_mode;
+    const retry = await send(plain);
+    if (!retry.ok) {
+      const retryDetail = await retry.json().catch(() => ({}));
+      console.error(`notifyOwner: plain-text retry also failed (HTTP ${retry.status}): ${retryDetail.description || 'no description'}`);
+    }
   } catch (err) {
     console.warn('notifyOwner failed:', err.message);
   }

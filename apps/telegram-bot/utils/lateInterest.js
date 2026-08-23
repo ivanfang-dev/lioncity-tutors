@@ -1,6 +1,7 @@
 import { Tutor } from '../../../packages/shared/server-exports.js';
 import { shortlistScore, shortlistReason } from './tutorMatcher.js';
 import { notifyOwner, opsButtonRow } from './ownerAlert.js';
+import { escapeMd } from './markdown.js';
 
 // A tutor who says yes (or applies) after the shortlist has already gone out. Their reply used to
 // be dropped on the floor because outreach was Fulfilled. Now it's recorded, scored against the
@@ -68,7 +69,7 @@ export async function handleLateInterest(assignment, contact) {
 
   const reason = shortlistReason(candidateTutor, assignment, contact.quotedRate ?? null);
   const beats = outcome.weakest
-    ? `Outranks #${outcome.weakest.shortlistRank} ${outcome.weakest.tutorName} — would sit at #${outcome.wouldRank}.`
+    ? `Outranks #${outcome.weakest.shortlistRank} ${escapeMd(outcome.weakest.tutorName)} — would sit at #${outcome.wouldRank}.`
     : 'No one is on the shortlist yet.';
 
   const rows = [[{
@@ -79,9 +80,9 @@ export async function handleLateInterest(assignment, contact) {
   if (opsRow) rows.push(opsRow);
 
   await notifyOwner(
-    `⭐ *Stronger tutor available* — *${assignment.title}*\n` +
-    `*${candidate.tutorName}* said yes after the shortlist went out.\n` +
-    `    ${reason}\n\n${beats}`,
+    `⭐ *Stronger tutor available* — *${escapeMd(assignment.title)}*\n` +
+    `*${escapeMd(candidate.tutorName)}* said yes after the shortlist went out.\n` +
+    `    ${escapeMd(reason)}\n\n${beats}`,
     { inline_keyboard: rows }
   );
   return { alerted: true, stronger: true };

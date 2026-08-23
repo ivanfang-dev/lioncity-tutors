@@ -4,6 +4,7 @@ import { recordApplicationInterest } from '../../../packages/shared/utils/applic
 import { TIME_SLOTS, formatTimeSlots } from '../../../packages/shared/utils/timeSlots.js';
 import { formatTutorProfileForParent, formatTutorProfilesForParent } from '../utils/parentProfile.js';
 import { formatAssignmentForChannel } from '../utils/channelFormat.js';
+import { escapeMd } from '../utils/markdown.js';
 import RateValidator from '../../../packages/shared/utils/RateValidator.js';
 import ErrorHandler from '../utils/ErrorHandler.js';
 import { notifyMatchedTutors, escalateAssignment } from '../utils/tutorNotifier.js';
@@ -25,11 +26,6 @@ import { applyRecovery } from '../utils/recovery.js';
 import { waitUntil } from '@vercel/functions';
 
 /* global process */
-
-// Escape special characters in user-supplied text so Telegram's Markdown parser doesn't choke
-function escapeMd(text) {
-  return (text || '').replace(/[_*[\]`]/g, '\\$&');
-}
 
 // Application states for session management
 const ApplicationStates = {
@@ -214,15 +210,15 @@ function formatTutorProfileSummary(tutor) {
 }
 
 function formatAssignment(assignment) {
-  let msg = `*🎯 ${assignment.title || 'Assignment'}*\n\n`;
-  msg += `*Level:* ${assignment.level}\n`;
-  msg += `*Subject:* ${assignment.subject}\n`;
-  msg += `*Location:* ${assignment.location}\n`;
-  msg += `*Frequency:* ${assignment.frequency}\n`;
-  msg += `*Rate:* ${assignment.rate}\n`;  
+  let msg = `*🎯 ${escapeMd(assignment.title) || 'Assignment'}*\n\n`;
+  msg += `*Level:* ${escapeMd(assignment.level)}\n`;
+  msg += `*Subject:* ${escapeMd(assignment.subject)}\n`;
+  msg += `*Location:* ${escapeMd(assignment.location)}\n`;
+  msg += `*Frequency:* ${escapeMd(assignment.frequency)}\n`;
+  msg += `*Rate:* ${escapeMd(assignment.rate)}\n`;  
   
   if (assignment.description) {
-    msg += `\n*Description:* ${assignment.description}\n`;
+    msg += `\n*Description:* ${escapeMd(assignment.description)}\n`;
   }
   
   msg += `\n*Status:* ${assignment.status}`;
@@ -1681,12 +1677,12 @@ async function handleAssignmentCallbackQuery(
 
 // Update formatAssignmentPreview to match the simplified schema
 function formatAssignmentPreview(assignment) {
-  let msg = `*🎯 ${assignment.title}*\n\n`;
-  msg += `*📚 Level:* ${assignment.level}\n`;
-  msg += `*📖 Subject:* ${assignment.subject}\n`;
-  msg += `*📍 Location:* ${assignment.location}\n`;
-  msg += `*📅 Frequency:* ${assignment.frequency}\n`;
-  msg += `*💰 Rate:* ${assignment.rate}\n`;
+  let msg = `*🎯 ${escapeMd(assignment.title)}*\n\n`;
+  msg += `*📚 Level:* ${escapeMd(assignment.level)}\n`;
+  msg += `*📖 Subject:* ${escapeMd(assignment.subject)}\n`;
+  msg += `*📍 Location:* ${escapeMd(assignment.location)}\n`;
+  msg += `*📅 Frequency:* ${escapeMd(assignment.frequency)}\n`;
+  msg += `*💰 Rate:* ${escapeMd(assignment.rate)}\n`;
   msg += `*👨‍🏫 Tutor Type:* ${assignment.preferredTutorTypes?.length > 0 ? assignment.preferredTutorTypes.join(', ') : 'Any'}\n`;
 
   const previewSlots = formatTimeSlots(assignment.preferredTimeSlots);
@@ -1696,11 +1692,11 @@ function formatAssignmentPreview(assignment) {
   }
 
   if (assignment.description) {
-    msg += `\n*📝 Description:* ${assignment.description}\n`;
+    msg += `\n*📝 Description:* ${escapeMd(assignment.description)}\n`;
   }
   // Owner-only preview: parent contact is NOT included in the public channel post.
   if (assignment.parentContact) {
-    msg += `*📞 Parent Contact:* ${assignment.parentContact}\n`;
+    msg += `*📞 Parent Contact:* ${escapeMd(assignment.parentContact)}\n`;
   }
 
   msg += `\n*💼 Status:* ${assignment.status}`;
@@ -2150,12 +2146,12 @@ async function viewAssignments(bot, chatId, page = 0, Assignment) {
     const buttons = [];
 
     assignments.forEach((assignment, index) => {
-      message += `*${index + 1}. ${assignment.title || 'Assignment'}*\n`;
-      message += `📚 Level: ${assignment.level}\n`;
-      message += `📖 Subject: ${assignment.subject}\n`;
-      message += `📍 Location: ${assignment.location}\n`;
-      message += `📅 Frequency: ${assignment.frequency}\n`;
-      message += `💰 Rate: ${assignment.rate}\n`;
+      message += `*${index + 1}. ${escapeMd(assignment.title) || 'Assignment'}*\n`;
+      message += `📚 Level: ${escapeMd(assignment.level)}\n`;
+      message += `📖 Subject: ${escapeMd(assignment.subject)}\n`;
+      message += `📍 Location: ${escapeMd(assignment.location)}\n`;
+      message += `📅 Frequency: ${escapeMd(assignment.frequency)}\n`;
+      message += `💰 Rate: ${escapeMd(assignment.rate)}\n`;
 
 
       buttons.push([{ text: `📝 Apply for Assignment ${index + 1}`, callback_data: `apply_assignment_${assignment._id}` }]);
@@ -2247,11 +2243,11 @@ async function viewMyApplications(bot, chatId, userSessions, Assignment) {
       // If for some reason myApplication is missing, skip it safely
       if (!myApplication) return;
 
-      message += `*${index + 1}. ${assignment.title || 'Assignment'}*\n`;
-      message += `📚 Level: ${assignment.level}\n`;
-      message += `📖 Subject: ${assignment.subject}\n`;
-      message += `📍 Location: ${assignment.location}\n`;
-      message += `💰 Rate: ${assignment.rate}\n`;
+      message += `*${index + 1}. ${escapeMd(assignment.title) || 'Assignment'}*\n`;
+      message += `📚 Level: ${escapeMd(assignment.level)}\n`;
+      message += `📖 Subject: ${escapeMd(assignment.subject)}\n`;
+      message += `📍 Location: ${escapeMd(assignment.location)}\n`;
+      message += `💰 Rate: ${escapeMd(assignment.rate)}\n`;
       message += `📅 Applied: ${new Date(myApplication.appliedAt).toLocaleDateString('en-SG')}\n`;
       message += `🔄 Status: ${myApplication.status}\n\n`;
     });
@@ -2288,17 +2284,17 @@ async function adminViewAllApplications(bot, chatId, Assignment) {
     let message = `📊 *All Applications*\n\n`;
     
     assignments.forEach((assignment, index) => {
-      message += `*${index + 1}. ${assignment.title || 'Assignment'}*\n`;
-      message += `📚 ${assignment.level} - ${assignment.subject}\n`;
-      message += `📍 ${assignment.location}\n`;
+      message += `*${index + 1}. ${escapeMd(assignment.title) || 'Assignment'}*\n`;
+      message += `📚 ${escapeMd(assignment.level)} - ${escapeMd(assignment.subject)}\n`;
+      message += `📍 ${escapeMd(assignment.location)}\n`;
       message += `👥 Applications: ${assignment.applicants.length}\n`;
       
       assignment.applicants.forEach((app, appIndex) => {
         message += `  ${appIndex + 1}. Status: ${app.status}\n`;
-        message += `     Contact: ${app.contactDetails}\n`;
+        message += `     Contact: ${escapeMd(app.contactDetails)}\n`;
         message += `     Applied: ${app.appliedAt.toLocaleDateString('en-SG')}\n`;
         if (app.notes) {
-          message += `     Notes: ${app.notes}\n`;
+          message += `     Notes: ${escapeMd(app.notes)}\n`;
         }
       });
       
@@ -2363,7 +2359,7 @@ async function handleFullNameEdit(bot, chatId, text, userSessions, Tutor) {
     await tutor.save();
     
     session.state = ApplicationStates.IDLE;
-    return await safeSend(bot, chatId, `✅ Full name updated to *${tutor.fullName}*`, {
+    return await safeSend(bot, chatId, `✅ Full name updated to *${escapeMd(tutor.fullName)}*`, {
       parse_mode: 'Markdown',
       reply_markup: getPersonalInfoMenu(tutor)
     });
@@ -2392,7 +2388,7 @@ async function handleContactNumberEdit(bot, chatId, text, userSessions, Tutor) {
     await tutor.save();
     
     session.state = ApplicationStates.IDLE;
-    return await safeSend(bot, chatId, `✅ Contact number updated to *${tutor.contactNumber}*`, {
+    return await safeSend(bot, chatId, `✅ Contact number updated to *${escapeMd(tutor.contactNumber)}*`, {
       parse_mode: 'Markdown',
       reply_markup: getPersonalInfoMenu(tutor)
     });
@@ -2420,7 +2416,9 @@ async function handleNRICEdit(bot, chatId, text, userSessions, Tutor) {
     await tutor.save();
     
     session.state = ApplicationStates.IDLE;
-    return await safeSend(bot, chatId, `✅ NRIC updated to *****${tutor.nricLast4}*`, {
+    // Four escaped asterisks as a literal mask. Unescaped, the six *s here were read as
+    // Markdown emphasis and mangled the line.
+    return await safeSend(bot, chatId, `✅ NRIC updated to \\*\\*\\*\\*${escapeMd(tutor.nricLast4)}`, {
       parse_mode: 'Markdown',
       reply_markup: getPersonalInfoMenu(tutor)
     });
@@ -2449,7 +2447,7 @@ async function handleEmailEdit(bot, chatId, text, userSessions, Tutor) {
     await tutor.save();
     
     session.state = ApplicationStates.IDLE;
-    return await safeSend(bot, chatId, `✅ Email updated to *${tutor.email}*`, {
+    return await safeSend(bot, chatId, `✅ Email updated to *${escapeMd(tutor.email)}*`, {
       parse_mode: 'Markdown',
       reply_markup: getPersonalInfoMenu(tutor)
     });
@@ -2583,7 +2581,7 @@ async function handleCurrentSchoolEdit(bot, chatId, text, userSessions, Tutor) {
     await tutor.save();
     
     session.state = ApplicationStates.IDLE;
-    return await safeSend(bot, chatId, `✅ Current school updated to *${tutor.currentSchool}*`, {
+    return await safeSend(bot, chatId, `✅ Current school updated to *${escapeMd(tutor.currentSchool)}*`, {
       parse_mode: 'Markdown',
       reply_markup: getPersonalInfoMenu(tutor)
     });
@@ -2629,7 +2627,7 @@ async function handleNationalityOtherEdit(bot, chatId, text, userSessions, Tutor
     await tutor.save();
     
     session.state = ApplicationStates.IDLE;
-    return await safeSend(bot, chatId, `✅ Nationality updated to *${tutor.nationalityOther}*`, {
+    return await safeSend(bot, chatId, `✅ Nationality updated to *${escapeMd(tutor.nationalityOther)}*`, {
       parse_mode: 'Markdown',
       reply_markup: getPersonalInfoMenu(tutor)
     });
@@ -3231,11 +3229,11 @@ async function handleCallbackQuery(
             const result = await escalateAssignment(assignment, BOT_USERNAME, { waveSize: 6 });
             if (result.exhausted) {
               await safeSend(bot, chatId,
-                `📭 *No fresh matching tutors left* for *${assignment.title}* — you've contacted everyone in the pool. You'll need to follow up manually.`,
+                `📭 *No fresh matching tutors left* for *${escapeMd(assignment.title)}* — you've contacted everyone in the pool. You'll need to follow up manually.`,
                 { parse_mode: 'Markdown' });
             } else {
               await safeSend(bot, chatId,
-                `🔄 *Resuming outreach* for *${assignment.title}* — messaging more tutors` +
+                `🔄 *Resuming outreach* for *${escapeMd(assignment.title)}* — messaging more tutors` +
                 (rejectedCount ? ` (the ${rejectedCount} shown to the parent ${rejectedCount === 1 ? 'is' : 'are'} excluded).` : '.'),
                 { parse_mode: 'Markdown' });
             }
@@ -3274,7 +3272,7 @@ async function handleCallbackQuery(
       }]));
       pickButtons.push([{ text: '🔙 Cancel', callback_data: `edit_assignment_${assignmentId}` }]);
       await safeSend(bot, chatId,
-        `Which tutor did the parent choose for *${assignment.title}*?\nThis marks the assignment *Filled* and stops outreach.`,
+        `Which tutor did the parent choose for *${escapeMd(assignment.title)}*?\nThis marks the assignment *Filled* and stops outreach.`,
         { parse_mode: 'Markdown', reply_markup: { inline_keyboard: pickButtons } });
       return;
     }
@@ -3296,7 +3294,7 @@ async function handleCallbackQuery(
 
         await ack({ text: '✅ Marked filled' });
         await safeSend(bot, chatId,
-          `✅ *${result.assignment.title}* marked *Filled* — ${result.tutorName} will take it. Outreach stopped and the assignment is closed.`,
+          `✅ *${escapeMd(result.assignment.title)}* marked *Filled* — ${escapeMd(result.tutorName)} will take it. Outreach stopped and the assignment is closed.`,
           { parse_mode: 'Markdown',
             reply_markup: { inline_keyboard: [[{ text: '🔙 Back to Manage Assignments', callback_data: 'admin_manage_assignments' }]] } });
       } catch (err) {
@@ -3355,11 +3353,11 @@ async function handleCallbackQuery(
             const result = await resumeOutreach(assignment, { botUsername: BOT_USERNAME });
             if (result.exhausted) {
               await safeSend(bot, chatId,
-                `📭 *No fresh matching tutors left* for *${assignment.title}* — you've contacted everyone in the pool. You'll need to follow up manually.`,
+                `📭 *No fresh matching tutors left* for *${escapeMd(assignment.title)}* — you've contacted everyone in the pool. You'll need to follow up manually.`,
                 { parse_mode: 'Markdown' });
             } else {
               await safeSend(bot, chatId,
-                `🔄 *Resuming outreach* for *${assignment.title}* — reason logged: _${reason}_. Messaging more tutors` +
+                `🔄 *Resuming outreach* for *${escapeMd(assignment.title)}* — reason logged: _${reason}_. Messaging more tutors` +
                 (rejectedCount ? ` (the ${rejectedCount} shown to the parent ${rejectedCount === 1 ? 'is' : 'are'} excluded).` : '.'),
                 { parse_mode: 'Markdown' });
             }
@@ -4390,8 +4388,8 @@ async function adminManageAssignments(bot, chatId, Assignment) {
     const buttons = [];
     
     assignments.forEach((assignment, index) => {
-      message += `*${index + 1}. ${assignment.title || 'Assignment'}*\n`;
-      message += `📚 ${assignment.level} - ${assignment.subject}\n`;
+      message += `*${index + 1}. ${escapeMd(assignment.title) || 'Assignment'}*\n`;
+      message += `📚 ${escapeMd(assignment.level)} - ${escapeMd(assignment.subject)}\n`;
       message += `🔄 Status: ${assignment.status}\n`;
       message += `👥 Applications: ${assignment.applicants ? assignment.applicants.length : 0}\n\n`;
       
@@ -4425,16 +4423,16 @@ async function editAssignment(bot, chatId, assignmentId, Assignment) {
     }
     
     let message = `✏️ *Edit Assignment*\n\n`;
-    message += `*Title:* ${assignment.title || 'Assignment'}\n`;
-    message += `*Level:* ${assignment.level}\n`;
-    message += `*Subject:* ${assignment.subject}\n`;
+    message += `*Title:* ${escapeMd(assignment.title) || 'Assignment'}\n`;
+    message += `*Level:* ${escapeMd(assignment.level)}\n`;
+    message += `*Subject:* ${escapeMd(assignment.subject)}\n`;
     message += `*Current Status:* ${assignment.status}\n`;
     message += `*Applications:* ${assignment.applicants ? assignment.applicants.length : 0}\n`;
     if (assignment.outreach?.status) {
       message += `*Outreach:* ${assignment.outreach.status} · ${assignment.interestedCount()} interested\n`;
     }
     if (assignment.status === 'Filled' && assignment.matchedTutorId) {
-      message += `*Matched tutor:* ${assignment.matchedTutorId.fullName || 'selected'}\n`;
+      message += `*Matched tutor:* ${escapeMd(assignment.matchedTutorId.fullName) || 'selected'}\n`;
     }
     message += `\nWhat would you like to do?`;
 
@@ -4548,7 +4546,7 @@ async function deleteAssignment(bot, chatId, assignmentId, Assignment) {
     
     await Assignment.findByIdAndDelete(assignmentId);
     
-    await safeSend(bot, chatId, `🗑️ Assignment "*${assignment.title || 'Assignment'}*" has been deleted.`, {
+    await safeSend(bot, chatId, `🗑️ Assignment "*${escapeMd(assignment.title) || 'Assignment'}*" has been deleted.`, {
       parse_mode: 'Markdown',
       reply_markup: {
         inline_keyboard: [[{ text: '🔙 Back to Manage Assignments', callback_data: 'admin_manage_assignments' }]]

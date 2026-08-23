@@ -16,6 +16,7 @@ import { runProfileNudgeSweep } from '../utils/profileNudge.js';
 import { loadCappedTutorIds } from '../utils/exposureCaps.js';
 import { notifyOwner, opsButtonRow } from '../utils/ownerAlert.js';
 import { formatAssignmentForChannel } from '../utils/channelFormat.js';
+import { escapeMd } from '../utils/markdown.js';
 import { shortlistDecided, shortlistedContacts } from '../../../packages/shared/utils/outreachState.js';
 import { recordParentReject, resumeOutreach } from '../utils/parentOutcome.js';
 
@@ -135,7 +136,7 @@ async function processAssignment(assignment, now, expectedInterestRate, excludeT
       { $set: { 'outreach.status': 'Exhausted' } }
     );
     await notifyOwner(
-      `⏰ *Outreach timed out*\n*${assignment.title}* got ${assignment.interestedCount()} interested tutor(s) ` +
+      `⏰ *Outreach timed out*\n*${escapeMd(assignment.title)}* got ${assignment.interestedCount()} interested tutor(s) ` +
       `in ${Math.round(MAX_DURATION_MS / 3600000)}h.\nPlease follow up manually.`,
       opsKeyboard(assignment._id)
     );
@@ -171,7 +172,7 @@ async function processAssignment(assignment, now, expectedInterestRate, excludeT
     }
     await Assignment.updateOne({ _id: assignment._id }, { $set: { 'outreach.status': 'Exhausted' } });
     await notifyOwner(
-      `📭 *Ran out of tutors*\n*${assignment.title}* has no more matching tutors to contact ` +
+      `📭 *Ran out of tutors*\n*${escapeMd(assignment.title)}* has no more matching tutors to contact ` +
       `(${assignment.interestedCount()} interested).\nPlease follow up manually.`,
       opsKeyboard(assignment._id)
     );
@@ -216,7 +217,7 @@ async function releaseOneShortlist(assignment) {
     // doesn't loop, and let the owner know to handle it manually.
     await Assignment.updateOne({ _id: assignment._id }, { $set: { 'outreach.status': 'Fulfilled' } });
     await notifyOwner(
-      `🎯 *Hold window closed* — *${assignment.title}*\n` +
+      `🎯 *Hold window closed* — *${escapeMd(assignment.title)}*\n` +
       `No shortlist could be built (interested tutors are unavailable). Please follow up manually.`,
       opsKeyboard(assignment._id)
     );
@@ -297,11 +298,11 @@ async function alertOwnerShortlistReady(assignment, ranked) {
   const medals = ['🥇', '🥈', '🥉'];
   const cards = ranked.map((r, i) => {
     const medal = medals[i] || `${i + 1}.`;
-    return `${medal} *${r.tutor.fullName || 'Tutor'}*\n    ${shortlistReason(r.tutor, assignment, r.contact.quotedRate ?? null)}`;
+    return `${medal} *${escapeMd(r.tutor.fullName) || 'Tutor'}*\n    ${escapeMd(shortlistReason(r.tutor, assignment, r.contact.quotedRate ?? null))}`;
   });
 
   let text =
-    `🎯 *Shortlist ready* — *${assignment.title}*\n` +
+    `🎯 *Shortlist ready* — *${escapeMd(assignment.title)}*\n` +
     `Picked the best ${ranked.length} of ${assignment.viableInterestedCount()} interested tutor(s):\n\n` +
     cards.join('\n\n');
 
@@ -365,7 +366,7 @@ async function alertOwnerParentSilent(assignment, kind) {
   const rows = [];
   let text;
   if (kind === 'nudge') {
-    text = `⏳ *Parent quiet* — no pick/reject on *${assignment.title}* ~24h after you got the shortlist.\nNudge them?`;
+    text = `⏳ *Parent quiet* — no pick/reject on *${escapeMd(assignment.title)}* ~24h after you got the shortlist.\nNudge them?`;
     if (assignment.parentContact) {
       const draft = await draftParentMessage('nudge', { assignment });
       const btn = buildWaMeButton(assignment.parentContact, draft, '📤 Send nudge via WhatsApp');
@@ -374,7 +375,7 @@ async function alertOwnerParentSilent(assignment, kind) {
     }
   } else {
     text =
-      `🚩 *Parent silent ~48h* on *${assignment.title}* — treating it as a pass and searching again.\n` +
+      `🚩 *Parent silent ~48h* on *${escapeMd(assignment.title)}* — treating it as a pass and searching again.\n` +
       `Fresh tutors are being messaged now; you'll get a new shortlist when enough say yes.\n` +
       `The current profiles still count — record a pick below if the parent comes back.`;
   }
@@ -440,8 +441,8 @@ async function alertOwnerCheckIn(placement, kind) {
 
   const header = kind === 'reping' ? '🔁 *Check-in reminder*' : '📅 *Day-30 check-in due*';
   let text =
-    `${header} — *${title}*\n` +
-    `${tutorName} was placed${daysAgo != null ? ` ${daysAgo} days ago` : ''}. ` +
+    `${header} — *${escapeMd(title)}*\n` +
+    `${escapeMd(tutorName)} was placed${daysAgo != null ? ` ${daysAgo} days ago` : ''}. ` +
     `Ask the parent${parentContact ? ` (${parentContact})` : ''} how it's going, then record the outcome:`;
 
   const rows = [];

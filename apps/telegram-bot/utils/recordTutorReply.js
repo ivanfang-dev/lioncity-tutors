@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 import { Assignment, Tutor } from '../../../packages/shared/server-exports.js';
 import { normalizePhone } from '../../../packages/shared/utils/phoneUtils.js';
 import { notifyOwner, opsButtonRow } from './ownerAlert.js';
+import { escapeMd } from './markdown.js';
 import { buildRatePrompt } from './rateCapture.js';
 import { handleLateInterest } from './lateInterest.js';
 
@@ -114,7 +115,7 @@ async function alertOwnerInterested(assignment, tutorName, interestedCount) {
 
   await notifyOwner(
     `✅ *Tutor interested*\n` +
-    `*${tutorName || 'A tutor'}* said YES to *${assignment.title}*\n` +
+    `*${escapeMd(tutorName) || 'A tutor'}* said YES to *${escapeMd(assignment.title)}*\n` +
     `(${interestedCount}/${INTERESTED_TARGET} interested)` +
     (assignment.parentContact ? '' : `\n\n⚠️ No parent contact on this assignment — relay unavailable.`) +
     statusLine,

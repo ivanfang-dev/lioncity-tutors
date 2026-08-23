@@ -1,4 +1,5 @@
 import { formatTimeSlots } from '../../../packages/shared/utils/timeSlots.js';
+import { escapeMd } from './markdown.js';
 
 // Outbound cold-outreach DM to a tutor over Telegram — the FREE alternative to a billable
 // WhatsApp template. Mirrors whatsappSender.js: a single fetch choke point that THROWS on
@@ -8,14 +9,6 @@ import { formatTimeSlots } from '../../../packages/shared/utils/timeSlots.js';
 // webhook's import graph (telegram.js → handlers → tutorNotifier → here would otherwise cycle).
 
 const TELEGRAM_API = 'https://api.telegram.org';
-
-// Escape a VALUE so Telegram's legacy-Markdown parser can't choke on stray _ * [ ] ` in
-// owner-typed free text (especially the description). Only interpolated values are escaped;
-// the literal *bold* markers below are ours and stay intact. A parse failure here would throw
-// and — via sendToTutor — wrongly mark the tutor's Telegram stale, so this guard matters.
-function escapeMd(text) {
-  return String(text ?? '').replace(/[_*[\]`]/g, '\\$&');
-}
 
 // Format the assignment for a tutor-facing DM. Unlike the WhatsApp template — 6 rigid,
 // single-line params with the description dropped — a Telegram DM has no such limits, so we
