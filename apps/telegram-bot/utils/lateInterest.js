@@ -23,9 +23,14 @@ export function lateInterestOutcome(candidate, shortlisted) {
   return { stronger: candidate.score > weakest.score, weakest, wouldRank };
 }
 
-// The rank to stamp when the owner adds a bench tutor to the shortlist — after everyone on it.
+// The rank to stamp when the owner adds a bench tutor to the shortlist — after everyone still ON
+// it. Rejected contacts are skipped: after a reject → re-release cycle they keep the dead
+// shortlist's ranks, and counting those made the first tutor on a fresh shortlist "#4".
+// Same filter handleLateInterest below uses to decide who the shortlist currently is.
 export function nextShortlistRank(contacts) {
-  const ranks = contacts.map(c => c.shortlistRank).filter(r => r != null);
+  const ranks = (contacts || [])
+    .filter(c => c.shortlistRank != null && !c.parentRejectedAt)
+    .map(c => c.shortlistRank);
   return ranks.length ? Math.max(...ranks) + 1 : 1;
 }
 

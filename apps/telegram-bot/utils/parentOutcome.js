@@ -47,6 +47,18 @@ async function closeChannelPostAsFilled(assignment) {
 // contact's parentPickedAt, stops outreach, writes the Placement, and closes the channel post.
 // Idempotent: a double-tap re-sets the same fields and the Placement upsert is keyed on
 // (assignment, tutor), so it can't produce a second row.
+// Pure: the rate a placement is recorded at. quotedRate — what this tutor named FOR THIS
+// assignment when they replied — is the rate the parent was shown and picked on, so it wins.
+// The profile rate goes stale and is often an unactionable range; it is only the fallback when
+// no rate was captured. Formatted like parentMessage.rateForLevel so the stored string matches
+// what the parent saw. Exported so the precedence can be unit-tested without a database.
+export function placementRate(contact, tutorDoc, assignment) {
+  if (contact?.quotedRate != null) return `$${contact.quotedRate}/hr`;
+  return tutorDoc?.hourlyRate?.[getLevelCategory(assignment?.level)]
+    || tutorDoc?.hourlyRate?.secondary
+    || assignment?.rate;
+}
+
 export async function recordParentPick({ assignmentId, tutorId }) {
   if (!mongoose.isValidObjectId(assignmentId) || !mongoose.isValidObjectId(tutorId)) {
     return { ok: false, error: 'invalid_id' };
@@ -76,9 +88,11 @@ export async function recordParentPick({ assignmentId, tutorId }) {
   // The Placement is the ground-truth match row the day-30 check-in (Phase 5) and future ranking
   // work train against. Best-effort: losing it must not block marking the assignment Filled.
   try {
-    const tutorDoc = await Tutor.findById(tutorOid).select('hourlyRate').lean();
-    const agreedRate = tutorDoc?.hourlyRate?.[getLevelCategory(assignment.level)]
-      || tutorDoc?.hourlyRate?.secondary || assignment.rate;
+    // The profile rate is only read when no rate was captured — see placementRate.
+    const tutorDoc = contact.quotedRate != null
+      ? null
+      : await Tutor.findById(tutorOid).select('hourlyRate').lean();
+    const agreedRate = placementRate(contact, tutorDoc, assignment);
     await Placement.updateOne(
       { assignmentId: assignment._id, tutorId: tutorOid },
       { $setOnInsert: { parentContact: assignment.parentContact, filledAt: now, agreedRate, status: 'active' } },

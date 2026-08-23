@@ -61,4 +61,29 @@ describe('nextShortlistRank', () => {
       { status: 'Sent' },
     ])).toBe(6);
   });
+
+  // A reject leaves parentRejectedAt + the old shortlistRank on every contact that was shown.
+  // Counting those numbered the first tutor on the NEXT shortlist #4 instead of #1.
+  test('skips contacts the parent already rejected', () => {
+    const rejected = new Date();
+    expect(nextShortlistRank([
+      { shortlistRank: 1, parentRejectedAt: rejected },
+      { shortlistRank: 2, parentRejectedAt: rejected },
+      { shortlistRank: 3, parentRejectedAt: rejected },
+    ])).toBe(1);
+  });
+
+  test('appends after the live shortlist only, ignoring a rejected round below it', () => {
+    const rejected = new Date();
+    expect(nextShortlistRank([
+      { shortlistRank: 1, parentRejectedAt: rejected },
+      { shortlistRank: 2, parentRejectedAt: rejected },
+      { shortlistRank: 1 },
+    ])).toBe(2);
+  });
+
+  test('handles a missing contacts array', () => {
+    expect(nextShortlistRank(undefined)).toBe(1);
+    expect(nextShortlistRank([])).toBe(1);
+  });
 });
