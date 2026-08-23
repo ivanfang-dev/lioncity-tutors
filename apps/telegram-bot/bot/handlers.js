@@ -1461,7 +1461,13 @@ async function handleAssignmentStep(bot, chatId, text, userSessions, Assignment)
   }
 }
 
-async function handleAssignmentCallbackQuery(bot, callbackQuery, userSessions) {
+// `ack` is handleCallbackQuery's answer-once helper, passed in so the parent's finally-block
+// and this function can't both answer the same query. Defaults to answering directly, for a
+// caller that doesn't have one.
+async function handleAssignmentCallbackQuery(
+  bot, callbackQuery, userSessions,
+  ack = (options) => bot.answerCallbackQuery(callbackQuery.id, options).catch(() => {})
+) {
   const chatId = callbackQuery.message.chat.id;
   const data = callbackQuery.data;
   const session = userSessions[chatId];
@@ -1664,11 +1670,11 @@ async function handleAssignmentCallbackQuery(bot, callbackQuery, userSessions) {
       });
     }
 
-    await bot.answerCallbackQuery(callbackQuery.id);
+    await ack();
 
   } catch (error) {
     console.error('Error handling assignment callback query:', error);
-    await bot.answerCallbackQuery(callbackQuery.id, { text: 'Error occurred. Please try again.' });
+    await ack({ text: 'Error occurred. Please try again.' });
   }
 }
 
@@ -2813,12 +2819,21 @@ async function handleCallbackQuery(
   const chatId = callbackQuery.from.id;
   const userId = callbackQuery.from.id;
   const data = callbackQuery.data;
-  
+
+  // Telegram accepts exactly ONE answer per callback query; a second call fails with
+  // QUERY_ID_INVALID. Branches below answer with a toast ("Not authorized.", "✅ Added as #2"),
+  // so the ack can't be fired blindly up front — that used to swallow every toast AND throw,
+  // unwinding the branch before its remaining work (the fresh outreach wave, the profile relay).
+  // First call wins, later calls are no-ops, and it never throws into a branch.
+  let answered = false;
+  const ack = async (options) => {
+    if (answered) return;
+    answered = true;
+    await bot.answerCallbackQuery(callbackQuery.id, options).catch(() => {});
+  };
+
   try {
     console.log("📥 Callback data received:", data);
-
-    // Acknowledge immediately to prevent Telegram from retrying the webhook
-    await bot.answerCallbackQuery(callbackQuery.id).catch(() => {});
 
     // Main menu and admin handlers
     if (data === 'main_menu') {
@@ -2988,6 +3003,9 @@ async function handleCallbackQuery(
         return await safeSend(bot, chatId, 'You are not authorized to post assignments.');
       }
       const draftId = data.replace('confirm_post_assignment_', '');
+      // Answer up front: posting does a channel send plus an LLM-drafted parent blurb, which is
+      // long enough that the button would otherwise spin until the finally-block below.
+      await ack();
       return await confirmPostAssignment(bot, chatId, userSessions, Assignment, CHANNEL_ID, BOT_USERNAME, draftId);
     }
 
@@ -3000,7 +3018,7 @@ async function handleCallbackQuery(
     // One-tap relay: send an interested tutor's profile to the assignment's parent.
     if (data.startsWith('sendprof_')) {
       if (!isAdmin(userId, ADMIN_USERS)) {
-        return await bot.answerCallbackQuery(callbackQuery.id, { text: 'Not authorized.' });
+        return await ack({ text: 'Not authorized.' });
       }
       const [assignmentId, tutorId] = data.replace('sendprof_', '').split('_');
       const [assignment, tutor] = await Promise.all([
@@ -3008,10 +3026,10 @@ async function handleCallbackQuery(
         Tutor.findById(tutorId).lean()
       ]);
       if (!assignment?.parentContact) {
-        return await bot.answerCallbackQuery(callbackQuery.id, { text: 'No parent contact on this assignment.' });
+        return await ack({ text: 'No parent contact on this assignment.' });
       }
       if (!tutor) {
-        return await bot.answerCallbackQuery(callbackQuery.id, { text: 'Tutor not found.' });
+        return await ack({ text: 'Tutor not found.' });
       }
       const intro = process.env.PARENT_INTRO_MESSAGE
         || 'Hi! Here is a tutor we found for your request:';
@@ -3022,7 +3040,7 @@ async function handleCallbackQuery(
         const profileText = formatTutorProfileForParent(tutor, assignment, intro);
         const waDigits = String(assignment.parentContact).replace(/\D/g, '');
         const waNumber = waDigits.length === 8 ? '65' + waDigits : waDigits;
-        await bot.answerCallbackQuery(callbackQuery.id, { text: '✅ Ready to forward' });
+        await ack({ text: '✅ Ready to forward' });
         await safeSend(bot, chatId,
           `📤 *Forward to parent* — [open WhatsApp chat](https://wa.me/${waNumber}) with ${assignment.parentContact}, then paste the profile below:`,
           { parse_mode: 'Markdown', disable_web_page_preview: true });
@@ -3035,7 +3053,7 @@ async function handleCallbackQuery(
         });
       } catch (err) {
         console.error('Failed to prepare parent relay:', err.message);
-        await bot.answerCallbackQuery(callbackQuery.id, { text: 'Something went wrong — try again.' });
+        await ack({ text: 'Something went wrong — try again.' });
       }
       return;
     }
@@ -3044,20 +3062,20 @@ async function handleCallbackQuery(
     // criteria and resets outreach; the fresh wave goes out against the new ones.
     if (data.startsWith('recover_')) {
       if (!isAdmin(userId, ADMIN_USERS)) {
-        return await bot.answerCallbackQuery(callbackQuery.id, { text: 'Not authorized.' });
+        return await ack({ text: 'Not authorized.' });
       }
       const [, action, assignmentId] = data.match(/^recover_(.+)_([a-f\d]{24})$/i) || [];
       if (!action) {
-        return await bot.answerCallbackQuery(callbackQuery.id, { text: 'Bad request.' });
+        return await ack({ text: 'Bad request.' });
       }
       const result = await applyRecovery({ assignmentId, action });
       if (!result.ok) {
-        return await bot.answerCallbackQuery(callbackQuery.id, { text: `Couldn't apply: ${result.error}` });
+        return await ack({ text: `Couldn't apply: ${result.error}` });
       }
       await bot.editMessageReplyMarkup({ inline_keyboard: [] }, {
         chat_id: chatId, message_id: callbackQuery.message?.message_id
       }).catch(() => {});
-      await bot.answerCallbackQuery(callbackQuery.id, { text: '✅ Searching again' });
+      await ack({ text: '✅ Searching again' });
       await safeSend(bot, chatId,
         `🔎 *${escapeMd(result.summary)}* — messaging a fresh wave for *${escapeMd(result.assignment.title)}* now.`,
         { parse_mode: 'Markdown' });
@@ -3070,20 +3088,20 @@ async function handleCallbackQuery(
     // tutor becomes relayable through the normal send-to-parent path.
     if (data.startsWith('addshort_')) {
       if (!isAdmin(userId, ADMIN_USERS)) {
-        return await bot.answerCallbackQuery(callbackQuery.id, { text: 'Not authorized.' });
+        return await ack({ text: 'Not authorized.' });
       }
       const [, assignmentId, tutorId] = data.match(/^addshort_([a-f\d]+)_([a-f\d]+)$/i) || [];
       if (!assignmentId) {
-        return await bot.answerCallbackQuery(callbackQuery.id, { text: 'Bad request.' });
+        return await ack({ text: 'Bad request.' });
       }
       const assignment = await Assignment.findById(assignmentId);
       const contacts = assignment?.outreach?.contacts || [];
       const contact = contacts.find(c => c.tutorId?.toString() === tutorId);
       if (!contact || contact.status !== 'Interested' || contact.parentRejectedAt) {
-        return await bot.answerCallbackQuery(callbackQuery.id, { text: 'That tutor is no longer available.' });
+        return await ack({ text: 'That tutor is no longer available.' });
       }
       if (contact.shortlistRank != null) {
-        return await bot.answerCallbackQuery(callbackQuery.id, { text: 'Already on the shortlist.' });
+        return await ack({ text: 'Already on the shortlist.' });
       }
 
       const rank = nextShortlistRank(contacts);
@@ -3095,7 +3113,7 @@ async function handleCallbackQuery(
       await bot.editMessageReplyMarkup({ inline_keyboard: [] }, {
         chat_id: chatId, message_id: callbackQuery.message?.message_id
       }).catch(() => {});
-      await bot.answerCallbackQuery(callbackQuery.id, { text: `✅ Added as #${rank}` });
+      await ack({ text: `✅ Added as #${rank}` });
 
       const rows = [];
       if (assignment.parentContact) {
@@ -3113,17 +3131,17 @@ async function handleCallbackQuery(
     // who said Yes since the last send (see Assignment.pendingParentTutorIds).
     if (data.startsWith('sendallprof_')) {
       if (!isAdmin(userId, ADMIN_USERS)) {
-        return await bot.answerCallbackQuery(callbackQuery.id, { text: 'Not authorized.' });
+        return await ack({ text: 'Not authorized.' });
       }
       const assignmentId = data.replace('sendallprof_', '');
       const assignment = await Assignment.findById(assignmentId);
       if (!assignment?.parentContact) {
-        return await bot.answerCallbackQuery(callbackQuery.id, { text: 'No parent contact on this assignment.' });
+        return await ack({ text: 'No parent contact on this assignment.' });
       }
 
       const pendingIds = assignment.pendingParentTutorIds();
       if (pendingIds.length === 0) {
-        return await bot.answerCallbackQuery(callbackQuery.id, { text: 'No new interested tutors to send.' });
+        return await ack({ text: 'No new interested tutors to send.' });
       }
 
       const tutors = await Tutor.find({ _id: { $in: pendingIds } }).lean();
@@ -3149,7 +3167,7 @@ async function handleCallbackQuery(
           { arrayFilters: [{ 'c.tutorId': { $in: relayedIds }, 'c.status': 'Interested' }] }
         );
 
-        await bot.answerCallbackQuery(callbackQuery.id, { text: `✅ ${tutors.length} ready to forward` });
+        await ack({ text: `✅ ${tutors.length} ready to forward` });
         await safeSend(bot, chatId,
           `📤 *Forward ${tutors.length} profile(s) to parent* — [open WhatsApp chat](https://wa.me/${waNumber}) with ${assignment.parentContact}, then paste below:`,
           { parse_mode: 'Markdown', disable_web_page_preview: true });
@@ -3162,7 +3180,7 @@ async function handleCallbackQuery(
         });
       } catch (err) {
         console.error('Failed to prepare shortlist relay:', err.message);
-        await bot.answerCallbackQuery(callbackQuery.id, { text: 'Something went wrong — try again.' });
+        await ack({ text: 'Something went wrong — try again.' });
       }
       return;
     }
@@ -3173,12 +3191,12 @@ async function handleCallbackQuery(
     // the outreach clock, and fire a fresh wave — resuming the wave engine until new tutors say Yes.
     if (data.startsWith('findmore_')) {
       if (!isAdmin(userId, ADMIN_USERS)) {
-        return await bot.answerCallbackQuery(callbackQuery.id, { text: 'Not authorized.' });
+        return await ack({ text: 'Not authorized.' });
       }
       const assignmentId = data.replace('findmore_', '');
       const assignment = await Assignment.findById(assignmentId);
       if (!assignment) {
-        return await bot.answerCallbackQuery(callbackQuery.id, { text: 'Assignment not found.' });
+        return await ack({ text: 'Assignment not found.' });
       }
 
       const now = new Date();
@@ -3213,7 +3231,7 @@ async function handleCallbackQuery(
         assignment.outreach.lastWaveAt = now;
         assignment.status = 'Open';
 
-        await bot.answerCallbackQuery(callbackQuery.id, { text: '🔄 Finding more tutors…' });
+        await ack({ text: '🔄 Finding more tutors…' });
 
         // Fire one fresh wave immediately (speed is the differentiator), same pattern as wave 1 on
         // creation. The scheduler's 30-min cadence continues afterward (the wave re-stamps lastWaveAt).
@@ -3237,7 +3255,7 @@ async function handleCallbackQuery(
         })());
       } catch (err) {
         console.error('Failed to resume outreach (find more):', err.message);
-        await bot.answerCallbackQuery(callbackQuery.id, { text: 'Something went wrong — try again.' });
+        await ack({ text: 'Something went wrong — try again.' });
       }
       return;
     }
@@ -3245,20 +3263,20 @@ async function handleCallbackQuery(
     // Parent chose a tutor: show the interested tutors so the owner can pick the winner.
     if (data.startsWith('markfilled_')) {
       if (!isAdmin(userId, ADMIN_USERS)) {
-        return await bot.answerCallbackQuery(callbackQuery.id, { text: 'Not authorized.' });
+        return await ack({ text: 'Not authorized.' });
       }
       const assignmentId = data.replace('markfilled_', '');
       const assignment = await Assignment.findById(assignmentId);
       if (!assignment) {
-        return await bot.answerCallbackQuery(callbackQuery.id, { text: 'Assignment not found.' });
+        return await ack({ text: 'Assignment not found.' });
       }
       // Candidates = interested tutors the parent hasn't already been told we're dropping.
       const candidates = (assignment.outreach?.contacts || [])
         .filter(c => c.status === 'Interested' && !c.parentRejectedAt && c.tutorId);
       if (candidates.length === 0) {
-        return await bot.answerCallbackQuery(callbackQuery.id, { text: 'No interested tutors to choose from yet.' });
+        return await ack({ text: 'No interested tutors to choose from yet.' });
       }
-      await bot.answerCallbackQuery(callbackQuery.id);
+      await ack();
       const pickButtons = candidates.map(c => ([{
         text: `✅ ${c.tutorName || 'Tutor'}`,
         callback_data: `setwinner_${assignmentId}_${c.tutorId}`
@@ -3274,25 +3292,25 @@ async function handleCallbackQuery(
     // lives in parentOutcome.js so this button and the ops console land identical state.
     if (data.startsWith('setwinner_')) {
       if (!isAdmin(userId, ADMIN_USERS)) {
-        return await bot.answerCallbackQuery(callbackQuery.id, { text: 'Not authorized.' });
+        return await ack({ text: 'Not authorized.' });
       }
       const [assignmentId, tutorId] = data.replace('setwinner_', '').split('_');
       try {
         const result = await recordParentPick({ assignmentId, tutorId });
         if (!result.ok) {
-          return await bot.answerCallbackQuery(callbackQuery.id, {
+          return await ack({
             text: result.error === 'assignment_not_found' ? 'Assignment not found.' : 'That tutor is no longer a candidate.'
           });
         }
 
-        await bot.answerCallbackQuery(callbackQuery.id, { text: '✅ Marked filled' });
+        await ack({ text: '✅ Marked filled' });
         await safeSend(bot, chatId,
           `✅ *${result.assignment.title}* marked *Filled* — ${result.tutorName} will take it. Outreach stopped and the assignment is closed.`,
           { parse_mode: 'Markdown',
             reply_markup: { inline_keyboard: [[{ text: '🔙 Back to Manage Assignments', callback_data: 'admin_manage_assignments' }]] } });
       } catch (err) {
         console.error('Failed to mark assignment filled:', err.message);
-        await bot.answerCallbackQuery(callbackQuery.id, { text: 'Something went wrong — try again.' });
+        await ack({ text: 'Something went wrong — try again.' });
       }
       return;
     }
@@ -3300,10 +3318,10 @@ async function handleCallbackQuery(
     // Parent passed on the whole shortlist — ask WHY (feeds shortlist presentation + pricing).
     if (data.startsWith('rejectall_')) {
       if (!isAdmin(userId, ADMIN_USERS)) {
-        return await bot.answerCallbackQuery(callbackQuery.id, { text: 'Not authorized.' });
+        return await ack({ text: 'Not authorized.' });
       }
       const assignmentId = data.replace('rejectall_', '');
-      await bot.answerCallbackQuery(callbackQuery.id);
+      await ack();
       await safeSend(bot, chatId,
         `Why did the parent pass on the shortlist? (helps us find better matches — we'll then message fresh tutors)`,
         { reply_markup: { inline_keyboard: [
@@ -3321,7 +3339,7 @@ async function handleCallbackQuery(
     // re-messaged). callback_data is rejreason_<assignmentId>_<reason>; reason is the last segment.
     if (data.startsWith('rejreason_')) {
       if (!isAdmin(userId, ADMIN_USERS)) {
-        return await bot.answerCallbackQuery(callbackQuery.id, { text: 'Not authorized.' });
+        return await ack({ text: 'Not authorized.' });
       }
       const rest = data.replace('rejreason_', '');
       const cut = rest.lastIndexOf('_');
@@ -3331,13 +3349,13 @@ async function handleCallbackQuery(
         // Recording + the outreach reset live in parentOutcome.js, shared with the ops console.
         const recorded = await recordParentReject({ assignmentId, reason });
         if (!recorded.ok) {
-          return await bot.answerCallbackQuery(callbackQuery.id, {
+          return await ack({
             text: recorded.error === 'assignment_not_found' ? 'Assignment not found.' : 'Something went wrong — try again.'
           });
         }
         const { assignment, rejectedCount } = recorded;
 
-        await bot.answerCallbackQuery(callbackQuery.id, { text: '🔄 Finding more tutors…' });
+        await ack({ text: '🔄 Finding more tutors…' });
 
         // Fire one fresh wave immediately (speed is the differentiator). The 30-min scheduler
         // cadence continues afterward (the wave re-stamps lastWaveAt).
@@ -3361,7 +3379,7 @@ async function handleCallbackQuery(
         })());
       } catch (err) {
         console.error('Failed to record reject reason / resume outreach:', err.message);
-        await bot.answerCallbackQuery(callbackQuery.id, { text: 'Something went wrong — try again.' });
+        await ack({ text: 'Something went wrong — try again.' });
       }
       return;
     }
@@ -3370,9 +3388,9 @@ async function handleCallbackQuery(
     // silence follow-up handles reminders off shortlistReleasedAt.
     if (data.startsWith('parentnoreply_')) {
       if (!isAdmin(userId, ADMIN_USERS)) {
-        return await bot.answerCallbackQuery(callbackQuery.id, { text: 'Not authorized.' });
+        return await ack({ text: 'Not authorized.' });
       }
-      return await bot.answerCallbackQuery(callbackQuery.id, { text: "Noted — I'll remind you if it stays quiet." });
+      return await ack({ text: "Noted — I'll remind you if it stays quiet." });
     }
 
     // ── Day-30 check-in recording (Phase 5) ────────────────────────────────────────────────────
@@ -3383,10 +3401,10 @@ async function handleCallbackQuery(
     // "Going well" → ask for a 1–5 rating (a direct quality signal + testimonial raw material).
     if (data.startsWith('ciwell_')) {
       if (!isAdmin(userId, ADMIN_USERS)) {
-        return await bot.answerCallbackQuery(callbackQuery.id, { text: 'Not authorized.' });
+        return await ack({ text: 'Not authorized.' });
       }
       const placementId = data.replace('ciwell_', '');
-      await bot.answerCallbackQuery(callbackQuery.id).catch(() => {});
+      await ack();
       await safeSend(bot, chatId, 'Glad to hear it! How would the parent rate the tuition so far?', {
         reply_markup: { inline_keyboard: checkInRatingRows(placementId) },
       });
@@ -3396,7 +3414,7 @@ async function handleCallbackQuery(
     // The rating tap → record going-well + rating. callback: cirate_<placementId>_<1..5>.
     if (data.startsWith('cirate_')) {
       if (!isAdmin(userId, ADMIN_USERS)) {
-        return await bot.answerCallbackQuery(callbackQuery.id, { text: 'Not authorized.' });
+        return await ack({ text: 'Not authorized.' });
       }
       const rest = data.replace('cirate_', '');
       const cut = rest.lastIndexOf('_');
@@ -3405,13 +3423,13 @@ async function handleCallbackQuery(
       try {
         const result = await recordCheckInWell({ placementId, rating });
         if (!result.ok) {
-          return await bot.answerCallbackQuery(callbackQuery.id, { text: 'Could not record that — try again.' });
+          return await ack({ text: 'Could not record that — try again.' });
         }
-        await bot.answerCallbackQuery(callbackQuery.id, { text: `✅ Recorded ${rating}⭐` }).catch(() => {});
+        await ack({ text: `✅ Recorded ${rating}⭐` });
         await safeSend(bot, chatId, `✅ Logged — tuition going well, rated *${rating}/5*. Thanks!`, { parse_mode: 'Markdown' });
       } catch (err) {
         console.error('Failed to record check-in rating:', err.message);
-        await bot.answerCallbackQuery(callbackQuery.id, { text: 'Something went wrong — try again.' }).catch(() => {});
+        await ack({ text: 'Something went wrong — try again.' });
       }
       return;
     }
@@ -3422,24 +3440,24 @@ async function handleCallbackQuery(
     // start between tap and typing simply drops the reason capture (the owner can note it later).
     if (data.startsWith('ciended_')) {
       if (!isAdmin(userId, ADMIN_USERS)) {
-        return await bot.answerCallbackQuery(callbackQuery.id, { text: 'Not authorized.' });
+        return await ack({ text: 'Not authorized.' });
       }
       const placementId = data.replace('ciended_', '');
       try {
         const result = await recordCheckInEnded({ placementId });
         if (!result.ok) {
-          return await bot.answerCallbackQuery(callbackQuery.id, { text: 'Could not record that — try again.' });
+          return await ack({ text: 'Could not record that — try again.' });
         }
         const session = userSessions[chatId] || (userSessions[chatId] = { state: 'idle' });
         session.state = 'awaiting_end_reason';
         session.endReason = { placementId, checkInId: result.checkInId };
-        await bot.answerCallbackQuery(callbackQuery.id, { text: 'Marked as ended' }).catch(() => {});
+        await ack({ text: 'Marked as ended' });
         await safeSend(bot, chatId,
           '🔚 Logged as *ended*. What reason did the parent give? Type it here and I\'ll save it — or send /skip.',
           { parse_mode: 'Markdown' });
       } catch (err) {
         console.error('Failed to record check-in ended:', err.message);
-        await bot.answerCallbackQuery(callbackQuery.id, { text: 'Something went wrong — try again.' }).catch(() => {});
+        await ack({ text: 'Something went wrong — try again.' });
       }
       return;
     }
@@ -3447,15 +3465,15 @@ async function handleCallbackQuery(
     // "No reply" → close the loop without asserting survival either way.
     if (data.startsWith('cinoreply_')) {
       if (!isAdmin(userId, ADMIN_USERS)) {
-        return await bot.answerCallbackQuery(callbackQuery.id, { text: 'Not authorized.' });
+        return await ack({ text: 'Not authorized.' });
       }
       const placementId = data.replace('cinoreply_', '');
       try {
         await recordCheckInNoReply({ placementId });
-        await bot.answerCallbackQuery(callbackQuery.id, { text: 'Noted — no reply.' }).catch(() => {});
+        await ack({ text: 'Noted — no reply.' });
       } catch (err) {
         console.error('Failed to record check-in no-reply:', err.message);
-        await bot.answerCallbackQuery(callbackQuery.id, { text: 'Something went wrong — try again.' }).catch(() => {});
+        await ack({ text: 'Something went wrong — try again.' });
       }
       return;
     }
@@ -3465,7 +3483,7 @@ async function handleCallbackQuery(
     }
 
     if (data.startsWith('select_level_') || data.startsWith('select_subject_') || data.startsWith('select_location_') || data.startsWith('toggle_tutor_pref_') || data === 'confirm_tutor_types' || data.startsWith('select_rate_') || data.startsWith('toggle_assignment_slot_') || data === 'confirm_assignment_slots' || data.startsWith('set_assignment_gender_')) {
-      return await handleAssignmentCallbackQuery(bot, callbackQuery, userSessions);
+      return await handleAssignmentCallbackQuery(bot, callbackQuery, userSessions, ack);
     }
 
 
@@ -4118,6 +4136,9 @@ async function handleCallbackQuery(
   } catch (error) {
     console.error('❌ Error in handleCallbackQuery:', error);
     return await safeSend(bot, chatId, 'An error occurred. Please try again.');
+  } finally {
+    // Clear the button's spinner for every branch that didn't answer with a toast of its own.
+    await ack();
   }
 }
 
