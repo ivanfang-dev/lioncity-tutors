@@ -1454,8 +1454,9 @@ async function handleAssignmentStep(bot, chatId, text, userSessions, Assignment)
   } catch (error) {
     console.error('Error in assignment step:', error);
     await safeSend(bot, chatId, '❌ An error occurred. Please try again.');
-    // Reset the session
-    delete userSessions[chatId].state;
+    // Reset the session. state goes back to IDLE rather than being deleted — every reader
+    // below treats it as a string (session.state.startsWith), so an absent state throws.
+    userSessions[chatId].state = ApplicationStates.IDLE;
     delete userSessions[chatId].assignmentData;
     delete userSessions[chatId].currentStep;
   }
@@ -1786,8 +1787,9 @@ async function confirmPostAssignment(bot, chatId, userSessions, Assignment, chan
       await savedAssignment.save();
     }
     
-    // Clear session
-    delete userSessions[chatId].state;
+    // Clear session. state returns to IDLE rather than being deleted — the owner's next plain
+    // message reads session.state.startsWith(...), which throws on an absent state.
+    userSessions[chatId].state = ApplicationStates.IDLE;
     delete userSessions[chatId].assignmentData;
     delete userSessions[chatId].currentStep;
     delete userSessions[chatId].waitingForCustomRate;
@@ -4145,10 +4147,16 @@ async function handleCallbackQuery(
 async function handleMessage(bot, chatId, userId, text, message, Tutor, Assignment, userSessions, ADMIN_USERS, BOT_USERNAME) {
   // Initialize session using chatId for consistency
   if (!userSessions[chatId]) {
-    userSessions[chatId] = { state: 'idle' };
+    userSessions[chatId] = { state: ApplicationStates.IDLE };
   }
 
   const session = userSessions[chatId];
+  // Every branch below reads state as a string (including session.state.startsWith), and this
+  // function isn't wrapped in a try/catch — a session left without one would throw straight out
+  // to the webhook as a 500, which Telegram then retries. Normalise once, here.
+  if (typeof session.state !== 'string') {
+    session.state = ApplicationStates.IDLE;
+  }
   const isUserAdmin = isAdmin(userId, ADMIN_USERS);
 
   // Handle non-text messages first
