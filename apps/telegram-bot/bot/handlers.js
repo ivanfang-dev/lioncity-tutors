@@ -4575,15 +4575,17 @@ async function deleteAssignment(bot, chatId, assignmentId, Assignment) {
 // Function to view applications for an assignment
 async function viewAssignmentApplications(bot, chatId, assignmentId, Assignment) {
   try {
-    const assignment = await Assignment.findById(assignmentId).populate('applicants.userId', 'firstName lastName username');
-    
+    // Applicants carry tutorId — there is no userId/proposedRate on the schema, and populating
+    // a path that isn't there is a hard StrictPopulateError in Mongoose 8.
+    const assignment = await Assignment.findById(assignmentId).populate('applicants.tutorId', 'fullName contactNumber');
+
     if (!assignment) {
       await safeSend(bot, chatId, '❌ Assignment not found.');
       return;
     }
-    
+
     if (!assignment.applicants || assignment.applicants.length === 0) {
-      await safeSend(bot, chatId, `📋 No applications found for "*${assignment.title || 'Assignment'}*"`, {
+      await safeSend(bot, chatId, `📋 No applications found for "*${escapeMd(assignment.title) || 'Assignment'}*"`, {
         parse_mode: 'Markdown',
         reply_markup: {
           inline_keyboard: [[{ text: '🔙 Back to Edit Assignment', callback_data: `edit_assignment_${assignmentId}` }]]
@@ -4591,15 +4593,20 @@ async function viewAssignmentApplications(bot, chatId, assignmentId, Assignment)
       });
       return;
     }
-    
-    let message = `👥 *Applications for: ${assignment.title || 'Assignment'}*\n\n`;
-    
+
+    let message = `👥 *Applications for: ${escapeMd(assignment.title) || 'Assignment'}*\n\n`;
+
     assignment.applicants.forEach((applicant, index) => {
-      const user = applicant.userId;
-      message += `*${index + 1}. ${user.firstName} ${user.lastName}*\n`;
-      message += `@${user.username || 'N/A'}\n`;
-      message += `📅 Applied: ${new Date(applicant.appliedAt).toLocaleDateString()}\n`;
-      message += `💰 Proposed Rate: $${applicant.proposedRate || 'N/A'}\n\n`;
+      // populate leaves tutorId null when the tutor doc is gone; contactDetails was snapshotted
+      // at apply time, so it still identifies them.
+      const tutor = applicant.tutorId;
+      const name = tutor?.fullName || 'Unknown tutor';
+      const contact = tutor?.contactNumber || applicant.contactDetails;
+      message += `*${index + 1}. ${escapeMd(name)}*\n`;
+      if (contact) message += `📱 ${escapeMd(contact)}\n`;
+      message += `📅 Applied: ${applicant.appliedAt ? new Date(applicant.appliedAt).toLocaleDateString('en-SG') : 'Unknown'}\n`;
+      message += `💰 Rate: ${applicant.rate ? `$${escapeMd(applicant.rate)}/hr` : 'Not given'}\n`;
+      message += `🔄 Status: ${applicant.status || 'Pending'}\n\n`;
     });
     
     await safeSend(bot, chatId, message, {
