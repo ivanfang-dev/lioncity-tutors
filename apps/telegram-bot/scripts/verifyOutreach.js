@@ -37,7 +37,7 @@ if (!a) {
 
 const o = a.outreach || {};
 const fmt = (d) => (d ? new Date(d).toISOString().replace('T', ' ').slice(0, 19) : '—');
-const target = Number(process.env.OUTREACH_INTERESTED_TARGET) || 3;
+const target = Number(process.env.OUTREACH_INTERESTED_TARGET) || 6;
 const viable = a.viableInterestedCount();
 
 console.log('');

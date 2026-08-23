@@ -129,11 +129,96 @@ function parseSubjectsFromTitle(title) {
 // Responsiveness is applied SEPARATELY as a multiplier (see responsivenessFactor), not as
 // a weight here — so a proven ghost is dragged down regardless of how good they look on
 // paper, which is the point of "deprioritise non-responders".
-const WEIGHTS = { experience: 0.45, commitment: 0.30, budget: 0.25 };
+const WEIGHTS = {
+  experience: 0.30,
+  commitment: 0.22,
+  education: 0.18,
+  budget: 0.15,
+  prestige: 0.08,
+  trackRecord: 0.07,
+};
+
+// Academic qualification as a 0..1 tier. Ordered longest-first so "Master's" isn't caught by a
+// looser pattern. An unset or unrecognised value scores 0 — absent, not penalised.
+const EDUCATION_TIERS = [
+  [/phd|doctorate/, 1.0],
+  [/master/, 0.9],
+  [/bachelor|degree|honours|hons/, 0.75],
+  [/undergrad|university student/, 0.6],
+  [/diploma|polytechnic/, 0.45],
+  [/a-?level|junior college|\bjc\b/, 0.3],
+  [/o-?level|secondary/, 0.15],
+];
+
+export function educationTier(tutor) {
+  const raw = String(tutor?.highestEducation ?? '').toLowerCase();
+  if (!raw) return 0;
+  const hit = EDUCATION_TIERS.find(([pattern]) => pattern.test(raw));
+  return hit ? hit[1] : 0;
+}
+
+// Institutions SG parents recognise. Each match adds a step, capped at 1 — a signal, not a ladder.
+const NAMED_INSTITUTIONS = [
+  /\braffles\b|\bri\b/, /hwa chong|\bhci\b/, /nanyang girls|\bnygh\b/, /victoria (junior college|school)|\bvjc\b/,
+  /\bacs\b|anglo-?chinese/, /dunman/, /national junior college|\bnjc\b/, /temasek junior college|\btjc\b/,
+  /\bnus\b|national university of singapore/, /\bntu\b|nanyang technological/, /\bsmu\b|singapore management/,
+  /\bsutd\b/, /oxford|cambridge|imperial college|\blse\b/, /harvard|stanford|\bmit\b|princeton|yale/,
+  /ex-?moe|\bmoe\b|ministry of education/,
+];
+const PRESTIGE_STEP = 0.5;
+
+export function prestigeSignal(tutor) {
+  const text = [tutor?.currentSchool, tutor?.previousSchools].filter(Boolean).join(' ').toLowerCase();
+  if (!text) return 0;
+  const hits = NAMED_INSTITUTIONS.filter(pattern => pattern.test(text)).length;
+  return Math.min(1, hits * PRESTIGE_STEP);
+}
+
+// Proven placements as a 0..1 signal, saturating so a veteran can't run away with the ranking.
+// Placements that lasted 30 days count double — surviving the first month is the real outcome.
+const TRACK_RECORD_SATURATION = 8;
+
+export function trackRecordFactor(tutor) {
+  const placed = tutor?.stats?.placed || 0;
+  if (!placed) return 0;
+  const survived = Math.min(tutor?.stats?.survived30d || 0, placed);
+  const weighted = (placed - survived) + survived * 2;
+  return Math.min(1, weighted / (TRACK_RECORD_SATURATION * 2));
+}
 
 // A tutor asking up to this fraction over the assignment ceiling is still worth
 // messaging (rates are negotiable at the margin); beyond it, drop them.
 const BUDGET_GRACE = 0.20;
+
+// Relax the soft preferences once the strict pool falls below this — too few tutors to plausibly
+// reach the interested target, so a thin pool of exact matches is worse than a real pool with the
+// mismatches ranked down.
+const RELAX_POOL_MIN = Number(process.env.MATCH_RELAX_POOL_MIN) || 10;
+
+// How far a tutor drops for missing a stated preference. Gender bites harder than tutor type
+// because parents flex on it least.
+const GENDER_MISMATCH_FACTOR = 0.55;
+const TUTOR_TYPE_MISMATCH_FACTOR = 0.70;
+
+// Multiplier for a tutor who was relaxed into the pool despite missing the parent's stated
+// preferences. 1 when they match, when no preference was stated, or when we don't hold the field —
+// only a KNOWN mismatch is penalised, so missing tutor data never costs a tutor their place.
+export function preferenceFactor(tutor, assignment) {
+  let factor = 1;
+
+  const wantGender = assignment?.preferredGender;
+  if (wantGender && wantGender !== 'No preference' && tutor?.gender && tutor.gender !== wantGender) {
+    factor *= GENDER_MISMATCH_FACTOR;
+  }
+
+  const wantTypes = assignment?.preferredTutorTypes || [];
+  if (wantTypes.length > 0 && tutor?.tutorType) {
+    const allowed = wantTypes.flatMap(t => TUTOR_TYPE_MAP[t] || []);
+    if (allowed.length > 0 && !allowed.includes(tutor.tutorType)) factor *= TUTOR_TYPE_MISMATCH_FACTOR;
+  }
+
+  return factor;
+}
 
 // yearsOfExperience is a fixed dropdown on the register-tutor form (website
 // register-tutor/page.jsx) — these are the only five possible values.
@@ -264,12 +349,9 @@ function responsivenessFactor(tutor) {
   return Math.max(RESPONSIVENESS_FLOOR, Math.min(1, 0.4 + rate * 1.2));
 }
 
-// The ranking policy version — bumped whenever WEIGHTS or the scoring logic below change, so the
-// Recommendation decision log (Phase 6) can segment analyses by ranker version. Start at v1.
-// Bumped for Phase 10 step 4: a newcomer boost enters the score and exposure-capped tutors are held
-// out of new waves — a ranking-policy change the decision log should segment on. (v2 was Phase 9's
-// qualityGrade swap + re-rank retirement.)
-const POLICY_VERSION = '2026.07-v3';
+// Bumped whenever WEIGHTS or the scoring logic change, so the decision log can segment analyses
+// by ranker version. v4 adds education, school prestige and placement track record to the blend.
+const POLICY_VERSION = '2026.08-v4';
 
 // Newcomer boost (Phase 10 step 4): a small multiplier for tutors with zero lifetime placements and
 // a decent profile, so unproven-but-promising supply gets wave exposure before it churns out.
@@ -298,10 +380,16 @@ function scoreTutorComponents(tutor, fit, { useQualityGrade = true } = {}) {
   // ranking (useQualityGrade:false) for retrospective audits.
   const qualityTerm = useQualityGrade ? qualitySignal(tutor) : commitment;
   const responsiveness = responsivenessFactor(tutor);
+  const education = educationTier(tutor);
+  const prestige = prestigeSignal(tutor);
+  const track = trackRecordFactor(tutor);
   const quality =
     WEIGHTS.experience * (experienceRank / 5) +
     WEIGHTS.commitment * qualityTerm +
-    WEIGHTS.budget * fit.comfort;
+    WEIGHTS.education * education +
+    WEIGHTS.budget * fit.comfort +
+    WEIGHTS.prestige * prestige +
+    WEIGHTS.trackRecord * track;
   // Phase 10 step 4: give unproven-but-decent newcomers (0 lifetime placements, decent profile) a
   // small lift so they surface in waves before churning. stats.placed is the materialized count
   // (Phase 7); absent → treated as 0 (a never-placed tutor).
@@ -314,6 +402,9 @@ function scoreTutorComponents(tutor, fit, { useQualityGrade = true } = {}) {
       commitmentScore: commitment,
       budgetComfort: fit.comfort,
       responsivenessFactor: responsiveness,
+      educationTier: education,
+      prestigeSignal: prestige,
+      trackRecordFactor: track,
     },
   };
 }
@@ -406,9 +497,12 @@ function shortlistScore(tutor, assignment, quotedRate = null) {
   const experience = (EXPERIENCE_RANK[tutor.yearsOfExperience] || 0) / 5;
   const quality =
     WEIGHTS.experience * experience +
-    WEIGHTS.commitment * qualitySignal(tutor) + // Phase 9: same quality swap as scoreTutorComponents
-    WEIGHTS.budget * fit.comfort;
-  return quality * coverageFactor(tutor, requestedFields, levelCategory);
+    WEIGHTS.commitment * qualitySignal(tutor) +
+    WEIGHTS.education * educationTier(tutor) +
+    WEIGHTS.budget * fit.comfort +
+    WEIGHTS.prestige * prestigeSignal(tutor) +
+    WEIGHTS.trackRecord * trackRecordFactor(tutor);
+  return quality * coverageFactor(tutor, requestedFields, levelCategory) * preferenceFactor(tutor, assignment);
 }
 
 // One-line, human-readable "why this tutor" for the owner's shortlist alert: experience,
@@ -465,9 +559,11 @@ function buildFilterStages(assignment) {
 
   const stages = [];
   let query = {};
-  const add = (filter, clause) => {
+  // `soft` stages express a parent PREFERENCE rather than a hard constraint: when the strict pool
+  // is too thin to work with, runMatch drops them and penalises the mismatches in scoring instead.
+  const add = (filter, clause, soft = false) => {
     query = { ...query, ...clause };
-    stages.push({ filter, query });
+    stages.push({ filter, query, soft });
   };
 
   // $nin with null also excludes docs missing the field entirely, so no $exists needed.
@@ -489,12 +585,11 @@ function buildFilterStages(assignment) {
 
   if (assignment.preferredTutorTypes?.length > 0) {
     const allowedTypes = assignment.preferredTutorTypes.flatMap(t => TUTOR_TYPE_MAP[t] || []);
-    add('tutorType', { tutorType: { $in: allowedTypes } });
+    add('tutorType', { tutorType: { $in: allowedTypes } }, true);
   }
 
-  // Gender is a hard requirement when the parent specified one — parents rarely flex.
   if (assignment.preferredGender && assignment.preferredGender !== 'No preference') {
-    add('gender', { gender: assignment.preferredGender });
+    add('gender', { gender: assignment.preferredGender }, true);
   }
 
   return { unmappable: null, stages, requestedFields, levelCategory, region };
@@ -540,8 +635,9 @@ const MAX_CANDIDATE_FETCH = 300;
 const CANDIDATE_FIELDS =
   'fullName contactNumber telegramId telegramStale tutorType yearsOfExperience highestEducation ' +
   'introduction teachingExperience trackRecord hourlyRate availableTimeSlots responseStats teachingLevels createdAt ' +
-  'profileFeatures ' + // Phase 9: qualityGrade feeds the quality signal in scoring (Step B)
-  'stats';             // Phase 10: stats.placed drives the newcomer boost
+  'gender currentSchool previousSchools ' + // soft-preference matching, education and prestige scoring
+  'profileFeatures ' +                      // qualityGrade feeds the quality signal in scoring
+  'stats';                                  // stats.placed drives the newcomer boost + track record
 
 // Find the best `poolSize` tutors matching the assignment's level+subject, location, and tutor
 // type — quality-ranked, ready to hand to the AI re-ranker.
@@ -580,21 +676,45 @@ async function runMatch(assignment, poolSize, { withStats = false, model = Tutor
     }
   }
 
-  const candidates = await model.find(fetchQuery)
-    .select(CANDIDATE_FIELDS)
-    .sort({ createdAt: -1 })
-    .limit(MAX_CANDIDATE_FETCH)
-    .lean();
+  const fetchPool = async (q) => {
+    const docs = await model.find(q)
+      .select(CANDIDATE_FIELDS)
+      .sort({ createdAt: -1 })
+      .limit(MAX_CANDIDATE_FETCH)
+      .lean();
+    // Drop tutors the assignment clearly can't afford or who can't cover the timing.
+    return { docs, ...applyJsFilters(docs, assignment, levelCategory) };
+  };
 
-  // Drop tutors the assignment clearly can't afford or who can't cover the timing, then
-  // quality-rank the rest and hand the strongest `poolSize` to the AI re-ranker.
-  const { kept, stages: jsStages } = applyJsFilters(candidates, assignment, levelCategory);
+  let { docs: candidates, kept, stages: jsStages } = await fetchPool(fetchQuery);
+
+  // Too few exact matches to reach the interested target — refetch without the soft preferences
+  // (gender, tutor type) so there's a real pool to work with. The mismatches aren't hidden: they
+  // rank below every exact match via preferenceFactor, and `relaxed` tells the caller what gave.
+  const softFilters = stages.filter(st => st.soft).map(st => st.filter);
+  let relaxed = [];
+  if (kept.length < RELAX_POOL_MIN && softFilters.length > 0) {
+    const lastHard = [...stages].reverse().find(st => !st.soft);
+    const relaxedQuery = excludeIds.length
+      ? { ...lastHard.query, _id: { $nin: excludeIds } }
+      : lastHard.query;
+    const wider = await fetchPool(relaxedQuery);
+    if (wider.kept.length > kept.length) {
+      ({ docs: candidates, kept, stages: jsStages } = wider);
+      relaxed = softFilters;
+    }
+  }
 
   const ranked = kept
     .map(({ tutor, fit }) => {
       const { score, components } = scoreTutorComponents(tutor, fit, { useQualityGrade });
       const cov = coverageFactor(tutor, requestedFields, levelCategory);
-      return { tutor, score: score * cov, components: { ...components, coverageFactor: cov, qualityGrade: tutor.profileFeatures?.qualityGrade ?? null } };
+      const pref = preferenceFactor(tutor, assignment);
+      return {
+        tutor,
+        score: score * cov * pref,
+        components: { ...components, coverageFactor: cov, qualityGrade: tutor.profileFeatures?.qualityGrade ?? null },
+      };
     })
     .sort((a, b) => b.score - a.score);
 
@@ -605,7 +725,7 @@ async function runMatch(assignment, poolSize, { withStats = false, model = Tutor
     tutor: r.tutor, rank: i + 1, score: r.score, components: r.components,
   }));
   const tutors = scored.map(s => s.tutor);
-  if (!withStats) return { tutors, scored, stats: null };
+  if (!withStats) return { tutors, scored, relaxed, stats: null };
 
   // The JS filters ran on the fetched (≤ MAX_CANDIDATE_FETCH) set, so splice them onto the DB
   // funnel from that set's size — that keeps `before`/`after` continuous across the boundary
@@ -614,6 +734,7 @@ async function runMatch(assignment, poolSize, { withStats = false, model = Tutor
   return {
     tutors,
     scored,
+    relaxed,
     stats: {
       unmappable: null,
       stages: allStages,
@@ -638,6 +759,13 @@ async function findMatchingTutors(assignment, poolSize = 40) {
 async function findMatchingTutorsScored(assignment, poolSize = 40, options = {}) {
   const { scored } = await runMatch(assignment, poolSize, options);
   return scored;
+}
+
+// The wave path's entry point: the scored pool plus which soft preferences had to be relaxed to
+// fill it, so the caller can tell the owner what gave. { scored, relaxed }.
+async function findMatchingTutorsForWave(assignment, poolSize = 40, options = {}) {
+  const { scored, relaxed } = await runMatch(assignment, poolSize, options);
+  return { scored, relaxed };
 }
 
 // The stats mode: the same match, plus a per-filter attrition funnel explaining how a large tutor
@@ -819,6 +947,7 @@ async function rateGuide({ level, location, type } = {}, options = {}) {
 export {
   findMatchingTutors,
   findMatchingTutorsScored,
+  findMatchingTutorsForWave,
   findMatchingTutorsWithStats,
   budgetCalibration,
   rateGuide,

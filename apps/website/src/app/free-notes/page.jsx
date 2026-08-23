@@ -127,9 +127,10 @@ export default function FreeNotesPage() {
               Where else to find free notes
             </SectionHeading>
             <p className="mb-6 text-gray-700 leading-relaxed text-pretty">
-              These collections are hosted and maintained by other people, not by us. We have read
-              through each one and summarised what is inside so you know whether it is worth your
-              time. Links open in a new tab.
+              Our own library is still small, so here is where we send students for the subjects it
+              does not cover yet. Every collection below is hosted and maintained by someone else,
+              not by us. We have been through each one and summarised what is actually inside,
+              including where the coverage is patchy. Links open in a new tab.
             </p>
             <div className="grid gap-6 sm:grid-cols-2">
               {EXTERNAL_NOTES.map((resource) => (
@@ -139,7 +140,10 @@ export default function FreeNotesPage() {
                   className="flex flex-col scroll-mt-24 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm"
                 >
                   <h3 className="text-lg font-bold text-gray-900 text-balance">{resource.subject}</h3>
-                  <p className="mt-1 text-xs font-semibold uppercase tracking-wide text-gray-500">
+                  <p className="mt-1 text-xs font-semibold uppercase tracking-wide text-[#0474BA]">
+                    {resource.tag}
+                  </p>
+                  <p className="mt-1 text-xs text-gray-500">
                     {resource.host} &middot; {resource.fileCount}
                   </p>
                   <p className="mt-3 flex-1 text-gray-700 leading-relaxed text-pretty">{resource.summary}</p>

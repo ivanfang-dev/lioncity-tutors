@@ -1,7 +1,7 @@
-import { findMatchingTutorsScored } from './tutorMatcher.js';
-// Phase 9 Step B retired the query-time Gemini re-rank: wave 1 now takes the deterministic top 8
-// directly (the ranking already prefers each tutor's extracted qualityGrade). tutorRanker.js stays
-// in-tree, unused, until the new ranking is proven — hence no import here.
+import { findMatchingTutorsForWave, findMatchingTutorsWithStats } from './tutorMatcher.js';
+import { poolShortfallReport, ACTION_LABELS } from './poolDiagnosis.js';
+// Wave 1 takes the deterministic top of the ranking directly — the query-time Gemini re-rank was
+// retired once the ranking started reading each tutor's extracted qualityGrade.
 import { recordRecommendation, candidatesFromScored } from './recordRecommendation.js';
 import { Assignment, Tutor } from '../../../packages/shared/server-exports.js';
 import { normalizePhone } from './phone.js';
@@ -10,10 +10,11 @@ import { sendWhatsAppTemplate } from './whatsappSender.js';
 import { sendAssignmentDM } from './telegramOutreach.js';
 import { computeWaveSize, trailingInterestRate } from './waveSizing.js';
 import { loadCappedTutorIds } from './exposureCaps.js';
+import { notifyOwner, opsButtonRow } from './ownerAlert.js';
 
 // The interested-tutor target an assignment aims for before holding (mirrors escalation-tick and
 // recordTutorReply). Wave 1 has zero interested yet, so it needs the full target's worth.
-const INTERESTED_TARGET = Number(process.env.OUTREACH_INTERESTED_TARGET) || 3;
+const INTERESTED_TARGET = Number(process.env.OUTREACH_INTERESTED_TARGET) || 6;
 
 // The approved outreach template (see WhatsApp Manager). Its body has 6 positional params;
 // buildAssignmentParams() below produces them in order. Quick-Reply buttons ("Yes, interested"
@@ -171,7 +172,24 @@ async function sendWaveToTutors(assignment, batch, wave, botUsername) {
   return { sent, failed };
 }
 
-// Wave 1 — fired immediately when an assignment is posted. Deterministic top 8 (Phase 9 Step B).
+// Diagnose a thin wave-1 pool and hand the owner the recovery actions as buttons. The funnel costs
+// one count per filter, so it runs only on the thin-pool path.
+async function alertThinPool(assignment, poolSize, relaxed) {
+  const { stats } = await findMatchingTutorsWithStats(assignment, 40).catch(() => ({ stats: null }));
+  const report = poolShortfallReport({ poolSize, target: INTERESTED_TARGET, stats, assignment, relaxed });
+  if (!report) return;
+
+  const rows = report.actions.map(action => ([{
+    text: ACTION_LABELS[action],
+    callback_data: `recover_${action}_${assignment._id}`,
+  }]));
+  const opsRow = opsButtonRow(assignment._id);
+  if (opsRow) rows.push(opsRow);
+
+  await notifyOwner(report.text, rows.length ? { inline_keyboard: rows } : undefined);
+}
+
+// Wave 1 — fired immediately when an assignment is posted.
 async function notifyMatchedTutors(assignment, botUsername) {
   try {
     // Pull the top 40 quality-ranked matches (with their score breakdown for the decision log). The
@@ -179,7 +197,14 @@ async function notifyMatchedTutors(assignment, botUsername) {
     // no query-time Gemini re-rank (removed an API call, a failure mode, and ~5s from wave 1).
     // Exposure caps (Phase 10 step 4): exclude tutors already holding ≥2 unresolved offers.
     const excludeTutorIds = await loadCappedTutorIds();
-    const scored = await findMatchingTutorsScored(assignment, 40, { excludeTutorIds });
+    const { scored, relaxed } = await findMatchingTutorsForWave(assignment, 40, { excludeTutorIds });
+
+    // Too few matches to reach the target: tell the owner NOW, with the filter that cost the most
+    // candidates and one-tap ways to widen — rather than letting it run quietly to Exhausted.
+    if (scored.length < INTERESTED_TARGET) {
+      await alertThinPool(assignment, scored.length, relaxed)
+        .catch(err => console.warn('Thin-pool alert failed:', err.message));
+    }
 
     if (scored.length === 0) {
       console.log(`No matching tutors found for assignment ${assignment._id}`);
@@ -216,7 +241,7 @@ async function notifyMatchedTutors(assignment, botUsername) {
 async function escalateAssignment(assignment, botUsername, { waveSize = 6, excludeTutorIds = null } = {}) {
   // Exposure caps (Phase 10 step 4): the tick passes the set of tutors already holding ≥2 unresolved
   // offers, held out of this wave. Computed once per tick by the caller.
-  const scored = await findMatchingTutorsScored(assignment, 40, { excludeTutorIds });
+  const { scored } = await findMatchingTutorsForWave(assignment, 40, { excludeTutorIds });
   const contacted = new Set(assignment.contactedTutorIds());
   // Re-rank the not-yet-contacted tutors 1..N — the escalation decision only ever chooses among
   // these, so ranks relative to the fresh pool are what the decision log should record.

@@ -10,7 +10,6 @@ import { checkInAction, recordCheckInNoReply, CHECKIN_DUE_MS, CHECKIN_REPING_MS 
 import { checkInButtonRows } from '../utils/checkInButtons.js';
 import { runTutorStatsMaterialization } from '../utils/materializeTutorStats.js';
 import { runProfileExtractionSweep } from '../utils/profileExtractor.js';
-import { isNightSG, activeElapsedMs } from '../utils/outreachSchedule.js';
 import { computeWaveSize, trailingInterestRate } from '../utils/waveSizing.js';
 import { runDormancySweep } from '../utils/dormancy.js';
 import { runProfileNudgeSweep } from '../utils/profileNudge.js';
@@ -18,6 +17,7 @@ import { loadCappedTutorIds } from '../utils/exposureCaps.js';
 import { notifyOwner, opsButtonRow } from '../utils/ownerAlert.js';
 import { formatAssignmentForChannel } from '../utils/channelFormat.js';
 import { shortlistDecided, shortlistedContacts } from '../../../packages/shared/utils/outreachState.js';
+import { recordParentReject, resumeOutreach } from '../utils/parentOutcome.js';
 
 // Give the background sends (which run after the response) room to finish.
 export const maxDuration = 60;
@@ -26,7 +26,7 @@ const WAVE_INTERVAL_MS = Number(process.env.OUTREACH_WAVE_INTERVAL_MS) || 60 * 3
 // Wave size is now adaptive (Phase 10 step 2 — see computeWaveSize/trailingInterestRate), no longer a
 // fixed per-wave constant.
 const MAX_DURATION_MS = Number(process.env.OUTREACH_MAX_DURATION_MS) || 4 * 60 * 60 * 1000; // 4h
-const INTERESTED_TARGET = Number(process.env.OUTREACH_INTERESTED_TARGET) || 3;
+const INTERESTED_TARGET = Number(process.env.OUTREACH_INTERESTED_TARGET) || 6;
 // Max reminder pings a single non-responder can receive once the fresh pool is dry,
 // before we stop and hand the assignment to the owner.
 const MAX_REMINDERS = Number(process.env.OUTREACH_MAX_REMINDERS) || 1;
@@ -41,9 +41,10 @@ const BOT_USERNAME = process.env.BOT_USERNAME;
 const AUTO_CLOSE_DAYS = Number(process.env.ASSIGNMENT_AUTO_CLOSE_DAYS) || 7;
 const MAX_CLOSE_PER_TICK = 20; // bound the Telegram edits done in one tick
 
-// The shortlist relayed to the parent — the best N of everyone who said Yes during the hold
-// window. Tied to the interested target (default 3): we collect extra, then pick this many.
-const SHORTLIST_SIZE = INTERESTED_TARGET;
+// The shortlist relayed to the parent — the best N of everyone who said Yes. Deliberately smaller
+// than the interested target, so the parent sees the best 3 of a deeper pool rather than the
+// fastest 3 to reply.
+const SHORTLIST_SIZE = Number(process.env.OUTREACH_SHORTLIST_SIZE) || 3;
 // Bound how many hold windows one tick releases, so the owner-alert fan-out stays inside the
 // function's time budget (each release = a Tutor query + one owner Telegram message).
 const MAX_RELEASE_PER_TICK = Number(process.env.OUTREACH_MAX_RELEASE_PER_TICK) || 5;
@@ -117,11 +118,18 @@ async function processAssignment(assignment, now, expectedInterestRate, excludeT
     return;
   }
 
-  // Past the time cap with too few replies → stop and ask the owner to step in. Elapsed EXCLUDES the
-  // overnight quiet window (Phase 10 step 1): an assignment posted at 21:00 shouldn't burn its budget
-  // while no waves are being sent.
+  // Past the time cap.
   const startedAt = assignment.outreach?.startedAt;
-  if (startedAt && activeElapsedMs(startedAt, now) >= MAX_DURATION_MS) {
+  if (startedAt && (now - new Date(startedAt)) >= MAX_DURATION_MS) {
+    // Enough yeses to fill a shortlist even though we never hit the target — release what we have
+    // rather than handing the owner a dead assignment. holdUntil in the past → next tick ranks it.
+    if (viable >= SHORTLIST_SIZE) {
+      await Assignment.updateOne(
+        { _id: assignment._id },
+        { $set: { 'outreach.status': 'Holding', 'outreach.holdUntil': now } }
+      );
+      return;
+    }
     await Assignment.updateOne(
       { _id: assignment._id },
       { $set: { 'outreach.status': 'Exhausted' } }
@@ -153,6 +161,14 @@ async function processAssignment(assignment, now, expectedInterestRate, excludeT
   });
 
   if (reminder.remindedNone) {
+    // Out of tutors but holding enough yeses to fill a shortlist — release it instead of giving up.
+    if (viable >= SHORTLIST_SIZE) {
+      await Assignment.updateOne(
+        { _id: assignment._id },
+        { $set: { 'outreach.status': 'Holding', 'outreach.holdUntil': now } }
+      );
+      return;
+    }
     await Assignment.updateOne({ _id: assignment._id }, { $set: { 'outreach.status': 'Exhausted' } });
     await notifyOwner(
       `📭 *Ran out of tutors*\n*${assignment.title}* has no more matching tutors to contact ` +
@@ -179,7 +195,9 @@ async function releaseOneShortlist(assignment) {
   const tutorIds = viable.map(c => c.tutorId);
   const tutors = tutorIds.length
     ? await Tutor.find({ _id: { $in: tutorIds } })
-        .select('fullName yearsOfExperience introduction teachingExperience trackRecord hourlyRate tutorType teachingLevels responseStats')
+        .select('fullName yearsOfExperience introduction teachingExperience trackRecord hourlyRate ' +
+                'tutorType teachingLevels responseStats highestEducation currentSchool previousSchools ' +
+                'stats profileFeatures')
         .lean()
     : [];
   const tutorById = new Map(tutors.map(t => [t._id.toString(), t]));
@@ -355,7 +373,10 @@ async function alertOwnerParentSilent(assignment, kind) {
       else text += `\n\n📋 Open [WhatsApp](${waMeLink(assignment.parentContact)}) with ${assignment.parentContact} and paste:\n\n${draft}`;
     }
   } else {
-    text = `🚩 *Parent silent ~48h* on *${assignment.title}* — flagged for manual follow-up. No more auto-reminders.`;
+    text =
+      `🚩 *Parent silent ~48h* on *${assignment.title}* — treating it as a pass and searching again.\n` +
+      `Fresh tutors are being messaged now; you'll get a new shortlist when enough say yes.\n` +
+      `The current profiles still count — record a pick below if the parent comes back.`;
   }
   if (assignment.parentContact && shortlisted.length) {
     rows.push(...buildOutcomeButtons(assignment._id, shortlisted));
@@ -385,6 +406,16 @@ async function nudgeSilentParents(now) {
       const field = action === 'nudge' ? 'outreach.parentNudgedAt' : 'outreach.parentSilenceEscalatedAt';
       await Assignment.updateOne({ _id: assignment._id }, { $set: { [field]: now } });
       await alertOwnerParentSilent(assignment, action);
+      // A parent who never answered is a soft pass: retire this shortlist and go find new tutors,
+      // because a fresh name is a reason to reply and a re-pitch of the same three is not. Alert
+      // first so the owner reads it against the shortlist they were sent.
+      if (action === 'flag') {
+        const res = await recordParentReject({ assignmentId: assignment._id, reason: 'silence' });
+        if (res.ok) {
+          await resumeOutreach(res.assignment, { botUsername: BOT_USERNAME })
+            .catch(err => console.error(`Silence resume wave failed for ${assignment._id}:`, err.message));
+        }
+      }
       console.log(`Parent-silence ${action} for ${assignment._id}`);
     } catch (err) {
       console.error(`Parent silence follow-up failed for ${assignment._id}:`, err.message);
@@ -565,25 +596,20 @@ export default async function handler(req, res) {
     const dueBefore = new Date(now.getTime() - WAVE_INTERVAL_MS);
 
     // Atomically claim due assignments — set lastWaveAt=now so a concurrent or next
-    // tick can't grab the same one and double-send. Skipped entirely during the 22:00–08:00 SGT
-    // quiet hours (Phase 10 step 1): no new tutor waves overnight. The maintenance below still runs
-    // (holding release, parent nudges, check-ins, stats, extraction) — only wave SENDS are gated,
-    // and Holding release is exempt by design since those tutors already replied.
+    // tick can't grab the same one and double-send. Waves run around the clock.
     const claimed = [];
-    if (!isNightSG(now)) {
-      for (let i = 0; i < MAX_PER_TICK; i++) {
-        const assignment = await Assignment.findOneAndUpdate(
-          {
-            status: 'Open',
-            'outreach.status': 'Active',
-            'outreach.lastWaveAt': { $lte: dueBefore }
-          },
-          { $set: { 'outreach.lastWaveAt': now } },
-          { new: true, sort: { 'outreach.lastWaveAt': 1 } }
-        );
-        if (!assignment) break;
-        claimed.push(assignment);
-      }
+    for (let i = 0; i < MAX_PER_TICK; i++) {
+      const assignment = await Assignment.findOneAndUpdate(
+        {
+          status: 'Open',
+          'outreach.status': 'Active',
+          'outreach.lastWaveAt': { $lte: dueBefore }
+        },
+        { $set: { 'outreach.lastWaveAt': now } },
+        { new: true, sort: { 'outreach.lastWaveAt': 1 } }
+      );
+      if (!assignment) break;
+      claimed.push(assignment);
     }
 
     // Background maintenance runs every tick (even when no wave is due): escalate any
@@ -641,17 +667,16 @@ export default async function handler(req, res) {
       } catch (err) {
         console.error('Profile extraction sweep failed:', err.message);
       }
-      // Auto-pause dormant tutors and offer Telegram reactivation (Phase 10 step 3). Bounded per run,
-      // and skipped at night so a reactivation DM never pings a tutor at 3am. Best-effort.
+      // Auto-pause dormant tutors and offer Telegram reactivation. Bounded per run, best-effort.
       try {
-        if (!isNightSG(now)) await runDormancySweep(now);
+        await runDormancySweep(now);
       } catch (err) {
         console.error('Dormancy sweep failed:', err.message);
       }
-      // Nudge weak-profile tutors (qualityGrade ≤ 2) to add their track record — ONE Telegram DM each
-      // (Phase 9 follow-on). Bounded, daytime-only, Telegram-only. Best-effort.
+      // Nudge weak-profile tutors (qualityGrade ≤ 2) to add their track record — ONE Telegram DM
+      // each. Bounded, Telegram-only, best-effort.
       try {
-        if (!isNightSG(now)) await runProfileNudgeSweep(now);
+        await runProfileNudgeSweep(now);
       } catch (err) {
         console.error('Profile nudge sweep failed:', err.message);
       }

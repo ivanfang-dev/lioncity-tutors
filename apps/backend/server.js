@@ -8,6 +8,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { Assignment, Tutor } from '../../packages/shared/server-exports.js';
 import { normalizePhone, generatePhoneVariations } from '../../packages/shared/utils/phoneUtils.js';
+import { recordApplicationInterest } from '../../packages/shared/utils/applicationInterest.js';
 
 
 // ES modules don't have __dirname, so we need to create it
@@ -329,6 +330,10 @@ app.post('/api/assignments/apply', async (req, res) => {
 
         if (result.modifiedCount > 0) {
           successCount++;
+          // Mirror the application into outreach so it counts toward the interested target and
+          // gets ranked into the shortlist. Best-effort — never fails the application itself.
+          await recordApplicationInterest(Assignment, assignmentId, tutor, { rate: newApplicant.rate })
+            .catch(err => console.warn(`Failed to mirror application ${assignmentId} into outreach:`, err.message));
           console.log(`✅ Successfully applied to assignment ${assignmentId} with rate: ${newApplicant.rate}`);
         } else {
           console.log(`⚠️ No modification for assignment ${assignmentId} - may already be applied`);

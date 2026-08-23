@@ -194,7 +194,9 @@ const assignmentSchema = new mongoose.Schema({
       // them when the tutor has a linked telegramId and falls back to a WhatsApp template
       // otherwise (or when the DM fails). Defaults to 'whatsapp' so pre-existing rows — all
       // sent before Telegram routing existed — read correctly and reply-matching stays right.
-      channel: { type: String, enum: ['whatsapp', 'telegram'], default: 'whatsapp' },
+      // 'application' means we never messaged them: they applied from the channel post or the
+      // website, and the row was mirrored in by recordApplicationInterest.
+      channel: { type: String, enum: ['whatsapp', 'telegram', 'application'], default: 'whatsapp' },
       sentAt: { type: Date, default: Date.now },
       // Sent       → message delivered, no reply yet
       // Interested → tutor replied Yes
@@ -223,8 +225,8 @@ const assignmentSchema = new mongoose.Schema({
       // so this tutor is never re-messaged.
       parentRejectedAt: { type: Date },
       // Why the parent passed on the shortlist, captured on a "Rejected all → reason" tap.
-      // Feeds shortlist-presentation and pricing analysis (Phase 8). Set alongside parentRejectedAt.
-      parentRejectReason: { type: String, enum: ['rate', 'profiles', 'timing', 'other'] },
+      // 'silence' is set by the tick, not the owner: the parent never answered and we moved on.
+      parentRejectReason: { type: String, enum: ['rate', 'profiles', 'timing', 'other', 'silence'] },
       // How many reminder pings this contact has received. Only non-responders (status
       // 'Sent') are ever reminded, and only when no fresh tutors are left to try; capped
       // by OUTREACH_MAX_REMINDERS so a quiet tutor isn't nagged indefinitely.

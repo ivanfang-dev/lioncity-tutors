@@ -3,14 +3,16 @@ import { Assignment, Tutor } from '../../../packages/shared/server-exports.js';
 import { normalizePhone } from './phone.js';
 import { notifyOwner, opsButtonRow } from './ownerAlert.js';
 import { buildRatePrompt } from './rateCapture.js';
+import { handleLateInterest } from './lateInterest.js';
 
 // Shared core for recording a tutor's Yes/No reply, used by both the legacy
 // /api/whatsapp-reply endpoint (VM-forwarded) and the new /api/whatsapp-webhook
 // (Meta Cloud API). Keeping the matching + owner-alert logic in one place means the
 // two entry points can never drift apart.
 
-// Stop sending new waves once this many tutors have replied "Yes".
-const INTERESTED_TARGET = Number(process.env.OUTREACH_INTERESTED_TARGET) || 3;
+// Stop sending new waves once this many tutors have replied "Yes". Deliberately larger than the
+// shortlist we relay, so the parent gets the best of a pool rather than the fastest repliers.
+const INTERESTED_TARGET = Number(process.env.OUTREACH_INTERESTED_TARGET) || 6;
 // After the target is reached we don't fulfil immediately — we HOLD for this long, still
 // collecting late yeses, so the shortlist can be the BEST target tutors rather than the
 // fastest. The escalation tick re-ranks and releases when the window elapses.
@@ -141,9 +143,9 @@ export async function recordTutorReply(phone, reply) {
   // (A tutor in several open assignments → the sort attributes it to the latest wave.)
   const assignment = await Assignment.findOneAndUpdate(
     {
-      // Accept replies while Active AND while Holding — a late "Yes" during the hold window
-      // still counts toward the pool the shortlist re-rank picks from.
-      'outreach.status': { $in: ['Active', 'Holding'] },
+      // Accept replies while Active, Holding AND Fulfilled. A yes after the shortlist went out
+      // is scored against it rather than dropped (see handleLateInterest).
+      'outreach.status': { $in: ['Active', 'Holding', 'Fulfilled'] },
       'outreach.contacts': { $elemMatch: { phone: norm, status: 'Sent' } }
     },
     {
@@ -212,7 +214,16 @@ async function finalizeReply(assignment, contact, decision, reply) {
   // Gate on viable (non-parent-rejected) interested tutors, so a resumed "find more" outreach
   // keeps sending until fresh tutors say Yes rather than instantly re-holding on the old shortlist.
   const interestedCount = assignment.viableInterestedCount();
-  if (decision === 'Interested') {
+
+  // The shortlist already went out. Score this yes against it instead of running the hold-window
+  // transition, which has nothing left to decide.
+  const late = assignment.outreach?.status === 'Fulfilled';
+  if (late && decision === 'Interested') {
+    await handleLateInterest(assignment, contact)
+      .catch(err => console.warn('Late-interest scoring failed:', err.message));
+  }
+
+  if (!late && decision === 'Interested') {
     // Hitting the target starts a HOLD (not an immediate fulfil): stop new waves but keep
     // collecting late yeses until holdUntil, when the tick re-ranks and picks the best 3.
     const transition = holdTransition(assignment.outreach?.status, interestedCount);
@@ -237,7 +248,8 @@ async function finalizeReply(assignment, contact, decision, reply) {
     );
   }
 
-  if (decision === 'Interested') {
+  // handleLateInterest owns the alert for a post-shortlist yes.
+  if (decision === 'Interested' && !late) {
     await alertOwnerInterested(assignment, tutorName, interestedCount);
   }
 
@@ -271,8 +283,9 @@ export async function recordTutorReplyByTutorId(tutorId, reply, assignmentId) {
   const assignment = await Assignment.findOneAndUpdate(
     {
       _id: assignmentId,
-      // Active OR Holding — a late Telegram "Yes" during the hold window still lands.
-      'outreach.status': { $in: ['Active', 'Holding'] },
+      // Active, Holding OR Fulfilled — a late Telegram yes is scored against the released
+      // shortlist rather than dropped.
+      'outreach.status': { $in: ['Active', 'Holding', 'Fulfilled'] },
       'outreach.contacts': { $elemMatch: { tutorId: tid, status: 'Sent' } }
     },
     {

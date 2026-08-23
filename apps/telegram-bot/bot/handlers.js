@@ -1,5 +1,6 @@
 import { EDUCATION_LEVELS, getSubjectsForLevel, RATE_MAPPINGS } from '../../../packages/shared/index.js';
 import { generatePhoneVariations } from '../../../packages/shared/utils/phoneUtils.js';
+import { recordApplicationInterest } from '../../../packages/shared/utils/applicationInterest.js';
 import { TIME_SLOTS, formatTimeSlots } from '../../../packages/shared/utils/timeSlots.js';
 import { formatTutorProfileForParent, formatTutorProfilesForParent } from '../utils/parentProfile.js';
 import { formatAssignmentForChannel } from '../utils/channelFormat.js';
@@ -19,6 +20,8 @@ import { recordParentPick, recordParentReject, resumeOutreach } from '../utils/p
 import { recordCheckInWell, recordCheckInEnded, recordCheckInEndReason, recordCheckInNoReply } from '../utils/checkInOutcome.js';
 import { checkInRatingRows } from '../utils/checkInButtons.js';
 import { opsButtonRow } from '../utils/ownerAlert.js';
+import { handleLateInterest, nextShortlistRank } from '../utils/lateInterest.js';
+import { applyRecovery } from '../utils/recovery.js';
 import { waitUntil } from '@vercel/functions';
 
 /* global process */
@@ -2055,7 +2058,21 @@ async function handleApplication(bot, chatId, userId, assignmentId, Assignment, 
     if (!success) {
       return; // Error already handled by the retry function
     }
-    
+
+    // Mirror the application into outreach so it counts toward the interested target and gets
+    // ranked into the shortlist. Best-effort: a failure here must not lose a recorded application.
+    await recordApplicationInterest(Assignment, assignmentId, tutor, { rate: applicationData.rate })
+      .then(async () => {
+        // Applied after the shortlist went out — score them against it so a strong late
+        // applicant still reaches the owner.
+        const fresh = await Assignment.findById(assignmentId);
+        if (fresh?.outreach?.status !== 'Fulfilled') return;
+        const contact = (fresh.outreach.contacts || [])
+          .find(c => c.tutorId?.toString() === tutor._id.toString());
+        if (contact) await handleLateInterest(fresh, contact);
+      })
+      .catch(err => console.warn('Failed to mirror application into outreach:', err.message));
+
     // Clear session data after successful submission
     delete session.pendingRate;
     delete session.pendingAssignmentId;
@@ -3021,6 +3038,74 @@ async function handleCallbackQuery(
         await bot.answerCallbackQuery(callbackQuery.id, { text: 'Something went wrong — try again.' });
       }
       return;
+    }
+
+    // Owner tapped a widen-the-search button on a thin-pool alert. applyRecovery mutates the
+    // criteria and resets outreach; the fresh wave goes out against the new ones.
+    if (data.startsWith('recover_')) {
+      if (!isAdmin(userId, ADMIN_USERS)) {
+        return await bot.answerCallbackQuery(callbackQuery.id, { text: 'Not authorized.' });
+      }
+      const [, action, assignmentId] = data.match(/^recover_(.+)_([a-f\d]{24})$/i) || [];
+      if (!action) {
+        return await bot.answerCallbackQuery(callbackQuery.id, { text: 'Bad request.' });
+      }
+      const result = await applyRecovery({ assignmentId, action });
+      if (!result.ok) {
+        return await bot.answerCallbackQuery(callbackQuery.id, { text: `Couldn't apply: ${result.error}` });
+      }
+      await bot.editMessageReplyMarkup({ inline_keyboard: [] }, {
+        chat_id: chatId, message_id: callbackQuery.message?.message_id
+      }).catch(() => {});
+      await bot.answerCallbackQuery(callbackQuery.id, { text: '✅ Searching again' });
+      await safeSend(bot, chatId,
+        `🔎 *${escapeMd(result.summary)}* — messaging a fresh wave for *${escapeMd(result.assignment.title)}* now.`,
+        { parse_mode: 'Markdown' });
+      escalateAssignment(result.assignment, BOT_USERNAME)
+        .catch(err => console.error('Recovery wave failed:', err.message));
+      return;
+    }
+
+    // Owner tapped "Add to shortlist" on a stronger-tutor alert: stamp the next rank so the
+    // tutor becomes relayable through the normal send-to-parent path.
+    if (data.startsWith('addshort_')) {
+      if (!isAdmin(userId, ADMIN_USERS)) {
+        return await bot.answerCallbackQuery(callbackQuery.id, { text: 'Not authorized.' });
+      }
+      const [, assignmentId, tutorId] = data.match(/^addshort_([a-f\d]+)_([a-f\d]+)$/i) || [];
+      if (!assignmentId) {
+        return await bot.answerCallbackQuery(callbackQuery.id, { text: 'Bad request.' });
+      }
+      const assignment = await Assignment.findById(assignmentId);
+      const contacts = assignment?.outreach?.contacts || [];
+      const contact = contacts.find(c => c.tutorId?.toString() === tutorId);
+      if (!contact || contact.status !== 'Interested' || contact.parentRejectedAt) {
+        return await bot.answerCallbackQuery(callbackQuery.id, { text: 'That tutor is no longer available.' });
+      }
+      if (contact.shortlistRank != null) {
+        return await bot.answerCallbackQuery(callbackQuery.id, { text: 'Already on the shortlist.' });
+      }
+
+      const rank = nextShortlistRank(contacts);
+      await Assignment.updateOne(
+        { _id: assignment._id },
+        { $set: { 'outreach.contacts.$[c].shortlistRank': rank } },
+        { arrayFilters: [{ 'c.tutorId': contact.tutorId }] }
+      );
+      await bot.editMessageReplyMarkup({ inline_keyboard: [] }, {
+        chat_id: chatId, message_id: callbackQuery.message?.message_id
+      }).catch(() => {});
+      await bot.answerCallbackQuery(callbackQuery.id, { text: `✅ Added as #${rank}` });
+
+      const rows = [];
+      if (assignment.parentContact) {
+        rows.push([{ text: '📤 Send profile to parent', callback_data: `sendallprof_${assignment._id}` }]);
+      }
+      const opsRow = opsButtonRow(assignment._id);
+      if (opsRow) rows.push(opsRow);
+      return await safeSend(bot, chatId,
+        `✅ *${escapeMd(contact.tutorName) || 'Tutor'}* added to the shortlist for *${escapeMd(assignment.title)}* as #${rank}.`,
+        { parse_mode: 'Markdown', ...(rows.length && { reply_markup: { inline_keyboard: rows } }) });
     }
 
     // One-tap relay of the whole shortlist: forward every interested-but-unsent tutor's

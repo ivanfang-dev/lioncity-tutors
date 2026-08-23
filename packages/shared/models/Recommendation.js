@@ -30,6 +30,9 @@ const recommendationSchema = new mongoose.Schema({
       coverageFactor: { type: Number },
       responsivenessFactor: { type: Number },
       qualityGrade: { type: Number, default: null },
+      educationTier: { type: Number },
+      prestigeSignal: { type: Number },
+      trackRecordFactor: { type: Number },
     },
   }],
 });

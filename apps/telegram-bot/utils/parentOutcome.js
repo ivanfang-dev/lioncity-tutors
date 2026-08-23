@@ -14,7 +14,10 @@ import { formatAssignmentForChannel } from './channelFormat.js';
 // carry subject/level values outside the current enums and full-document saves re-validate and
 // throw (see the roadmap's Repo facts).
 
+// Reasons the OWNER can pick from when recording an explicit rejection.
 export const REJECT_REASONS = ['rate', 'profiles', 'timing', 'other'];
+// Plus 'silence', which only the tick sets — the parent never answered and we resumed the search.
+const ALL_REJECT_REASONS = [...REJECT_REASONS, 'silence'];
 
 // Re-render a filled assignment's channel post so tutors stop applying. Raw Telegram API call
 // (no bot instance needed), so the console path closes the post exactly like the Telegram path.
@@ -96,7 +99,7 @@ export async function recordParentPick({ assignmentId, tutorId }) {
 // re-messaged. DB only: firing the actual wave is `resumeOutreach`, which callers background.
 export async function recordParentReject({ assignmentId, reason }) {
   if (!mongoose.isValidObjectId(assignmentId)) return { ok: false, error: 'invalid_id' };
-  if (!REJECT_REASONS.includes(reason)) return { ok: false, error: 'invalid_reason' };
+  if (!ALL_REJECT_REASONS.includes(reason)) return { ok: false, error: 'invalid_reason' };
 
   const assignment = await Assignment.findById(assignmentId);
   if (!assignment) return { ok: false, error: 'assignment_not_found' };

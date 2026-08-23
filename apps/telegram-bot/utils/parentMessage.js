@@ -17,6 +17,12 @@ function getAiClient() {
 // draft can't ride in the URL and we fall back to a paste block. ~2KB per the Repo facts.
 const WA_URL_MAX = 2000;
 
+// How much of each free-text profile field the draft prompt sees. Generous on purpose: the tutor's
+// own words are the only source of specifics, and starving the prompt is what makes blurbs vague.
+const INTRO_CHAR_LIMIT = 700;
+const EXPERIENCE_CHAR_LIMIT = 700;
+const TRACK_RECORD_CHAR_LIMIT = 500;
+
 // SG numbers are stored/typed 8-digit; wa.me needs the country code. Longer strings are assumed
 // already international. Strips spaces, +, dashes.
 function toWaNumber(phone) {
@@ -48,11 +54,44 @@ function rateForLevel(tutor, level) {
   return tutor.hourlyRate?.[category] || tutor.hourlyRate?.secondary || null;
 }
 
-// One short differentiating line: the first sentence of the richest free-text field, trimmed.
+// Qualifications and schools, the credentials SG parents weigh first ("ex-RI", "NUS Medicine").
+function credentials(tutor) {
+  const schools = [tutor.currentSchool, tutor.previousSchools].filter(Boolean).join(', ');
+  return [tutor.highestEducation, schools].filter(Boolean).join(' · ');
+}
+
+// The tutor's record with us, as numbers rather than adjectives. Null until they've been placed.
+function placementRecord(tutor) {
+  const placed = tutor.stats?.placed || 0;
+  if (!placed) return null;
+  const survived = tutor.stats?.survived30d || 0;
+  const plural = placed === 1 ? '' : 's';
+  return survived
+    ? `${placed} placement${plural} with us, ${survived} still going after 30 days`
+    : `${placed} placement${plural} with us`;
+}
+
+// The extracted evidence for THIS assignment's subject, so the line proves the subject actually
+// asked for. Falls back to a level match, then to nothing rather than an unrelated subject.
+function subjectEvidence(tutor, assignment) {
+  const claims = (tutor.profileFeatures?.subjectsClaimed || []).filter(c => c?.evidence);
+  if (claims.length === 0) return null;
+  const subject = (assignment?.subject || '').toLowerCase();
+  const level = (assignment?.level || '').toLowerCase();
+  const overlaps = (a, b) => a && b && (a.includes(b) || b.includes(a));
+  const hit =
+    claims.find(c => overlaps(subject, (c.subject || '').toLowerCase())) ||
+    claims.find(c => overlaps(level, (c.level || '').toLowerCase()));
+  return hit ? hit.evidence.trim() : null;
+}
+
+// One differentiating line drawn from the tutor's own words — up to two sentences of the richest
+// free-text field, so the parent gets something specific rather than an opening pleasantry.
 function differentiator(tutor) {
-  const source = tutor.trackRecord || tutor.teachingExperience || tutor.introduction || '';
-  const firstSentence = source.split(/(?<=[.!?])\s/)[0].trim();
-  return firstSentence.length > 140 ? `${firstSentence.slice(0, 137)}…` : firstSentence;
+  const source = (tutor.trackRecord || tutor.teachingExperience || tutor.introduction || '').trim();
+  if (!source) return '';
+  const line = source.split(/(?<=[.!?])\s/).slice(0, 2).join(' ').trim();
+  return line.length > 220 ? `${line.slice(0, 217)}…` : line;
 }
 
 // Deterministic parent shortlist message — the guaranteed fallback when Gemini is unavailable
@@ -66,9 +105,10 @@ function deterministicShortlist(assignment, tutors) {
     const rate = rateForLevel(t, assignment.level);
     lines.push('');
     lines.push(`${numberEmoji[i] || `${i + 1}.`} ${t.fullName || 'Tutor'}${bits ? ` — ${bits}` : ''}`);
-    if (rate) lines.push(`   Rate: ${rate}`);
-    const diff = differentiator(t);
-    if (diff) lines.push(`   ${diff}`);
+    // Credentials, then rate, then evidence — most-checkable facts first.
+    [credentials(t), rate && `Rate: ${rate}`, placementRecord(t), subjectEvidence(t, assignment), differentiator(t)]
+      .filter(Boolean)
+      .forEach(line => lines.push(`   ${line}`));
   });
   lines.push('');
   lines.push('Let us know which tutor you’d like to go with and we’ll arrange the rest! 😊');
@@ -84,9 +124,13 @@ async function llmShortlist(assignment, tutors) {
       const rate = rateForLevel(t, assignment.level) || 'Not specified';
       return [
         `${i + 1}. ${t.fullName || 'Tutor'} | Type: ${t.tutorType || 'Unknown'} | Experience: ${t.yearsOfExperience || 'Unknown'} | Rate: ${rate}`,
-        `   Introduction: ${(t.introduction || 'None').slice(0, 300)}`,
-        `   Teaching experience: ${(t.teachingExperience || 'None').slice(0, 300)}`,
-        `   Track record: ${(t.trackRecord || 'None').slice(0, 200)}`,
+        `   Highest education: ${t.highestEducation || 'Not stated'}`,
+        `   School(s): ${[t.currentSchool, t.previousSchools].filter(Boolean).join(', ') || 'Not stated'}`,
+        `   Record with our agency: ${placementRecord(t) || 'No placements yet'}`,
+        `   Evidence for ${assignment.subject}: ${subjectEvidence(t, assignment) || 'None extracted'}`,
+        `   Introduction: ${(t.introduction || 'None').slice(0, INTRO_CHAR_LIMIT)}`,
+        `   Teaching experience: ${(t.teachingExperience || 'None').slice(0, EXPERIENCE_CHAR_LIMIT)}`,
+        `   Track record: ${(t.trackRecord || 'None').slice(0, TRACK_RECORD_CHAR_LIMIT)}`,
       ].join('\n');
     }).join('\n\n');
 
@@ -99,9 +143,18 @@ ${profiles}
 
 Write the WhatsApp message to the parent. Requirements:
 - Warm, concise, professional. Plain text only (NO markdown, NO asterisks, NO headings).
-- A one-line friendly intro, then ONE short blurb per tutor: name, type, experience, rate, and ONE differentiating strength.
+- A one-line friendly intro, then 2-3 sentences per tutor: name, type, experience, rate, and what
+  makes them a fit for THIS subject and level.
+- Every tutor's blurb must contain at least one concrete, checkable detail taken from their data
+  above — a school, a qualification, a years figure, a grade improvement, or a placement count.
+- Draw the wording closely from each tutor's own introduction, teaching experience and track
+  record. Paraphrase and tighten their words; you may quote a short phrase. Do not embellish.
+- Do NOT invent, upgrade or estimate any fact. If a field says "Not stated" or "None", leave it out
+  entirely rather than filling the gap.
+- Ban generic filler: never write "passionate", "dedicated", "highly qualified", "results-driven"
+  or similar praise that is not tied to a specific fact.
 - Number the tutors so the parent can reply "I'll go with tutor 2".
-- Do NOT invent facts or reveal any contact details (phone/email).
+- Never reveal contact details (phone/email).
 - End by asking which tutor they'd like to proceed with.
 Return ONLY the message text.`;
 

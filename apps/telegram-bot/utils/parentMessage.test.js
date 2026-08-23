@@ -61,6 +61,51 @@ describe('deterministicShortlist (guaranteed fallback)', () => {
   });
 });
 
+describe('deterministicShortlist — concrete credentials from the profile', () => {
+  const rich = {
+    fullName: 'Cara Ng',
+    tutorType: 'Full-time Tutor',
+    yearsOfExperience: '5-10 years',
+    highestEducation: "Bachelor's Degree",
+    currentSchool: 'NUS Mechanical Engineering',
+    previousSchools: 'Raffles Institution',
+    hourlyRate: { secondary: '$50/hr' },
+    stats: { placed: 12, survived30d: 11 },
+    teachingExperience: 'Taught Sec 3 and Sec 4 E-Maths for six years at a centre in Bishan.',
+    profileFeatures: {
+      subjectsClaimed: [
+        { subject: 'Mathematics', level: 'Secondary', evidence: 'Brought 8 students from C5 to A2 in O-Level E-Maths.' },
+        { subject: 'Physics', level: 'Secondary', evidence: 'Occasional physics support.' },
+      ],
+    },
+  };
+
+  test('surfaces education and schools, which parents actually weigh', () => {
+    const msg = deterministicShortlist(assignment, [rich]);
+    expect(msg).toContain('NUS Mechanical Engineering');
+    expect(msg).toContain('Raffles Institution');
+  });
+
+  test('quotes the placement record as numbers', () => {
+    const msg = deterministicShortlist(assignment, [rich]);
+    expect(msg).toContain('12 placements');
+    expect(msg).toContain('11');
+  });
+
+  test('picks the subject-matched evidence, not the first claim listed', () => {
+    const msg = deterministicShortlist(assignment, [rich]);
+    expect(msg).toContain('C5 to A2');
+    expect(msg).not.toContain('Occasional physics support');
+  });
+
+  test('a bare profile still produces a valid message with no empty lines', () => {
+    const msg = deterministicShortlist(assignment, [{ fullName: 'Min Lee' }]);
+    expect(msg).toContain('Min Lee');
+    expect(msg).not.toMatch(/\n {3}\n/);
+    expect(msg).not.toContain('undefined');
+  });
+});
+
 describe('draftParentMessage without an API key falls back deterministically', () => {
   const orig = process.env.GEMINI_API_KEY;
   afterAll(() => { if (orig === undefined) delete process.env.GEMINI_API_KEY; else process.env.GEMINI_API_KEY = orig; });
