@@ -400,3 +400,49 @@ export const Step3 = ({ prevStep, formData, handleChange, status }) => {
     </div>
   )
 };
+/**
+ * The three-step body, identical on every page that renders the request form.
+ * Each page keeps its own surrounding chrome — heading, card, success message —
+ * and passes in the object returned by useTuitionRequestForm.
+ */
+export const TuitionRequestSteps = ({ form }) => {
+  const {
+    currentStep, formData, errors, status,
+    nextStep, prevStep, handleChange,
+    handleLevelSubjectChange, addLevelSubject, removeLevelSubject,
+  } = form;
+
+  return (
+    <>
+      {currentStep === 1 && (
+        <Step1
+          nextStep={nextStep}
+          formData={formData}
+          handleChange={handleChange}
+          handleLevelSubjectChange={handleLevelSubjectChange}
+          addLevelSubject={addLevelSubject}
+          removeLevelSubject={removeLevelSubject}
+          errors={errors}
+        />
+      )}
+      {currentStep === 2 && (
+        <Step2
+          nextStep={nextStep}
+          prevStep={prevStep}
+          formData={formData}
+          handleChange={handleChange}
+          errors={errors}
+        />
+      )}
+      {currentStep === 3 && (
+        <Step3
+          prevStep={prevStep}
+          formData={formData}
+          handleChange={handleChange}
+          status={status}
+          errors={errors}
+        />
+      )}
+    </>
+  );
+};

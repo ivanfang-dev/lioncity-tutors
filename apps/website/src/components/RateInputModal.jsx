@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { DURATION, EASE_STANDARD } from '@/lib/motion';
 import { X, AlertCircle, Info, Loader2, ArrowRight, DollarSign } from 'lucide-react';
-import RateValidator from '../utils/RateValidator.js';
+import RateValidator from '@lioncity/shared/utils/RateValidator.js';
 
 const RateInputModal = ({ 
   isOpen, 

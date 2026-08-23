@@ -5,7 +5,7 @@ import React, { useState, useRef } from "react";
 import Image from 'next/image';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Step1, Step2, Step3 } from "@/components/FormSteps";
+import { TuitionRequestSteps } from "@/components/FormSteps";
 import FormStepper from "@/components/FormStepper";
 import useTuitionRequestForm from "@/components/useTuitionRequestForm";
 import FormBenefits from "@/components/FormBenefits";
@@ -17,33 +17,8 @@ import { RelatedGuides } from '@/components/guide';
 export default function JCTuition() {
   const formRef = useRef(null);
   const [activeStream, setActiveStream] = useState('science');
-  const {
-    currentStep,
-    formData,
-    errors,
-    status,
-    nextStep,
-    prevStep,
-    handleChange,
-    handleLevelSubjectChange,
-    addLevelSubject,
-    removeLevelSubject,
-    handleSubmit,
-    resetForm
-  } = useTuitionRequestForm({
-    name: '',
-    mobile: '',
-    levelSubjects: ['JC Level'],
-    location: '',
-    lessonDuration: '1.5 Hours',
-    customDuration: '',
-    lessonFrequency: '1 Lesson/Week',
-    customFrequency: '',
-    preferredTime: '',
-    tutorType: { partTime: true, fullTime: false, moeTeacher: false },
-    budget: { type: 'marketRate', customAmount: '' },
-    preferences: ''
-  });
+  const form = useTuitionRequestForm({ levelSubjects: ['JC Level'] });
+  const { currentStep, status, handleSubmit, resetForm } = form;
 
   return (
     <>
@@ -109,34 +84,7 @@ export default function JCTuition() {
                     </div>
                   )}
                   {/* --- Conditional Step Rendering (Now passing errors prop) --- */}
-                  {currentStep === 1 && (
-                    <Step1 
-                      nextStep={nextStep} 
-                      formData={formData} 
-                      handleChange={handleChange} handleLevelSubjectChange={handleLevelSubjectChange} addLevelSubject={addLevelSubject} removeLevelSubject={removeLevelSubject} 
-                      errors={errors} 
-                    />
-                  )}
-                  {currentStep === 2 && (
-                    <Step2 
-                      nextStep={nextStep} 
-                      prevStep={prevStep} 
-                      formData={formData} 
-                      handleChange={handleChange} 
-                      errors={errors}
-                    />
-                  )}
-                  {currentStep === 3 && (
-                    <Step3 
-                      prevStep={prevStep} 
-                      formData={formData} 
-                      handleChange={handleChange}
-                      handleCheckboxChange={handleChange}
-                      status={status}
-                      errors={errors}
-                    />
-                  )}
-                </form>
+                  <TuitionRequestSteps form={form} />                </form>
               )}
             </div>
           </div>
@@ -1000,7 +948,6 @@ export default function JCTuition() {
         <section className="bg-gradient-to-br from-blue-50 to-indigo-50 p-6 sm:p-12 rounded-2xl">
           <RelatedGuides slug="jc-tuition" heading="Comprehensive A-Level Study Guides" />
         </section>
-
 
         {/* Section 6: Teaching Methods */}
         <section>

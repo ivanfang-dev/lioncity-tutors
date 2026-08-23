@@ -5,7 +5,7 @@ import { useRef } from "react";
 import { motion } from "framer-motion";
 import { enter } from "@/lib/motion";
 import { Button } from "@/components/ui/button";
-import { Step1, Step2, Step3 } from "@/components/FormSteps";
+import { TuitionRequestSteps } from "@/components/FormSteps";
 import FormStepper from "@/components/FormStepper";
 import useTuitionRequestForm from "@/components/useTuitionRequestForm";
 import FormBenefits from "@/components/FormBenefits";
@@ -75,33 +75,8 @@ const timeline = [
 
 export default function PSLEScience() {
   const formRef = useRef(null);
-  const {
-    currentStep,
-    formData,
-    errors,
-    status,
-    nextStep,
-    prevStep,
-    handleChange,
-    handleLevelSubjectChange,
-    addLevelSubject,
-    removeLevelSubject,
-    handleSubmit,
-    resetForm
-  } = useTuitionRequestForm({
-    name: '',
-    mobile: '',
-    levelSubjects: ['PSLE Science'],
-    location: '',
-    lessonDuration: '1.5 Hours',
-    customDuration: '',
-    lessonFrequency: '1 Lesson/Week',
-    customFrequency: '',
-    preferredTime: '',
-    tutorType: { partTime: true, fullTime: false, moeTeacher: false },
-    budget: { type: 'marketRate', customAmount: '' },
-    preferences: ''
-  });
+  const form = useTuitionRequestForm({ levelSubjects: ['PSLE Science'] });
+  const { currentStep, status, handleSubmit, resetForm } = form;
 
   return (
     <>
@@ -460,9 +435,7 @@ export default function PSLEScience() {
                   <FormStepper currentStep={currentStep} />
                   {status.error && <div className="bg-red-100 text-red-800 p-4 rounded-md mb-6">{status.error}</div>}
 
-                  {currentStep === 1 && <Step1 nextStep={nextStep} formData={formData} handleChange={handleChange} handleLevelSubjectChange={handleLevelSubjectChange} addLevelSubject={addLevelSubject} removeLevelSubject={removeLevelSubject} errors={errors} />}
-                  {currentStep === 2 && <Step2 nextStep={nextStep} prevStep={prevStep} formData={formData} handleChange={handleChange} errors={errors} />}
-                  {currentStep === 3 && <Step3 prevStep={prevStep} formData={formData} handleChange={handleChange} status={status} errors={errors} />}
+                  <TuitionRequestSteps form={form} />
                 </form>
               )}
             </div>

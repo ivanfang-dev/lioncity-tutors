@@ -7,7 +7,7 @@ import { Check, Info, CheckCircle, Loader2 } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
 import { DURATION, EASE_STANDARD } from "@/lib/motion";
 import { Button } from "@/components/ui/button";
-import { Step1, Step2, Step3 } from "@/components/FormSteps";
+import { TuitionRequestSteps } from "@/components/FormSteps";
 import FormStepper from "@/components/FormStepper";
 import useTuitionRequestForm from "@/components/useTuitionRequestForm";
 import { PREFILL_KEY } from "@/components/TutorPopup";
@@ -16,36 +16,8 @@ function RequestForTutorContent(){
   const searchParams = useSearchParams();
   const formRef = useRef(null);
   const prefersReducedMotion = useReducedMotion();
-  const {
-    currentStep,
-    formData,
-    setFormData,
-    errors,
-    status,
-    nextStep,
-    prevStep,
-    handleChange,
-    handleLevelSubjectChange,
-    addLevelSubject,
-    removeLevelSubject,
-    handleSubmit,
-    resetForm
-  } = useTuitionRequestForm({
-    name: '',
-    mobile: '',
-    levelSubjects: [''],
-    location: '',
-    lessonDuration: '1.5 Hours',
-    customDuration: '',
-    lessonFrequency: '1 Lesson/Week',
-    customFrequency: '',
-    preferredTime: '',
-    tutorType: { partTime: true, fullTime: false, moeTeacher: false },
-    budget: { type: 'marketRate', customAmount: '' },
-    genderPreference: 'No preference',
-    bilingualRequired: 'No',
-    preferences: ''
-  });
+  const form = useTuitionRequestForm();
+  const { currentStep, status, handleSubmit, resetForm, setFormData } = form;
 
   // Pre-fill name/mobile handed over from the exit-intent popup.
   //
@@ -125,9 +97,7 @@ function RequestForTutorContent(){
                                 <FormStepper currentStep={currentStep} />
                                 {status.error && <div className="bg-red-100 text-red-800 p-4 rounded-md mb-6">{status.error}</div>}
 
-                                {currentStep === 1 && <Step1 nextStep={nextStep} formData={formData} handleChange={handleChange} handleLevelSubjectChange={handleLevelSubjectChange} addLevelSubject={addLevelSubject} removeLevelSubject={removeLevelSubject} errors={errors} />}
-                                {currentStep === 2 && <Step2 nextStep={nextStep} prevStep={prevStep} formData={formData} handleChange={handleChange} errors={errors} />}
-                                {currentStep === 3 && <Step3 prevStep={prevStep} formData={formData} handleChange={handleChange} status={status} errors={errors} />}
+                                <TuitionRequestSteps form={form} />
                             </form>
                         )}
                     </div>

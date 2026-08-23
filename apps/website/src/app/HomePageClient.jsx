@@ -8,7 +8,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import { DURATION, EASE_STANDARD, LIFT, PRESS, STAGGER, enter } from "@/lib/motion";
 import Image from 'next/image';
 import MatchTimelineSection from "@/components/MatchTimelineSection";
-import { Step1, Step2, Step3 } from "@/components/FormSteps";
+import { TuitionRequestSteps } from "@/components/FormSteps";
 import FormStepper from "@/components/FormStepper";
 import FormBenefits from "@/components/FormBenefits";
 import TutorPopup from "@/components/TutorPopup";
@@ -85,7 +85,6 @@ const Counter = ({ end, duration = DURATION.draw, suffix = "", decimals = 0 }) =
   return <span className="tabular-nums">{count}{suffix}</span>;
 };
 
-
 export default function HomePageClient() {
   const router = useRouter();
   const formRef = useRef(null);
@@ -95,33 +94,8 @@ export default function HomePageClient() {
 
   const scrollToResources = () => resourcesRef.current?.scrollIntoView({ behavior: 'smooth' });
 
-  const {
-    currentStep,
-    formData,
-    errors,
-    status,
-    nextStep,
-    prevStep,
-    handleChange,
-    handleLevelSubjectChange,
-    addLevelSubject,
-    removeLevelSubject,
-    handleSubmit,
-    resetForm
-  } = useTuitionRequestForm({
-      name: '', mobile: '', levelSubjects: [''], location: '',
-      lessonDuration: '1.5 Hours', customDuration: '',
-      lessonFrequency: '1 Lesson/Week', customFrequency: '',
-      preferredTime: '',
-      tutorType: { partTime: true, fullTime: false, moeTeacher: false },
-      budget: { type: 'marketRate', customAmount: '' },
-      // These two were present in /request-tutor's state and absent here, so the
-      // same endpoint received two different payload shapes depending on which
-      // copy of the form a parent happened to use. Both forms now send both.
-      genderPreference: 'No preference',
-      bilingualRequired: 'No',
-      preferences: ''
-  });
+  const form = useTuitionRequestForm();
+  const { currentStep, status, handleSubmit, resetForm } = form;
 
   const scrollToForm = () => formRef.current?.scrollIntoView({ behavior: 'smooth' });
   const scrollToFAQ = () => faqRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -460,9 +434,7 @@ Preferred days & timing: `;
                         {status.error && <div className="bg-red-100 text-red-800 p-4 rounded-md mb-6">{status.error}</div>}
                         
                         {/* Make sure you pass the consolidated handleChange to all steps */}
-                        {currentStep === 1 && <Step1 nextStep={nextStep} formData={formData} handleChange={handleChange} handleLevelSubjectChange={handleLevelSubjectChange} addLevelSubject={addLevelSubject} removeLevelSubject={removeLevelSubject} errors={errors} />}
-                        {currentStep === 2 && <Step2 nextStep={nextStep} prevStep={prevStep} formData={formData} handleChange={handleChange} errors={errors} />}
-                        {currentStep === 3 && <Step3 prevStep={prevStep} formData={formData} handleChange={handleChange} handleCheckboxChange={handleChange} status={status} errors={errors} />}
+                        <TuitionRequestSteps form={form} />
                     </form>
                 )}
             </div>

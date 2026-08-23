@@ -55,7 +55,30 @@ const validateStep = (step, data) => {
     return newErrors;
 };
 
-const useTuitionRequestForm = (initialFormData) => {
+// The one shape every request form starts from. It used to be retyped at each of
+// the twelve call sites, and they drifted: only two seeded genderPreference and
+// bilingualRequired, so the other ten POSTed a payload missing both fields unless
+// the parent happened to touch those controls.
+export const DEFAULT_REQUEST_FORM_STATE = {
+    name: '',
+    mobile: '',
+    levelSubjects: [''],
+    location: '',
+    lessonDuration: '1.5 Hours',
+    customDuration: '',
+    lessonFrequency: '1 Lesson/Week',
+    customFrequency: '',
+    preferredTime: '',
+    tutorType: { partTime: true, fullTime: false, moeTeacher: false },
+    budget: { type: 'marketRate', customAmount: '' },
+    genderPreference: 'No preference',
+    bilingualRequired: 'No',
+    preferences: ''
+};
+
+// Pages pass only what they prefill, e.g. { levelSubjects: ['PSLE Math'] }.
+const useTuitionRequestForm = (overrides) => {
+    const [initialFormData] = useState(() => ({ ...DEFAULT_REQUEST_FORM_STATE, ...overrides }));
     const [currentStep, setCurrentStep] = useState(1);
     const [formData, setFormData] = useState(initialFormData);
     const [errors, setErrors] = useState({});
@@ -73,14 +96,16 @@ const useTuitionRequestForm = (initialFormData) => {
                     parsed.levelSubjects = parsed.level ? [parsed.level] : [''];
                 }
                 delete parsed.level;
-                setFormData(parsed);
+                // Merged onto the defaults, not swapped in: a draft saved before a
+                // field existed would otherwise come back missing that field.
+                setFormData({ ...initialFormData, ...parsed });
             } catch (error) {
                 console.error('Failed to parse form draft:', error);
                 // If parsing fails, remove the corrupted data
                 safeLocalStorage.removeItem(STORAGE_KEY);
             }
         }
-    }, []);
+    }, [initialFormData]);
 
     // Save form data to localStorage on changes (only if not submitted)
     useEffect(() => {

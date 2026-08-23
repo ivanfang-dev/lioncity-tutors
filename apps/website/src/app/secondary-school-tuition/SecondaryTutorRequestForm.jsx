@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Step1, Step2, Step3 } from "@/components/FormSteps";
+import { TuitionRequestSteps } from "@/components/FormSteps";
 import FormStepper from "@/components/FormStepper";
 import useTuitionRequestForm from "@/components/useTuitionRequestForm";
 import FormBenefits from "@/components/FormBenefits";
@@ -13,33 +13,8 @@ import { CheckCircle } from "lucide-react";
  * server-rendered rather than shipped as JS — see the note in layout.jsx.
  */
 export default function SecondaryTutorRequestForm() {
-  const {
-    currentStep,
-    formData,
-    errors,
-    status,
-    nextStep,
-    prevStep,
-    handleChange,
-    handleLevelSubjectChange,
-    addLevelSubject,
-    removeLevelSubject,
-    handleSubmit,
-    resetForm,
-  } = useTuitionRequestForm({
-    name: '',
-    mobile: '',
-    levelSubjects: [''],
-    location: '',
-    lessonDuration: '1.5 Hours',
-    customDuration: '',
-    lessonFrequency: '1 Lesson/Week',
-    customFrequency: '',
-    preferredTime: '',
-    tutorType: { partTime: true, fullTime: false, moeTeacher: false },
-    budget: { type: 'marketRate', customAmount: '' },
-    preferences: ''
-  });
+  const form = useTuitionRequestForm();
+  const { currentStep, status, handleSubmit, resetForm } = form;
 
   return (
     <>
@@ -66,9 +41,7 @@ export default function SecondaryTutorRequestForm() {
                 <p className="text-sm">{status.error}</p>
               </div>
             )}
-            {currentStep === 1 && <Step1 nextStep={nextStep} formData={formData} handleChange={handleChange} handleLevelSubjectChange={handleLevelSubjectChange} addLevelSubject={addLevelSubject} removeLevelSubject={removeLevelSubject} errors={errors} />}
-            {currentStep === 2 && <Step2 nextStep={nextStep} prevStep={prevStep} formData={formData} handleChange={handleChange} errors={errors} />}
-            {currentStep === 3 && <Step3 prevStep={prevStep} formData={formData} handleChange={handleChange} status={status} errors={errors} />}
+            <TuitionRequestSteps form={form} />
           </form>
         )}
       </div>
