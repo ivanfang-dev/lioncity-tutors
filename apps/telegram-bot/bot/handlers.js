@@ -2830,6 +2830,21 @@ async function handleCallbackQuery(
     }
 
     // Handle back to assignment details from rate input
+    // The inert "🔒 Assignment Closed" label that replaces the Apply button on a closed channel
+    // post. It rides on a PUBLIC post, so anyone can tap it — answer with a toast rather than a
+    // DM, which would 403 for anyone who has never started the bot.
+    if (data === 'assignment_closed') {
+      return await ack({ text: 'This assignment is closed — no longer accepting applications.' });
+    }
+
+    // Offered by ErrorHandler.handleTutorNotFound. Registration lives on the website, so point
+    // there — the same place handleContact sends an unrecognised number.
+    if (data === 'restart_registration') {
+      return await safeSend(bot, chatId,
+        'Please register at https://www.lioncitytutors.com/register-tutor, then send /start and share your contact number.',
+        { disable_web_page_preview: true });
+    }
+
     if (data === 'back_to_assignment') {
       const session = userSessions[chatId];
       if (!session || !session.pendingAssignmentId) {
@@ -4090,7 +4105,9 @@ async function handleCallbackQuery(
     }
 
     // Subject toggle handlers
-    const toggleCategories = ['primary', 'secondary', 'jc', 'ib', 'polytechnic', 'university', 'music', 'professional'];
+    // Must list every category getTeachingLevelsMenu offers a submenu for — a missing one
+    // sends its toggles to the "not implemented" fallback below.
+    const toggleCategories = ['preschool', 'primary', 'secondary', 'jc', 'ib', 'polytechnic', 'university', 'music', 'professional'];
     for (const cat of toggleCategories) {
       if (data.startsWith(`toggle_${cat}_`)) {
         const key = data.replace(`toggle_${cat}_`, '');
@@ -4103,6 +4120,7 @@ async function handleCallbackQuery(
         await tutor.save();
 
         const menuFn = {
+          preschool: getPreschoolSubjectsMenu,
           primary: getPrimarySubjectsMenu,
           secondary: getSecondarySubjectsMenu,
           jc: getJCSubjectsMenu,
