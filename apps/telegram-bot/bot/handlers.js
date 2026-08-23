@@ -2809,6 +2809,13 @@ async function handleCallbackQuery(
   const userId = callbackQuery.from.id;
   const data = callbackQuery.data;
 
+  // A tap IS activity, so stamp it before any branch reaches isSessionValid. lastActivity used
+  // to be bumped only inside three handlers and only AFTER their check, so it tracked "when we
+  // last happened to call updateSessionActivity" rather than idleness — and a tutor tapping
+  // Apply on an outreach DM sent hours ago was told their session had expired. No-ops when
+  // there's no session yet.
+  ErrorHandler.updateSessionActivity(userSessions[chatId]);
+
   // Telegram accepts exactly ONE answer per callback query; a second call fails with
   // QUERY_ID_INVALID. Branches below answer with a toast ("Not authorized.", "✅ Added as #2"),
   // so the ack can't be fired blindly up front — that used to swallow every toast AND throw,
@@ -4162,6 +4169,9 @@ async function handleMessage(bot, chatId, userId, text, message, Tutor, Assignme
   if (typeof session.state !== 'string') {
     session.state = ApplicationStates.IDLE;
   }
+  // Same reason as handleCallbackQuery: an inbound message is proof the tutor is here, so it
+  // must count as activity before handleRateInput checks whether the session went idle.
+  ErrorHandler.updateSessionActivity(session);
   const isUserAdmin = isAdmin(userId, ADMIN_USERS);
 
   // Handle non-text messages first
