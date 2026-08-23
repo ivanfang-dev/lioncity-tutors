@@ -4,7 +4,7 @@ import { poolShortfallReport, ACTION_LABELS } from './poolDiagnosis.js';
 // retired once the ranking started reading each tutor's extracted qualityGrade.
 import { recordRecommendation, candidatesFromScored } from './recordRecommendation.js';
 import { Assignment, Tutor } from '../../../packages/shared/server-exports.js';
-import { normalizePhone } from './phone.js';
+import { normalizePhone } from '../../../packages/shared/utils/phoneUtils.js';
 import { formatTimeSlots } from '../../../packages/shared/utils/timeSlots.js';
 import { sendWhatsAppTemplate } from './whatsappSender.js';
 import { sendAssignmentDM } from './telegramOutreach.js';

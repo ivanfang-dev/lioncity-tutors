@@ -1,6 +1,6 @@
 import { describe, test, expect } from '@jest/globals';
 import fc from 'fast-check';
-import RateValidator from './RateValidator.js';
+import RateValidator from '../../../packages/shared/utils/RateValidator.js';
 
 describe('RateValidator', () => {
   /**

@@ -12,7 +12,7 @@ import { describe, test, expect, beforeAll, afterAll, beforeEach, afterEach } fr
 import mongoose from 'mongoose';
 import Assignment from '../../../packages/shared/models/Assignment.js';
 import Tutor from '../../../packages/shared/models/Tutor.js';
-import RateValidator from '../utils/RateValidator.js';
+import RateValidator from '../../../packages/shared/utils/RateValidator.js';
 import ErrorHandler from '../utils/ErrorHandler.js';
 
 describe('Tuition Rate Application - End-to-End Integration Tests', () => {

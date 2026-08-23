@@ -11,13 +11,31 @@ import { declineReasonListRows, parseListReplyId, recordDeclineReason } from '..
 // directly, so the old @lid contact-resolution dance is gone.
 const VERIFY_TOKEN = process.env.WHATSAPP_WEBHOOK_VERIFY_TOKEN;
 
+// Lowercase, and fold contractions so one negation list also covers isn't / can't / don't.
+function normalizeInbound(value) {
+  return String(value).trim().toLowerCase().replace(/n['\u2019]t\b/g, ' not ');
+}
+
+// A negated availability word ANYWHERE in the message — "not interested", "sorry, not
+// interested", "no longer free". Up to two filler words are allowed between the two halves
+// ("not really interested"), but a comma or full stop ends the phrase so this cannot reach
+// across clauses and read "not sure, but I am free" as a decline.
+//
+// Every affirmative rule below matches `interested` as a bare SUBSTRING, so this must be
+// tested first. Anchoring it (the previous /^not\s+.../) only caught declines that began with
+// "not", which meant "I'm not interested" and even "no, not interested" were recorded as YES.
+const NEGATED_AVAILABILITY =
+  /\b(?:not|never|unable|cannot|no longer)\s+(?:\w+\s+){0,2}(?:interested|available|free|able|keen|taking)\b/;
+
 // Quick-Reply button label → yes/no. Our template buttons are "Yes, interested" / "Not
-// available"; match generously in case the wording is tweaked later.
+// available"; match generously in case the wording is tweaked later. The decline check runs
+// first for the same substring reason as above — relabelling the decline button to "Not
+// interested" in the Meta console would otherwise turn every decline into a yes.
 function parseButton(label) {
   if (!label) return null;
-  const t = label.trim().toLowerCase();
+  const t = normalizeInbound(label);
+  if (NEGATED_AVAILABILITY.test(t) || t.startsWith('no')) return 'no';
   if (t.startsWith('yes') || t.includes('interested')) return 'yes';
-  if (t.startsWith('no') || t.startsWith('not')) return 'no';
   return null;
 }
 
@@ -26,11 +44,8 @@ function parseButton(label) {
 // visible non-failure, rather than being guessed at and silently recorded as the wrong answer.
 function parseText(body) {
   if (!body) return null;
-  const t = body.trim().toLowerCase();
-  // Checked BEFORE the yes rule: "not interested" contains "interested", and the bare
-  // /^n(o|ope|ah)?\b/ below can't see it either — \b fails mid-word on "not". Without this, a
-  // tutor typing our own button's label ("Not available") is read as a question, not a decline.
-  if (/^not\s+(available|interested|free|able)\b/.test(t)) return 'no';
+  const t = normalizeInbound(body);
+  if (NEGATED_AVAILABILITY.test(t)) return 'no';
   if (/^y(es|ep|eah|a|up)?\b/.test(t) || t === 'ok' || t === 'okay' || t.includes('interested')) return 'yes';
   if (/^n(o|ope|ah)?\b/.test(t)) return 'no';
   return null;

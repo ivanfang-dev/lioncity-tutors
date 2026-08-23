@@ -15,7 +15,7 @@
 import mongoose from 'mongoose';
 import { Assignment, Tutor } from '../../../packages/shared/server-exports.js';
 import { EDUCATION_LEVELS, getSubjectsForLevel } from '../../../packages/shared/index.js';
-import { normalizePhone } from '../utils/phone.js';
+import { normalizePhone } from '../../../packages/shared/utils/phoneUtils.js';
 
 const phoneArg = process.argv[2];
 const tutorCount = Number(process.argv[3]) || 2;

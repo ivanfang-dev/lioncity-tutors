@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import { Assignment, Tutor } from '../../../packages/shared/server-exports.js';
-import { normalizePhone } from './phone.js';
+import { normalizePhone } from '../../../packages/shared/utils/phoneUtils.js';
 import { notifyOwner, opsButtonRow } from './ownerAlert.js';
 import { buildRatePrompt } from './rateCapture.js';
 import { handleLateInterest } from './lateInterest.js';

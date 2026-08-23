@@ -4,7 +4,7 @@ import { recordApplicationInterest } from '../../../packages/shared/utils/applic
 import { TIME_SLOTS, formatTimeSlots } from '../../../packages/shared/utils/timeSlots.js';
 import { formatTutorProfileForParent, formatTutorProfilesForParent } from '../utils/parentProfile.js';
 import { formatAssignmentForChannel } from '../utils/channelFormat.js';
-import RateValidator from '../utils/RateValidator.js';
+import RateValidator from '../../../packages/shared/utils/RateValidator.js';
 import ErrorHandler from '../utils/ErrorHandler.js';
 import { notifyMatchedTutors, escalateAssignment } from '../utils/tutorNotifier.js';
 import { budgetCalibration } from '../utils/tutorMatcher.js';

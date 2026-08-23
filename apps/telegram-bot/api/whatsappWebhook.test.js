@@ -1,6 +1,7 @@
 import { describe, test, expect } from '@jest/globals';
 import { classifyInbound } from './whatsapp-webhook.js';
 import { parseRateReply } from '../utils/rateCapture.js';
+import { readFileSync, existsSync } from 'node:fs';
 
 const text = (body) => ({ type: 'text', text: { body } });
 const button = (t) => ({ type: 'button', button: { text: t } });
@@ -34,6 +35,43 @@ describe('classifyInbound', () => {
     expect(classifyInbound(text('Yep'))).toEqual({ kind: 'reply', reply: 'yes' });
     expect(classifyInbound(text('no'))).toEqual({ kind: 'reply', reply: 'no' });
     expect(classifyInbound(text('Not available'))).toEqual({ kind: 'reply', reply: 'no' });
+  });
+
+  // Regression: the decline check used to be anchored (/^not\s+.../) while the yes rule matched
+  // `interested` as a bare substring. Every phrasing below was therefore recorded as INTERESTED —
+  // the tutor got "we've noted your interest", counted toward the target of 6, and could be
+  // shortlisted to a parent after explicitly saying no.
+  test('reads a decline that does not begin with "not"', () => {
+    for (const body of [
+      "I'm not interested",
+      'Sorry, not interested',
+      'I am not interested in this one',
+      'no, not interested',
+      'Sorry not interested thanks',
+      'Currently not interested',
+      'not really interested',
+      'no longer interested',
+      "I'm not available",
+      'Sorry I am not free',
+    ]) {
+      expect(classifyInbound(text(body))).toEqual({ kind: 'reply', reply: 'no' });
+    }
+  });
+
+  // The negation must not reach across clauses: "free" here is availability, not a decline.
+  test('does not read a negation in an unrelated clause as a decline', () => {
+    expect(classifyInbound(text('not sure, but I am free')).kind).toBe('text');
+    expect(classifyInbound(text('not sure')).kind).toBe('text');
+  });
+
+  // parseButton had the same ordering flaw. The live labels ("Yes, interested" / "Not available")
+  // happen to work, so this guards the rename that would silently break it in the Meta console.
+  test('reads a decline button label whatever its wording', () => {
+    for (const label of ['Not available', 'Not interested', 'No, not interested', 'Not interested right now']) {
+      expect(classifyInbound(button(label))).toEqual({ kind: 'reply', reply: 'no' });
+      expect(classifyInbound(buttonReply(label))).toEqual({ kind: 'reply', reply: 'no' });
+    }
+    expect(classifyInbound(button('Yes, interested'))).toEqual({ kind: 'reply', reply: 'yes' });
   });
 
   test('passes anything else through as free text for the owner', () => {
@@ -74,5 +112,22 @@ describe('parse-order precedence', () => {
   test('prose containing a number is neither a rate nor a reply — it goes to the owner', () => {
     expect(parseRateReply('I can do 45 if the timing changes')).toBeNull();
     expect(classifyInbound(text('I can do 45 if the timing changes')).kind).toBe('text');
+  });
+});
+
+// The dormant whatsapp-web.js VM service carries its own copy of the decline pattern — it
+// deploys standalone and cannot import from here. This is the only thing that will notice if
+// the two drift, which matters because the copy is what runs if the VM is ever switched back on.
+describe('legacy VM parser stays in step', () => {
+  const servicePath = new URL('../whatsapp-service/index.js', import.meta.url);
+
+  test('whatsapp-service uses the same NEGATED_AVAILABILITY pattern', () => {
+    if (!existsSync(servicePath)) return; // service deleted — nothing to keep in step
+    const src = readFileSync(servicePath, 'utf8');
+    const vmPattern = src.match(/const NEGATED_AVAILABILITY =\s*(\/.*\/);/)?.[1];
+    const ourPattern = readFileSync(new URL('./whatsapp-webhook.js', import.meta.url), 'utf8')
+      .match(/const NEGATED_AVAILABILITY =\s*(\/.*\/);/)?.[1];
+    expect(vmPattern).toBeDefined();
+    expect(vmPattern).toBe(ourPattern);
   });
 });

@@ -23,7 +23,7 @@
 
 import mongoose from 'mongoose';
 import { Assignment, Tutor, Placement } from '../../../packages/shared/server-exports.js';
-import { normalizePhone } from '../utils/phone.js';
+import { normalizePhone } from '../../../packages/shared/utils/phoneUtils.js';
 
 const MARKER = '[OPS-TEST]';
 const args = process.argv.slice(2);

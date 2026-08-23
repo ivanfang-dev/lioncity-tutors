@@ -9,7 +9,7 @@
  */
 
 import { describe, test, expect } from '@jest/globals';
-import RateValidator from '../utils/RateValidator.js';
+import RateValidator from '../../../packages/shared/utils/RateValidator.js';
 import ErrorHandler from '../utils/ErrorHandler.js';
 
 describe('Tuition Rate Application - Core Functionality Tests', () => {

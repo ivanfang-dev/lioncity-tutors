@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import { Assignment } from '../../../packages/shared/server-exports.js';
-import RateValidator from './RateValidator.js';
-import { normalizePhone } from './phone.js';
+import RateValidator from '../../../packages/shared/utils/RateValidator.js';
+import { normalizePhone } from '../../../packages/shared/utils/phoneUtils.js';
 
 // Rate capture: every tutor who says yes is asked what they'd charge FOR THIS ASSIGNMENT, and
 // the answer is stored on the outreach contact as quotedRate. Profile rates go stale (tutors

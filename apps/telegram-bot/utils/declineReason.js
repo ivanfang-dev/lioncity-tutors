@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import { Assignment, Tutor } from '../../../packages/shared/server-exports.js';
 import { buildRatePrompt } from './rateCapture.js';
-import { normalizePhone } from './phone.js';
+import { normalizePhone } from '../../../packages/shared/utils/phoneUtils.js';
 
 // Why a tutor said no. Every "No" used to be thrown-away signal; this is the only place we
 // learn the reason, and it's what tells us whether a pool is failing on money, distance, or

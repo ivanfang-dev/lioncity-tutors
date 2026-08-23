@@ -102,30 +102,11 @@ const contactSchema = new mongoose.Schema({
 
 const Contact = mongoose.model('Contact', contactSchema);
 
-// New schema for test paper leads
-const testPaperLeadSchema = new mongoose.Schema({
-  email: { type: String, required: true },
-  phone: { type: String, required: true },
-  downloads: [{
-    subject: String,        
-    level: String, 
-    paperTitle: String,
-    downloadedAt: { type: Date, default: Date.now }
-  }]
-}, { timestamps: true });
-
-const TestPaperLead = mongoose.model('TestPaperLead', testPaperLeadSchema);
-
 // --- API ROUTES ---
 
 // Root route
 app.get('/', (req, res) => {
   res.send('Contact form API is running');
-});
-
-// Email tester route
-app.get('/email-tester', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'email-tester.html'));
 });
 
 app.get("/keep-alive", (req, res) => {
@@ -365,36 +346,6 @@ app.post('/api/assignments/apply', async (req, res) => {
   }
 });
 
-// Test paper leads endpoint
-app.post('/api/test-paper-leads', async (req, res) => {
-  try {
-    const { email, phone, subject, level, paperTitle} = req.body;
-    
-    // Find existing lead or create new one
-    let lead = await TestPaperLead.findOne({ email });
-    const newDownload = { level, subject, paperTitle };
-
-    if (lead) {
-      // Add new download to existing lead
-      lead.downloads.push(newDownload);
-      await lead.save();
-    } else {
-      // Create new lead
-      lead = new TestPaperLead({
-        email,
-        phone,
-        downloads: [newDownload]
-      });
-      await lead.save();
-    }
-    
-    res.status(200).json({ success: true, message: 'Download tracked successfully!' });
-  } catch (err) {
-    console.error('Error tracking download:', err);
-    res.status(500).json({ success: false, error: 'Failed to track download.' });
-  }
-});
-
 app.get('/api/assignments', async (req, res) => {
   try {
     const assignments = await Assignment
@@ -407,38 +358,6 @@ app.get('/api/assignments', async (req, res) => {
   } catch (err) {
     console.error('Error fetching assignments:', err);
     res.status(500).json({ error: 'Failed to fetch assignments.' });
-  }
-});
-
-app.get('/api/analytics/popular-papers', async (req, res) => {
-  try {
-    // Count downloads per paper in the database (one $unwind + $group) instead of
-    // loading every lead into memory. Grouped by level/subject/paperTitle — the
-    // fields the schema actually stores.
-    const results = await TestPaperLead.aggregate([
-      { $unwind: '$downloads' },
-      {
-        $group: {
-          _id: {
-            level: '$downloads.level',
-            subject: '$downloads.subject',
-            paperTitle: '$downloads.paperTitle'
-          },
-          count: { $sum: 1 }
-        }
-      },
-      { $sort: { count: -1 } }
-    ]);
-
-    const sorted = results.map(({ _id, count }) => ({
-      paper: `${_id.level}-${_id.subject}-${_id.paperTitle}`,
-      count
-    }));
-
-    res.json(sorted);
-  } catch (err) {
-    console.error('Error getting analytics:', err);
-    res.status(500).json({ error: 'Failed to get analytics.' });
   }
 });
 

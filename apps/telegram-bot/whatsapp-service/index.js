@@ -168,12 +168,27 @@ client.on('disconnected', (reason) => {
   notifyAdmin(`⚠️ *WhatsApp client disconnected*\nReason: ${reason}`);
 });
 
+// A negated availability word ANYWHERE in the reply — "not interested", "sorry, not
+// interested", "no longer free". Must be tested before the yes rule, which matches
+// `interested` as a bare SUBSTRING and would otherwise read every one of these as a YES:
+// the tutor would be thanked for their interest and shortlisted to a parent after declining.
+// Up to two filler words are allowed ("not really interested"), but `\w+\s+` cannot cross a
+// comma, so "not sure, but I am free" is left alone for the owner.
+//
+// Deliberately duplicated from api/whatsapp-webhook.js: this service deploys standalone to the
+// VM with its own package.json and node_modules, so it cannot import from the bot.
+const NEGATED_AVAILABILITY =
+  /\b(?:not|never|unable|cannot|no longer)\s+(?:\w+\s+){0,2}(?:interested|available|free|able|keen|taking)\b/;
+
 // Classify a tutor's free-text reply. We act only on a clear yes/no; anything else
 // (including silence) is ignored — the escalation timer handles non-responders.
 function parseReply(body) {
   if (!body) return null;
-  if (/^y(es|ep|eah|a|up)?\b/.test(body) || body === 'ok' || body === 'okay' || body.includes('interested')) return 'yes';
-  if (/^n(o|ope|ah)?\b/.test(body)) return 'no';
+  // Contractions folded so the negation list also covers isn't / can't / don't.
+  const t = String(body).trim().toLowerCase().replace(/n['\u2019]t\b/g, ' not ');
+  if (NEGATED_AVAILABILITY.test(t)) return 'no';
+  if (/^y(es|ep|eah|a|up)?\b/.test(t) || t === 'ok' || t === 'okay' || t.includes('interested')) return 'yes';
+  if (/^n(o|ope|ah)?\b/.test(t)) return 'no';
   return null;
 }
 

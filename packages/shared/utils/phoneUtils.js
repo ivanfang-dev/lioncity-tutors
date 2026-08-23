@@ -1,10 +1,16 @@
 /**
- * Strips non-digits and removes leading Singapore country code (65).
- * Returns a normalized 8-digit string, or empty string if input is invalid.
+ * Canonicalize a phone number to its 8-digit Singapore local form for matching.
+ * Stored tutor numbers and inbound WhatsApp numbers arrive in mixed shapes
+ * ("+65 9123 4567", "6591234567", "9123 4567") — reduce them all to "91234567"
+ * so a contact can be matched to the tutor who replied.
+ *
+ * The 65 prefix is only stripped when digits remain beyond 8, so an 8-digit
+ * landline like "65123456" survives intact.
  */
 export function normalizePhone(phone) {
-  if (!phone || typeof phone !== 'string') return '';
-  return phone.replace(/\D/g, '').replace(/^65/, '');
+  let digits = String(phone ?? '').replace(/\D/g, '');
+  if (digits.length > 8 && digits.startsWith('65')) digits = digits.slice(2);
+  return digits.slice(-8);
 }
 
 /**
@@ -34,5 +40,5 @@ export function generatePhoneVariations(phone) {
     phone,                   // original input (catches verbatim stored values)
   ];
 
-  return [...new Set(variations)].filter(v => v.length > 0);
+  return [...new Set(variations)].filter(v => v && String(v).length > 0);
 }
