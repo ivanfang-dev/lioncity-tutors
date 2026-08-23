@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import { waitUntil } from '@vercel/functions';
-import { Assignment, Tutor, Placement } from '../../../packages/shared/server-exports.js';
+import { Assignment, Tutor, Placement, Meta } from '../../../packages/shared/server-exports.js';
 import { escalateAssignment, remindNonResponders } from '../utils/tutorNotifier.js';
 import { shortlistScore, shortlistReason, buildFeatureSnapshot } from '../utils/tutorMatcher.js';
 import { recordRecommendation } from '../utils/recordRecommendation.js';
@@ -581,6 +581,9 @@ async function closeStaleAssignments(now) {
 // Pinged on a schedule by the always-on WhatsApp service (the bot itself can't run
 // timers on Vercel). Finds assignments due for their next outreach wave and fires it,
 // and closes assignments that have been Open too long.
+// Meta key the watchdog reads to tell "the tick is running" from "the tick has stopped".
+const TICK_HEARTBEAT_KEY = 'escalationTick';
+
 export default async function handler(req, res) {
   try {
     if (req.method !== 'POST') {
@@ -594,6 +597,16 @@ export default async function handler(req, res) {
     await connectToDatabase();
     const now = new Date();
     const dueBefore = new Date(now.getTime() - WAVE_INTERVAL_MS);
+
+    // Heartbeat for the outreach watchdog (website /api/health/outreach). Stamped here, before any
+    // work: the failures it must catch — nothing calls this endpoint, or the module fails to load —
+    // both stop execution reaching this line. A tick that boots and then fails partway still stamps,
+    // which is why the watchdog also checks for actual backlog.
+    Meta.updateOne(
+      { key: TICK_HEARTBEAT_KEY },
+      { $set: { lastRunAt: now, updatedAt: now }, $setOnInsert: { key: TICK_HEARTBEAT_KEY } },
+      { upsert: true }
+    ).catch(err => console.error('tick heartbeat failed:', err.message));
 
     // Atomically claim due assignments — set lastWaveAt=now so a concurrent or next
     // tick can't grab the same one and double-send. Waves run around the clock.
