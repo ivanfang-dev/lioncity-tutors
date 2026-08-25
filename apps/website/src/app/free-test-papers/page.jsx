@@ -8,8 +8,13 @@ import PaperLibrary from './PaperLibrary';
 import { PAPER_SECTIONS } from './sections.mjs';
 import { FREE_TEST_PAPERS_FAQS } from './faqs.mjs';
 import { paperStats } from './stats';
+import { getPaperDownloadCounts } from '@/lib/paperDownloadCounts.mjs';
 
 const SLUG = 'free-test-papers';
+
+// Download counts are read once an hour rather than per visit. They reach the
+// browser inside the HTML, so no row shifts once the page has painted.
+export const revalidate = 3600;
 
 // Which library section each level answer block sends the reader to. N-Level
 // has no shelf of its own, so it points at the O-Level papers it explains.
@@ -28,7 +33,9 @@ Location:
 Preferred days & timing: `;
 const whatsappHref = `https://wa.me/6588701152?text=${encodeURIComponent(whatsappMessage)}`;
 
-export default function FreeTestPapersPage() {
+export default async function FreeTestPapersPage() {
+  const counts = await getPaperDownloadCounts();
+
   return (
     <>
       <GuideSchema
@@ -105,7 +112,7 @@ export default function FreeTestPapersPage() {
             })}
           </div>
 
-          <PaperLibrary />
+          <PaperLibrary counts={counts} />
 
           <section aria-labelledby="faq" className="mx-auto max-w-3xl">
             <SectionHeading id="faq" icon={HelpCircle}>

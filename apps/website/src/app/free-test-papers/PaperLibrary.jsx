@@ -15,6 +15,11 @@ import { paperKeyOf } from "@/lib/downloadKeys.mjs";
 import { gaEvent } from "@/utils/analytics";
 import { paperStats } from "./stats";
 
+// Counts reach the rows through context rather than four levels of props.
+// Below this many downloads a figure reads as "nobody wants this", so we show none.
+const MIN_DOWNLOADS_SHOWN = 10;
+const DownloadCounts = React.createContext({ perPaper: {}, perSubject: {} });
+
 // Coming Soon Component for empty arrays
 const ComingSoonCard = ({ examType, tint }) => (
   <div className={`flex flex-col items-center justify-center p-6 rounded-lg border-2 border-dashed transition-colors ${tint.placeholder}`}>
@@ -29,34 +34,47 @@ const ComingSoonCard = ({ examType, tint }) => (
 );
 
 // ✅ Improved Paper list item with better spacing and responsive design
-const PaperListItem = ({ paper, onDownloadClick, tint }) => (
-  <li className={`flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 sm:gap-4 p-4 rounded-lg border border-gray-200 bg-white hover:shadow-md transition-all duration-200 ${tint.rowHover}`}>
-    <div className="flex items-start gap-3 min-w-0 flex-1">
-      <FileText className="h-5 w-5 text-gray-400 mt-0.5 flex-shrink-0" />
-      <div className="min-w-0 flex-1">
-        <span className="font-medium text-gray-800 text-sm sm:text-base leading-tight block">
-          {paper.title}
-        </span>
-        {paper.description && (
-          <span className="text-xs text-gray-500 mt-1 block">{paper.description}</span>
-        )}
+const PaperListItem = ({ paper, onDownloadClick, tint }) => {
+  const { perPaper } = React.useContext(DownloadCounts);
+  const downloads = perPaper[paperKeyOf(paper)] ?? 0;
+
+  return (
+    <li className={`flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 sm:gap-4 p-4 rounded-lg border border-gray-200 bg-white hover:shadow-md transition-all duration-200 ${tint.rowHover}`}>
+      <div className="flex items-start gap-3 min-w-0 flex-1">
+        <FileText className="h-5 w-5 text-gray-400 mt-0.5 flex-shrink-0" />
+        <div className="min-w-0 flex-1">
+          <span className="font-medium text-gray-800 text-sm sm:text-base leading-tight block">
+            {paper.title}
+          </span>
+          {paper.description && (
+            <span className="text-xs text-gray-500 mt-1 block">{paper.description}</span>
+          )}
+          {downloads >= MIN_DOWNLOADS_SHOWN && (
+            <span className="mt-1 flex items-center gap-1 text-xs text-gray-500">
+              <Download className="h-3 w-3" aria-hidden="true" />
+              <span className="tabular-nums">{downloads.toLocaleString()}</span> downloads
+            </span>
+          )}
+        </div>
       </div>
-    </div>
-    <Button
-      variant="outline"
-      size="sm"
-      className={`flex min-h-11 items-center gap-2 transition-colors duration-200 flex-shrink-0 w-full sm:w-auto justify-center sm:min-h-0 ${tint.action}`}
-      onClick={onDownloadClick}
-      aria-label={`Download ${paper.title}`}
-    >
-      <Download className="h-4 w-4" />
-      Download
-    </Button>
-  </li>
-);
+      <Button
+        variant="outline"
+        size="sm"
+        className={`flex min-h-11 items-center gap-2 transition-colors duration-200 flex-shrink-0 w-full sm:w-auto justify-center sm:min-h-0 ${tint.action}`}
+        onClick={onDownloadClick}
+        aria-label={`Download ${paper.title}`}
+      >
+        <Download className="h-4 w-4" />
+        Download
+      </Button>
+    </li>
+  );
+};
 
 // Subject card with search functionality and coming soon support
-const SubjectCard = ({ subjectTitle, subjectData, onDownloadClick, searchTerm, tint }) => {
+const SubjectCard = ({ subjectKey, subjectTitle, subjectData, onDownloadClick, searchTerm, tint }) => {
+  const { perSubject } = React.useContext(DownloadCounts);
+  const downloads = perSubject[subjectKey] ?? 0;
   const hasExamTypes =
     typeof subjectData === "object" && !Array.isArray(subjectData) && Object.keys(subjectData).length > 0;
   const examTypes = hasExamTypes ? Object.keys(subjectData) : [];
@@ -111,7 +129,10 @@ const SubjectCard = ({ subjectTitle, subjectData, onDownloadClick, searchTerm, t
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
           <h4 className="font-bold text-xl text-gray-900">{subjectTitle}</h4>
           <div className="text-xs text-gray-500 bg-gray-100 px-3 py-1.5 rounded-full whitespace-nowrap self-start sm:self-auto">
-            {availablePapers} papers available
+            <span className="tabular-nums">{availablePapers}</span> papers
+            {downloads >= MIN_DOWNLOADS_SHOWN && (
+              <> &middot; <span className="tabular-nums">{downloads.toLocaleString()}</span> downloads</>
+            )}
           </div>
         </div>
         
@@ -241,6 +262,7 @@ const LevelSection = ({ id, title, icon, papers, onDownloadClick, searchTerm, ti
           return (
             <SubjectCard
               key={subjectKey}
+              subjectKey={subjectKey}
               subjectTitle={subjectTitle}
               subjectData={subjectData}
               onDownloadClick={(paper, info) => onDownloadClick(paper, { level: title, ...info })}
@@ -259,7 +281,7 @@ const LevelSection = ({ id, title, icon, papers, onDownloadClick, searchTerm, ti
  * grids and the download form. The page's headings, level answer blocks, FAQ
  * and schema are server-rendered in page.jsx.
  */
-export default function PaperLibrary() {
+export default function PaperLibrary({ counts = { perPaper: {}, perSubject: {}, total: 0, families: 0 } }) {
   const [formData, setFormData] = useState({ email: "", phone: "" });
   const [formErrors, setFormErrors] = useState({ email: "", phone: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -268,6 +290,15 @@ export default function PaperLibrary() {
   const [showModal, setShowModal] = useState(false);
   const [selectedLevel, setSelectedLevel] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
+  // Downloads taken in this session, so a reader sees their own click land on
+  // the row rather than waiting for the page to revalidate.
+  const [justDownloaded, setJustDownloaded] = useState({});
+
+  const liveCounts = React.useMemo(() => {
+    const perPaper = { ...counts.perPaper };
+    for (const [key, n] of Object.entries(justDownloaded)) perPaper[key] = (perPaper[key] ?? 0) + n;
+    return { perPaper, perSubject: counts.perSubject };
+  }, [counts, justDownloaded]);
 
   useEffect(() => {
     const savedEmail = localStorage.getItem("email");
@@ -328,6 +359,9 @@ export default function PaperLibrary() {
       if (!response.ok) throw new Error("API submission failed");
       const result = await response.json().catch(() => ({}));
 
+      const key = paperKeyOf(selectedPaper);
+      if (key) setJustDownloaded((prev) => ({ ...prev, [key]: (prev[key] ?? 0) + 1 }));
+
       gaEvent("paper_download", {
         paper_title: selectedPaper.title,
         paper_key: paperKeyOf(selectedPaper),
@@ -365,7 +399,7 @@ export default function PaperLibrary() {
   const levelFilters = ["all", "primary", "secondary", "jc"];
 
   return (
-    <>
+    <DownloadCounts.Provider value={liveCounts}>
       <div className="space-y-16">
         {/* Search Bar */}
         <div className="max-w-md mx-auto">
@@ -441,7 +475,7 @@ export default function PaperLibrary() {
         {/* What's in the library — every figure counted from testPapers.js */}
         <section className="text-center py-16 border-t border-gray-200 rounded-2xl">
           <h3 className="text-2xl font-bold text-gray-900 mb-4">What&apos;s in the library today</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 max-w-2xl mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 max-w-4xl mx-auto">
             <div className="text-center">
               <div className="text-3xl font-bold text-primary tabular-nums">{paperStats.total}</div>
               <div className="text-gray-600">Papers to download</div>
@@ -456,6 +490,17 @@ export default function PaperLibrary() {
               </div>
               <div className="text-gray-600">Exam years</div>
             </div>
+            {counts.total > 0 && (
+              <div className="text-center">
+                <div className="text-3xl font-bold text-primary tabular-nums">
+                  {counts.total.toLocaleString()}
+                </div>
+                <div className="text-gray-600">
+                  Downloads by{" "}
+                  <span className="tabular-nums">{counts.families.toLocaleString()}</span> families
+                </div>
+              </div>
+            )}
           </div>
         </section>
       </div>
@@ -543,6 +588,6 @@ export default function PaperLibrary() {
           </form>
         </DialogContent>
       </Dialog>
-    </>
+    </DownloadCounts.Provider>
   );
 }
