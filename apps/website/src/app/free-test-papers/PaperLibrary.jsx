@@ -11,6 +11,8 @@ import { toast } from "sonner";
 import { Download, BookOpen, GraduationCap, Atom, FileText, Search, Clock } from "lucide-react";
 import { testPapers } from "../../data/testPapers.mjs";
 import { LEVEL_TINTS } from "@/lib/levelTints";
+import { paperKeyOf } from "@/lib/downloadKeys.mjs";
+import { gaEvent } from "@/utils/analytics";
 import { paperStats } from "./stats";
 
 // Coming Soon Component for empty arrays
@@ -318,12 +320,20 @@ export default function PaperLibrary() {
           level: paperInfo.level,
           subject: paperInfo.subject,
           paperTitle: selectedPaper.title,
+          paperKey: paperKeyOf(selectedPaper),
           fileKey: selectedPaper.fileKey,
         }),
       });
 
       if (!response.ok) throw new Error("API submission failed");
       const result = await response.json().catch(() => ({}));
+
+      gaEvent("paper_download", {
+        paper_title: selectedPaper.title,
+        paper_key: paperKeyOf(selectedPaper),
+        subject: paperInfo.subject,
+        level: paperInfo.level,
+      });
 
       toast.success("Thank you! Your download will begin shortly.", {
         description: "Check your email for additional study resources.",
