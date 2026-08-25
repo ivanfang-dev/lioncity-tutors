@@ -14,6 +14,7 @@ const SITE_URL = 'https://www.lioncitytutors.com';
 // in docs/seo-action-plan.md).
 const NON_REGISTRY_PAGES = [
   { path: '/', priority: 1.0 },
+  { path: '/about-us', priority: 0.6 },
   { path: '/blog', priority: 0.7 },
   { path: '/contact-us', priority: 0.5 },
   { path: '/guides', priority: 0.6 },

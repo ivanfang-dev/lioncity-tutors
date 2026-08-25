@@ -31,6 +31,7 @@ export const resources = [
 
 export const forParents = [
   { name: "Request a Tutor", path: "/request-tutor" },
+  { name: "About Us", path: "/about-us" },
   { name: "Exam Guides Hub", path: "/guides" },
   { name: "Our Blog", path: "/blog" }
 ]
