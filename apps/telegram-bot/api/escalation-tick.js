@@ -39,7 +39,7 @@ const BOT_USERNAME = process.env.BOT_USERNAME;
 
 // Auto-close: assignments still Open this many days after creation are closed (they're
 // almost always filled by then) and their channel post is updated so tutors stop asking.
-const AUTO_CLOSE_DAYS = Number(process.env.ASSIGNMENT_AUTO_CLOSE_DAYS) || 7;
+const AUTO_CLOSE_DAYS = Number(process.env.ASSIGNMENT_AUTO_CLOSE_DAYS) || 14;
 const MAX_CLOSE_PER_TICK = 20; // bound the Telegram edits done in one tick
 
 // The shortlist relayed to the parent — the best N of everyone who said Yes. Deliberately smaller
