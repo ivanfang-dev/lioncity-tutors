@@ -3,9 +3,9 @@ import { MATCH_TIME, MATCH_HOURS } from '@/data/promises';
 export const metadata = {
   // Claim accuracy: MOE certifies teachers, not agencies, so "MOE-Certified
   // tutors" overstated what can be verified — and every competitor claims some
-  // superlative anyway. The differentiator that is actually true and actually
-  // ours leads instead: hand-matched fast, and free for parents.
-  title: `LionCity Tutors — Tutor Matched in ${MATCH_HOURS} Hours, No Agency Fee`,
+  // superlative anyway. The geo head term leads so the title matches the query;
+  // the match-time promise follows, to differentiate from identical rivals.
+  title: `Singapore Tuition Agency — Tutor Matched in ${MATCH_HOURS} Hours`,
   description: "LionCity Tutors hand-matches Singapore parents with vetted PSLE, O-Level and JC tutors, usually within 6 hours — 100% free, with no agency fee, ever paid.",
   keywords: [
     'home tuition singapore',
@@ -32,7 +32,7 @@ export const metadata = {
   openGraph: {
     type: 'website',
     url: 'https://www.lioncitytutors.com/',
-    title: `LionCity Tutors — Tutor Matched in ${MATCH_HOURS} Hours, No Agency Fee`,
+    title: `Singapore Tuition Agency — Tutor Matched in ${MATCH_HOURS} Hours`,
     description: `Hand-matched, vetted tutors for PSLE, O-Level & A-Level, usually within ${MATCH_TIME}. Free for parents — no agency fee, ever.`,
     images: [
       {
@@ -43,7 +43,7 @@ export const metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Singapore Home Tuition Agency | LionCity Tutors',
+    title: `Singapore Tuition Agency — Tutor Matched in ${MATCH_HOURS} Hours`,
     description: `Hand-matched, vetted tutors for PSLE, O-Level & A-Level in ${MATCH_TIME}. Free for parents.`,
     images: ['https://www.lioncitytutors.com/final.png'],
   },
