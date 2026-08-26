@@ -12,7 +12,7 @@ import { paperCountBand, papersWithAnswers } from './stats';
 // the site name to the result anyway, and those 18 characters buy the paper count.
 const TITLE = `Free Test Papers: ${paperCountBand}+ PSLE, O-Level & JC Prelim Papers`;
 const DESCRIPTION =
-  `Download ${paperCountBand}+ free prelim and past-year papers from Singapore schools — PSLE, O-Level and JC, mostly 2024 and 2025, ${papersWithAnswers} with worked answers.`;
+  `Download ${paperCountBand}+ free prelim and past-year papers from Singapore schools — PSLE, O-Level and JC, mostly 2024 and 2025, and ${papersWithAnswers} of them with worked answers.`;
 
 export const metadata = {
   title: TITLE,

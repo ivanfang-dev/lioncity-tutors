@@ -65,7 +65,7 @@ export const HUBS = {
     anchor: 'Complete A-Level preparation guide',
     spokes: [
       'a-level-math', 'a-level-physics', 'a-level-chemistry', 'a-level-biology',
-      'a-level-general-paper', 'jc-tuition',
+      'a-level-general-paper', 'how-to-study-general-paper', 'jc-tuition',
       'math-tuition', 'science-tuition', 'chemistry-tuition', 'physics-tuition',
       'biology-tuition', 'economics-tuition', 'tuition-rates',
       'free-notes', 'free-test-papers',
@@ -212,6 +212,14 @@ export const SPOKES = {
     slug: 'a-level-general-paper', url: '/a-level-general-paper', hub: 'a-level-prep',
     title: 'General Paper', anchor: 'A-Level General Paper guide',
     blurb: 'Paper 1 essays and Paper 2 comprehension, with mark schemes.',
+  },
+  // Article, not the Course default: this is study technique, not a course offering.
+  'how-to-study-general-paper': {
+    slug: 'how-to-study-general-paper', url: '/how-to-study/general-paper', hub: 'a-level-prep',
+    schemaType: 'Article',
+    title: 'How to Study for General Paper',
+    anchor: 'how to study for General Paper',
+    blurb: 'Where the marks sit across both papers, and what moves an essay up a band.',
   },
   'jc-tuition': {
     slug: 'jc-tuition', url: '/jc-tuition', hub: 'a-level-prep',
