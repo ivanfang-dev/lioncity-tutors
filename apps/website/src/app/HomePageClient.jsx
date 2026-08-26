@@ -12,6 +12,7 @@ import { TuitionRequestSteps } from "@/components/FormSteps";
 import FormStepper from "@/components/FormStepper";
 import FormBenefits from "@/components/FormBenefits";
 import TutorPopup from "@/components/TutorPopup";
+import MobileCTABar from "@/components/MobileCTABar";
 import useTuitionRequestForm from "@/components/useTuitionRequestForm";
 import { Star, CheckCircle, Award, Users, Clock, Shield, Quote, TrendingUp, MapPin, Mail, FileText, BookOpen, ArrowRight } from "lucide-react";
 
@@ -136,6 +137,11 @@ Preferred days & timing: `;
       <ScrollProgress />
       <main ref={main} className="bg-background-default text-text-default">
         <TutorPopup />
+        <MobileCTABar
+          onRequest={scrollToForm}
+          formRef={formRef}
+          whatsappHref={whatsappHref}
+        />
         <FloatingTrustBadge onGetStarted={scrollToForm} />
         {/* Hero Section */}
         <section className="relative flex items-center bg-background-default px-4 sm:px-6 overflow-hidden">

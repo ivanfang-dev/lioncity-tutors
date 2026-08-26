@@ -38,7 +38,7 @@ export default function BackToTop() {
       animate={prefersReducedMotion ? undefined : { opacity: [0, 1], scale: [0.8, 1], y: [16, 0] }}
       transition={{ duration: DURATION.base, ease: EASE_STANDARD }}
       onClick={scrollToTop}
-      className="fixed safe-bottom safe-left z-40 w-12 h-12 sm:w-14 sm:h-14 bg-primary hover:bg-primary/90 text-white rounded-full shadow-lg hover:shadow-xl flex items-center justify-center transition-all duration-300 group"
+      className="floating-chrome fixed safe-bottom safe-left z-40 w-12 h-12 sm:w-14 sm:h-14 bg-primary hover:bg-primary/90 text-white rounded-full shadow-lg hover:shadow-xl flex items-center justify-center transition-all duration-300 group"
       aria-label="Back to top"
     >
       <ArrowUp className="w-5 h-5 sm:w-6 sm:h-6 group-hover:-translate-y-1 transition-transform duration-300" />

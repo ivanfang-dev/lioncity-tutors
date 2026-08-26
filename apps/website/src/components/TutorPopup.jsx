@@ -12,16 +12,17 @@ import { normalizeSgMobile } from "@/lib/phone";
  *
  * This used to fire on a 6-second timer, which put a full-screen overlay over the
  * hero before a first-time parent had finished reading the headline — the loudest
- * "cheap tuition agency" signal on a site whose product is trust. It now waits for a
- * visitor who is either leaving or has read most of the page:
+ * "cheap tuition agency" signal on a site whose product is trust. It now waits for
+ * exit intent: the cursor leaving through the top of the viewport, toward the tab
+ * bar or the close button. It never appears before MIN_DWELL_MS, so a stray early
+ * mouse-out cannot ambush someone who just arrived.
  *
- *   - fine pointer (desktop): exit intent — the cursor leaves through the top of the
- *     viewport, toward the tab bar or the close button;
- *   - coarse pointer (touch): there is no exit intent to detect, so it waits until
- *     the visitor has scrolled past PROMPT_AFTER_SCROLL of the page.
- *
- * Either way it never appears before MIN_DWELL_MS, so a stray early mouse-out cannot
- * ambush someone who just arrived.
+ * Desktop only. Touch has no exit intent, and the scroll-depth substitute this used
+ * to run (open at 60% of the page) was actively harmful: the home page is ~17 phone
+ * screens with the form at 74%, and `scrollToForm()` crosses 60% on its way there —
+ * so on a phone the one group it reliably caught was the people who had just tapped
+ * "Request tutors", and it opened over the form they were being sent to. Phones get
+ * MobileCTABar instead, which never interrupts.
  */
 
 /** Set once the visitor submits or dismisses; survives navigation within the session. */
@@ -30,7 +31,6 @@ const ACTION_KEY = "popupActionTaken";
 export const PREFILL_KEY = "tutorRequestPrefill";
 
 const MIN_DWELL_MS = 8000;
-const PROMPT_AFTER_SCROLL = 0.6;
 
 const BENEFITS = [
   "Free for parents — you pay the tutor directly",
@@ -73,24 +73,14 @@ export default function TutorPopup() {
       /* Unreadable storage is not a reason to skip the prompt. */
     }
 
+    // Exit intent is a cursor signal, so this prompt is desktop-only. Touch has
+    // no equivalent — see the scroll-depth note above — and MobileCTABar covers
+    // the phone instead.
+    if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+
     armedAt.current = Date.now();
     const dwellMet = () => Date.now() - armedAt.current >= MIN_DWELL_MS;
     const open = () => setIsOpen(true);
-
-    const coarsePointer = window.matchMedia("(pointer: coarse)").matches;
-
-    if (coarsePointer) {
-      const onScroll = () => {
-        const max = document.documentElement.scrollHeight - window.innerHeight;
-        if (max <= 0) return;
-        if (window.scrollY / max >= PROMPT_AFTER_SCROLL && dwellMet()) {
-          open();
-          window.removeEventListener("scroll", onScroll);
-        }
-      };
-      window.addEventListener("scroll", onScroll, { passive: true });
-      return () => window.removeEventListener("scroll", onScroll);
-    }
 
     // `mouseout` with no relatedTarget and a y at or above the viewport top means
     // the cursor left through the top edge — the browser chrome, not the page.

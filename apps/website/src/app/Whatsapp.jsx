@@ -7,7 +7,7 @@ export default function Whatsapp(){
     // `safe-bottom` / `safe-right` keep the button clear of the iPhone home
     // indicator and Safari's bottom bar, which otherwise sit on top of it — this
     // control lives exactly in that band.
-    <div className="fixed safe-bottom safe-right sm:right-8 z-40 group">
+    <div className="floating-chrome fixed safe-bottom safe-right sm:right-8 z-40 group">
       <Link
         href="https://wa.me/6588701152"
         className="bg-green-500 hover:bg-green-600 text-white h-14 w-14 rounded-full shadow-lg flex items-center justify-center transition-colors"

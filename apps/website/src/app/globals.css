@@ -473,6 +473,14 @@ a:focus-visible {
   }
 }
 
+/* MobileCTABar occupies the same band as the floating WhatsApp and back-to-top
+   buttons, and carries WhatsApp itself. While it is up, they stand down. */
+@media (max-width: 1023px) {
+  [data-mobile-cta-bar="on"] .floating-chrome {
+    display: none;
+  }
+}
+
 /* Mobile Navigation Animations */
 @keyframes slideDown {
   from {
