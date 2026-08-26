@@ -32,6 +32,7 @@ export const HUBS = {
     spokes: [
       'o-level-english', 'o-level-chinese', 'o-level-math', 'o-level-physics', 'o-level-chemistry',
       'o-level-biology', 'o-level-history', 'how-to-study-o-level-chemistry',
+      'how-to-study-o-level-a-math', 'how-to-study-o-level-e-math',
       'combined-science-overview', 'combined-chemistry-physics',
       'combined-chemistry-biology', 'combined-physics-biology', 'o-level-tuition',
       'math-tuition', 'science-tuition', 'chemistry-tuition', 'physics-tuition',
@@ -165,6 +166,20 @@ export const SPOKES = {
     title: 'How to Study for O-Level Chemistry',
     anchor: 'how to study for O-Level Chemistry',
     blurb: 'Paper weightings, the qualitative analysis tests to memorise, and command words.',
+  },
+  'how-to-study-o-level-a-math': {
+    slug: 'how-to-study-o-level-a-math', url: '/how-to-study/o-level-a-math', hub: 'o-level-prep',
+    schemaType: 'Article',
+    title: 'How to Study for O-Level A-Math',
+    anchor: 'how to study for O-Level A-Math',
+    blurb: 'Which formulae are printed for you, and why working carries the marks.',
+  },
+  'how-to-study-o-level-e-math': {
+    slug: 'how-to-study-o-level-e-math', url: '/how-to-study/o-level-e-math', hub: 'o-level-prep',
+    schemaType: 'Article',
+    title: 'How to Study for O-Level E-Math',
+    anchor: 'how to study for O-Level E-Math',
+    blurb: 'The short formula sheet, and the real-world question that ends Paper 2.',
   },
   'combined-science-overview': {
     slug: 'combined-science-overview', url: '/combined-science-overview', hub: 'o-level-prep',
