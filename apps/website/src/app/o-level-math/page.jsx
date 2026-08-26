@@ -14,8 +14,8 @@ export const metadata = {
   ],
   openGraph: {
     images: [DEFAULT_OG_IMAGE],
-    title: 'O Level Math Guide 2026: Complete Preparation Strategy for Singapore Students',
-    description: 'Comprehensive O Level Mathematics guide with proven strategies to help Singapore students achieve A1 grades in both Elementary and Additional Mathematics.',
+    title: 'O-Level Maths (E-Math & A-Math): Common Mistakes & Tips',
+    description: 'The 10 mistakes our tutors correct most across E-Math and A-Math scripts, plus topic strategy, paper timing and a revision timeline for the 2026 O-Levels.',
     url: 'https://www.lioncitytutors.com/o-level-math',
     type: 'article',
   },

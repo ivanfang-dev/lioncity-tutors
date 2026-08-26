@@ -14,8 +14,8 @@ export const metadata = {
   ],
   openGraph: {
     images: [DEFAULT_OG_IMAGE],
-    title: 'O Level Physics Guide 2026: Complete Study Strategy for Singapore Students',
-    description: 'Comprehensive O Level Physics guide with proven strategies to help Singapore students achieve A1 grades in GCE O Level Physics.',
+    title: 'O-Level Physics (6091): Topics, Common Mistakes & Tips',
+    description: 'The 10 mistakes our tutors correct most on O-Level Physics scripts, plus paper-by-paper exam strategy, practical skills and the 2026 syllabus 6091 topics.',
     url: 'https://www.lioncitytutors.com/o-level-physics',
     type: 'article',
   },

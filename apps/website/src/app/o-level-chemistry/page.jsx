@@ -14,8 +14,8 @@ export const metadata = {
   ],
   openGraph: {
     images: [DEFAULT_OG_IMAGE],
-    title: 'O Level Chemistry Guide 2026: Complete Study Strategy for Singapore Students',
-    description: 'Comprehensive O Level Chemistry guide with proven strategies to help Singapore students achieve A1 grades in GCE O Level Chemistry.',
+    title: 'O-Level Chemistry (6092): Topics, Common Mistakes & Tips',
+    description: 'The 2026 syllabus 6092 topics ranked by marks weight, the 10 mistakes our tutors correct most on Chemistry scripts, and how to prepare for Papers 1 to 3.',
     url: 'https://www.lioncitytutors.com/o-level-chemistry',
     type: 'article',
   },
