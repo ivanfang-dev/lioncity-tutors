@@ -185,7 +185,7 @@ Preferred days & timing: `;
           <div>
             <GuideHeader
               title="How to Study for General Paper"
-              author="By the LionCity Tutors humanities team"
+              author="By the LionCity Tutors General Paper team"
               meta="Updated August 26, 2026 · 10 min read"
             />
 
@@ -316,6 +316,14 @@ Preferred days & timing: `;
                 <p className="mt-4 text-pretty">
                   Thirty of these, spread across the six question areas, will carry a student further than a year of undirected reading — and because each one already contains a connection, they feed straight into the skill the top band is looking for. Keep a separate handful rooted in Singapore, since &ldquo;your society&rdquo; questions need a specific society rather than a general one.
                 </p>
+                <GuideCard className="mt-4">
+                  <h4 className="font-semibold text-gray-900 mb-2">Notes you can start from</h4>
+                  <p className="text-sm text-gray-700">
+                    If building a bank from scratch is the part that never happens, start from someone else&rsquo;s. Our{' '}
+                    <Link href="/free-notes" className="text-primary underline underline-offset-2">free notes library</Link>{' '}
+                    hosts a set of JC General Paper infopacks organised by theme — media, science and technology, social issues, arts and culture, and politics — which map onto the areas Paper 1 draws from. They are a starting shelf, not a substitute: the examples still have to become yours, with your own line on each issue, or they will read in the exam exactly as what they are.
+                  </p>
+                </GuideCard>
               </section>
 
               <section id="revision" className="scroll-mt-24">
@@ -326,7 +334,7 @@ Preferred days & timing: `;
                 <GuideCard className="mt-4">
                   <ul className="list-disc ml-5 space-y-2 text-sm text-gray-700">
                     <li><strong>Write plans, not essays, most weeks.</strong> Ten plans in an hour trains structure and judgement — where the band movement is — far better than one full script.</li>
-                    <li><strong>Do comprehension on unseen passages.</strong> A passage you have already worked through tests memory, not inference. Past-year and prelim papers are the supply; there are A-Level GP papers in our <Link href="/free-test-papers" className="text-primary underline underline-offset-2">free test papers library</Link>.</li>
+                    <li><strong>Do comprehension on unseen passages.</strong> A passage you have already worked through tests memory, not inference. Past-year and prelim papers are the supply; there are A-Level GP papers in our <Link href="/free-test-papers#papers-jc" className="text-primary underline underline-offset-2">free test papers library</Link>.</li>
                     <li><strong>Mark against the scheme, then classify the loss.</strong> Knowledge, technique, misread question, or time? The fix is completely different for each, and students who skip this step repeat the same error until the exam.</li>
                     <li><strong>Get one essay marked for language alone.</strong> With 20 marks riding on it separately, it is worth knowing which errors you personally repeat.</li>
                     <li><strong>Time the comprehension paper early.</strong> Ninety minutes across three passages and nine questions is tight, and the 12-mark application question is the one that suffers when it runs out.</li>

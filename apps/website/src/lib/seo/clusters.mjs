@@ -31,7 +31,7 @@ export const HUBS = {
     anchor: 'Complete O-Level preparation guide',
     spokes: [
       'o-level-english', 'o-level-chinese', 'o-level-math', 'o-level-physics', 'o-level-chemistry',
-      'o-level-biology', 'o-level-history',
+      'o-level-biology', 'o-level-history', 'how-to-study-o-level-chemistry',
       'combined-science-overview', 'combined-chemistry-physics',
       'combined-chemistry-biology', 'combined-physics-biology', 'o-level-tuition',
       'math-tuition', 'science-tuition', 'chemistry-tuition', 'physics-tuition',
@@ -156,6 +156,15 @@ export const SPOKES = {
     title: 'How to Study for O-Level History',
     anchor: 'how to study for O-Level History',
     blurb: 'Source-based question technique and essay structure, mistake by mistake.',
+  },
+  // Study technique rather than a subject landing page, so Article not Course.
+  // Complements 'o-level-chemistry', which stays the syllabus-coverage guide.
+  'how-to-study-o-level-chemistry': {
+    slug: 'how-to-study-o-level-chemistry', url: '/how-to-study/o-level-chemistry', hub: 'o-level-prep',
+    schemaType: 'Article',
+    title: 'How to Study for O-Level Chemistry',
+    anchor: 'how to study for O-Level Chemistry',
+    blurb: 'Paper weightings, the qualitative analysis tests to memorise, and command words.',
   },
   'combined-science-overview': {
     slug: 'combined-science-overview', url: '/combined-science-overview', hub: 'o-level-prep',
