@@ -27,3 +27,15 @@ export const paperStats = {
   firstYear: years[0],
   lastYear: years[years.length - 1],
 };
+
+/**
+ * The total rounded down to a ten, for the title and meta description. A live
+ * count there would rewrite the search snippet every time a paper is added;
+ * this only moves at each hundred-and-tens boundary, and never overstates.
+ */
+export const paperCountBand = Math.floor(paperStats.total / 10) * 10;
+
+/** Papers that ship with answers or worked solutions — a differentiator worth claiming. */
+export const papersWithAnswers = allPapers.filter((p) =>
+  /answer|solution|mark scheme/i.test(p.title),
+).length;
