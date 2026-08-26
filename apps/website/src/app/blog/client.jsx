@@ -114,7 +114,7 @@ const blogPosts = [
     title: 'How to Study for O-Level History',
     description: 'What each source-based question type actually wants, how to write an essay that argues rather than narrates, and the 10 mistakes our tutors correct most.',
     date: 'August 11, 2026',
-    directUrl: '/blog/how-to-study-history-o-level',
+    directUrl: '/how-to-study/o-level-history',
     categories: ['O-Level', 'History'],
   },
   {

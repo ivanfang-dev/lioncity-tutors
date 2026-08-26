@@ -31,7 +31,7 @@ export const HUBS = {
     anchor: 'Complete O-Level preparation guide',
     spokes: [
       'o-level-english', 'o-level-chinese', 'o-level-math', 'o-level-physics', 'o-level-chemistry',
-      'o-level-biology', 'o-level-history', 'how-to-study-o-level-chemistry',
+      'o-level-biology', 'how-to-study-o-level-history', 'how-to-study-o-level-chemistry',
       'how-to-study-o-level-a-math', 'how-to-study-o-level-e-math',
       'combined-science-overview', 'combined-chemistry-physics',
       'combined-chemistry-biology', 'combined-physics-biology', 'o-level-tuition',
@@ -151,8 +151,8 @@ export const SPOKES = {
   },
   // A study-technique article rather than a subject landing page, so it carries
   // Article rather than the spoke default of Course.
-  'o-level-history': {
-    slug: 'o-level-history', url: '/blog/how-to-study-history-o-level', hub: 'o-level-prep',
+  'how-to-study-o-level-history': {
+    slug: 'how-to-study-o-level-history', url: '/how-to-study/o-level-history', hub: 'o-level-prep',
     schemaType: 'Article',
     title: 'How to Study for O-Level History',
     anchor: 'how to study for O-Level History',

@@ -52,7 +52,7 @@ const subjectDecisions = [
   {
     decision: 'Which humanities elective',
     detail: 'History, Geography and Literature reward different skills: source analysis, data interpretation and textual analysis respectively. Picking the one a student is already stronger at usually beats picking the one that sounds easier.',
-    href: '/blog/how-to-study-history-o-level',
+    href: '/how-to-study/o-level-history',
     linkText: 'How to study for O-Level History',
   },
 ];

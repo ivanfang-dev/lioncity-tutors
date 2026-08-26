@@ -1,6 +1,12 @@
 export default {
     async redirects() {
       return [
+        // Moved out of /blog/ when the how-to-study series got its own path.
+        {
+          source: '/blog/how-to-study-history-o-level',
+          destination: '/how-to-study/o-level-history',
+          permanent: true,
+        },
         {
           source: '/blog/igcse-biology-guide-2025',
           destination: '/igcse-biology',

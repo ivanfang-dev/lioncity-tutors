@@ -18,11 +18,11 @@ export const metadata = {
     title: 'How to Study for O-Level History: SBQ & Essay Technique',
     description:
       'Source-based question technique, essay structure and the 10 mistakes our tutors correct most on O-Level History scripts.',
-    url: 'https://www.lioncitytutors.com/blog/how-to-study-history-o-level',
+    url: 'https://www.lioncitytutors.com/how-to-study/o-level-history',
     type: 'article',
   },
   alternates: {
-    canonical: 'https://www.lioncitytutors.com/blog/how-to-study-history-o-level',
+    canonical: 'https://www.lioncitytutors.com/how-to-study/o-level-history',
   },
 };
 
@@ -147,7 +147,7 @@ Preferred days & timing: `;
   return (
     <>
       <GuideSchema
-        slug="o-level-history"
+        slug="how-to-study-o-level-history"
         article={{
           headline: 'How to Study for O-Level History: SBQ & Essay Technique',
           description:
@@ -295,7 +295,7 @@ Preferred days & timing: `;
                 </div>
               </section>
 
-              <RelatedGuides slug="o-level-history" />
+              <RelatedGuides slug="how-to-study-o-level-history" />
 
               <GuideCTA
                 title="Get a History tutor who marks like an examiner"
