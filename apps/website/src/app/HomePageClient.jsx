@@ -14,7 +14,7 @@ import FormBenefits from "@/components/FormBenefits";
 import TutorPopup from "@/components/TutorPopup";
 import MobileCTABar from "@/components/MobileCTABar";
 import useTuitionRequestForm from "@/components/useTuitionRequestForm";
-import { Star, CheckCircle, Award, Users, Clock, Shield, Quote, TrendingUp, MapPin, Mail, FileText, BookOpen, ArrowRight } from "lucide-react";
+import { Star, CheckCircle, Users, Clock, Shield, Quote, TrendingUp, MapPin, Mail, FileText, BookOpen, ArrowRight } from "lucide-react";
 
 // Lazy-loaded sections
 import dynamic from 'next/dynamic';
@@ -29,14 +29,6 @@ const LoadingSpinner = () => (
   <div className="section-padding flex items-center justify-center">
     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
   </div>
-);
-
-const SuccessStories = dynamic(
-  () => import('@/components/SuccessStoriesSection'), 
-  { 
-    ssr: false,
-    loading: () => <LoadingSpinner />
-  }
 );
 
 // Remove lazy loading from FAQSection (import directly)
@@ -90,10 +82,7 @@ export default function HomePageClient() {
   const router = useRouter();
   const formRef = useRef(null);
   const faqRef = useRef(null);
-  const resourcesRef = useRef(null);
   const main = useRef(null);
-
-  const scrollToResources = () => resourcesRef.current?.scrollIntoView({ behavior: 'smooth' });
 
   const form = useTuitionRequestForm();
   const { currentStep, status, handleSubmit, resetForm } = form;
@@ -380,28 +369,7 @@ Preferred days & timing: `;
           </div>
         </section>
         
-        <section className="bg-primary/5 py-8 border-y border-primary/10">
-            <div className="max-w-4xl mx-auto px-4 sm:px-6 flex flex-col md:flex-row items-center justify-between gap-5 text-center md:text-left">
-                <div className="flex flex-col md:flex-row items-center gap-4">
-                    <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0">
-                        <Award className="w-5 h-5 text-primary" />
-                    </div>
-                    <div>
-                        <h3 className="font-bold text-lg text-primary">Studying for Exams?</h3>
-                        <p className="text-gray-600 text-sm">Free access to top school exam papers and revision notes.</p>
-                    </div>
-                </div>
-                <Button
-                    className="bg-white text-primary font-semibold ring-1 ring-inset ring-primary/20 hover:bg-primary hover:text-white transition-all shadow-sm"
-                    onClick={scrollToResources}
-                >
-                    View Free Resources
-                </Button>
-            </div>
-        </section>
-        
         <MatchTimelineSection />
-        <SuccessStories />
         <SubjectSpotlightSection/>
 
     {/* --- Form Section with Corrected Props --- */}
@@ -448,8 +416,13 @@ Preferred days & timing: `;
             </div>
         </section>
         
+        {/* FAQ */}
+        <div ref={faqRef}>
+          <FAQSection />
+        </div>
+
         {/* Free Resources */}
-        <section ref={resourcesRef} className="section-padding bg-background-default px-4 sm:px-6">
+        <section className="section-padding bg-background-default px-4 sm:px-6">
           <div className="max-w-6xl mx-auto">
             <motion.div
               {...enter(0, prefersReducedMotion)}
@@ -524,11 +497,6 @@ Preferred days & timing: `;
             </div>
           </div>
         </section>
-
-        {/* FAQ */}
-        <div ref={faqRef}>
-          <FAQSection />
-        </div>
 
         {/* Final CTA Banner */}
         <section className="bg-gradient-to-r from-primary to-primary/90 text-white py-16 sm:py-20 px-4 sm:px-6 text-center">
