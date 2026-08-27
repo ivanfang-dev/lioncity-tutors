@@ -14,6 +14,7 @@ export const HUBS = {
     anchor: 'Complete PSLE preparation guide',
     spokes: [
       'psle-math', 'psle-english', 'psle-science', 'psle-chinese', 'primary-school-tuition',
+      'how-to-study-psle-math',
       'chinese-tuition', 'tuition-rates', 'free-test-papers',
       'how-to-choose-a-tuition-agency-singapore',
     
@@ -67,7 +68,8 @@ export const HUBS = {
     anchor: 'Complete A-Level preparation guide',
     spokes: [
       'a-level-math', 'a-level-physics', 'a-level-chemistry', 'a-level-biology',
-      'a-level-general-paper', 'how-to-study-general-paper', 'how-to-study-h2-chemistry', 'jc-tuition',
+      'a-level-general-paper', 'how-to-study-general-paper', 'how-to-study-h2-chemistry',
+      'how-to-study-h2-maths', 'how-to-study-h2-biology', 'jc-tuition',
       'math-tuition', 'science-tuition', 'chemistry-tuition', 'physics-tuition',
       'biology-tuition', 'economics-tuition', 'tuition-rates',
       'free-notes', 'free-test-papers',
@@ -260,6 +262,20 @@ export const SPOKES = {
     anchor: 'how to study for General Paper',
     blurb: 'Where the marks sit across both papers, and what moves an essay up a band.',
   },
+  'how-to-study-h2-maths': {
+    slug: 'how-to-study-h2-maths', url: '/how-to-study/h2-maths', hub: 'a-level-prep',
+    schemaType: 'Article',
+    title: 'How to Study for H2 Maths',
+    anchor: 'how to study for H2 Maths',
+    blurb: 'The graphing calculator rules, and why statistics is 30% of the grade.',
+  },
+  'how-to-study-h2-biology': {
+    slug: 'how-to-study-h2-biology', url: '/how-to-study/h2-biology', hub: 'a-level-prep',
+    schemaType: 'Article',
+    title: 'How to Study for H2 Biology',
+    anchor: 'how to study for H2 Biology',
+    blurb: 'Journal-derived stimulus material, and where writing quality is marked.',
+  },
   'how-to-study-h2-chemistry': {
     slug: 'how-to-study-h2-chemistry', url: '/how-to-study/h2-chemistry', hub: 'a-level-prep',
     schemaType: 'Article',
@@ -285,6 +301,13 @@ export const SPOKES = {
     slug: 'psle-math', url: '/psle-math', hub: 'psle-prep',
     title: 'PSLE Maths', anchor: 'PSLE Mathematics guide',
     blurb: 'Heuristics, model drawing and Paper 2 problem sums.',
+  },
+  'how-to-study-psle-math': {
+    slug: 'how-to-study-psle-math', url: '/how-to-study/psle-math', hub: 'psle-prep',
+    schemaType: 'Article',
+    title: 'How to Study for PSLE Maths',
+    anchor: 'how to study for PSLE Maths',
+    blurb: 'All 100 marks booklet by booklet, and the method mark pupils throw away.',
   },
   'psle-english': {
     slug: 'psle-english', url: '/psle-english', hub: 'psle-prep',
