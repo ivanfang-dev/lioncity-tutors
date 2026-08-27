@@ -33,6 +33,7 @@ export const HUBS = {
       'o-level-english', 'o-level-chinese', 'o-level-math', 'o-level-physics', 'o-level-chemistry',
       'o-level-biology', 'how-to-study-o-level-history', 'how-to-study-o-level-chemistry',
       'how-to-study-o-level-a-math', 'how-to-study-o-level-e-math',
+      'how-to-study-o-level-physics', 'how-to-study-o-level-biology',
       'combined-science-overview', 'combined-chemistry-physics',
       'combined-chemistry-biology', 'combined-physics-biology', 'o-level-tuition',
       'math-tuition', 'science-tuition', 'chemistry-tuition', 'physics-tuition',
@@ -66,7 +67,7 @@ export const HUBS = {
     anchor: 'Complete A-Level preparation guide',
     spokes: [
       'a-level-math', 'a-level-physics', 'a-level-chemistry', 'a-level-biology',
-      'a-level-general-paper', 'how-to-study-general-paper', 'jc-tuition',
+      'a-level-general-paper', 'how-to-study-general-paper', 'how-to-study-h2-chemistry', 'jc-tuition',
       'math-tuition', 'science-tuition', 'chemistry-tuition', 'physics-tuition',
       'biology-tuition', 'economics-tuition', 'tuition-rates',
       'free-notes', 'free-test-papers',
@@ -167,6 +168,20 @@ export const SPOKES = {
     anchor: 'how to study for O-Level Chemistry',
     blurb: 'Paper weightings, the qualitative analysis tests to memorise, and command words.',
   },
+  'how-to-study-o-level-physics': {
+    slug: 'how-to-study-o-level-physics', url: '/how-to-study/o-level-physics', hub: 'o-level-prep',
+    schemaType: 'Article',
+    title: 'How to Study for O-Level Physics',
+    anchor: 'how to study for O-Level Physics',
+    blurb: 'Why only about 15% of theory marks are recall, and how the practical splits.',
+  },
+  'how-to-study-o-level-biology': {
+    slug: 'how-to-study-o-level-biology', url: '/how-to-study/o-level-biology', hub: 'o-level-prep',
+    schemaType: 'Article',
+    title: 'How to Study for O-Level Biology',
+    anchor: 'how to study for O-Level Biology',
+    blurb: 'Why most theory marks are not recall, and how free-response answers score.',
+  },
   'how-to-study-o-level-a-math': {
     slug: 'how-to-study-o-level-a-math', url: '/how-to-study/o-level-a-math', hub: 'o-level-prep',
     schemaType: 'Article',
@@ -244,6 +259,13 @@ export const SPOKES = {
     title: 'How to Study for General Paper',
     anchor: 'how to study for General Paper',
     blurb: 'Where the marks sit across both papers, and what moves an essay up a band.',
+  },
+  'how-to-study-h2-chemistry': {
+    slug: 'how-to-study-h2-chemistry', url: '/how-to-study/h2-chemistry', hub: 'a-level-prep',
+    schemaType: 'Article',
+    title: 'How to Study for H2 Chemistry',
+    anchor: 'how to study for H2 Chemistry',
+    blurb: 'Why Paper 3 carries 35%, and what the Data Booklet saves you memorising.',
   },
   'jc-tuition': {
     slug: 'jc-tuition', url: '/jc-tuition', hub: 'a-level-prep',
