@@ -382,9 +382,10 @@ export const SPOKES = {
     schemaType: 'CollectionPage',
     title: 'Free Study Notes',
     // Anchor and blurb describe what the page actually hosts today (GP
-    // infopacks); update them as subjects land rather than promising ahead.
-    anchor: 'free study notes and GP infopacks',
-    blurb: 'Free revision notes to download, starting with JC General Paper.',
+    // infopacks, O-Level A-Math); update them as subjects land rather than
+    // promising ahead.
+    anchor: 'free study notes for GP and O-Level A-Math',
+    blurb: 'Free revision notes to download: JC General Paper infopacks and O-Level A-Math.',
   },
 
   // --- Commercial pages ---

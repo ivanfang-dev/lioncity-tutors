@@ -11,11 +11,17 @@ export const notesData = {
       },
       // ... add other primary levels
     },
+    // Flat subject keys, like `jc` below. A nested level here renders as one
+    // empty "Coming soon" card, because LevelSection draws a card per key.
     secondary: {
-      o_level: {
-        english: [],
-        A_math: []
-      },
+      a_math: [
+        {
+          title: "O-Level Additional Mathematics Revision Notes",
+          description: "Syllabus 4049 \u2014 formula reference, worked examples and the marks most often dropped",
+          fileKey: "notes/secondary/o-level/a-math/o-level-a-math-4049-revision-notes.pdf",
+        },
+      ],
+      english: [],
       // ... add other secondary subjects
     },
     jc: {
