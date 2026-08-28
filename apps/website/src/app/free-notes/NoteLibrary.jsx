@@ -23,14 +23,23 @@ import { LEVEL_TINTS } from "@/lib/levelTints";
 const flatten = (node) => (Array.isArray(node) ? node : Object.values(node ?? {}).flatMap(flatten));
 const noteCount = flatten(notesData).length;
 
-// Parents search by exam, not by school stage, so the library is labelled
-// PSLE / O-Level / A-Level. The keys stay primary/secondary/jc: they are what
+// Parents search by exam, not by school stage, so the tabs read PSLE /
+// O-Level / A-Level. The keys stay primary/secondary/jc: they are what
 // notesData and LEVEL_TINTS are keyed by.
 const LEVEL_LABELS = {
   all: "All Levels",
   primary: "PSLE",
   secondary: "O-Level",
   jc: "A-Level",
+};
+
+// The headings carry both namings, because the exam name and the school stage
+// are searched separately ("psle notes", "primary school notes"). Tabs stay on
+// the short label — four chips share one row.
+const LEVEL_HEADINGS = {
+  primary: "PSLE and Primary School",
+  secondary: "O-Level and Secondary School",
+  jc: "A-Level and Junior College",
 };
 
 // Coming Soon Component for empty arrays
@@ -125,7 +134,9 @@ const SubjectCard = ({ subjectTitle, subjectData, onDownloadClick, searchTerm, t
 
 // Level section with note count.
 // `id` is the anchor the subject answer blocks above the library link into.
-const LevelSection = ({ id, title, icon, notes, onDownloadClick, searchTerm, tint }) => {
+// `heading` is what the reader sees; `title` stays the short label, because it
+// is also the level recorded against every download lead.
+const LevelSection = ({ id, title, heading, icon, notes, onDownloadClick, searchTerm, tint }) => {
   // Calculate total available notes for this level
   const totalNotes = Object.values(notes).reduce((total, subjectData) => {
     return total + (Array.isArray(subjectData) ? subjectData.length : 0);
@@ -136,7 +147,7 @@ const LevelSection = ({ id, title, icon, notes, onDownloadClick, searchTerm, tin
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div className="flex items-center gap-3">
           {icon}
-          <h2 className={`text-2xl sm:text-3xl font-bold ${tint.heading}`}>{title}</h2>
+          <h2 className={`text-2xl sm:text-3xl font-bold ${tint.heading}`}>{heading ?? title}</h2>
         </div>
         <div className="text-sm text-gray-500 bg-white px-3 py-2 rounded-full border whitespace-nowrap self-start sm:self-auto">
           {totalNotes} notes available
@@ -320,6 +331,7 @@ export default function NoteLibrary() {
             <LevelSection
               id="notes-primary"
               title={LEVEL_LABELS.primary}
+              heading={LEVEL_HEADINGS.primary}
               icon={<BookOpen className={`h-8 w-8 ${LEVEL_TINTS.primary.icon}`} />}
               notes={notesData.primary || {}}
               onDownloadClick={handleDownloadClick}
@@ -331,6 +343,7 @@ export default function NoteLibrary() {
             <LevelSection
               id="notes-secondary"
               title={LEVEL_LABELS.secondary}
+              heading={LEVEL_HEADINGS.secondary}
               icon={<GraduationCap className={`h-8 w-8 ${LEVEL_TINTS.secondary.icon}`} />}
               notes={notesData.secondary || {}}
               onDownloadClick={handleDownloadClick}
@@ -342,6 +355,7 @@ export default function NoteLibrary() {
             <LevelSection
               id="notes-jc"
               title={LEVEL_LABELS.jc}
+              heading={LEVEL_HEADINGS.jc}
               icon={<Atom className={`h-8 w-8 ${LEVEL_TINTS.jc.icon}`} />}
               notes={notesData.jc || {}}
               onDownloadClick={handleDownloadClick}

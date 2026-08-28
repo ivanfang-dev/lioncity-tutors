@@ -12,8 +12,11 @@ export const metadata = {
     'gp notes a level',
     'general paper notes',
     'JC notes',
+    'junior college notes',
     'O level notes',
+    'secondary school notes',
     'PSLE notes',
+    'primary school notes',
     'o level a math notes',
     'o level e math notes',
     'free revision notes'
