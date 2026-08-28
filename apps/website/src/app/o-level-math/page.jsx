@@ -24,6 +24,7 @@ export const metadata = {
   },
 };
 
+import Link from 'next/link';
 import TableOfContents from '@/components/TableOfContents';
 import GuideSchema from '@/components/seo/GuideSchema';
 import {
@@ -482,6 +483,25 @@ Preferred days & timing: `;
             <section id="resources" className="scroll-mt-24">
               <SectionHeading icon={BookOpen}>Essential O Level Math Resources</SectionHeading>
               <div className="space-y-4">
+                <div>
+                  <h4 className="font-semibold text-gray-900 mb-1.5">Free from us</h4>
+                  <ul className="list-disc ml-5 text-sm space-y-1 text-gray-700">
+                    <li>
+                      <Link href="/free-notes" className="text-primary underline underline-offset-2">A-Math revision notes</Link>
+                      {' '}&mdash; 17 pages on syllabus 4049: a formula reference for every topic, worked examples and the errors that cost method marks
+                    </li>
+                    <li>
+                      <Link href="/free-test-papers" className="text-primary underline underline-offset-2">Free test papers</Link>
+                      {' '}&mdash; school prelim papers for E-Math and A-Math, to work unseen and to time
+                    </li>
+                    <li>
+                      <Link href="/how-to-study/o-level-a-math" className="text-primary underline underline-offset-2">How to study for A-Math</Link>
+                      {' '}and{' '}
+                      <Link href="/how-to-study/o-level-e-math" className="text-primary underline underline-offset-2">for E-Math</Link>
+                      {' '}&mdash; which formulae are printed for you, and where the method marks go
+                    </li>
+                  </ul>
+                </div>
                 <div>
                   <h4 className="font-semibold text-gray-900 mb-1.5">Recommended Textbooks</h4>
                   <ul className="list-disc ml-5 text-sm space-y-1 text-gray-700">

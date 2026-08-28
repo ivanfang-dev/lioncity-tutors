@@ -263,6 +263,7 @@ Preferred days & timing: `;
                     <li><strong>Separate method errors from algebra slips</strong> when marking your own work. Most lost marks in our experience are the second kind, and they need drilling rather than re-teaching.</li>
                     <li><strong>Pair every derivative with its integral</strong> on the same card, so the two never drift into separate topics.</li>
                     <li><strong>Work unseen past papers to time.</strong> Prelim and past-year A-Math papers are in our <Link href="/free-test-papers" className="text-primary underline underline-offset-2">free test papers library</Link>.</li>
+                    <li><strong>Keep one formula reference, not twelve.</strong> Our free <Link href="/free-notes" className="text-primary underline underline-offset-2">O-Level A-Math revision notes</Link> put the formulae for every topic in 17 pages, with worked examples and the errors that cost method marks.</li>
                     <li><strong>Schedule your avoided topics first.</strong> Nothing is optional in either paper, so comfort is a poor guide to where the marks are.</li>
                   </ul>
                 </GuideCard>
