@@ -38,6 +38,6 @@ export const NOTE_SECTIONS = [
     answer:
       'Both maths papers, free to download: 17 pages on Additional Mathematics (syllabus 4049) and 16 on Elementary Mathematics (4052). Each carries a formula reference across every topic area \u2014 calculus, trigonometry and partial fractions on the A-Math side, mensuration, vectors, matrices and probability on the E-Math side \u2014 then the errors that cost marks and worked examples. No other O-Level subject has notes yet, so start from the subject guides.',
     linkLead: 'Start with',
-    links: ['how-to-study-o-level-a-math', 'how-to-study-o-level-e-math', 'o-level-math', 'free-test-papers'],
+    links: ['how-to-study-o-level-a-math', 'how-to-study-o-level-e-math', 'o-level-math', 'o-level-prep', 'free-test-papers'],
   },
 ];

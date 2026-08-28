@@ -14,7 +14,7 @@ export const HUBS = {
     anchor: 'Complete PSLE preparation guide',
     spokes: [
       'psle-math', 'psle-english', 'psle-science', 'psle-chinese', 'primary-school-tuition',
-      'how-to-study-psle-math',
+      'how-to-study-psle-math', 'how-to-study-psle-science',
       'chinese-tuition', 'tuition-rates', 'free-test-papers',
       'how-to-choose-a-tuition-agency-singapore',
     
@@ -34,7 +34,7 @@ export const HUBS = {
       'o-level-english', 'o-level-chinese', 'o-level-math', 'o-level-physics', 'o-level-chemistry',
       'o-level-biology', 'how-to-study-o-level-history', 'how-to-study-o-level-chemistry',
       'how-to-study-o-level-a-math', 'how-to-study-o-level-e-math',
-      'how-to-study-o-level-physics', 'how-to-study-o-level-biology',
+      'how-to-study-o-level-physics', 'how-to-study-o-level-biology', 'how-to-study-o-level-english',
       'combined-science-overview', 'combined-chemistry-physics',
       'combined-chemistry-biology', 'combined-physics-biology', 'o-level-tuition',
       'math-tuition', 'science-tuition', 'chemistry-tuition', 'physics-tuition',
@@ -69,7 +69,7 @@ export const HUBS = {
     spokes: [
       'a-level-math', 'a-level-physics', 'a-level-chemistry', 'a-level-biology',
       'a-level-general-paper', 'how-to-study-general-paper', 'how-to-study-h2-chemistry',
-      'how-to-study-h2-maths', 'how-to-study-h2-biology', 'jc-tuition',
+      'how-to-study-h2-maths', 'how-to-study-h2-biology', 'how-to-study-h2-physics', 'jc-tuition',
       'math-tuition', 'science-tuition', 'chemistry-tuition', 'physics-tuition',
       'biology-tuition', 'economics-tuition', 'tuition-rates',
       'free-notes', 'free-test-papers',
@@ -170,6 +170,13 @@ export const SPOKES = {
     anchor: 'how to study for O-Level Chemistry',
     blurb: 'Paper weightings, the qualitative analysis tests to memorise, and command words.',
   },
+  'how-to-study-o-level-english': {
+    slug: 'how-to-study-o-level-english', url: '/how-to-study/o-level-english', hub: 'o-level-prep',
+    schemaType: 'Article',
+    title: 'How to Study for O-Level English',
+    anchor: 'how to study for O-Level English',
+    blurb: 'Why Oral is a fifth of the grade, and which listening section plays once.',
+  },
   'how-to-study-o-level-physics': {
     slug: 'how-to-study-o-level-physics', url: '/how-to-study/o-level-physics', hub: 'o-level-prep',
     schemaType: 'Article',
@@ -262,6 +269,13 @@ export const SPOKES = {
     anchor: 'how to study for General Paper',
     blurb: 'Where the marks sit across both papers, and what moves an essay up a band.',
   },
+  'how-to-study-h2-physics': {
+    slug: 'how-to-study-h2-physics', url: '/how-to-study/h2-physics', hub: 'a-level-prep',
+    schemaType: 'Article',
+    title: 'How to Study for H2 Physics',
+    anchor: 'how to study for H2 Physics',
+    blurb: 'The spreadsheet skills the practical requires, and what is printed for you.',
+  },
   'how-to-study-h2-maths': {
     slug: 'how-to-study-h2-maths', url: '/how-to-study/h2-maths', hub: 'a-level-prep',
     schemaType: 'Article',
@@ -301,6 +315,13 @@ export const SPOKES = {
     slug: 'psle-math', url: '/psle-math', hub: 'psle-prep',
     title: 'PSLE Maths', anchor: 'PSLE Mathematics guide',
     blurb: 'Heuristics, model drawing and Paper 2 problem sums.',
+  },
+  'how-to-study-psle-science': {
+    slug: 'how-to-study-psle-science', url: '/how-to-study/psle-science', hub: 'psle-prep',
+    schemaType: 'Article',
+    title: 'How to Study for PSLE Science',
+    anchor: 'how to study for PSLE Science',
+    blurb: 'Why 60 of the 100 marks are multiple choice, and how Booklet B scores.',
   },
   'how-to-study-psle-math': {
     slug: 'how-to-study-psle-math', url: '/how-to-study/psle-math', hub: 'psle-prep',
