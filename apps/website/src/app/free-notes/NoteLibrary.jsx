@@ -23,6 +23,16 @@ import { LEVEL_TINTS } from "@/lib/levelTints";
 const flatten = (node) => (Array.isArray(node) ? node : Object.values(node ?? {}).flatMap(flatten));
 const noteCount = flatten(notesData).length;
 
+// Parents search by exam, not by school stage, so the library is labelled
+// PSLE / O-Level / A-Level. The keys stay primary/secondary/jc: they are what
+// notesData and LEVEL_TINTS are keyed by.
+const LEVEL_LABELS = {
+  all: "All Levels",
+  primary: "PSLE",
+  secondary: "O-Level",
+  jc: "A-Level",
+};
+
 // Coming Soon Component for empty arrays
 const ComingSoonCard = ({ level, tint }) => (
   <div className={`flex flex-col items-center justify-center p-6 rounded-lg border-2 border-dashed transition-colors ${tint.placeholder}`}>
@@ -297,8 +307,7 @@ export default function NoteLibrary() {
                   value={level}
                   className="rounded-full data-[state=active]:bg-primary data-[state=active]:text-white data-[state=active]:shadow-sm font-semibold px-4 py-3 transition-all duration-200"
                 >
-                  {level === "jc" ? "JC" : level.charAt(0).toUpperCase() + level.slice(1)}
-                  {level === "all" && " Levels"}
+                  {LEVEL_LABELS[level]}
                 </TabsTrigger>
               ))}
             </TabsList>
@@ -310,7 +319,7 @@ export default function NoteLibrary() {
           {(selectedLevel === "all" || selectedLevel === "primary") && (
             <LevelSection
               id="notes-primary"
-              title="Primary School"
+              title={LEVEL_LABELS.primary}
               icon={<BookOpen className={`h-8 w-8 ${LEVEL_TINTS.primary.icon}`} />}
               notes={notesData.primary || {}}
               onDownloadClick={handleDownloadClick}
@@ -321,7 +330,7 @@ export default function NoteLibrary() {
           {(selectedLevel === "all" || selectedLevel === "secondary") && (
             <LevelSection
               id="notes-secondary"
-              title="Secondary School"
+              title={LEVEL_LABELS.secondary}
               icon={<GraduationCap className={`h-8 w-8 ${LEVEL_TINTS.secondary.icon}`} />}
               notes={notesData.secondary || {}}
               onDownloadClick={handleDownloadClick}
@@ -332,7 +341,7 @@ export default function NoteLibrary() {
           {(selectedLevel === "all" || selectedLevel === "jc") && (
             <LevelSection
               id="notes-jc"
-              title="Junior College (A-Level)"
+              title={LEVEL_LABELS.jc}
               icon={<Atom className={`h-8 w-8 ${LEVEL_TINTS.jc.icon}`} />}
               notes={notesData.jc || {}}
               onDownloadClick={handleDownloadClick}

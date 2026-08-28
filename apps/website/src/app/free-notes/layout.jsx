@@ -1,7 +1,7 @@
 import { DEFAULT_OG_IMAGE } from '@/lib/seo/openGraph';
-const TITLE = 'Free Study Notes: GP and O-Level Maths | LionCity Tutors';
+const TITLE = 'Free Study Notes: PSLE, O-Level, A-Level | LionCity Tutors';
 const DESCRIPTION =
-  'Free notes to download: A-Level General Paper infopacks plus O-Level A-Math and E-Math revision sets — formula references, worked examples and common errors.';
+  'Free revision notes to download, no account needed: O-Level A-Math and E-Math sets and A-Level General Paper infopacks today, with PSLE subjects on the way.';
 
 export const metadata = {
   title: TITLE,
@@ -13,6 +13,7 @@ export const metadata = {
     'general paper notes',
     'JC notes',
     'O level notes',
+    'PSLE notes',
     'o level a math notes',
     'o level e math notes',
     'free revision notes'
