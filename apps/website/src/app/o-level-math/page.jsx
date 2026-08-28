@@ -491,6 +491,10 @@ Preferred days & timing: `;
                       {' '}&mdash; 17 pages on syllabus 4049: a formula reference for every topic, worked examples and the errors that cost method marks
                     </li>
                     <li>
+                      <Link href="/free-notes" className="text-primary underline underline-offset-2">E-Math revision notes</Link>
+                      {' '}&mdash; the same for syllabus 4052 in 16 pages, across all seventeen topics from numbers and algebra to vectors and probability
+                    </li>
+                    <li>
                       <Link href="/free-test-papers" className="text-primary underline underline-offset-2">Free test papers</Link>
                       {' '}&mdash; school prelim papers for E-Math and A-Math, to work unseen and to time
                     </li>

@@ -263,6 +263,7 @@ Preferred days & timing: `;
                     <li><strong>Practise wordy applied questions specifically.</strong> The skill is translation from scenario to method, and it does not improve by doing more routine sums.</li>
                     <li><strong>Separate method errors from careless slips</strong> when you mark your own work. The second kind is the larger category and needs drilling, not re-teaching.</li>
                     <li><strong>Work unseen past papers to time.</strong> Prelim and past-year O-Level maths papers are in our <Link href="/free-test-papers" className="text-primary underline underline-offset-2">free test papers library</Link>.</li>
+                    <li><strong>Keep one reference for what is not printed.</strong> Our free <Link href="/free-notes" className="text-primary underline underline-offset-2">O-Level E-Math revision notes</Link> put the formulae and methods for all seventeen topics into 16 pages, with worked examples and the errors that lose marks.</li>
                   </ul>
                 </GuideCard>
                 <p className="mt-4 text-pretty">

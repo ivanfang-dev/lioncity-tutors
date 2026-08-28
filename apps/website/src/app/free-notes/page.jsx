@@ -56,9 +56,9 @@ export default function FreeNotesPage() {
       <GuideSchema
         slug={SLUG}
         collection={{
-          name: 'Free Study Notes: A-Level General Paper and O-Level A-Math',
+          name: 'Free Study Notes: A-Level General Paper and O-Level Maths',
           description:
-            'Free revision notes to download for JC and secondary students: A-Level General Paper infopacks and an O-Level Additional Mathematics revision set.',
+            'Free revision notes to download for JC and secondary students: A-Level General Paper infopacks and revision sets for O-Level A-Math and E-Math.',
           items: NOTE_SECTIONS.map((section) => ({
             name: section.label,
             url: `/free-notes#${section.id}`,
@@ -75,7 +75,8 @@ export default function FreeNotesPage() {
             </h1>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed text-pretty">
               Revision notes to download, free and without an account &mdash; A-Level General
-              Paper infopacks and an O-Level A-Math revision set, with more subjects on the way.
+              Paper infopacks and O-Level A-Math and E-Math revision sets, with more subjects
+              on the way.
             </p>
             <nav aria-label="Jump to a subject" className="flex flex-wrap items-center justify-center gap-2">
               {NOTE_SECTIONS.map((section) => (

@@ -21,6 +21,13 @@ export const notesData = {
           fileKey: "notes/secondary/o-level/a-math/o-level-a-math-4049-revision-notes.pdf",
         },
       ],
+      e_math: [
+        {
+          title: "O-Level Elementary Mathematics Revision Notes",
+          description: "Syllabus 4052 \u2014 formula reference, worked examples and the marks most often dropped",
+          fileKey: "notes/secondary/o-level/e-math/o-level-e-math-4052-revision-notes.pdf",
+        },
+      ],
       english: [],
       // ... add other secondary subjects
     },
