@@ -305,6 +305,7 @@ Preferred days & timing: `;
                     <li><strong>Audit the assumed A-Math list early,</strong> while there is still time for it to be a study task rather than an exam problem.</li>
                     <li><strong>Practise across topics,</strong> since questions are explicitly allowed to integrate them.</li>
                     <li><strong>Sit full three-hour papers.</strong> Past-year and prelim JC papers are in our <Link href="/free-test-papers" className="text-primary underline underline-offset-2">free test papers library</Link>.</li>
+                    <li><strong>Check what is not examinable before revising it.</strong> Our free <Link href="/free-notes" className="text-primary underline underline-offset-2">H2 Maths revision notes</Link> list the excluded topics beside the Pure and Statistics reference — several of them still appear in older Ten-Year Series papers, which is where the wasted hours go.</li>
                   </ul>
                 </GuideCard>
                 <p className="mt-4 text-pretty">

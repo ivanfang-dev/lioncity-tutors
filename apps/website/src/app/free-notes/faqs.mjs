@@ -15,7 +15,7 @@ export const FREE_NOTES_FAQS = [
   {
     question: 'Which subjects do the free study notes cover?',
     answer:
-      'Chemistry, physics, science, maths and General Paper. Chemistry runs across four levels: H2, H1, O-Level and IGCSE. Physics has an O-Level set covering all eleven topics. Science has a PSLE set on matter and materials and the N(T)-Level Food Matters module from syllabus 5148. Maths has PSLE Mathematics and both O-Level papers — Additional Mathematics (syllabus 4049) and Elementary Mathematics (4052). A-Level General Paper has five Raffles Institution 2024 infopacks. Other subjects show as "Coming soon" until real notes exist for them — nothing on this page is a placeholder download.',
+      'Chemistry, physics, science, maths and General Paper. Chemistry runs across four levels: H2, H1, O-Level and IGCSE. Physics has an O-Level set covering all eleven topics. Science has a PSLE set on matter and materials and the N(T)-Level Food Matters module from syllabus 5148. Maths runs across three: H2 Mathematics (syllabus 9758), PSLE Mathematics (0008), and both O-Level papers — Additional Mathematics (4049) and Elementary Mathematics (4052). A-Level General Paper has five Raffles Institution 2024 infopacks. Other subjects show as "Coming soon" until real notes exist for them — nothing on this page is a placeholder download.',
   },
   {
     question: 'What is in the O-Level Chemistry notes?',
@@ -26,6 +26,11 @@ export const FREE_NOTES_FAQS = [
     question: 'Do the PSLE Maths notes cover the 2026 syllabus changes?',
     answer:
       'They open on them. The 2026 cohort is the first to sit the fully updated Primary Mathematics syllabus, and the changes are the kind that waste revision time if you miss them: speed and the 8-point compass have left the primary syllabus altogether, nets of solids and pie charts moved down to Primary 4, 12- and 24-hour time to Primary 3, and ratio and average are now taught wholly in Primary 6 rather than split with P5. Revision material written before 2026 describes a paper that no longer exists. The rest of the set is the format table, the seven heuristics worked through one at a time, common errors and a final checklist.',
+  },
+  {
+    question: 'What is in the H2 Maths notes?',
+    answer:
+      'Nineteen pages on syllabus 9758, and the first three are about how the paper is marked rather than about mathematics: what the graphing calculator may be used for and where its use must still be shown, what the printed formula list already supplies, and the working discipline that earns method marks — state the model first, keep five significant figures until the final line, and end a hypothesis test with a sentence about the context. The middle is a topic reference across Pure Mathematics and Probability and Statistics. It also lists what the syllabus excludes, which matters because several excluded topics still appear in older Ten-Year Series papers.',
   },
   {
     question: 'What is in the O-Level Physics notes?',

@@ -70,6 +70,15 @@ export const NOTE_SECTIONS = [
     links: ['how-to-study-o-level-a-math', 'how-to-study-o-level-e-math', 'o-level-math', 'o-level-prep', 'free-test-papers'],
   },
   {
+    id: 'h2-maths',
+    label: 'H2 Maths notes',
+    heading: 'Are there free H2 Maths notes?',
+    answer:
+      'One set, 19 pages on syllabus 9758. It opens on the three things that decide marks before any mathematics happens: what the graphing calculator may and may not be used for, what the printed formula list already gives you, and the working discipline — state the model, keep 5 significant figures until the last line, answer in the context the question asked. Then a reference across Pure Mathematics and Probability and Statistics, the topics the syllabus explicitly excludes (they still appear in older Ten-Year Series papers), common errors and worked examples.',
+    linkLead: 'For why statistics is 30% of the grade and which A-Math knowledge is assumed, read',
+    links: ['how-to-study-h2-maths', 'a-level-math'],
+  },
+  {
     id: 'n-level',
     label: 'N(T)-Level Science notes',
     heading: 'Are there free N-Level Science notes?',

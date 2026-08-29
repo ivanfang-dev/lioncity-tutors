@@ -82,6 +82,13 @@ export const notesData = {
         { title: "RI 2024 GP Infopack Arts and Culture", fileKey: "notes/jc/gp/j2/ri-2024-gp-infopack-arts-and-culture.pdf" },
         { title: "RI 2024 GP Infopack Politics I", fileKey: "notes/jc/gp/j2/ri-2024-gp-infopack-politics-i.pdf" },
       ],
+      maths: [
+        {
+          title: "H2 Mathematics Revision Notes",
+          description: "Syllabus 9758 — the calculator and formula-list rules, a Pure and Statistics reference across all seventeen topics, the exclusions the syllabus names, and worked examples",
+          fileKey: "notes/jc/math/h2-mathematics-revision-notes.pdf",
+        },
+      ],
       chemistry: [
         {
           title: "H2 Chemistry Study Notes",
@@ -94,7 +101,5 @@ export const notesData = {
           fileKey: "notes/jc/chemistry/jc-h1-chemistry-8873-study-notes.pdf",
         },
       ],
-      maths: []
-      // ... add other JC subjects
     }
   };
