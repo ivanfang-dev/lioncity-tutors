@@ -250,6 +250,7 @@ Preferred days & timing: `;
                     <li><strong>Practise planning on paper.</strong> Fifteen per cent of the practical, and it needs no apparatus to rehearse.</li>
                     <li><strong>Drill graph technique.</strong> Scale, labels and plotting carry marks in both Paper 2 and Paper 3.</li>
                     <li><strong>Use unseen past papers.</strong> Prelim and past-year O-Level Physics papers are in our <Link href="/free-test-papers" className="text-primary underline underline-offset-2">free test papers library</Link>.</li>
+                    <li><strong>Keep the formulas and their units in one place.</strong> Our free <Link href="/free-notes" className="text-primary underline underline-offset-2">O-Level Physics study notes</Link> carry every formula with its SI unit attached across all eleven topics, plus the answer templates and the error-analysis technique the practical paper marks against.</li>
                     <li><strong>Mark against the scheme and classify the loss</strong> — knowledge, method, units, or reading the question. Each needs a different fix.</li>
                   </ul>
                 </GuideCard>

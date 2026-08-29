@@ -252,6 +252,7 @@ Preferred days & timing: `;
                     <li><strong>Make showing working automatic,</strong> including on 2-mark questions where the method mark exists.</li>
                     <li><strong>Mix topics.</strong> Topic-sorted worksheets announce the method; the exam will not.</li>
                     <li><strong>Use whole past papers to time.</strong> Prelim and past-year primary papers are in our <Link href="/free-test-papers" className="text-primary underline underline-offset-2">free test papers library</Link>.</li>
+                    <li><strong>Work one heuristic at a time.</strong> Our free <Link href="/free-notes" className="text-primary underline underline-offset-2">PSLE Maths revision notes</Link> take model drawing, the branch method, assumption, before-change-after, working backwards, pattern recognition and systematic listing one per section, and open on what the 2026 syllabus changed.</li>
                     <li><strong>Mark against the scheme and classify the loss</strong> — concept, method, arithmetic slip, or misread question. Each needs a different response.</li>
                   </ul>
                 </GuideCard>

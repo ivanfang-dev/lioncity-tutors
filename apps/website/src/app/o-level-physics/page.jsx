@@ -25,6 +25,7 @@ export const metadata = {
 };
 
 import TableOfContents from '@/components/TableOfContents';
+import Link from 'next/link';
 import GuideSchema from '@/components/seo/GuideSchema';
 import {
   GuideHeader, SectionHeading, GuideCard, TopicCard, GuideTimeline, KeyTakeaways, GuideCTA, ICON_STROKE,
@@ -481,6 +482,23 @@ Preferred days & timing: `;
             <section id="resources" className="scroll-mt-24">
               <SectionHeading icon={BookOpen}>Essential O Level Physics Resources</SectionHeading>
               <div className="space-y-4">
+                <div>
+                  <h4 className="font-semibold text-gray-900 mb-1.5">Free from us</h4>
+                  <ul className="list-disc ml-5 text-sm space-y-1 text-gray-700">
+                    <li>
+                      <Link href="/free-notes" className="text-primary underline underline-offset-2">O-Level Physics study notes</Link>
+                      {' '}&mdash; every formula with its SI unit attached, across all eleven topics, then answer templates, instrument precision and the graphing rules. Written to Cambridge 5054, which matches syllabus 6091 topic for topic
+                    </li>
+                    <li>
+                      <Link href="/free-test-papers" className="text-primary underline underline-offset-2">Free test papers</Link>
+                      {' '}&mdash; Secondary 4 Physics prelim and school papers, to work unseen and to time
+                    </li>
+                    <li>
+                      <Link href="/how-to-study/o-level-physics" className="text-primary underline underline-offset-2">How to study for O-Level Physics</Link>
+                      {' '}&mdash; only about 15% of the theory marks are recall, and revision built the other way round is the usual reason for a plateau
+                    </li>
+                  </ul>
+                </div>
                 <div>
                   <h4 className="font-semibold text-gray-900 mb-1.5">Recommended Textbooks</h4>
                   <ul className="list-disc ml-5 text-sm space-y-1 text-gray-700">

@@ -26,12 +26,30 @@ export const NOTE_SECTIONS = [
   },
   {
     id: 'chemistry',
-    label: 'O-Level and IGCSE Chemistry notes',
-    heading: 'What free O-Level Chemistry notes are available?',
+    label: 'Chemistry notes: H2, H1, O-Level, IGCSE',
+    heading: 'What free Chemistry notes are available?',
     answer:
-      'Two sets. The O-Level notes run to 23 pages across all eleven topics, from states of matter to organic chemistry, and then cover what revision usually skips: templates for the "explain" questions, the qualitative analysis tables for cations, anions and gases, and the error analysis Paper 3 asks for. They are written to Cambridge 5070, which matches Singapore’s 6092 topic for topic. The IGCSE guide covers the same eleven topics in 17 pages and closes on a quick-reference sheet — industrial conditions, the reactivity series, solubility rules and the phrasings examiners accept.',
+      'Four sets, one per level. H2 Chemistry: 15 pages across all thirteen topics, with Paper 4 practical technique and an equations sheet. H1 Chemistry: the eight core topics, both Materials extension topics, and a scope list of what H1 leaves to H2 — no entropy, no electrochemistry, no practical paper. O-Level: 23 pages covering all eleven topics, then the parts revision skips — templates for the "explain" questions, the qualitative analysis tables, and the error analysis Paper 3 asks for. IGCSE: the same eleven topics in 17 pages, closing on industrial conditions, the reactivity series, solubility rules and the phrasings examiners accept.',
     linkLead: 'For how the papers are weighted and where the marks go, read',
-    links: ['how-to-study-o-level-chemistry', 'o-level-chemistry', 'igcse-chemistry'],
+    links: ['how-to-study-o-level-chemistry', 'o-level-chemistry', 'a-level-chemistry', 'igcse-chemistry'],
+  },
+  {
+    id: 'physics',
+    label: 'O-Level Physics notes',
+    heading: 'Are there free O-Level Physics notes?',
+    answer:
+      'One set, 11 pages across all eleven topics from measurement and kinematics through waves, electricity, electromagnetism and radioactivity. Every topic carries its formulas with SI units attached, because the most common way to lose an easy mark is substituting minutes or grams straight into a formula. It closes on answer templates, instrument precision and error analysis, and the graphing rules the practical paper marks against. Written to Cambridge 5054, which matches Singapore’s 6091 topic for topic.',
+    linkLead: 'For where the marks actually sit — only about 15% is recall — read',
+    links: ['how-to-study-o-level-physics', 'o-level-physics'],
+  },
+  {
+    id: 'psle-math',
+    label: 'PSLE Maths notes',
+    heading: 'Are there free PSLE Maths notes?',
+    answer:
+      'One set, and it opens on what changed for the 2026 exam: speed and the 8-point compass are out of the primary syllabus entirely, nets and pie charts moved down to Primary 4, and ratio and average are now taught wholly in Primary 6. Then the format table, Polya’s four steps and the working discipline that earns method marks, a content reference by strand, and seven heuristics worked through one at a time — model drawing, the branch method, assumption, before-change-after, working backwards, pattern recognition and systematic listing. It ends on common errors and a final checklist.',
+    linkLead: 'For how the two papers are structured and where the marks go, read',
+    links: ['how-to-study-psle-math', 'psle-math'],
   },
   {
     id: 'psle-science',
@@ -62,11 +80,11 @@ export const NOTE_SECTIONS = [
   },
   {
     id: 'h2-sciences',
-    label: 'H2 Chemistry notes',
-    heading: 'Are there free H2 Biology and H2 Chemistry notes?',
+    label: 'H2 Biology and Physics notes',
+    heading: 'Are there free H2 Biology and H2 Physics notes?',
     answer:
-      'H2 Chemistry, yes: 15 pages across all thirteen topics, from atomic structure and energetics through aqueous equilibria, organic chemistry and transition elements, then the Paper 4 practical skills — titration types, calorimetry, kinetics methods and qualitative analysis — and a sheet of the equations and constants worth memorising. It is written to syllabus 9729; the revised 9476 that school candidates sit from 2026 changes mark allocations, not the content. H2 Biology and H2 Physics notes are still being written, so the subject guides remain the fuller resource for those two.',
+      'Not yet — those two are still being written. H2 and H1 Chemistry both have notes, in the chemistry block above. For Biology and Physics the subject guides cover the same syllabus content in full, and the JC shelf of free test papers carries 2024 prelim papers for H2 Biology, Chemistry, Physics, Maths and Economics.',
     linkLead: 'Start with',
-    links: ['how-to-study-h2-chemistry', 'a-level-chemistry', 'a-level-biology', 'a-level-physics'],
+    links: ['a-level-biology', 'a-level-physics', 'free-test-papers'],
   },
 ];

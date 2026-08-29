@@ -16,7 +16,13 @@ export const notesData = {
         },
       ],
       english: [],
-      math: [],
+      math: [
+        {
+          title: "PSLE Mathematics Revision Notes",
+          description: "Syllabus 0008 — what changed for the 2026 exam, the format table, seven heuristics worked through, common errors and a final checklist",
+          fileKey: "notes/primary/psle/math/psle-mathematics-revision-notes.pdf",
+        },
+      ],
     },
     secondary: {
       a_math: [
@@ -38,6 +44,13 @@ export const notesData = {
           title: "O-Level Chemistry Study Notes",
           description: "All 11 topics in 23 pages — written to Cambridge 5070, which matches Singapore's 6092 topic for topic — with explain-question templates and qualitative analysis tables",
           fileKey: "notes/secondary/o-level/chemistry/o-level-chemistry-study-notes.pdf",
+        },
+      ],
+      physics: [
+        {
+          title: "O-Level Physics Study Notes",
+          description: "All 11 topics in 11 pages — written to Cambridge 5054, which matches Singapore's 6091 topic for topic — with answer templates, instrument precision and graphing rules",
+          fileKey: "notes/secondary/o-level/physics/o-level-physics-study-notes.pdf",
         },
       ],
       // IGCSE and N(T) sit in `secondary` because they are secondary-school
@@ -74,6 +87,11 @@ export const notesData = {
           title: "H2 Chemistry Study Notes",
           description: "All 13 topics in 15 pages — written to syllabus 9729, whose content the revised 9476 keeps unchanged — plus Paper 4 practical technique and a key-equations sheet",
           fileKey: "notes/jc/chemistry/jc-h2-chemistry-9729-study-notes.pdf",
+        },
+        {
+          title: "H1 Chemistry Study Notes",
+          description: "Syllabus 8873 — the eight core topics, both Materials extension topics, and a scope list of what H1 leaves to H2",
+          fileKey: "notes/jc/chemistry/jc-h1-chemistry-8873-study-notes.pdf",
         },
       ],
       maths: []

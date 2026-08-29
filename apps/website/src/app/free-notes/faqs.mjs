@@ -15,12 +15,22 @@ export const FREE_NOTES_FAQS = [
   {
     question: 'Which subjects do the free study notes cover?',
     answer:
-      'Chemistry, science, maths and General Paper. Chemistry has a 23-page O-Level set and a 17-page IGCSE guide. Science has a PSLE set on matter and materials and the N(T)-Level Food Matters module from syllabus 5148. Maths has both O-Level papers: 17 pages for Additional Mathematics (syllabus 4049) and 16 for Elementary Mathematics (4052). A-Level General Paper has five Raffles Institution 2024 infopacks — media issues, science and technology, social issues, arts and culture, and politics. Other subjects show as "Coming soon" until real notes exist for them — nothing on this page is a placeholder download.',
+      'Chemistry, physics, science, maths and General Paper. Chemistry runs across four levels: H2, H1, O-Level and IGCSE. Physics has an O-Level set covering all eleven topics. Science has a PSLE set on matter and materials and the N(T)-Level Food Matters module from syllabus 5148. Maths has PSLE Mathematics and both O-Level papers — Additional Mathematics (syllabus 4049) and Elementary Mathematics (4052). A-Level General Paper has five Raffles Institution 2024 infopacks. Other subjects show as "Coming soon" until real notes exist for them — nothing on this page is a placeholder download.',
   },
   {
     question: 'What is in the O-Level Chemistry notes?',
     answer:
       'Twenty-three pages across all eleven syllabus topics, from states of matter and stoichiometry through electrochemistry, energetics, acids and salts, the Periodic Table, metals, environmental and organic chemistry. The last third is exam technique rather than content: sentence templates for the "explain" questions, the qualitative analysis tables for cations, anions and gases, apparatus precision, and how to separate systematic from random error in a titration. The set is written to Cambridge syllabus 5070, which matches the Singapore-Cambridge 6092 syllabus topic for topic, so it works for either. The IGCSE guide covers the same ground in seventeen pages.',
+  },
+  {
+    question: 'Do the PSLE Maths notes cover the 2026 syllabus changes?',
+    answer:
+      'They open on them. The 2026 cohort is the first to sit the fully updated Primary Mathematics syllabus, and the changes are the kind that waste revision time if you miss them: speed and the 8-point compass have left the primary syllabus altogether, nets of solids and pie charts moved down to Primary 4, 12- and 24-hour time to Primary 3, and ratio and average are now taught wholly in Primary 6 rather than split with P5. Revision material written before 2026 describes a paper that no longer exists. The rest of the set is the format table, the seven heuristics worked through one at a time, common errors and a final checklist.',
+  },
+  {
+    question: 'What is in the O-Level Physics notes?',
+    answer:
+      'Eleven pages across all eleven topics, from measurement and kinematics through pressure, thermal physics, waves, sound, electricity, electromagnetism and radioactivity. Each topic lists its formulas with the SI unit attached, which is deliberate: the most common way to drop an easy mark is substituting a value in minutes or grams without converting first. The last third is technique — answer templates, instrument precision, systematic against random error, and the graphing rules the practical paper marks against. Written to Cambridge syllabus 5054, which matches the Singapore-Cambridge 6091 syllabus topic for topic.',
   },
   {
     question: 'Are the H2 Chemistry notes written for the 9476 syllabus?',

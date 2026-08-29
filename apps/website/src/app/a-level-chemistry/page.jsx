@@ -495,6 +495,10 @@ Preferred days & timing: `;
                       {' '}&mdash; 15 pages across all thirteen topics, plus Paper 4 practical technique and a key-equations sheet. Written to 9729, whose content the revised 9476 keeps &mdash; only the mark allocations changed
                     </li>
                     <li>
+                      <Link href="/free-notes" className="text-primary underline underline-offset-2">H1 Chemistry study notes</Link>
+                      {' '}&mdash; for H1 candidates: the eight core topics, both Materials extension topics, and a list of what H1 leaves to H2 so revision does not over-reach
+                    </li>
+                    <li>
                       <Link href="/free-test-papers" className="text-primary underline underline-offset-2">Free test papers</Link>
                       {' '}&mdash; JC2 H2 Chemistry prelim papers, to work unseen and to time
                     </li>

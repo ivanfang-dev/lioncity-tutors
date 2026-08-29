@@ -437,6 +437,11 @@ export default function ChemistryTuition() {
                 <p className="text-gray-600 mb-6">
                   Advanced level chemistry covering complex topics with mathematical applications, detailed mechanisms, and university-preparation content.
                 </p>
+                <p className="text-gray-600 mb-6">
+                  Free to download:{' '}
+                  <Link href="/free-notes" className="text-primary underline underline-offset-2">H2 and H1 Chemistry study notes</Link>
+                  {' '}&mdash; every topic at each level, the Paper 4 practical technique H2 candidates are assessed on, and a list of what H1 leaves to H2.
+                </p>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
                   <div className="bg-purple-50 p-4 rounded-lg">

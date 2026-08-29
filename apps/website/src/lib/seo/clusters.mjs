@@ -427,8 +427,8 @@ export const SPOKES = {
     title: 'Free Study Notes',
     // Anchor and blurb describe what the page actually hosts today; update
     // them as subjects land rather than promising ahead.
-    anchor: 'free study notes for chemistry, science, maths and GP',
-    blurb: 'Free revision notes to download: H2, O-Level and IGCSE Chemistry, PSLE and N(T)-Level Science, O-Level maths and JC General Paper infopacks.',
+    anchor: 'free study notes for chemistry, physics, science, maths and GP',
+    blurb: 'Free revision notes to download: chemistry from H2 to IGCSE, O-Level Physics, PSLE Maths and Science, O-Level maths and JC General Paper infopacks.',
   },
 
   // --- Commercial pages ---

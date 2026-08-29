@@ -11,6 +11,7 @@ import useTuitionRequestForm from "@/components/useTuitionRequestForm";
 import FormBenefits from "@/components/FormBenefits";
 import { CheckCircle } from "lucide-react";
 import TableOfContents from "@/components/TableOfContents";
+import Link from 'next/link';
 import GuideSchema from '@/components/seo/GuideSchema';
 import {
   GuideHeader, SectionHeading, GuideCard, TopicCard, GuideTimeline, KeyTakeaways, ICON_STROKE,
@@ -331,6 +332,23 @@ export default function PSLEMath() {
               <section id="resources" className="scroll-mt-24">
                 <SectionHeading icon={BookOpen}>Essential PSLE Maths resources</SectionHeading>
                 <div className="space-y-4">
+                  <div>
+                    <h4 className="font-semibold text-gray-900 mb-1.5">Free from us</h4>
+                    <ul className="list-disc ml-5 text-sm space-y-1 text-gray-700">
+                      <li>
+                        <Link href="/free-notes" className="text-primary underline underline-offset-2">PSLE Maths revision notes</Link>
+                        {' '}&mdash; what changed for the 2026 exam, the working discipline that earns method marks, and seven heuristics worked through one at a time
+                      </li>
+                      <li>
+                        <Link href="/free-test-papers" className="text-primary underline underline-offset-2">Free test papers</Link>
+                        {' '}&mdash; Primary 6 Maths prelim and school papers, to sit whole and to time
+                      </li>
+                      <li>
+                        <Link href="/how-to-study/psle-math" className="text-primary underline underline-offset-2">How to study for PSLE Maths</Link>
+                        {' '}&mdash; the full format table, and why the ten long-answer questions deserve the majority of practice time
+                      </li>
+                    </ul>
+                  </div>
                   <div>
                     <h4 className="font-semibold text-gray-900 mb-1.5">Recommended series</h4>
                     <ul className="list-disc ml-5 text-sm space-y-1 text-gray-700">
