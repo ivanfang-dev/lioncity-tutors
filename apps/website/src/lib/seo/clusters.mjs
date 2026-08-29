@@ -15,6 +15,7 @@ export const HUBS = {
     spokes: [
       'psle-math', 'psle-english', 'psle-science', 'psle-chinese', 'primary-school-tuition',
       'how-to-study-psle-math', 'how-to-study-psle-science',
+      'how-to-study-psle-english', 'how-to-study-psle-chinese',
       'chinese-tuition', 'tuition-rates', 'free-test-papers',
       'how-to-choose-a-tuition-agency-singapore',
     
@@ -69,7 +70,8 @@ export const HUBS = {
     spokes: [
       'a-level-math', 'a-level-physics', 'a-level-chemistry', 'a-level-biology',
       'a-level-general-paper', 'how-to-study-general-paper', 'how-to-study-h2-chemistry',
-      'how-to-study-h2-maths', 'how-to-study-h2-biology', 'how-to-study-h2-physics', 'jc-tuition',
+      'how-to-study-h2-maths', 'how-to-study-h2-biology', 'how-to-study-h2-physics',
+      'how-to-study-h2-economics', 'jc-tuition',
       'math-tuition', 'science-tuition', 'chemistry-tuition', 'physics-tuition',
       'biology-tuition', 'economics-tuition', 'tuition-rates',
       'free-notes', 'free-test-papers',
@@ -269,6 +271,13 @@ export const SPOKES = {
     anchor: 'how to study for General Paper',
     blurb: 'Where the marks sit across both papers, and what moves an essay up a band.',
   },
+  'how-to-study-h2-economics': {
+    slug: 'how-to-study-h2-economics', url: '/how-to-study/h2-economics', hub: 'a-level-prep',
+    schemaType: 'Article',
+    title: 'How to Study for H2 Economics',
+    anchor: 'how to study for H2 Economics',
+    blurb: 'Why evaluation carries most of the marks, and the essay selection rule.',
+  },
   'how-to-study-h2-physics': {
     slug: 'how-to-study-h2-physics', url: '/how-to-study/h2-physics', hub: 'a-level-prep',
     schemaType: 'Article',
@@ -315,6 +324,20 @@ export const SPOKES = {
     slug: 'psle-math', url: '/psle-math', hub: 'psle-prep',
     title: 'PSLE Maths', anchor: 'PSLE Mathematics guide',
     blurb: 'Heuristics, model drawing and Paper 2 problem sums.',
+  },
+  'how-to-study-psle-english': {
+    slug: 'how-to-study-psle-english', url: '/how-to-study/psle-english', hub: 'psle-prep',
+    schemaType: 'Article',
+    title: 'How to Study for PSLE English',
+    anchor: 'how to study for PSLE English',
+    blurb: 'Why Oral is 40 marks in ten minutes, and where Paper 2 hides its marks.',
+  },
+  'how-to-study-psle-chinese': {
+    slug: 'how-to-study-psle-chinese', url: '/how-to-study/psle-chinese', hub: 'psle-prep',
+    schemaType: 'Article',
+    title: 'How to Study for PSLE Chinese',
+    anchor: 'how to study for PSLE Chinese',
+    blurb: 'Why 口试 is a quarter of the grade, and the dictionary you may bring.',
   },
   'how-to-study-psle-science': {
     slug: 'how-to-study-psle-science', url: '/how-to-study/psle-science', hub: 'psle-prep',
