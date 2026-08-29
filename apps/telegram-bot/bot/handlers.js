@@ -20,7 +20,7 @@ import { draftParentMessage, buildWaMeButton } from '../utils/parentMessage.js';
 import { recordParentPick, recordParentReject, resumeOutreach } from '../utils/parentOutcome.js';
 import { recordCheckInWell, recordCheckInEnded, recordCheckInEndReason, recordCheckInNoReply } from '../utils/checkInOutcome.js';
 import { checkInRatingRows } from '../utils/checkInButtons.js';
-import { opsButtonRow } from '../utils/ownerAlert.js';
+import { notifyOwner, opsButtonRow } from '../utils/ownerAlert.js';
 import { handleLateInterest, nextShortlistRank } from '../utils/lateInterest.js';
 import { applyRecovery } from '../utils/recovery.js';
 import { waitUntil } from '@vercel/functions';
@@ -2793,6 +2793,25 @@ async function ensureTutorSession(chatId, userId, Tutor, userSessions) {
   return userSessions[chatId];
 }
 
+// A tutor tapped ✅/❌ on an outreach DM but the reply couldn't be tied to a contact — the
+// assignment's outreach never ran, or they already answered it. The tutor gets a soft reply
+// either way; this makes sure the owner hears about it too, since a lost YES is real interest
+// going nowhere. Best-effort — the tutor's own confirmation must never depend on it.
+async function alertUnmatchedOutreachTap(tutor, assignmentId, reply, Assignment) {
+  try {
+    const assignment = await Assignment.findById(assignmentId, { title: 1, outreach: { status: 1 } }).lean();
+    await notifyOwner(
+      `⚠️ *Unmatched outreach reply*\n` +
+      `*${escapeMd(tutor.fullName) || 'A tutor'}* tapped ${reply === 'yes' ? '✅ Interested' : '❌ Not available'} on ` +
+      `*${escapeMd(assignment?.title) || 'an assignment'}* (outreach ${assignment?.outreach?.status || 'unknown'}).\n` +
+      `Nothing was recorded — they aren't in its contact list, or already replied.`,
+      opsButtonRow(assignmentId) ? { inline_keyboard: [opsButtonRow(assignmentId)] } : undefined
+    );
+  } catch (err) {
+    console.warn('Failed to alert unmatched outreach tap:', err.message);
+  }
+}
+
 async function handleCallbackQuery(
   bot,
   callbackQuery,
@@ -2931,6 +2950,7 @@ async function handleCallbackQuery(
         { chat_id: chatId, message_id: callbackQuery.message?.message_id }
       ).catch(() => {});
       if (!result.matched) {
+        await alertUnmatchedOutreachTap(tutor, assignmentId, 'yes', Assignment);
         return await safeSend(bot, chatId, "👍 Thanks! This assignment may already be filled, but we've noted you.");
       }
       // The interest is already recorded and already counts toward the target — the rate is
@@ -2949,6 +2969,7 @@ async function handleCallbackQuery(
       }
       const result = await recordTutorReplyByTutorId(tutor._id, 'no', assignmentId);
       if (!result.matched) {
+        await alertUnmatchedOutreachTap(tutor, assignmentId, 'no', Assignment);
         await bot.editMessageReplyMarkup(
           { inline_keyboard: [] },
           { chat_id: chatId, message_id: callbackQuery.message?.message_id }

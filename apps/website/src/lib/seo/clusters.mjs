@@ -552,10 +552,13 @@ export const SPOKES = {
   // with exactly one editorial inbound link (from /blog) against a sitewide median
   // of eight. Google had crawled several and declined to index them. Registering
   // them puts them in the same reciprocal link graph as everything else.
+  // Parent-advice articles, not courses: they carry Article, so say so rather
+  // than letting the spoke default to Course.
   'what-to-look-for-in-a-tutor': {
     slug: 'what-to-look-for-in-a-tutor',
     url: '/blog/what-to-look-for-in-a-tutor',
     hub: 'find-a-tutor',
+    schemaType: 'Article',
     alsoIn: ['psle-prep', 'o-level-prep', 'a-level-prep'],
     title: 'Choosing a Tutor',
     anchor: 'what to look for in a private tutor',
@@ -565,6 +568,7 @@ export const SPOKES = {
     slug: 'benefits-of-private-tuition',
     url: '/blog/benefits-of-private-tuition',
     hub: 'find-a-tutor',
+    schemaType: 'Article',
     alsoIn: ['psle-prep', 'o-level-prep'],
     title: 'Why Private Tuition',
     anchor: 'the case for private tuition',
@@ -574,6 +578,7 @@ export const SPOKES = {
     slug: 'navigating-psle-anxiety',
     url: '/blog/navigating-psle-anxiety',
     hub: 'psle-prep',
+    schemaType: 'Article',
     title: 'PSLE Anxiety',
     anchor: 'helping a child through PSLE anxiety',
     blurb: 'Spotting exam stress early, and what helps more than extra drilling.',
@@ -582,6 +587,7 @@ export const SPOKES = {
     slug: 'improve-primary-english-composition',
     url: '/blog/improve-primary-english-composition',
     hub: 'psle-prep',
+    schemaType: 'Article',
     title: 'Primary Composition',
     anchor: 'fixing primary English composition',
     blurb: 'Five common weaknesses in a child\u2019s writing, and how to work on each.',
@@ -590,6 +596,7 @@ export const SPOKES = {
     slug: 'pinpointing-learning-gaps',
     url: '/blog/pinpointing-learning-gaps',
     hub: 'psle-prep',
+    schemaType: 'Article',
     alsoIn: ['o-level-prep'],
     title: 'Finding Learning Gaps',
     anchor: 'pinpointing a learning gap',
@@ -599,6 +606,7 @@ export const SPOKES = {
     slug: 'focus-and-concentration-issues',
     url: '/blog/focus-and-concentration-issues',
     hub: 'psle-prep',
+    schemaType: 'Article',
     alsoIn: ['o-level-prep', 'n-level-prep'],
     title: 'Focus & Concentration',
     anchor: 'a child who cannot focus on studies',

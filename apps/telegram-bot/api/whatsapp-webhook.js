@@ -119,7 +119,7 @@ async function askDeclineReason(to, assignmentId) {
 // forward it to the owner's Telegram. The number is embedded as "(wa:<digits>)" so the owner
 // can just REPLY in Telegram and the bot relays it back (see handleMessage in handlers.js).
 // Sent as plain text (parseMode null) so the tutor's message can't break Markdown parsing.
-async function forwardTutorMessage(from, body) {
+async function forwardTutorMessage(from, body, { note = '' } = {}) {
   try {
     // Best-effort name so the owner sees WHO wrote in. Degrades to the bare number if the
     // sender isn't a known tutor or the lookup fails — never blocks the alert. Keep the
@@ -133,14 +133,28 @@ async function forwardTutorMessage(from, body) {
     ]);
     const sender = name || 'an unknown number';
     const context = outreach?.title ? `\n📋 Re: ${outreach.title}` : '';
+    const warning = note ? `\n${note}` : '';
     await notifyOwner(
-      `💬 New WhatsApp message from ${sender} (wa:${from})${context}\n\n${body}\n\n↩️ Reply to this message to respond to them.`,
+      `💬 New WhatsApp message from ${sender} (wa:${from})${context}${warning}\n\n${body}\n\n↩️ Reply to this message to respond to them.`,
       undefined,
       { parseMode: null }
     );
   } catch (err) {
     console.warn('Failed to forward tutor message:', err.message);
   }
+}
+
+// A Yes/No we could NOT tie to an outreach contact — the number isn't in any assignment's
+// contacts, or that contact already replied once. This used to `return` silently: the tutor heard
+// nothing back and the owner never learned there was interest, so a real yes simply evaporated.
+// Forward it with the reply spelled out instead, and tell the tutor we got it.
+async function forwardUnmatchedReply(from, reply, body) {
+  const text = body || (reply === 'yes' ? '[tapped "Yes, interested"]' : '[tapped "Not available"]');
+  await forwardTutorMessage(from, text, {
+    note: `⚠️ Read as ${reply === 'yes' ? 'a YES' : 'a NO'}, but no outreach contact matched — nothing was recorded.`
+  });
+  await sendWhatsApp(from, "Thanks for getting back to us! We'll check and follow up shortly 😊")
+    .catch(err => console.warn('Failed to ack unmatched reply:', err.message));
 }
 
 // Route ONE inbound tutor message. The order below is load-bearing — three parsers now compete
@@ -194,8 +208,11 @@ async function handleInbound(from, msg) {
   if (inbound.kind === 'reply') {
     const result = await recordTutorReply(from, inbound.reply);
     console.log(`Webhook reply '${inbound.reply}' from ${from} → matched=${result.matched}`, result.assignmentId || '');
-    // Only acknowledge tutors who are part of an active outreach.
-    if (!result.matched) return;
+    // Couldn't tie it to a contact — hand it to the owner rather than dropping it.
+    if (!result.matched) {
+      await forwardUnmatchedReply(from, inbound.reply, body);
+      return;
+    }
     if (result.ratePrompt) await askForRate(from, result.ratePrompt);
     else if (inbound.reply === 'no') await askDeclineReason(from, result.assignmentId);
     else await acknowledge(from, inbound.reply);

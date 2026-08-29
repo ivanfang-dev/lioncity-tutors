@@ -78,7 +78,8 @@ function formatSgTime(date) {
 }
 
 // Ping the owner when a tutor says yes — the signal they act on to reach the parent fast.
-async function alertOwnerInterested(assignment, tutorName, interestedCount) {
+// `revived` marks a yes on an outreach that had already given up, so the alert says so.
+async function alertOwnerInterested(assignment, tutorName, interestedCount, { revived = false } = {}) {
   const holding = assignment.outreach?.status === 'Holding';
 
   // Offer a one-tap relay only when we can act on it: the assignment has a parent number to
@@ -106,7 +107,11 @@ async function alertOwnerInterested(assignment, tutorName, interestedCount) {
   // On the yes that reaches target, say we're holding for better candidates (not "done") —
   // the shortlist is picked when the window elapses, not on the fastest 3 responders.
   let statusLine = '';
-  if (holding) {
+  if (revived) {
+    statusLine =
+      `\n\n📭 Outreach had already run out on this one — this yes arrived after we stopped. ` +
+      `No new waves resume; act on it manually.`;
+  } else if (holding) {
     const until = assignment.outreach?.holdUntil ? formatSgTime(assignment.outreach.holdUntil) : 'shortly';
     statusLine =
       `\n\n🕑 Target reached — *holding for better candidates until ${until}*.\n` +
@@ -144,9 +149,10 @@ export async function recordTutorReply(phone, reply) {
   // (A tutor in several open assignments → the sort attributes it to the latest wave.)
   const assignment = await Assignment.findOneAndUpdate(
     {
-      // Accept replies while Active, Holding AND Fulfilled. A yes after the shortlist went out
-      // is scored against it rather than dropped (see handleLateInterest).
-      'outreach.status': { $in: ['Active', 'Holding', 'Fulfilled'] },
+      // Accept replies while Active, Holding, Fulfilled AND Exhausted. A yes after the shortlist
+      // went out is scored against it (see handleLateInterest); a yes after outreach gave up is
+      // still real interest on a still-open assignment, so it's recorded rather than discarded.
+      'outreach.status': { $in: ['Active', 'Holding', 'Fulfilled', 'Exhausted'] },
       'outreach.contacts': { $elemMatch: { phone: norm, status: 'Sent' } }
     },
     {
@@ -224,7 +230,13 @@ async function finalizeReply(assignment, contact, decision, reply) {
       .catch(err => console.warn('Late-interest scoring failed:', err.message));
   }
 
-  if (!late && decision === 'Interested') {
+  // Outreach had already given up (no fresh tutors, or the time cap) when this reply arrived.
+  // Recording it is the point — but deliberately NOT the hold transition: flipping an Exhausted
+  // assignment back to Holding would re-release a shortlist for one the owner was already told
+  // to handle manually. The alert below carries it instead.
+  const revived = assignment.outreach?.status === 'Exhausted';
+
+  if (!late && !revived && decision === 'Interested') {
     // Hitting the target starts a HOLD (not an immediate fulfil): stop new waves but keep
     // collecting late yeses until holdUntil, when the tick re-ranks and picks the best 3.
     const transition = holdTransition(assignment.outreach?.status, interestedCount);
@@ -251,7 +263,7 @@ async function finalizeReply(assignment, contact, decision, reply) {
 
   // handleLateInterest owns the alert for a post-shortlist yes.
   if (decision === 'Interested' && !late) {
-    await alertOwnerInterested(assignment, tutorName, interestedCount);
+    await alertOwnerInterested(assignment, tutorName, interestedCount, { revived });
   }
 
   return {
@@ -284,9 +296,9 @@ export async function recordTutorReplyByTutorId(tutorId, reply, assignmentId) {
   const assignment = await Assignment.findOneAndUpdate(
     {
       _id: assignmentId,
-      // Active, Holding OR Fulfilled — a late Telegram yes is scored against the released
-      // shortlist rather than dropped.
-      'outreach.status': { $in: ['Active', 'Holding', 'Fulfilled'] },
+      // Active, Holding, Fulfilled OR Exhausted — a late Telegram yes is scored against the
+      // released shortlist, or recorded against a given-up outreach, rather than dropped.
+      'outreach.status': { $in: ['Active', 'Holding', 'Fulfilled', 'Exhausted'] },
       'outreach.contacts': { $elemMatch: { tutorId: tid, status: 'Sent' } }
     },
     {

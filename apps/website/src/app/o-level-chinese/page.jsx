@@ -2,9 +2,9 @@ import { MATCH_TIME } from '@/data/promises';
 import { DEFAULT_OG_IMAGE } from '@/lib/seo/openGraph';
 
 export const metadata = {
-  title: "O-Level Chinese Guide 2026 (1160): 实用文 Email Format & 口试 | LionCity Tutors",
+  title: "O-Level Chinese 1160: 实用文 Email Format & 口试 Technique",
   description:
-    "O-Level Chinese (1160) guide for Singapore students — the 2026 paper structure, the 实用文 email format that carries 10% of the grade, and 口试 technique, straight from the SEAB syllabus.",
+    "O-Level Chinese (1160) guide — the 2026 paper structure, the 实用文 email format that carries 10% of the grade, and 口试 technique, from the SEAB syllabus.",
   keywords: [
     "O Level Chinese 1160", "O Level Chinese 实用文", "电邮格式 O Level",
     "O Level Chinese email format", "O Level 华文 口试", "Higher Chinese 1116",
