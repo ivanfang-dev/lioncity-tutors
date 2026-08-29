@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
-import { Tutor } from '../../../packages/shared/server-exports.js';
-import { generatePhoneVariations } from '../../../packages/shared/utils/phoneUtils.js';
+import { Assignment, Tutor } from '../../../packages/shared/server-exports.js';
+import { generatePhoneVariations, normalizePhone } from '../../../packages/shared/utils/phoneUtils.js';
 
 // Own connection guard: the free-text forward path in whatsapp-webhook.js doesn't run
 // recordTutorReply, so no connection exists there. Mongoose's default connection is a global
@@ -33,6 +33,41 @@ export async function getTutorNameByNumber(number) {
     return name || null;
   } catch (err) {
     console.warn('Tutor name lookup failed:', err.message);
+    return null;
+  }
+}
+
+// Best-effort: which assignment was this number last contacted about? Used to label the
+// free-text messages we forward to the owner, so "May I know the slot?" isn't context-free.
+// Returns { assignmentId, title } or null. Same optional-enrichment contract as above — a miss
+// or a DB error must degrade the alert, never drop it.
+// Contacts are stored with normalizePhone applied, so match on that form. We scan the few most
+// recent waves and pick the row with the latest sentAt: a tutor can sit in several open
+// outreaches, and the one they're replying to is the one we messaged them about last.
+export async function getRecentOutreachForNumber(number) {
+  try {
+    await connectToDatabase();
+    const norm = normalizePhone(number);
+    const assignments = await Assignment.find(
+      { 'outreach.contacts': { $elemMatch: { phone: norm } } },
+      { title: 1, 'outreach.contacts.phone': 1, 'outreach.contacts.sentAt': 1 },
+    )
+      .sort({ 'outreach.lastWaveAt': -1 })
+      .limit(5)
+      .lean();
+
+    let best = null;
+    for (const a of assignments) {
+      for (const c of a.outreach?.contacts || []) {
+        if (normalizePhone(c.phone) !== norm) continue;
+        if (!best || new Date(c.sentAt || 0) > new Date(best.sentAt || 0)) {
+          best = { assignmentId: a._id.toString(), title: a.title, sentAt: c.sentAt };
+        }
+      }
+    }
+    return best ? { assignmentId: best.assignmentId, title: best.title } : null;
+  } catch (err) {
+    console.warn('Recent outreach lookup failed:', err.message);
     return null;
   }
 }

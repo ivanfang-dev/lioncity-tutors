@@ -1,7 +1,7 @@
 import { recordTutorReply } from '../utils/recordTutorReply.js';
 import { sendWhatsApp, sendWhatsAppList } from '../utils/whatsappSender.js';
 import { notifyOwner } from '../utils/ownerAlert.js';
-import { getTutorNameByNumber } from '../utils/tutorLookup.js';
+import { getRecentOutreachForNumber, getTutorNameByNumber } from '../utils/tutorLookup.js';
 import { recordQuotedRate } from '../utils/rateCapture.js';
 import { declineReasonListRows, parseListReplyId, recordDeclineReason } from '../utils/declineReason.js';
 
@@ -124,10 +124,17 @@ async function forwardTutorMessage(from, body) {
     // Best-effort name so the owner sees WHO wrote in. Degrades to the bare number if the
     // sender isn't a known tutor or the lookup fails — never blocks the alert. Keep the
     // "(wa:<digits>)" token intact so the reply-relay matcher in handlers.js still routes.
-    const name = await getTutorNameByNumber(from);
+    // Assignment title alongside the name, so the owner knows WHICH assignment a question like
+    // "what's the slot?" is about. Both lookups are optional enrichment, so run them together
+    // and let either come back null.
+    const [name, outreach] = await Promise.all([
+      getTutorNameByNumber(from),
+      getRecentOutreachForNumber(from),
+    ]);
     const sender = name || 'an unknown number';
+    const context = outreach?.title ? `\n📋 Re: ${outreach.title}` : '';
     await notifyOwner(
-      `💬 New WhatsApp message from ${sender} (wa:${from})\n\n${body}\n\n↩️ Reply to this message to respond to them.`,
+      `💬 New WhatsApp message from ${sender} (wa:${from})${context}\n\n${body}\n\n↩️ Reply to this message to respond to them.`,
       undefined,
       { parseMode: null }
     );
