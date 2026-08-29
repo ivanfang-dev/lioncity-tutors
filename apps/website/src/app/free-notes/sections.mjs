@@ -2,11 +2,13 @@
  * Subject segmentation for /free-notes.
  *
  * The notes queries this page already appears for are almost entirely General
- * Paper and H2 sciences (GSC, 3 months to 2026-07-23). Only General Paper and
- * the two O-Level maths papers have notes today, so the H2 block says so
- * plainly and hands the reader to the subject guide that does cover the
- * material — claiming notes we do not host would be the one thing worse than
- * ranking without them.
+ * Paper and H2 sciences (GSC, 3 months to 2026-07-23), so General Paper leads
+ * and the H2 block stays honest about what is still missing.
+ *
+ * Every block below is checked against src/data/notesData.mjs. A subject with
+ * no file in that data does not get a block claiming one — the H2 block says
+ * plainly that the notes are not written yet and hands the reader to the
+ * subject guide that does cover the material.
  *
  * `links` name registry slugs; anchor text is read from the registry at render
  * time, never written here. `linkLead` stops before the article, because the
@@ -23,21 +25,48 @@ export const NOTE_SECTIONS = [
     links: ['a-level-general-paper', 'a-level-prep'],
   },
   {
+    id: 'chemistry',
+    label: 'O-Level and IGCSE Chemistry notes',
+    heading: 'What free O-Level Chemistry notes are available?',
+    answer:
+      'Two sets. The O-Level notes run to 23 pages across all eleven topics, from states of matter to organic chemistry, and then cover what revision usually skips: templates for the "explain" questions, the qualitative analysis tables for cations, anions and gases, and the error analysis Paper 3 asks for. They are written to Cambridge 5070, which matches Singapore’s 6092 topic for topic. The IGCSE guide covers the same eleven topics in 17 pages and closes on a quick-reference sheet — industrial conditions, the reactivity series, solubility rules and the phrasings examiners accept.',
+    linkLead: 'For how the papers are weighted and where the marks go, read',
+    links: ['how-to-study-o-level-chemistry', 'o-level-chemistry', 'igcse-chemistry'],
+  },
+  {
+    id: 'psle-science',
+    label: 'PSLE Science notes',
+    heading: 'Are there free PSLE Science notes?',
+    answer:
+      'One set, covering the chemistry-related half of the syllabus: what counts as matter, mass against volume, measuring an irregular solid by displacement, and the properties of the three states. It then works through the three application models PSLE reuses — the burst balloon, the overflowing cup and the two-hole milk tin — and the H.A.N.D.S.O.M.E. method for structured open-ended answers. The biology, energy and systems themes are not in this set.',
+    linkLead: 'For the full syllabus and how the open-ended paper is marked, read',
+    links: ['how-to-study-psle-science', 'psle-science'],
+  },
+  {
+    id: 'o-level',
+    label: 'O-Level maths notes',
+    heading: 'Are there free O-Level A-Math and E-Math notes?',
+    answer:
+      'Both maths papers, free to download: 17 pages on Additional Mathematics (syllabus 4049) and 16 on Elementary Mathematics (4052). Each carries a formula reference across every topic area — calculus, trigonometry and partial fractions on the A-Math side, mensuration, vectors, matrices and probability on the E-Math side — then the errors that cost marks and worked examples.',
+    linkLead: 'Start with',
+    links: ['how-to-study-o-level-a-math', 'how-to-study-o-level-e-math', 'o-level-math', 'free-test-papers'],
+  },
+  {
+    id: 'n-level',
+    label: 'N(T)-Level Science notes',
+    heading: 'Are there free N-Level Science notes?',
+    answer:
+      'One module so far: Food Matters, from syllabus 5148. It sets out the four food tests with the exact reagent, procedure and colour change for each, digestion and the enzymes that drive it, and the chemistry behind every preservation method. It ends with what N(T) does not test — no moles, no orbitals, no industrial processes — so revision time does not drain into O-Level material.',
+    linkLead: 'For the rest of the N-Level picture, read',
+    links: ['n-level-tuition', 'free-test-papers'],
+  },
+  {
     id: 'h2-sciences',
     label: 'H2 Biology, Chemistry and Physics notes',
     heading: 'Are there free H2 Biology and H2 Chemistry notes?',
     answer:
-      'Not yet. The notes library covers General Paper and O-Level maths today, and H2 science notes are still being written. In the meantime the H2 subject guides cover the same syllabus content in full, and the JC shelf of free test papers carries 2024 prelim papers for H2 Biology, Chemistry, Physics, Maths and Economics.',
+      'Not yet. Chemistry notes exist for O-Level and IGCSE but not for H2, and the H2 Biology and Physics sets are still being written. In the meantime the H2 subject guides cover the same syllabus content in full, and the JC shelf of free test papers carries 2024 prelim papers for H2 Biology, Chemistry, Physics, Maths and Economics.',
     linkLead: 'Start with',
     links: ['a-level-biology', 'a-level-chemistry', 'a-level-physics'],
-  },
-  {
-    id: 'o-level',
-    label: 'O-Level and secondary notes',
-    heading: 'Are there free O-Level A-Math and E-Math notes?',
-    answer:
-      'Both maths papers, free to download: 17 pages on Additional Mathematics (syllabus 4049) and 16 on Elementary Mathematics (4052). Each carries a formula reference across every topic area \u2014 calculus, trigonometry and partial fractions on the A-Math side, mensuration, vectors, matrices and probability on the E-Math side \u2014 then the errors that cost marks and worked examples. No other O-Level subject has notes yet, so start from the subject guides.',
-    linkLead: 'Start with',
-    links: ['how-to-study-o-level-a-math', 'how-to-study-o-level-e-math', 'o-level-math', 'o-level-prep', 'free-test-papers'],
   },
 ];

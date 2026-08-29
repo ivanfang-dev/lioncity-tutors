@@ -18,7 +18,10 @@ const SLUG = 'free-notes';
 const LIBRARY_ANCHOR = {
   'general-paper': '#notes-jc',
   'h2-sciences': '#notes-jc',
+  'chemistry': '#notes-secondary',
   'o-level': '#notes-secondary',
+  'n-level': '#notes-secondary',
+  'psle-science': '#notes-primary',
 };
 
 /**
@@ -58,7 +61,7 @@ export default function FreeNotesPage() {
         collection={{
           name: 'Free Study Notes: PSLE, O-Level and A-Level',
           description:
-            'Free revision notes to download for PSLE, O-Level and A-Level students. The library holds O-Level A-Math and E-Math revision sets and A-Level General Paper infopacks today.',
+            'Free revision notes to download for PSLE, O-Level and A-Level students. The library holds Chemistry study notes for O-Level and IGCSE, PSLE Science, N(T)-Level Science, O-Level A-Math and E-Math, and A-Level General Paper infopacks.',
           items: NOTE_SECTIONS.map((section) => ({
             name: section.label,
             url: `/free-notes#${section.id}`,
@@ -75,8 +78,9 @@ export default function FreeNotesPage() {
             </h1>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed text-pretty">
               Revision notes to download, free and without an account, across PSLE, O-Level
-              and A-Level &mdash; O-Level A-Math and E-Math revision sets and A-Level General
-              Paper infopacks today, with more subjects on the way.
+              and A-Level &mdash; Chemistry study notes for O-Level and IGCSE, PSLE Science,
+              N(T)-Level Science, both O-Level maths papers and A-Level General Paper
+              infopacks, with more subjects on the way.
             </p>
             <nav aria-label="Jump to a subject" className="flex flex-wrap items-center justify-center gap-2">
               {NOTE_SECTIONS.map((section) => (

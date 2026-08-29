@@ -425,11 +425,10 @@ export const SPOKES = {
     alsoIn: ['o-level-prep'],
     schemaType: 'CollectionPage',
     title: 'Free Study Notes',
-    // Anchor and blurb describe what the page actually hosts today (GP
-    // infopacks, O-Level A-Math and E-Math); update them as subjects land
-    // rather than promising ahead.
-    anchor: 'free study notes for GP and O-Level maths',
-    blurb: 'Free revision notes to download: JC General Paper infopacks and O-Level A-Math and E-Math.',
+    // Anchor and blurb describe what the page actually hosts today; update
+    // them as subjects land rather than promising ahead.
+    anchor: 'free study notes for chemistry, science, maths and GP',
+    blurb: 'Free revision notes to download: O-Level and IGCSE Chemistry, PSLE and N(T)-Level Science, O-Level maths and JC General Paper infopacks.',
   },
 
   // --- Commercial pages ---

@@ -8,13 +8,24 @@
  * notes" (65 impressions), "gp notes a level" (46), "general paper notes" (31).
  *
  * Every claim below is checked against src/data/notesData.mjs. If a subject is
- * not in that file, this page does not promise it.
+ * not in that file, this page does not promise it — including where a set
+ * covers only part of a syllabus, which the answer has to say outright.
  */
 export const FREE_NOTES_FAQS = [
   {
     question: 'Which subjects do the free study notes cover?',
     answer:
-      'Three so far. A-Level General Paper, as five Raffles Institution 2024 infopacks: media issues, science and technology, social issues, arts and culture, and politics. Then both O-Level maths papers: a 17-page revision set for Additional Mathematics (syllabus 4049) and a 16-page set for Elementary Mathematics (4052). Other subjects show as "Coming soon" until real notes exist for them — nothing on this page is a placeholder download.',
+      'Chemistry, science, maths and General Paper. Chemistry has a 23-page O-Level set and a 17-page IGCSE guide. Science has a PSLE set on matter and materials and the N(T)-Level Food Matters module from syllabus 5148. Maths has both O-Level papers: 17 pages for Additional Mathematics (syllabus 4049) and 16 for Elementary Mathematics (4052). A-Level General Paper has five Raffles Institution 2024 infopacks — media issues, science and technology, social issues, arts and culture, and politics. Other subjects show as "Coming soon" until real notes exist for them — nothing on this page is a placeholder download.',
+  },
+  {
+    question: 'What is in the O-Level Chemistry notes?',
+    answer:
+      'Twenty-three pages across all eleven syllabus topics, from states of matter and stoichiometry through electrochemistry, energetics, acids and salts, the Periodic Table, metals, environmental and organic chemistry. The last third is exam technique rather than content: sentence templates for the "explain" questions, the qualitative analysis tables for cations, anions and gases, apparatus precision, and how to separate systematic from random error in a titration. The set is written to Cambridge syllabus 5070, which matches the Singapore-Cambridge 6092 syllabus topic for topic, so it works for either. The IGCSE guide covers the same ground in seventeen pages.',
+  },
+  {
+    question: 'Do the PSLE Science notes cover the whole syllabus?',
+    answer:
+      'No, and the file says so. They cover the chemistry-related themes — matter, mass and volume, measuring irregular solids by displacement, the three states, and the water cycle — plus the three application models PSLE keeps reusing and the H.A.N.D.S.O.M.E. method for open-ended answers. Biology, energy and systems topics are not in this set. The PSLE Science guide covers the rest of the syllabus in the meantime.',
   },
   {
     question: 'How do you use a General Paper infopack to revise?',
