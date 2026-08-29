@@ -106,6 +106,37 @@ export const HUBS = {
       'what-to-look-for-in-a-tutor',
       'benefits-of-private-tuition',],
   },
+  // The /how-to-study series. A secondary hub: each guide keeps its exam-prep
+  // hub as primary so it stays a sibling of its subject page, and lists this one
+  // in alsoIn so the series has a front door that every member links back to.
+  'how-to-study': {
+    slug: 'how-to-study',
+    url: '/how-to-study',
+    title: 'How to Study',
+    anchor: 'how-to-study guides for every subject',
+    blurb: 'Where the marks sit in each paper, taken from the published syllabuses.',
+    // Linked from the site-wide Free Resources nav, so it appears on itself.
+    allowSelfLink: true,
+    spokes: [
+      'how-to-study-psle-math',
+      'how-to-study-psle-science',
+      'how-to-study-psle-english',
+      'how-to-study-psle-chinese',
+      'how-to-study-o-level-english',
+      'how-to-study-o-level-a-math',
+      'how-to-study-o-level-e-math',
+      'how-to-study-o-level-chemistry',
+      'how-to-study-o-level-physics',
+      'how-to-study-o-level-biology',
+      'how-to-study-o-level-history',
+      'how-to-study-general-paper',
+      'how-to-study-h2-maths',
+      'how-to-study-h2-chemistry',
+      'how-to-study-h2-physics',
+      'how-to-study-h2-biology',
+      'how-to-study-h2-economics',
+    ],
+  },
   'ib-igcse': {
     slug: 'ib-igcse',
     url: '/guides/ib-igcse',
@@ -158,6 +189,7 @@ export const SPOKES = {
   // Article rather than the spoke default of Course.
   'how-to-study-o-level-history': {
     slug: 'how-to-study-o-level-history', url: '/how-to-study/o-level-history', hub: 'o-level-prep',
+    alsoIn: ['how-to-study'],
     schemaType: 'Article',
     title: 'How to Study for O-Level History',
     anchor: 'how to study for O-Level History',
@@ -167,6 +199,7 @@ export const SPOKES = {
   // Complements 'o-level-chemistry', which stays the syllabus-coverage guide.
   'how-to-study-o-level-chemistry': {
     slug: 'how-to-study-o-level-chemistry', url: '/how-to-study/o-level-chemistry', hub: 'o-level-prep',
+    alsoIn: ['how-to-study'],
     schemaType: 'Article',
     title: 'How to Study for O-Level Chemistry',
     anchor: 'how to study for O-Level Chemistry',
@@ -174,6 +207,7 @@ export const SPOKES = {
   },
   'how-to-study-o-level-english': {
     slug: 'how-to-study-o-level-english', url: '/how-to-study/o-level-english', hub: 'o-level-prep',
+    alsoIn: ['how-to-study'],
     schemaType: 'Article',
     title: 'How to Study for O-Level English',
     anchor: 'how to study for O-Level English',
@@ -181,6 +215,7 @@ export const SPOKES = {
   },
   'how-to-study-o-level-physics': {
     slug: 'how-to-study-o-level-physics', url: '/how-to-study/o-level-physics', hub: 'o-level-prep',
+    alsoIn: ['how-to-study'],
     schemaType: 'Article',
     title: 'How to Study for O-Level Physics',
     anchor: 'how to study for O-Level Physics',
@@ -188,6 +223,7 @@ export const SPOKES = {
   },
   'how-to-study-o-level-biology': {
     slug: 'how-to-study-o-level-biology', url: '/how-to-study/o-level-biology', hub: 'o-level-prep',
+    alsoIn: ['how-to-study'],
     schemaType: 'Article',
     title: 'How to Study for O-Level Biology',
     anchor: 'how to study for O-Level Biology',
@@ -195,6 +231,7 @@ export const SPOKES = {
   },
   'how-to-study-o-level-a-math': {
     slug: 'how-to-study-o-level-a-math', url: '/how-to-study/o-level-a-math', hub: 'o-level-prep',
+    alsoIn: ['how-to-study'],
     schemaType: 'Article',
     title: 'How to Study for O-Level A-Math',
     anchor: 'how to study for O-Level A-Math',
@@ -202,6 +239,7 @@ export const SPOKES = {
   },
   'how-to-study-o-level-e-math': {
     slug: 'how-to-study-o-level-e-math', url: '/how-to-study/o-level-e-math', hub: 'o-level-prep',
+    alsoIn: ['how-to-study'],
     schemaType: 'Article',
     title: 'How to Study for O-Level E-Math',
     anchor: 'how to study for O-Level E-Math',
@@ -266,6 +304,7 @@ export const SPOKES = {
   // Article, not the Course default: this is study technique, not a course offering.
   'how-to-study-general-paper': {
     slug: 'how-to-study-general-paper', url: '/how-to-study/general-paper', hub: 'a-level-prep',
+    alsoIn: ['how-to-study'],
     schemaType: 'Article',
     title: 'How to Study for General Paper',
     anchor: 'how to study for General Paper',
@@ -273,6 +312,7 @@ export const SPOKES = {
   },
   'how-to-study-h2-economics': {
     slug: 'how-to-study-h2-economics', url: '/how-to-study/h2-economics', hub: 'a-level-prep',
+    alsoIn: ['how-to-study'],
     schemaType: 'Article',
     title: 'How to Study for H2 Economics',
     anchor: 'how to study for H2 Economics',
@@ -280,6 +320,7 @@ export const SPOKES = {
   },
   'how-to-study-h2-physics': {
     slug: 'how-to-study-h2-physics', url: '/how-to-study/h2-physics', hub: 'a-level-prep',
+    alsoIn: ['how-to-study'],
     schemaType: 'Article',
     title: 'How to Study for H2 Physics',
     anchor: 'how to study for H2 Physics',
@@ -287,6 +328,7 @@ export const SPOKES = {
   },
   'how-to-study-h2-maths': {
     slug: 'how-to-study-h2-maths', url: '/how-to-study/h2-maths', hub: 'a-level-prep',
+    alsoIn: ['how-to-study'],
     schemaType: 'Article',
     title: 'How to Study for H2 Maths',
     anchor: 'how to study for H2 Maths',
@@ -294,6 +336,7 @@ export const SPOKES = {
   },
   'how-to-study-h2-biology': {
     slug: 'how-to-study-h2-biology', url: '/how-to-study/h2-biology', hub: 'a-level-prep',
+    alsoIn: ['how-to-study'],
     schemaType: 'Article',
     title: 'How to Study for H2 Biology',
     anchor: 'how to study for H2 Biology',
@@ -301,6 +344,7 @@ export const SPOKES = {
   },
   'how-to-study-h2-chemistry': {
     slug: 'how-to-study-h2-chemistry', url: '/how-to-study/h2-chemistry', hub: 'a-level-prep',
+    alsoIn: ['how-to-study'],
     schemaType: 'Article',
     title: 'How to Study for H2 Chemistry',
     anchor: 'how to study for H2 Chemistry',
@@ -327,6 +371,7 @@ export const SPOKES = {
   },
   'how-to-study-psle-english': {
     slug: 'how-to-study-psle-english', url: '/how-to-study/psle-english', hub: 'psle-prep',
+    alsoIn: ['how-to-study'],
     schemaType: 'Article',
     title: 'How to Study for PSLE English',
     anchor: 'how to study for PSLE English',
@@ -334,6 +379,7 @@ export const SPOKES = {
   },
   'how-to-study-psle-chinese': {
     slug: 'how-to-study-psle-chinese', url: '/how-to-study/psle-chinese', hub: 'psle-prep',
+    alsoIn: ['how-to-study'],
     schemaType: 'Article',
     title: 'How to Study for PSLE Chinese',
     anchor: 'how to study for PSLE Chinese',
@@ -341,6 +387,7 @@ export const SPOKES = {
   },
   'how-to-study-psle-science': {
     slug: 'how-to-study-psle-science', url: '/how-to-study/psle-science', hub: 'psle-prep',
+    alsoIn: ['how-to-study'],
     schemaType: 'Article',
     title: 'How to Study for PSLE Science',
     anchor: 'how to study for PSLE Science',
@@ -348,6 +395,7 @@ export const SPOKES = {
   },
   'how-to-study-psle-math': {
     slug: 'how-to-study-psle-math', url: '/how-to-study/psle-math', hub: 'psle-prep',
+    alsoIn: ['how-to-study'],
     schemaType: 'Article',
     title: 'How to Study for PSLE Maths',
     anchor: 'how to study for PSLE Maths',
