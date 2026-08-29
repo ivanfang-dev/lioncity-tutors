@@ -42,6 +42,15 @@ const LEVEL_HEADINGS = {
   jc: "A-Level and Junior College",
 };
 
+// Subject keys are title-cased for display, which is wrong for exam names.
+// Anything not listed here falls back to the generic transform.
+const SUBJECT_LABELS = {
+  igcse_chemistry: "IGCSE Chemistry",
+  nt_science: "N(T)-Level Science",
+  a_math: "A-Math",
+  e_math: "E-Math",
+};
+
 // Coming Soon Component for empty arrays
 const ComingSoonCard = ({ level, tint }) => (
   <div className={`flex flex-col items-center justify-center p-6 rounded-lg border-2 border-dashed transition-colors ${tint.placeholder}`}>
@@ -155,7 +164,9 @@ const LevelSection = ({ id, title, heading, icon, notes, onDownloadClick, search
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
         {Object.entries(notes).map(([subjectKey, subjectData]) => {
-          const subjectTitle = subjectKey.replace(/_/g, " ").replace(/\b\w/g, (l) => l.toUpperCase());
+          const subjectTitle =
+            SUBJECT_LABELS[subjectKey] ??
+            subjectKey.replace(/_/g, " ").replace(/\b\w/g, (l) => l.toUpperCase());
           return (
             <SubjectCard
               key={subjectKey}
@@ -370,10 +381,12 @@ export default function NoteLibrary() {
         <section className="text-center py-12 border-t border-gray-200 rounded-2xl">
           <h3 className="text-2xl font-bold text-gray-900 mb-3">What&apos;s in the notes library today</h3>
           <p className="text-gray-600 max-w-xl mx-auto px-4">
-            {noteCount} files, free to download: five A-Level General Paper infopacks and
-            revision sets for O-Level A-Math and E-Math. Other subjects are marked
-            &ldquo;Coming soon&rdquo; until real notes are ready &mdash; in the meantime the
-            subject guides cover the same syllabus content.
+            {noteCount} files, free to download: chemistry study notes for O-Level and
+            IGCSE, a PSLE Science set on matter and materials, the N(T)-Level Food Matters
+            module, revision sets for O-Level A-Math and E-Math, and five A-Level General
+            Paper infopacks. Other subjects are marked &ldquo;Coming soon&rdquo; until real
+            notes are ready &mdash; in the meantime the subject guides cover the same
+            syllabus content.
           </p>
         </section>
       </div>
