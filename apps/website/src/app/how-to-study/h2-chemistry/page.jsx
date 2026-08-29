@@ -270,6 +270,7 @@ Preferred days & timing: `;
                     <li><strong>Drill data-based stems.</strong> They are 20–25 marks of Paper 2 and deliberately unfamiliar. Past-year and prelim papers are in our <Link href="/free-test-papers" className="text-primary underline underline-offset-2">free test papers library</Link>.</li>
                     <li><strong>Learn to navigate the Data Booklet under time.</strong> Finding a value quickly is a skill; memorising it is wasted effort.</li>
                     <li><strong>Rehearse Paper 4 separately.</strong> Twenty per cent of the grade sits in technique that theory revision does not build.</li>
+                    <li><strong>Keep one reference you can check against.</strong> Our free <Link href="/free-notes" className="text-primary underline underline-offset-2">H2 Chemistry study notes</Link> cover all thirteen topics in 15 pages, with the Paper 4 titration, calorimetry and QA technique and a sheet of the equations and constants worth memorising.</li>
                   </ul>
                 </GuideCard>
                 <p className="mt-4 text-pretty">

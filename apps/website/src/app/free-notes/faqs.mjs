@@ -23,6 +23,11 @@ export const FREE_NOTES_FAQS = [
       'Twenty-three pages across all eleven syllabus topics, from states of matter and stoichiometry through electrochemistry, energetics, acids and salts, the Periodic Table, metals, environmental and organic chemistry. The last third is exam technique rather than content: sentence templates for the "explain" questions, the qualitative analysis tables for cations, anions and gases, apparatus precision, and how to separate systematic from random error in a titration. The set is written to Cambridge syllabus 5070, which matches the Singapore-Cambridge 6092 syllabus topic for topic, so it works for either. The IGCSE guide covers the same ground in seventeen pages.',
   },
   {
+    question: 'Are the H2 Chemistry notes written for the 9476 syllabus?',
+    answer:
+      'They are written to 9729, and they still work for 9476. The revised syllabus that school candidates sit from 2026 changed mark allocations — the practical paper from 55 to 50 marks, Paper 3 from 80 to 75 — not the thirteen content topics, and the notes make no claim about marks or weightings anywhere. What they carry is the chemistry itself, the Paper 4 practical technique and a key-equations sheet. Check the A-Level preparation guide for the mark-scheme changes, and the current SEAB syllabus for your exam year.',
+  },
+  {
     question: 'Do the PSLE Science notes cover the whole syllabus?',
     answer:
       'No, and the file says so. They cover the chemistry-related themes — matter, mass and volume, measuring irregular solids by displacement, the three states, and the water cycle — plus the three application models PSLE keeps reusing and the H.A.N.D.S.O.M.E. method for open-ended answers. Biology, energy and systems topics are not in this set. The PSLE Science guide covers the rest of the syllabus in the meantime.',

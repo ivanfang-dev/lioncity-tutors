@@ -62,11 +62,11 @@ export const NOTE_SECTIONS = [
   },
   {
     id: 'h2-sciences',
-    label: 'H2 Biology, Chemistry and Physics notes',
+    label: 'H2 Chemistry notes',
     heading: 'Are there free H2 Biology and H2 Chemistry notes?',
     answer:
-      'Not yet. Chemistry notes exist for O-Level and IGCSE but not for H2, and the H2 Biology and Physics sets are still being written. In the meantime the H2 subject guides cover the same syllabus content in full, and the JC shelf of free test papers carries 2024 prelim papers for H2 Biology, Chemistry, Physics, Maths and Economics.',
+      'H2 Chemistry, yes: 15 pages across all thirteen topics, from atomic structure and energetics through aqueous equilibria, organic chemistry and transition elements, then the Paper 4 practical skills — titration types, calorimetry, kinetics methods and qualitative analysis — and a sheet of the equations and constants worth memorising. It is written to syllabus 9729; the revised 9476 that school candidates sit from 2026 changes mark allocations, not the content. H2 Biology and H2 Physics notes are still being written, so the subject guides remain the fuller resource for those two.',
     linkLead: 'Start with',
-    links: ['a-level-biology', 'a-level-chemistry', 'a-level-physics'],
+    links: ['how-to-study-h2-chemistry', 'a-level-chemistry', 'a-level-biology', 'a-level-physics'],
   },
 ];

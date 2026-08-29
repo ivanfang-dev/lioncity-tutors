@@ -16,6 +16,7 @@ export const metadata = {
 };
 
 import TableOfContents from '@/components/TableOfContents';
+import Link from 'next/link';
 import GuideSchema from '@/components/seo/GuideSchema';
 import {
   GuideHeader, SectionHeading, GuideCard, TopicCard, GuideTimeline, KeyTakeaways, GuideCTA, ICON_STROKE,
@@ -486,6 +487,23 @@ Preferred days & timing: `;
             <section id="resources" className="scroll-mt-24">
               <SectionHeading icon={BookOpen}>Essential H2 Chemistry Resources</SectionHeading>
               <div className="space-y-4">
+                <div>
+                  <h4 className="font-semibold text-gray-900 mb-1.5">Free from us</h4>
+                  <ul className="list-disc ml-5 text-sm space-y-1 text-gray-700">
+                    <li>
+                      <Link href="/free-notes" className="text-primary underline underline-offset-2">H2 Chemistry study notes</Link>
+                      {' '}&mdash; 15 pages across all thirteen topics, plus Paper 4 practical technique and a key-equations sheet. Written to 9729, whose content the revised 9476 keeps &mdash; only the mark allocations changed
+                    </li>
+                    <li>
+                      <Link href="/free-test-papers" className="text-primary underline underline-offset-2">Free test papers</Link>
+                      {' '}&mdash; JC2 H2 Chemistry prelim papers, to work unseen and to time
+                    </li>
+                    <li>
+                      <Link href="/how-to-study/h2-chemistry" className="text-primary underline underline-offset-2">How to study for H2 Chemistry</Link>
+                      {' '}&mdash; how the four papers are weighted, and which category of marks revision usually misses
+                    </li>
+                  </ul>
+                </div>
                 <div>
                   <h4 className="font-semibold text-gray-900 mb-1.5">Recommended Textbooks</h4>
                   <ul className="list-disc ml-5 text-sm space-y-1 text-gray-700">

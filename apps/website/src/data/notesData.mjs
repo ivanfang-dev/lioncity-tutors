@@ -69,7 +69,13 @@ export const notesData = {
         { title: "RI 2024 GP Infopack Arts and Culture", fileKey: "notes/jc/gp/j2/ri-2024-gp-infopack-arts-and-culture.pdf" },
         { title: "RI 2024 GP Infopack Politics I", fileKey: "notes/jc/gp/j2/ri-2024-gp-infopack-politics-i.pdf" },
       ],
-      chemistry: [],
+      chemistry: [
+        {
+          title: "H2 Chemistry Study Notes",
+          description: "All 13 topics in 15 pages — written to syllabus 9729, whose content the revised 9476 keeps unchanged — plus Paper 4 practical technique and a key-equations sheet",
+          fileKey: "notes/jc/chemistry/jc-h2-chemistry-9729-study-notes.pdf",
+        },
+      ],
       maths: []
       // ... add other JC subjects
     }
