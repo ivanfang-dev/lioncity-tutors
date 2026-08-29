@@ -176,6 +176,14 @@ export default function NLevelTuition() {
                         <span>Science (N(T))</span>
                       </li>
                     </ul>
+                    <p className="mt-4 text-sm text-gray-600">
+                      Free to download:{' '}
+                      <Link href="/free-notes" className="text-primary underline underline-offset-2">
+                        N(T)-Level Science notes for the Food Matters module
+                      </Link>
+                      {' '}&mdash; the four food tests, digestion and enzymes, preservation chemistry, and the
+                      list of what syllabus 5148 leaves out.
+                    </p>
                   </div>
                 </div>
               </CardContent>

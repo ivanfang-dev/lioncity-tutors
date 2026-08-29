@@ -25,6 +25,7 @@ export const metadata = {
 };
 
 import TableOfContents from '@/components/TableOfContents';
+import Link from 'next/link';
 import GuideSchema from '@/components/seo/GuideSchema';
 import {
   GuideHeader, SectionHeading, GuideCard, TopicCard, GuideTimeline, KeyTakeaways, GuideCTA, ICON_STROKE,
@@ -456,6 +457,23 @@ Preferred days & timing: `;
             <section id="resources" className="scroll-mt-24">
               <SectionHeading icon={BookOpen}>Essential O Level Chemistry Resources</SectionHeading>
               <div className="space-y-4">
+                <div>
+                  <h4 className="font-semibold text-gray-900 mb-1.5">Free from us</h4>
+                  <ul className="list-disc ml-5 text-sm space-y-1 text-gray-700">
+                    <li>
+                      <Link href="/free-notes" className="text-primary underline underline-offset-2">O-Level Chemistry study notes</Link>
+                      {' '}&mdash; 23 pages across all eleven topics, with sentence templates for the &ldquo;explain&rdquo; questions, the qualitative analysis tables and Paper 3 error analysis
+                    </li>
+                    <li>
+                      <Link href="/free-test-papers" className="text-primary underline underline-offset-2">Free test papers</Link>
+                      {' '}&mdash; Secondary 4 Chemistry prelim and school papers, to work unseen and to time
+                    </li>
+                    <li>
+                      <Link href="/how-to-study/o-level-chemistry" className="text-primary underline underline-offset-2">How to study for O-Level Chemistry</Link>
+                      {' '}&mdash; what each paper is worth, and which reference material you are handed in the exam hall
+                    </li>
+                  </ul>
+                </div>
                 <div>
                   <h4 className="font-semibold text-gray-900 mb-1.5">Recommended Textbooks</h4>
                   <ul className="list-disc ml-5 text-sm space-y-1 text-gray-700">

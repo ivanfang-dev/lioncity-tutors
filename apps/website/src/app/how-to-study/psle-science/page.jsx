@@ -241,6 +241,7 @@ Preferred days & timing: `;
                     <li><strong>Learn confusable terms in pairs,</strong> with the distinction written down.</li>
                     <li><strong>Mix topics.</strong> Questions cross themes, and topic-sorted worksheets do not.</li>
                     <li><strong>Sit whole papers to time.</strong> Prelim and past-year primary papers are in our <Link href="/free-test-papers" className="text-primary underline underline-offset-2">free test papers library</Link>.</li>
+                    <li><strong>Rehearse the standard explanations.</strong> Our free <Link href="/free-notes" className="text-primary underline underline-offset-2">PSLE Science notes on matter and materials</Link> give the burst balloon, the overflowing cup and the two-hole milk tin as worked answer templates, plus the H.A.N.D.S.O.M.E. method for dissecting an open-ended question.</li>
                   </ul>
                 </GuideCard>
                 <p className="mt-4 text-pretty">

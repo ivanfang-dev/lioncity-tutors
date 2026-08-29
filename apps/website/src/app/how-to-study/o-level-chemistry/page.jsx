@@ -347,6 +347,7 @@ Preferred days & timing: `;
                     <li><strong>Mark against the scheme and classify the loss.</strong> Knowledge, command word misread, equation mechanics, or time? Each has a different fix, and students who skip this step repeat the same error until the exam.</li>
                     <li><strong>Rehearse the practical separately.</strong> Twenty per cent of the grade rewards recording and planning technique that theory revision never touches.</li>
                     <li><strong>Build one organic reaction map.</strong> Redraw it from memory weekly rather than rereading it; pathways across two homologous series are where organic questions live.</li>
+                    <li><strong>Keep one reference for the phrasing.</strong> Our free <Link href="/free-notes" className="text-primary underline underline-offset-2">O-Level Chemistry study notes</Link> carry the QA tables, the &ldquo;explain&rdquo; answer templates and the practical error analysis in 23 pages, written to Cambridge 5070 and matching syllabus 6092 topic for topic.</li>
                   </ul>
                 </GuideCard>
                 <p className="mt-4 text-pretty">

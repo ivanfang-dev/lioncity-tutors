@@ -11,6 +11,7 @@ import useTuitionRequestForm from "@/components/useTuitionRequestForm";
 import FormBenefits from "@/components/FormBenefits";
 import { CheckCircle } from "lucide-react";
 import TableOfContents from "@/components/TableOfContents";
+import Link from 'next/link';
 import GuideSchema from '@/components/seo/GuideSchema';
 import {
   GuideHeader, SectionHeading, GuideCard, TopicCard, GuideTimeline, KeyTakeaways, ICON_STROKE,
@@ -355,6 +356,23 @@ export default function PSLEScience() {
               <section id="resources" className="scroll-mt-24">
                 <SectionHeading icon={BookOpen}>Essential PSLE Science resources</SectionHeading>
                 <div className="space-y-4">
+                  <div>
+                    <h4 className="font-semibold text-gray-900 mb-1.5">Free from us</h4>
+                    <ul className="list-disc ml-5 text-sm space-y-1 text-gray-700">
+                      <li>
+                        <Link href="/free-notes" className="text-primary underline underline-offset-2">PSLE Science notes on matter and materials</Link>
+                        {' '}&mdash; the three states, measuring volume by displacement, the three application models PSLE reuses, and the H.A.N.D.S.O.M.E. method for open-ended answers
+                      </li>
+                      <li>
+                        <Link href="/free-test-papers" className="text-primary underline underline-offset-2">Free test papers</Link>
+                        {' '}&mdash; Primary 6 Science prelim and school papers, to sit whole and to time
+                      </li>
+                      <li>
+                        <Link href="/how-to-study/psle-science" className="text-primary underline underline-offset-2">How to study for PSLE Science</Link>
+                        {' '}&mdash; how the open-ended paper is marked, and the keywords it expects
+                      </li>
+                    </ul>
+                  </div>
                   <div>
                     <h4 className="font-semibold text-gray-900 mb-1.5">Recommended series</h4>
                     <ul className="list-disc ml-5 text-sm space-y-1 text-gray-700">
