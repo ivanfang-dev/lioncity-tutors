@@ -225,6 +225,7 @@ Preferred days & timing: `;
                     <li><strong>Practise data-based stems</strong> specifically; they are a third of Paper 2.</li>
                     <li><strong>Drill evaluation language</strong> — a named limitation and its direction, never "human error".</li>
                     <li><strong>Use unseen past papers.</strong> Prelim and past-year JC Physics papers are in our <Link href="/free-test-papers" className="text-primary underline underline-offset-2">free test papers library</Link>.</li>
+                    <li><strong>Close the two 9478 gaps first.</strong> Capacitance and wavefunctions are new to this syllabus, so older material does not cover them. Our free <Link href="/free-notes" className="text-primary underline underline-offset-2">H2 Physics study notes</Link> carry all six sections against 9478, with the legacy 9749 set kept alongside for private and repeat candidates.</li>
                   </ul>
                 </GuideCard>
                 <p className="mt-4 text-pretty">

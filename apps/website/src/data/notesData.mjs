@@ -82,6 +82,21 @@ export const notesData = {
         { title: "RI 2024 GP Infopack Arts and Culture", fileKey: "notes/jc/gp/j2/ri-2024-gp-infopack-arts-and-culture.pdf" },
         { title: "RI 2024 GP Infopack Politics I", fileKey: "notes/jc/gp/j2/ri-2024-gp-infopack-politics-i.pdf" },
       ],
+      // Both H2 Physics syllabuses are hosted: 9478 is what school candidates
+      // sit from 2026, 9749 has its final examination the same year and is
+      // open to private and repeat candidates only. Each title says which.
+      physics: [
+        {
+          title: "H2 Physics Study Notes (9478, current syllabus)",
+          description: "For every school candidate from 2026 — all six sections in 49 pages, with derivations, answer blueprints and a formula sheet, including capacitance and wavefunctions, the two topics 9749 never had",
+          fileKey: "notes/jc/physics/jc-h2-physics-9478-master-study-notes.pdf",
+        },
+        {
+          title: "H2 Physics Study Notes (9749, legacy syllabus)",
+          description: "Final examination 2026, private and repeat candidates only — the same six sections in 46 pages, against the retired paper structure. If you are unsure which you sit, take the 9478 set above",
+          fileKey: "notes/jc/physics/jc-h2-physics-9749-legacy-master-study-notes.pdf",
+        },
+      ],
       maths: [
         {
           title: "H2 Mathematics Revision Notes",

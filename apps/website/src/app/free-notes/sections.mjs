@@ -35,12 +35,12 @@ export const NOTE_SECTIONS = [
   },
   {
     id: 'physics',
-    label: 'O-Level Physics notes',
-    heading: 'Are there free O-Level Physics notes?',
+    label: 'Physics notes: H2 and O-Level',
+    heading: 'What free Physics notes are available?',
     answer:
-      'One set, 11 pages across all eleven topics from measurement and kinematics through waves, electricity, electromagnetism and radioactivity. Every topic carries its formulas with SI units attached, because the most common way to lose an easy mark is substituting minutes or grams straight into a formula. It closes on answer templates, instrument precision and error analysis, and the graphing rules the practical paper marks against. Written to Cambridge 5054, which matches Singapore’s 6091 topic for topic.',
-    linkLead: 'For where the marks actually sit — only about 15% is recall — read',
-    links: ['how-to-study-o-level-physics', 'o-level-physics'],
+      'Three sets. H2 Physics comes in both syllabuses: 9478, which every school candidate sits from 2026, and 9749, which has its final examination that same year and is open to private and repeat candidates only. Each runs to roughly 48 pages across all six sections, with worked derivations, answer blueprints and a formula sheet — take 9478 unless you know you are sitting the legacy paper. The O-Level set covers all eleven topics in 11 pages, every formula carrying its SI unit, then answer templates, instrument precision and the graphing rules the practical marks against; it is written to Cambridge 5054, which matches Singapore’s 6091 topic for topic.',
+    linkLead: 'For where the marks actually sit in each, read',
+    links: ['how-to-study-h2-physics', 'a-level-physics', 'how-to-study-o-level-physics', 'o-level-physics'],
   },
   {
     id: 'psle-math',
@@ -89,11 +89,11 @@ export const NOTE_SECTIONS = [
   },
   {
     id: 'h2-sciences',
-    label: 'H2 Biology and Physics notes',
-    heading: 'Are there free H2 Biology and H2 Physics notes?',
+    label: 'H2 Biology notes',
+    heading: 'Are there free H2 Biology notes?',
     answer:
-      'Not yet — those two are still being written. H2 and H1 Chemistry both have notes, in the chemistry block above. For Biology and Physics the subject guides cover the same syllabus content in full, and the JC shelf of free test papers carries 2024 prelim papers for H2 Biology, Chemistry, Physics, Maths and Economics.',
+      'Not yet — Biology is the one H2 science still without notes. Chemistry has H2 and H1 sets, and Physics has both the 9478 and 9749 syllabuses, in the blocks above. For Biology the subject guide covers the same syllabus content in full, and the JC shelf of free test papers carries 2024 prelim papers for H2 Biology, Chemistry, Physics, Maths and Economics.',
     linkLead: 'Start with',
-    links: ['a-level-biology', 'a-level-physics', 'free-test-papers'],
+    links: ['a-level-biology', 'free-test-papers'],
   },
 ];

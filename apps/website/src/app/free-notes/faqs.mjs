@@ -15,7 +15,7 @@ export const FREE_NOTES_FAQS = [
   {
     question: 'Which subjects do the free study notes cover?',
     answer:
-      'Chemistry, physics, science, maths and General Paper. Chemistry runs across four levels: H2, H1, O-Level and IGCSE. Physics has an O-Level set covering all eleven topics. Science has a PSLE set on matter and materials and the N(T)-Level Food Matters module from syllabus 5148. Maths runs across three: H2 Mathematics (syllabus 9758), PSLE Mathematics (0008), and both O-Level papers — Additional Mathematics (4049) and Elementary Mathematics (4052). A-Level General Paper has five Raffles Institution 2024 infopacks. Other subjects show as "Coming soon" until real notes exist for them — nothing on this page is a placeholder download.',
+      'Chemistry, physics, science, maths and General Paper. Chemistry runs across four levels: H2, H1, O-Level and IGCSE. Physics has H2 sets for both the 9478 and 9749 syllabuses, and an O-Level set covering all eleven topics. Science has a PSLE set on matter and materials and the N(T)-Level Food Matters module from syllabus 5148. Maths runs across three: H2 Mathematics (syllabus 9758), PSLE Mathematics (0008), and both O-Level papers — Additional Mathematics (4049) and Elementary Mathematics (4052). A-Level General Paper has five Raffles Institution 2024 infopacks. Other subjects show as "Coming soon" until real notes exist for them — nothing on this page is a placeholder download.',
   },
   {
     question: 'What is in the O-Level Chemistry notes?',
@@ -31,6 +31,11 @@ export const FREE_NOTES_FAQS = [
     question: 'What is in the H2 Maths notes?',
     answer:
       'Nineteen pages on syllabus 9758, and the first three are about how the paper is marked rather than about mathematics: what the graphing calculator may be used for and where its use must still be shown, what the printed formula list already supplies, and the working discipline that earns method marks — state the model first, keep five significant figures until the final line, and end a hypothesis test with a sentence about the context. The middle is a topic reference across Pure Mathematics and Probability and Statistics. It also lists what the syllabus excludes, which matters because several excluded topics still appear in older Ten-Year Series papers.',
+  },
+  {
+    question: 'Should I download the 9478 or the 9749 H2 Physics notes?',
+    answer:
+      'Take 9478 unless you know otherwise. Syllabus 9478 replaced 9749 and is what every school candidate sits from 2026; 9749 has its final examination in the same year and is open only to private and repeat candidates, and SEAB will not offer it again. For the topics carried across, the content, definitions and derivations are identical — what changed is the paper structure (the practical fell from 55 marks to 50, and Paper 4 now expects spreadsheet-based data processing rather than manual graph-paper plotting) and two genuinely new topics, capacitance and wavefunctions. Those two are the gap to close if you have been revising from 9749-labelled material.',
   },
   {
     question: 'What is in the O-Level Physics notes?',
