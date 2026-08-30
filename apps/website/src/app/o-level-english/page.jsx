@@ -40,7 +40,7 @@ const tableOfContents = [
   { id: 'structure', label: 'Exam & component structure' },
   { id: 'exam-dates', label: '2026 exam timetable' },
   { id: 'timeline', label: '18-month study timeline' },
-  { id: 'language', label: 'English Language (1128)' },
+  { id: 'language', label: 'English Language (1184)' },
   { id: 'literature', label: 'English Literature (2065)' },
   { id: 'study-techniques', label: 'Study techniques that work' },
   { id: 'exam-strategies', label: 'Paper-by-paper exam strategy' },
@@ -191,7 +191,7 @@ Preferred days & timing: `;
             {/* Key takeaways */}
             <KeyTakeaways
               items={[
-                <>O Level English is compulsory Language (1128) &mdash; Writing and Comprehension &mdash; with optional Literature (2065).</>,
+                <>O Level English is compulsory Language (1184) &mdash; four papers: Writing, Comprehension, Listening and Oral &mdash; with optional Literature (2065).</>,
                 <>A steady Sec 3&rarr;Sec 4 timeline built on wide reading and regular writing beats last-minute cramming.</>,
                 <>Marks come from technique as much as content &mdash; plan before you write, vary your language, and back points with evidence.</>,
                 <>Struggling with essay structure, comprehension or literary analysis is the usual signal that targeted tuition will help.</>,
@@ -222,12 +222,14 @@ Preferred days & timing: `;
                 <h4 className="font-semibold text-gray-900 mb-4">O Level English Components Breakdown</h4>
                 <div className="space-y-5">
                   <div>
-                    <h5 className="font-semibold text-gray-900">English Language (1128) &mdash; Paper 1 &amp; 2</h5>
+                    <h5 className="font-semibold text-gray-900">English Language (1184) &mdash; four papers</h5>
                     <ul className="list-disc ml-5 mt-1.5 space-y-1 text-sm text-gray-700">
                       <li>Compulsory for all O Level students</li>
                       <li>Prerequisites for polytechnic and JC admission</li>
-                      <li>Paper 1: Writing (70 marks, 1 hour 50 minutes)</li>
-                      <li>Paper 2: Comprehension (50 marks, 1 hour 50 minutes)</li>
+                      <li>Paper 1: Writing &mdash; 70 marks, 35%, 1 hour 50 minutes</li>
+                      <li>Paper 2: Comprehension &mdash; 50 marks, 35%, 1 hour 50 minutes</li>
+                      <li>Paper 3: Listening &mdash; 30 marks, 10%, about 45 minutes</li>
+                      <li>Paper 4: Oral Communication &mdash; 30 marks, 20%, about 20 minutes including 10 minutes of preparation</li>
                     </ul>
                   </div>
                   <div>
@@ -259,21 +261,21 @@ Preferred days & timing: `;
             </section>
 
             <section id="language" className="scroll-mt-24">
-              <SectionHeading icon={PenLine}>English Language (1128) Mastery Guide</SectionHeading>
+              <SectionHeading icon={PenLine}>English Language (1184) Mastery Guide</SectionHeading>
               <div className="space-y-4">
                 <TopicCard
-                  title="Paper 1: Writing (70 marks)"
-                  chips={['Situational Writing (30 marks)', 'Continuous Writing (40 marks)']}
+                  title="Paper 1: Writing (70 marks, 35%)"
+                  chips={['Editing (10 marks)', 'Situational Writing (30 marks)', 'Continuous Writing (30 marks)']}
                   points={[
-                    'Master different text types (letters, reports, speeches)',
-                    'Practice formal and informal writing styles',
-                    'Develop strong argumentative and narrative skills',
-                    'Learn to adapt tone and register appropriately',
+                    'Edit ten grammatical errors in a short text — the section most often rushed',
+                    'Master different text types (letters, reports, speeches) for the 250–350 word situational task',
+                    'Write 350–500 words on one of four topics, adapting tone and register',
+                    'Plan before writing: situational marks split evenly between task fulfilment and language',
                   ]}
                 />
                 <TopicCard
-                  title="Paper 2: Comprehension (50 marks)"
-                  chips={['Visual Text', 'Narrative Text', 'Non-narrative Text']}
+                  title="Paper 2: Comprehension (50 marks, 35%)"
+                  chips={['Visual Text (5 marks)', 'Narrative Text (20 marks)', 'Non-narrative & Summary (25 marks)']}
                   points={[
                     'Practice skimming and scanning techniques',
                     'Master inference and deduction skills',
@@ -282,13 +284,13 @@ Preferred days & timing: `;
                   ]}
                 />
                 <TopicCard
-                  title="Listening & Oral Communication"
-                  chips={['Listening Comprehension', 'Reading Aloud', 'Spoken Interaction']}
+                  title="Papers 3 & 4: Listening (10%) and Oral (20%)"
+                  chips={['Listening tasks (22 marks)', 'Note-taking (8 marks)', 'Planned Response (15 marks)', 'Spoken Interaction (15 marks)']}
                   points={[
-                    'Practice listening to various accents and speech patterns',
-                    'Master pronunciation and intonation',
-                    'Develop conversation skills and topic discussion',
-                    'Learn to express opinions clearly and confidently',
+                    'Section A of Listening is played twice; Section B note-taking is played once',
+                    'Plan and deliver a response of up to 2 minutes to a video clip and prompt',
+                    'Discuss a topic broadly related to that clip with the examiners',
+                    'Together these two papers are 30% of the grade, and the least rehearsed',
                   ]}
                 />
               </div>
