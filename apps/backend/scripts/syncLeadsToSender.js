@@ -78,6 +78,14 @@ const BLOCKED_DOMAINS = new Set([
 ]);
 const TYPO_TLDS = /\.(con|cim|comm|cm|co m|gmial\.com|gmai\.com)$/i;
 
+// Sender.net keys custom fields by name; field ids are silently ignored.
+function mode(values) {
+  const counts = {};
+  for (const v of values) if (v) counts[v] = (counts[v] || 0) + 1;
+  const top = Object.entries(counts).sort((a, b) => b[1] - a[1])[0];
+  return top ? top[0] : null;
+}
+
 function skipReason(email) {
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) return 'malformed address';
   const [local, domain] = email.split('@');
@@ -85,6 +93,14 @@ function skipReason(email) {
   if (BLOCKED_DOMAINS.has(domain)) return `blocked domain (${domain})`;
   if (local.length < 2) return 'local part too short';
   return null;
+}
+
+function fieldsFor(r) {
+  const fields = {};
+  if (r.level) fields['{{level}}'] = r.level;
+  if (r.topSubject) fields['{{top_subject}}'] = r.topSubject;
+  fields['{{papers_downloaded}}'] = String(r.papers);
+  return fields;
 }
 
 async function main() {
@@ -109,12 +125,15 @@ async function main() {
       skipped.push({ email, reason });
       continue;
     }
+    const downloads = lead.downloads || [];
     recipients.push({
       email,
       phone: normalisePhone(lead.phone),
       createdAt: lead.createdAt,
-      papers: (lead.downloads || []).length,
-      lastPaper: lead.downloads?.[lead.downloads.length - 1]?.paperTitle || '—',
+      papers: downloads.length,
+      lastPaper: downloads[downloads.length - 1]?.paperTitle || '—',
+      level: mode(downloads.map((d) => d.level)),
+      topSubject: mode(downloads.map((d) => d.subject)),
     });
   }
 
@@ -154,12 +173,12 @@ async function main() {
   if (!groupId) bail('Need --group=<id> or --create-group="<title>" when using --apply.');
 
   // Re-runs are common (canary first, then the rest), so skip anyone already in.
-  const existing = new Set();
+  const existing = new Map();
   try {
     for (let page = 1; ; page += 1) {
       const res = await sender(`/groups/${groupId}/subscribers?limit=100&page=${page}`);
       const rows = res?.data || [];
-      rows.forEach((r) => existing.add((r.email || '').toLowerCase()));
+      rows.forEach((r) => existing.set((r.email || '').toLowerCase(), r.id));
       if (rows.length < 100) break;
     }
   } catch (err) {
@@ -167,9 +186,9 @@ async function main() {
     console.log(`  (member lookup returned no rows: ${err.message})`);
   }
 
-  let queue = recipients.filter((r) => !existing.has(r.email));
-  const alreadyIn = recipients.length - queue.length;
-  if (alreadyIn) console.log(`\n${alreadyIn} already in group ${groupId}, skipping those.`);
+  let queue = recipients;
+  const alreadyIn = recipients.filter((r) => existing.has(r.email)).length;
+  if (alreadyIn) console.log(`\n${alreadyIn} already in group ${groupId}; their fields will be updated.`);
   if (LIMIT) queue = queue.slice(0, LIMIT);
 
   if (!queue.length) {
@@ -181,15 +200,23 @@ async function main() {
   let added = 0;
   const failures = [];
   for (const r of queue) {
-    const payload = { email: r.email, groups: [groupId] };
+    const payload = { fields: fieldsFor(r) };
     if (WITH_PHONE && r.phone) {
       payload.phone = r.phone;
       payload.phone_country = 'SG';
     }
+    const id = existing.get(r.email);
     try {
-      await sender('/subscribers', { method: 'POST', body: JSON.stringify(payload) });
+      if (id) {
+        await sender(`/subscribers/${id}`, { method: 'PATCH', body: JSON.stringify(payload) });
+      } else {
+        await sender('/subscribers', {
+          method: 'POST',
+          body: JSON.stringify({ ...payload, email: r.email, groups: [groupId] }),
+        });
+      }
       added += 1;
-      console.log(`  ✓ ${r.email}`);
+      console.log(`  ${id ? '↻' : '✓'} ${r.email.padEnd(38)} ${r.level || '?'} / ${r.topSubject || '?'}`);
     } catch (err) {
       failures.push({ email: r.email, error: err.message });
       console.log(`  ✖ ${r.email} — ${err.message}`);
@@ -197,7 +224,7 @@ async function main() {
     await new Promise((resolve) => setTimeout(resolve, 350));
   }
 
-  console.log(`\nDone. ${added} added, ${failures.length} failed.`);
+  console.log(`\nDone. ${added} added/updated, ${failures.length} failed.`);
   if (failures.length) {
     console.log('Failed addresses:');
     failures.forEach((f) => console.log(`  ${f.email}  ${f.error}`));
