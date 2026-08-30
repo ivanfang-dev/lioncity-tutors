@@ -254,7 +254,7 @@ Preferred days & timing: `;
                     <li><strong>Ground every explanation in the data given,</strong> quoting figures before adding recalled content.</li>
                     <li><strong>Revise the joins between topics,</strong> which the syllabus says questions will require.</li>
                     <li><strong>Use unseen past papers.</strong> Prelim and past-year JC Biology papers are in our <Link href="/free-test-papers" className="text-primary underline underline-offset-2">free test papers library</Link>.</li>
-                    <li><strong>Take content from the legacy guide, structure from this page.</strong> Our free <Link href="/free-notes" className="text-primary underline underline-offset-2">H2 Biology study guide</Link> is written to 9744, whose topics carry across to 9477 &mdash; but its paper structure does not, and the weightings above are the ones you sit.</li>
+                    <li><strong>Check which Paper 3 you are sitting.</strong> Our free <Link href="/free-notes" className="text-primary underline underline-offset-2">H2 Biology study guide</Link> comes in both syllabuses &mdash; take 9477 unless you are a private or repeat candidate. Paper 3 is 75 marks either way, but 9477 resplits it, so the free-response question you choose is worth 20 rather than 25.</li>
                   </ul>
                 </GuideCard>
                 <p className="mt-4 text-pretty">

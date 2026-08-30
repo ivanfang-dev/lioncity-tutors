@@ -110,8 +110,8 @@ export const NOTE_SECTIONS = [
     label: 'H2 Biology notes',
     heading: 'Are there free H2 Biology notes?',
     answer:
-      'One, and only for the legacy syllabus. The 9744 study guide covers the full topic roadmap from cell biology and biomolecules through genetics to ecology, and 9744 has its final examination in 2026, for private and repeat candidates only. Its assessment table is the legacy one: 9477, which every school candidate sits, moved Paper 2 to 90 marks, resplit Paper 3 into 55 and 20, and cut the practical to 50. So download it for the biology, not for the paper structure — and if you sit 9477, take the paper structure from the subject guide instead. A 9477 set is still being written.',
-    linkLead: 'For the current syllabus, read',
-    links: ['a-level-biology', 'how-to-study-h2-biology', 'free-test-papers'],
+      'Both syllabuses, as a pair. Take 9477: it is what every school candidate sits from 2026, and it carries the four core ideas and two extension topics against the current paper structure — Paper 2 at 90 marks, Paper 3 split 55 and 20, and a 50-mark practical. The 9744 set is kept because that syllabus has its final examination in 2026 for private and repeat candidates; its biology carries across, but its assessment table does not, so a school candidate should not revise paper structure from it.',
+    linkLead: 'For where the marks sit and how to read unfamiliar stimulus material, read',
+    links: ['how-to-study-h2-biology', 'a-level-biology', 'free-test-papers'],
   },
 ];

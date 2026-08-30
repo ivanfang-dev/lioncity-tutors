@@ -478,8 +478,12 @@ Preferred days & timing: `;
                   <h4 className="font-semibold text-gray-900 mb-1.5">Free from us</h4>
                   <ul className="list-disc ml-5 text-sm space-y-1 text-gray-700">
                     <li>
+                      <Link href="/free-notes" className="text-primary underline underline-offset-2">H2 Biology study guide (9477)</Link>
+                      {' '}&mdash; the current syllabus, for every school candidate from 2026: the four core ideas and two extension topics, against the paper structure on this page
+                    </li>
+                    <li>
                       <Link href="/free-notes" className="text-primary underline underline-offset-2">H2 Biology study guide (9744, legacy)</Link>
-                      {' '}&mdash; the full topic roadmap, cell biology through ecology. Its paper structure is the legacy one, so take that from this page instead: 9477 moved Paper 2 to 90 marks, resplit Paper 3 into 55 and 20, and cut the practical to 50
+                      {' '}&mdash; the retired syllabus, final examination 2026 and open to private and repeat candidates only
                     </li>
                     <li>
                       <Link href="/free-test-papers" className="text-primary underline underline-offset-2">Free test papers</Link>

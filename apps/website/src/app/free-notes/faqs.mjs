@@ -43,9 +43,9 @@ export const FREE_NOTES_FAQS = [
       'Nineteen pages on syllabus 9758, and the first three are about how the paper is marked rather than about mathematics: what the graphing calculator may be used for and where its use must still be shown, what the printed formula list already supplies, and the working discipline that earns method marks — state the model first, keep five significant figures until the final line, and end a hypothesis test with a sentence about the context. The middle is a topic reference across Pure Mathematics and Probability and Statistics. It also lists what the syllabus excludes, which matters because several excluded topics still appear in older Ten-Year Series papers.',
   },
   {
-    question: 'Can I use the 9744 H2 Biology guide if I sit 9477?',
+    question: 'Should I download the 9477 or the 9744 H2 Biology guide?',
     answer:
-      'For the biology, yes. For the paper structure, no. The topic content carries across, so the roadmap from cell biology and biomolecules through genetics to ecology is the same material either way. What does not carry across is the assessment table: 9744 had Paper 2 at 100 marks, Paper 3 split 50 and 25, and the practical at 55, while 9477 has 90, a 55 and 20 split, and a 50-mark practical. Read the paper structure off our H2 Biology guide, which is written against 9477. The 9744 set is here because its final examination is in 2026 and private and repeat candidates still sit it.',
+      'Take 9477 unless you know otherwise. It replaced 9744 and is what every school candidate sits from 2026; 9744 has its final examination in the same year and is open only to private and repeat candidates. The biology itself carries across, so either set teaches the same material — what does not carry across is the assessment table. 9744 had Paper 2 at 100 marks, Paper 3 split 50 and 25, and a 55-mark practical; 9477 has 90 marks, a 55 and 20 split, and a 50-mark practical. Note that Paper 3 keeps its 75 marks either way, so the resplit is easy to miss: the free-response question you choose is now worth 20 rather than 25.',
   },
   {
     question: 'Should I download the 9478 or the 9749 H2 Physics notes?',

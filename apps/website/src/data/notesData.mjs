@@ -94,14 +94,18 @@ export const notesData = {
         { title: "RI 2024 GP Infopack Arts and Culture", fileKey: "notes/jc/gp/j2/ri-2024-gp-infopack-arts-and-culture.pdf" },
         { title: "RI 2024 GP Infopack Politics I", fileKey: "notes/jc/gp/j2/ri-2024-gp-infopack-politics-i.pdf" },
       ],
-      // Legacy-only, and the card says so twice. Its assessment table is the
-      // 9744 one — Paper 2 at 100 marks, Paper 3 split 50/25, Paper 4 at 55 —
-      // and 9477 changed all three, so a school candidate reading it against
-      // the current syllabus would plan revision from wrong figures.
+      // Both syllabuses, current first. 9477 changed three papers, not one, so
+      // the legacy set's assessment table is wrong for a school candidate —
+      // hence the steer to 9477 in the legacy card's own description.
       biology: [
         {
+          title: "H2 Biology Study Guide (9477, current syllabus)",
+          description: "For every school candidate from 2026 — the four core ideas and two extension topics, with the paper structure that replaced 9744: Paper 2 at 90 marks, Paper 3 split 55 and 20, and a 50-mark practical",
+          fileKey: "notes/jc/biology/jc-h2-biology-9477-study-guide.pdf",
+        },
+        {
           title: "H2 Biology Study Guide (9744, legacy syllabus)",
-          description: "Final examination 2026, private and repeat candidates only — the full topic roadmap from cell biology to ecology. Its assessment table is the legacy one, so if you sit 9477 use the H2 Biology subject guide for paper structure",
+          description: "Final examination 2026, private and repeat candidates only. Its assessment table is the legacy one — Paper 2 at 100 marks, Paper 3 split 50 and 25, a 55-mark practical — so take the 9477 set above unless you know you sit 9744",
           fileKey: "notes/jc/biology/jc-h2-biology-9744-legacy-study-guide.pdf",
         },
       ],
