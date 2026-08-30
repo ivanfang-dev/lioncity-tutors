@@ -94,6 +94,17 @@ export const notesData = {
         { title: "RI 2024 GP Infopack Arts and Culture", fileKey: "notes/jc/gp/j2/ri-2024-gp-infopack-arts-and-culture.pdf" },
         { title: "RI 2024 GP Infopack Politics I", fileKey: "notes/jc/gp/j2/ri-2024-gp-infopack-politics-i.pdf" },
       ],
+      // Legacy-only, and the card says so twice. Its assessment table is the
+      // 9744 one — Paper 2 at 100 marks, Paper 3 split 50/25, Paper 4 at 55 —
+      // and 9477 changed all three, so a school candidate reading it against
+      // the current syllabus would plan revision from wrong figures.
+      biology: [
+        {
+          title: "H2 Biology Study Guide (9744, legacy syllabus)",
+          description: "Final examination 2026, private and repeat candidates only — the full topic roadmap from cell biology to ecology. Its assessment table is the legacy one, so if you sit 9477 use the H2 Biology subject guide for paper structure",
+          fileKey: "notes/jc/biology/jc-h2-biology-9744-legacy-study-guide.pdf",
+        },
+      ],
       // Both H2 Physics syllabuses are hosted: 9478 is what school candidates
       // sit from 2026, 9749 has its final examination the same year and is
       // open to private and repeat candidates only. Each title says which.

@@ -110,8 +110,8 @@ export const NOTE_SECTIONS = [
     label: 'H2 Biology notes',
     heading: 'Are there free H2 Biology notes?',
     answer:
-      'Not yet — Biology is the one H2 science still without notes. Chemistry has H2 and H1 sets, and Physics has both the 9478 and 9749 syllabuses, in the blocks above. For Biology the subject guide covers the same syllabus content in full, and the JC shelf of free test papers carries 2024 prelim papers for H2 Biology, Chemistry, Physics, Maths and Economics.',
-    linkLead: 'Start with',
-    links: ['a-level-biology', 'free-test-papers'],
+      'One, and only for the legacy syllabus. The 9744 study guide covers the full topic roadmap from cell biology and biomolecules through genetics to ecology, and 9744 has its final examination in 2026, for private and repeat candidates only. Its assessment table is the legacy one: 9477, which every school candidate sits, moved Paper 2 to 90 marks, resplit Paper 3 into 55 and 20, and cut the practical to 50. So download it for the biology, not for the paper structure — and if you sit 9477, take the paper structure from the subject guide instead. A 9477 set is still being written.',
+    linkLead: 'For the current syllabus, read',
+    links: ['a-level-biology', 'how-to-study-h2-biology', 'free-test-papers'],
   },
 ];
