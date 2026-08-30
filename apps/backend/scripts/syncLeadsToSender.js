@@ -155,11 +155,16 @@ async function main() {
 
   // Re-runs are common (canary first, then the rest), so skip anyone already in.
   const existing = new Set();
-  for (let page = 1; ; page += 1) {
-    const res = await sender(`/groups/${groupId}/subscribers?limit=100&page=${page}`);
-    const rows = res?.data || [];
-    rows.forEach((r) => existing.add((r.email || '').toLowerCase()));
-    if (rows.length < 100) break;
+  try {
+    for (let page = 1; ; page += 1) {
+      const res = await sender(`/groups/${groupId}/subscribers?limit=100&page=${page}`);
+      const rows = res?.data || [];
+      rows.forEach((r) => existing.add((r.email || '').toLowerCase()));
+      if (rows.length < 100) break;
+    }
+  } catch (err) {
+    // An empty group 400s on this endpoint, so a failed lookup means no members.
+    console.log(`  (member lookup returned no rows: ${err.message})`);
   }
 
   let queue = recipients.filter((r) => !existing.has(r.email));
