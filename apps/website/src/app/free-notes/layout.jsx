@@ -1,7 +1,7 @@
 import { DEFAULT_OG_IMAGE } from '@/lib/seo/openGraph';
 const TITLE = 'Free Study Notes: PSLE, O-Level, A-Level | LionCity Tutors';
 const DESCRIPTION =
-  'Free revision notes to download, no account needed: H2 Physics for both syllabuses, Chemistry H2 to IGCSE, H2 and PSLE Maths, O-Level Physics and A-Level GP.';
+  'Free revision notes to download, no account needed: H2 Physics for both syllabuses, Chemistry H2 to IGCSE, H2 and PSLE Maths, O-Level Physics, English and GP.';
 
 export const metadata = {
   title: TITLE,
@@ -14,6 +14,8 @@ export const metadata = {
     'JC notes',
     'junior college notes',
     'O level notes',
+    'o level english notes',
+    'o level english 1184',
     'secondary school notes',
     'PSLE notes',
     'primary school notes',

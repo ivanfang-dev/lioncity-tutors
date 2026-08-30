@@ -183,7 +183,7 @@ Preferred days & timing: `;
           <GuideHeader
             title="O Level Math Guide 2026: Master Elementary & Additional Mathematics"
             author="By the LionCity Tutors Mathematics Team"
-            meta="Updated June 1, 2026 · 15 min read"
+            meta="Updated August 29, 2026 · 15 min read"
             imageSrc="/math-tuition.webp"
             imageAlt="Handwritten equations and working — the algebra, calculus and trigonometry at the heart of O Level Mathematics."
           />
@@ -196,7 +196,7 @@ Preferred days & timing: `;
             {/* Key takeaways */}
             <KeyTakeaways
               items={[
-                <>O Level Maths splits into compulsory E Math (4016) and optional A Math (4047) &mdash; A Math is the gateway to H2 Maths in JC.</>,
+                <>O Level Maths splits into compulsory E Math (4052) and optional A Math (4049) &mdash; A Math is the gateway to H2 Maths in JC.</>,
                 <>A steady Sec 3&rarr;Sec 4 timeline built on understanding beats last-minute memorisation every time.</>,
                 <>Method marks are everything &mdash; clear working and correct notation earn as much as the final answer.</>,
                 <>Struggling with algebra, calculus or careless errors is the usual signal that targeted tuition will help.</>,
@@ -227,22 +227,24 @@ Preferred days & timing: `;
                 <h4 className="font-semibold text-gray-900 mb-4">O Level Math Subjects Breakdown</h4>
                 <div className="space-y-5">
                   <div>
-                    <h5 className="font-semibold text-gray-900">Elementary Mathematics (E Math) &mdash; Paper 4016</h5>
+                    <h5 className="font-semibold text-gray-900">Elementary Mathematics (E Math) &mdash; syllabus 4052</h5>
                     <ul className="list-disc ml-5 mt-1.5 space-y-1 text-sm text-gray-700">
                       <li>Compulsory for all O Level students</li>
-                      <li>Prerequisites for polytechnic and JC admission</li>
-                      <li>Paper 1: Multiple Choice (40 marks, 1 hour)</li>
-                      <li>Paper 2: Short Answer &amp; Long Answer (80 marks, 2.5 hours)</li>
+                      <li>Prerequisite for polytechnic and JC admission</li>
+                      <li>Paper 1: about 26 short-answer questions &mdash; 90 marks, 50%, 2 hours 15 minutes</li>
+                      <li>Paper 2: 9–10 questions, last one a real-world application &mdash; 90 marks, 50%, 2 hours 15 minutes</li>
+                      <li>Calculator allowed in both papers; geometrical instruments required in both</li>
                     </ul>
                   </div>
                   <div>
-                    <h5 className="font-semibold text-gray-900">Additional Mathematics (A Math) &mdash; Paper 4047</h5>
+                    <h5 className="font-semibold text-gray-900">Additional Mathematics (A Math) &mdash; syllabus 4049</h5>
                     <ul className="list-disc ml-5 mt-1.5 space-y-1 text-sm text-gray-700">
                       <li>Optional subject for higher-achieving students</li>
                       <li>Essential for H2 Mathematics in JC</li>
-                      <li>Required for engineering, science university courses</li>
-                      <li>Paper 1: Pure Mathematics (80 marks, 2.5 hours)</li>
-                      <li>Paper 2: Pure Mathematics (80 marks, 2.5 hours)</li>
+                      <li>Required for many engineering and science university pathways</li>
+                      <li>Paper 1: 12–14 questions (up to 10 marks each) &mdash; 90 marks, 50%, 2 hours 15 minutes</li>
+                      <li>Paper 2: 9–11 questions (up to 12 marks each) &mdash; 90 marks, 50%, 2 hours 15 minutes</li>
+                      <li>Calculator allowed in both papers; a formula list is provided</li>
                     </ul>
                   </div>
                 </div>
@@ -267,9 +269,8 @@ Preferred days & timing: `;
               <SectionHeading icon={Calculator}>Elementary Mathematics (E Math) Mastery Guide</SectionHeading>
               <div className="space-y-4">
                 <TopicCard
-                  title="Numbers and Algebra"
-                  weight="35–40% of paper"
-                  chips={['Indices', 'Surds', 'Polynomials', 'Simultaneous Equations', 'Quadratic Equations', 'Inequalities']}
+                  title="Number and Algebra"
+                  chips={['Numbers & Indices', 'Ratio & Percentage', 'Algebra', 'Functions & Graphs', 'Equations & Inequalities', 'Sets', 'Matrices']}
                   points={[
                     'Master algebraic manipulation through daily practice',
                     'Memorize standard forms and factorization patterns',
@@ -278,36 +279,23 @@ Preferred days & timing: `;
                   ]}
                 />
                 <TopicCard
-                  title="Geometry and Trigonometry"
-                  weight="25–30% of paper"
-                  chips={['Angles', 'Triangles', 'Polygons', 'Circles', 'Coordinate Geometry', 'Trigonometric Ratios']}
+                  title="Geometry and Measurement"
+                  chips={['Angles & Polygons', 'Congruence & Similarity', 'Circles', 'Pythagoras & Trigonometry', 'Mensuration', 'Coordinate Geometry', 'Vectors']}
                   points={[
-                    'Memorize all geometric properties and theorems',
-                    'Practice drawing accurate diagrams for visualization',
-                    'Master SOHCAHTOA and special angle values',
+                    'Memorize geometric properties and circle theorems',
+                    'Practice accurate diagrams with compasses, protractor and ruler',
+                    'Master trigonometric ratios, sine rule and cosine rule',
                     'Learn to identify which geometric property to apply',
                   ]}
                 />
                 <TopicCard
                   title="Statistics and Probability"
-                  weight="20–25% of paper"
-                  chips={['Data Representation', 'Measures of Central Tendency', 'Probability', 'Normal Distribution']}
+                  chips={['Data Handling', 'Mean, Mode & Median', 'Quartiles & Standard Deviation', 'Probability']}
                   points={[
-                    'Practice interpreting various types of graphs and charts',
-                    'Master probability tree diagrams and Venn diagrams',
-                    'Learn to read and use normal distribution tables',
-                    'Practice real-world applications of statistical concepts',
-                  ]}
-                />
-                <TopicCard
-                  title="Mensuration and Similarity"
-                  weight="15–20% of paper"
-                  chips={['Area', 'Volume', 'Surface Area', 'Arc Length', 'Sector Area', 'Similar Figures']}
-                  points={[
-                    'Memorize all area and volume formulas',
-                    'Practice 3D visualization and net drawing',
-                    'Master ratio calculations for similar figures',
-                    'Learn to break complex shapes into simpler parts',
+                    'Practice interpreting tables, histograms, box plots and cumulative frequency',
+                    'Compare data sets using mean and standard deviation',
+                    'Master tree diagrams and combined events (including mutually exclusive and independent events)',
+                    'Watch for diagrams that mislead — the syllabus tests that explicitly',
                   ]}
                 />
               </div>
@@ -317,36 +305,33 @@ Preferred days & timing: `;
               <SectionHeading icon={Sigma}>Additional Mathematics (A Math) Mastery Guide</SectionHeading>
               <div className="space-y-4">
                 <TopicCard
-                  title="Pure Mathematics — Algebra"
-                  weight="40–45% of papers"
-                  chips={['Functions', 'Quadratic Functions', 'Equations & Inequalities', 'Surds', 'Polynomials', 'Partial Fractions']}
+                  title="Algebra"
+                  chips={['Quadratic Functions', 'Equations & Inequalities', 'Surds', 'Polynomials', 'Partial Fractions', 'Binomial', 'Exponential & Log']}
                   points={[
                     'Master algebraic manipulation at advanced level',
                     'Practice graph sketching and transformations daily',
                     'Learn to solve complex equations systematically',
-                    'Memorize key algebraic identities and formulas',
+                    'The quadratic formula and binomial expansion are on the printed list — calculus is not',
+                  ]}
+                />
+                <TopicCard
+                  title="Geometry and Trigonometry"
+                  chips={['Trigonometric Functions', 'Identities', 'Equations', 'R-formula', 'Coordinate Geometry', 'Proofs in Plane Geometry']}
+                  points={[
+                    'Memorize the identities that are not printed, then use the ones that are',
+                    'Master R-formula applications (a cos θ + b sin θ)',
+                    'Practice solving trigonometric equations in a given interval',
+                    'Coordinate geometry of the circle and plane-geometry proofs are examined here too',
                   ]}
                 />
                 <TopicCard
                   title="Calculus"
-                  weight="35–40% of papers"
                   chips={['Differentiation', 'Applications of Differentiation', 'Integration', 'Applications of Integration']}
                   points={[
                     'Master differentiation rules and chain rule thoroughly',
                     'Practice optimization and rate of change problems',
                     'Learn integration techniques and standard integrals',
-                    'Practice area under curve and kinematics applications',
-                  ]}
-                />
-                <TopicCard
-                  title="Trigonometry"
-                  weight="15–20% of papers"
-                  chips={['Trigonometric Functions', 'Identities', 'Equations', 'R-formula']}
-                  points={[
-                    'Memorize all trigonometric identities',
-                    'Master R-formula applications',
-                    'Practice solving trigonometric equations',
-                    'Learn to sketch trigonometric graphs accurately',
+                    'Practice area under a curve and straight-line kinematics',
                   ]}
                 />
               </div>
@@ -381,23 +366,23 @@ Preferred days & timing: `;
               <SectionHeading icon={Target}>O Level Math Exam Strategies</SectionHeading>
               <div className="space-y-4">
                 <GuideCard>
-                  <h4 className="font-semibold text-gray-900 mb-2">Paper 1 (Multiple Choice) Strategy</h4>
+                  <h4 className="font-semibold text-gray-900 mb-2">Paper 1 (Short Answer) Strategy</h4>
                   <ul className="list-disc ml-5 space-y-1 text-sm text-gray-700">
-                    <li>Aim to complete in 45–50 minutes, leaving time for review</li>
-                    <li>Use the elimination method for difficult questions</li>
+                    <li>About 26 questions in 2 hours 15 minutes &mdash; keep moving, then return</li>
+                    <li>Show essential working; a correct answer with nothing above it can still lose marks</li>
                     <li>Double-check calculations for careless errors</li>
-                    <li>Don&rsquo;t spend more than 2 minutes on any single question initially</li>
+                    <li>Have compasses, protractor and a straight edge with you, not only for Paper 2</li>
                     <li>Mark uncertain answers and return if time permits</li>
                   </ul>
                 </GuideCard>
 
                 <GuideCard>
-                  <h4 className="font-semibold text-gray-900 mb-2">Paper 2 (Structured Questions) Strategy</h4>
+                  <h4 className="font-semibold text-gray-900 mb-2">Paper 2 (Longer Questions) Strategy</h4>
                   <ul className="list-disc ml-5 space-y-1 text-sm text-gray-700">
                     <li>Read all questions first and start with your strongest topics</li>
                     <li>Show all working clearly &mdash; method marks are crucial</li>
+                    <li>Leave time for the last question: it applies maths to a real-world scenario</li>
                     <li>Use proper mathematical notation and units</li>
-                    <li>Leave space for corrections and additional working</li>
                     <li>Check final answers for reasonableness</li>
                   </ul>
                 </GuideCard>

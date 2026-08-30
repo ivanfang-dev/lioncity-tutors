@@ -24,6 +24,7 @@ export const metadata = {
 };
 
 import TableOfContents from '@/components/TableOfContents';
+import Link from 'next/link';
 import GuideSchema from '@/components/seo/GuideSchema';
 import { DEFAULT_OG_IMAGE } from '@/lib/seo/openGraph';
 import {
@@ -463,6 +464,23 @@ Preferred days & timing: `;
             <section id="resources" className="scroll-mt-24">
               <SectionHeading icon={BookOpen}>Essential O Level English Resources</SectionHeading>
               <div className="space-y-4">
+                <div>
+                  <h4 className="font-semibold text-gray-900 mb-1.5">Free from us</h4>
+                  <ul className="list-disc ml-5 text-sm space-y-1 text-gray-700">
+                    <li>
+                      <Link href="/free-notes" className="text-primary underline underline-offset-2">O-Level English Language study guide</Link>
+                      {' '}&mdash; 20 pages on syllabus 1184: all four papers with their weightings, the six situational text-type formats, and the planning methods that make every content point visible to the marker
+                    </li>
+                    <li>
+                      <Link href="/free-test-papers" className="text-primary underline underline-offset-2">Free test papers</Link>
+                      {' '}&mdash; prelim and past-year O-Level English papers, to work to time
+                    </li>
+                    <li>
+                      <Link href="/how-to-study/o-level-english" className="text-primary underline underline-offset-2">How to study for O-Level English</Link>
+                      {' '}&mdash; why Oral at 20% is the most under-rehearsed paper on the syllabus
+                    </li>
+                  </ul>
+                </div>
                 <div>
                   <h4 className="font-semibold text-gray-900 mb-1.5">Recommended Textbooks</h4>
                   <ul className="list-disc ml-5 text-sm space-y-1 text-gray-700">

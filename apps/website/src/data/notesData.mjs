@@ -70,7 +70,13 @@ export const notesData = {
           fileKey: "notes/secondary/n-t-level/science/n-t-level-science-food-matters-study-notes.pdf",
         },
       ],
-      english: [],
+      english: [
+        {
+          title: "O-Level English Language Study Guide",
+          description: "Syllabus 1184 — all four papers with their weightings, the six situational text-type formats, the PAC and task-numbering methods, and comprehension, listening and oral technique",
+          fileKey: "notes/secondary/o-level/english/o-level-english-language-study-guide.pdf",
+        },
+      ],
     },
     jc: {
       // Underscores become spaces in the subject heading, so this key renders

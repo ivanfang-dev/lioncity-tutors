@@ -476,7 +476,7 @@ export const SPOKES = {
     // Anchor and blurb describe what the page actually hosts today; update
     // them as subjects land rather than promising ahead.
     anchor: 'free study notes for chemistry, physics, science, maths and GP',
-    blurb: 'Free revision notes to download: H2 Physics for both syllabuses, chemistry from H2 to IGCSE, H2 Maths, O-Level Physics, PSLE Maths and Science, O-Level maths.',
+    blurb: 'Free revision notes to download: H2 Physics for both syllabuses, chemistry from H2 to IGCSE, H2 Maths, O-Level Physics and English, PSLE Maths and Science.',
   },
 
   // --- Commercial pages ---

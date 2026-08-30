@@ -43,6 +43,15 @@ export const NOTE_SECTIONS = [
     links: ['how-to-study-h2-physics', 'a-level-physics', 'how-to-study-o-level-physics', 'o-level-physics'],
   },
   {
+    id: 'o-level-english',
+    label: 'O-Level English notes',
+    heading: 'Are there free O-Level English notes?',
+    answer:
+      'One guide, 20 pages on syllabus 1184. It starts with what each paper is actually worth — Writing and Comprehension 35% each, Oral 20%, Listening 10% — because that ordering is not what most revision timetables assume. Then the six situational text-type formats with their conventions, the PAC method for reading a prompt, and a task-numbering protocol for proving every content point was covered. Comprehension, listening and oral technique follow, and it closes on a quick-reference appendix and a pre-exam checklist.',
+    linkLead: 'For the ten mistakes our tutors correct most often, read',
+    links: ['how-to-study-o-level-english', 'o-level-english'],
+  },
+  {
     id: 'psle-math',
     label: 'PSLE Maths notes',
     heading: 'Are there free PSLE Maths notes?',

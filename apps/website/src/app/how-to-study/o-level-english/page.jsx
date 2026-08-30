@@ -277,6 +277,7 @@ Preferred days & timing: `;
                     <li><strong>Write one timed piece a week and have it marked.</strong> Writing is 70 marks and improves only through production.</li>
                     <li><strong>Read visuals deliberately</strong> — advertisements, infographics, posters — for purpose and audience.</li>
                     <li><strong>Use past papers to time.</strong> Prelim and past-year O-Level English papers are in our <Link href="/free-test-papers" className="text-primary underline underline-offset-2">free test papers library</Link>.</li>
+                    <li><strong>Keep the situational formats to hand.</strong> Our free <Link href="/free-notes" className="text-primary underline underline-offset-2">O-Level English study guide</Link> sets out all six text types with their conventions, plus a task-numbering method that makes every required content point visible to the marker &mdash; the fix for the most common situational writing loss.</li>
                   </ul>
                 </GuideCard>
                 <p className="mt-4 text-pretty">

@@ -186,20 +186,20 @@ Preferred days & timing: `;
           <GuideHeader
             title="O Level Physics Guide 2026: Master Mechanics, Waves & Electricity"
             author="By the LionCity Tutors Physics Team"
-            meta="Updated May 22, 2026 · 15 min read"
+            meta="Updated August 29, 2026 · 15 min read"
             imageSrc="/o-level-physics.webp"
             imageAlt="Apparatus on a lab bench — the mechanics, waves and electricity at the heart of O Level Physics."
           />
 
           <article className="space-y-12 text-gray-700 leading-relaxed">
             <p className="text-lg text-gray-800 leading-relaxed text-pretty">
-              O Level Physics is a fundamental subject that builds the foundation for further studies in science and engineering. With its focus on mechanics, waves, electricity, and modern physics, O Level Physics requires both theoretical understanding and practical application skills. This comprehensive guide provides proven strategies for achieving A1 grades in O Level Physics 2026.
+              O Level Physics is a fundamental subject that builds the foundation for further studies in science and engineering. With its focus on Newtonian mechanics, thermal physics, waves, electricity and magnetism, and radioactivity, O Level Physics requires both theoretical understanding and practical application skills. This comprehensive guide provides proven strategies for achieving A1 grades in O Level Physics 2026.
             </p>
 
             {/* Key takeaways */}
             <KeyTakeaways
               items={[
-                <>O Level Physics (5054) is three papers &mdash; MCQ (<span className="tabular-nums">30%</span>), structured (<span className="tabular-nums">50%</span>) and a practical test (<span className="tabular-nums">20%</span>).</>,
+                <>O Level Physics (6091) is three papers &mdash; MCQ (<span className="tabular-nums">30%</span>), structured &amp; free-response (<span className="tabular-nums">50%</span>) and a practical test (<span className="tabular-nums">20%</span>).</>,
                 <>A steady Sec 3&rarr;Sec 4 timeline built on understanding beats last-minute memorisation every time.</>,
                 <>The biggest score lever isn&rsquo;t knowing more &mdash; it&rsquo;s answer technique: correct units, shown working and clear diagrams.</>,
                 <>Struggling with problem-solving, circuits or practical questions is the usual signal that targeted tuition will help.</>,
@@ -224,36 +224,33 @@ Preferred days & timing: `;
             <section id="structure" className="scroll-mt-24">
               <SectionHeading icon={FileText}>Understanding O Level Physics Structure</SectionHeading>
               <p className="text-pretty">
-                Singapore&rsquo;s O Level Physics (Paper 5054) is designed to develop students&rsquo; understanding of physics principles and their applications in everyday life and technology.
+                Singapore&rsquo;s O Level Physics (syllabus 6091) is designed to develop students&rsquo; understanding of physics principles and their applications in everyday life and technology. Combined Science (Physics) is a different subject &mdash; 5086 or 5087 &mdash; with its own papers and weightings.
               </p>
               <GuideCard className="mt-4">
                 <h4 className="font-semibold text-gray-900 mb-4">O Level Physics Papers Breakdown</h4>
                 <div className="space-y-5">
                   <div>
-                    <h5 className="font-semibold text-gray-900">Paper 1: Multiple Choice Questions</h5>
+                    <h5 className="font-semibold text-gray-900">Paper 1: Multiple Choice</h5>
                     <ul className="list-disc ml-5 mt-1.5 space-y-1 text-sm text-gray-700">
-                      <li>40 questions worth 40 marks</li>
+                      <li>40 compulsory items, 40 marks</li>
                       <li>Duration: 1 hour</li>
-                      <li>30% of total O Level Physics grade</li>
-                      <li>Tests breadth of knowledge across all topics</li>
+                      <li>30% of the grade</li>
                     </ul>
                   </div>
                   <div>
-                    <h5 className="font-semibold text-gray-900">Paper 2: Structured Questions</h5>
+                    <h5 className="font-semibold text-gray-900">Paper 2: Structured and Free Response</h5>
                     <ul className="list-disc ml-5 mt-1.5 space-y-1 text-sm text-gray-700">
-                      <li>Variable number of questions worth 80 marks</li>
-                      <li>Duration: 1 hour 45 minutes</li>
-                      <li>50% of total O Level Physics grade</li>
-                      <li>Focuses on application and problem-solving</li>
+                      <li>80 marks, 1 hour 45 minutes, 50% of the grade</li>
+                      <li>Section A: 70 marks of compulsory structured questions; the last two share 20 marks, one a data-based question worth 8–12</li>
+                      <li>Section B: 10 marks &mdash; two questions, answer one</li>
                     </ul>
                   </div>
                   <div>
-                    <h5 className="font-semibold text-gray-900">Paper 3: Practical Test</h5>
+                    <h5 className="font-semibold text-gray-900">Paper 3: Practical</h5>
                     <ul className="list-disc ml-5 mt-1.5 space-y-1 text-sm text-gray-700">
-                      <li>2–3 experiments worth 40 marks</li>
-                      <li>Duration: 1 hour 50 minutes</li>
-                      <li>20% of total O Level Physics grade</li>
-                      <li>Tests practical skills and data analysis</li>
+                      <li>40 marks, 1 hour 50 minutes, 20% of the grade</li>
+                      <li>Section A: 20 marks, 1–2 experiments in 55 minutes</li>
+                      <li>Section B: 20 marks, one 55-minute experiment; planning can be assessed on paper</li>
                     </ul>
                   </div>
                 </div>
