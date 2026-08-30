@@ -50,7 +50,7 @@ export const FREE_NOTES_FAQS = [
   {
     question: 'Should I download the 9478 or the 9749 H2 Physics notes?',
     answer:
-      'Take 9478 unless you know otherwise. Syllabus 9478 replaced 9749 and is what every school candidate sits from 2026; 9749 has its final examination in the same year and is open only to private and repeat candidates, and SEAB will not offer it again. For the topics carried across, the content, definitions and derivations are identical — what changed is the paper structure (the practical fell from 55 marks to 50, and Paper 4 now expects spreadsheet-based data processing rather than manual graph-paper plotting) and two genuinely new topics, capacitance and wavefunctions. Those two are the gap to close if you have been revising from 9749-labelled material.',
+      'Take 9478 unless you know otherwise. Syllabus 9478 replaced 9749 and is what every school candidate sits from 2026; 9749 has its final examination in the same year and is open only to private and repeat candidates, and SEAB will not offer it again. For the topics carried across, the content, definitions and derivations are identical — what changed is the paper structure and two genuinely new topics, capacitance and wavefunctions. On structure: Papers 2 and 3 each fell from 80 marks to 75, Paper 3’s Section A from 60 to 55, and the practical from 55 to 50, with Paper 4 now expecting spreadsheet-based data processing rather than manual graph-paper plotting. Every weighting stayed the same. Those two are the gap to close if you have been revising from 9749-labelled material.',
   },
   {
     question: 'What is in the O-Level Physics notes?',

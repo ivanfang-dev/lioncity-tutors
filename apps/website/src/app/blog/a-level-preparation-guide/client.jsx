@@ -318,24 +318,28 @@ const pathways = [
   },
 ];
 
+// Every figure below is read off the SEAB syllabus documents for 2026 — the
+// revised codes from the school-candidate list, the legacy ones from the
+// private-candidate list. Paper weightings did not move in any of the three;
+// only mark totals did, which is why the percentages are not repeated per row.
 const revisedSyllabusRows = [
   {
     subject: 'H2 Chemistry',
     legacy: '9729',
     revised: '9476',
-    whatChanged: 'Practical paper: 55 → 50 marks (still 20% weighting). Paper 3: 80 → 75 marks, with Section A 60 → 55 marks.',
+    whatChanged: 'Paper 3: 80 → 75 marks, with Section A 60 → 55. Practical: 55 → 50 marks. Papers 1 and 2 unchanged.',
   },
   {
     subject: 'H2 Physics',
     legacy: '9749',
     revised: '9478',
-    whatChanged: 'Practical paper: 55 → 50 marks (still 20% weighting). Candidates now process and analyse data using spreadsheet software.',
+    whatChanged: 'Paper 2: 80 → 75 marks. Paper 3: 80 → 75, with Section A 60 → 55. Practical: 55 → 50 marks, and candidates now process and analyse data using spreadsheet software.',
   },
   {
     subject: 'H2 Biology',
     legacy: '9744',
     revised: '9477',
-    whatChanged: 'Practical paper: 55 → 50 marks (still 20% weighting).',
+    whatChanged: 'Paper 2: 100 → 90 marks. Paper 3 stays 75 marks but resplits: Section A 50 → 55, Section B 25 → 20. Practical: 55 → 50 marks.',
   },
 ];
 

@@ -23,7 +23,7 @@ export const A_LEVEL_FAQS = [
   {
     question: 'What changed in the revised H2 science syllabuses?',
     answer:
-      'School candidates sitting the 2026 GCE A-Level examinations take the revised H2 science syllabuses — Chemistry (9476), Physics (9478) and Biology (9477) — for the first time. The legacy codes, Chemistry 9729, Physics 9749 and Biology 9744, have their final examination in 2026 and remain available only to private and repeat candidates.',
+      'School candidates sitting the 2026 GCE A-Level examinations take the revised H2 science syllabuses — Chemistry (9476), Physics (9478) and Biology (9477) — for the first time. The legacy codes, Chemistry 9729, Physics 9749 and Biology 9744, have their final examination in 2026 and remain available only to private and repeat candidates. The changes are to mark allocations rather than to weightings: every paper carries the same percentage of the grade as before, but the practical fell from 55 marks to 50 in all three subjects, and Paper 2 or Paper 3 lost marks in each. Physics also added a spreadsheet requirement to the practical. See the table below for the subject-by-subject detail.',
   },
   {
     question: 'Which H2 subject combination should I take?',
