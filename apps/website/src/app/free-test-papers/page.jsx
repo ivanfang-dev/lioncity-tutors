@@ -68,7 +68,7 @@ export default async function FreeTestPapersPage() {
                 <a
                   key={section.id}
                   href={`#${section.id}`}
-                  className="rounded-full border border-[#0474BA]/25 bg-white px-4 py-2 text-center text-sm font-semibold text-[#0474BA] shadow-sm transition-colors hover:border-[#0474BA] hover:bg-[#0474BA]/5"
+                  className="inline-flex items-center justify-center rounded-full border border-[#0474BA]/25 bg-white px-4 py-2 text-center text-sm font-semibold text-[#0474BA] shadow-sm transition-colors hover:border-[#0474BA] hover:bg-[#0474BA]/5"
                 >
                   {section.label}
                 </a>

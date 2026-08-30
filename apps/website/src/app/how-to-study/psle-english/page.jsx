@@ -273,6 +273,7 @@ Preferred days & timing: `;
                     <li><strong>Learn vocabulary in sentences,</strong> since every vocabulary component tests it in context.</li>
                     <li><strong>Read listening questions before the recording</strong> so you know what to listen for.</li>
                     <li><strong>Sit whole papers to time.</strong> Prelim and past-year primary papers are in our <Link href="/free-test-papers" className="text-primary underline underline-offset-2">free test papers library</Link>.</li>
+                    <li><strong>Rehearse the oral out loud, not on paper.</strong> Our free <Link href="/free-notes" className="text-primary underline underline-offset-2">PSLE English study guide</Link> sets out both components &mdash; Reading Aloud at 15 marks and the stimulus-based conversation at 25 &mdash; alongside the writing band descriptors and a phrase bank to draw on.</li>
                   </ul>
                 </GuideCard>
                 <p className="mt-4 text-pretty">

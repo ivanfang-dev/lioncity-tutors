@@ -18,6 +18,8 @@ export const metadata = {
     'o level english 1184',
     'secondary school notes',
     'PSLE notes',
+    'psle english notes',
+    'psle english 0001',
     'primary school notes',
     'o level a math notes',
     'o level e math notes',

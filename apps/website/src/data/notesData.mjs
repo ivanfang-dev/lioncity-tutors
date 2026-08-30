@@ -15,7 +15,13 @@ export const notesData = {
           fileKey: "notes/primary/psle/science/psle-science-matter-and-materials-study-notes.pdf",
         },
       ],
-      english: [],
+      english: [
+        {
+          title: "PSLE English Study Guide",
+          description: "Syllabus 0001 — the exam blueprint across all four papers, continuous writing band descriptors with seven narrative techniques, the synthesis and transformation checking gates, the oral blueprint, and a phrase and idiom bank",
+          fileKey: "notes/primary/psle/english/psle-english-study-guide.pdf",
+        },
+      ],
       math: [
         {
           title: "PSLE Mathematics Revision Notes",

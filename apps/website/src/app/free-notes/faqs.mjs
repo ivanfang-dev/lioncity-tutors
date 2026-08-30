@@ -15,12 +15,17 @@ export const FREE_NOTES_FAQS = [
   {
     question: 'Which subjects do the free study notes cover?',
     answer:
-      'Chemistry, physics, English, science, maths and General Paper. Chemistry runs across four levels: H2, H1, O-Level and IGCSE. Physics has H2 sets for both the 9478 and 9749 syllabuses, and an O-Level set covering all eleven topics. English has an O-Level guide to syllabus 1184. Science has a PSLE set on matter and materials and the N(T)-Level Food Matters module from syllabus 5148. Maths runs across three: H2 Mathematics (syllabus 9758), PSLE Mathematics (0008), and both O-Level papers — Additional Mathematics (4049) and Elementary Mathematics (4052). A-Level General Paper has five Raffles Institution 2024 infopacks. Other subjects show as "Coming soon" until real notes exist for them — nothing on this page is a placeholder download.',
+      'Chemistry, physics, English, science, maths and General Paper. Chemistry runs across four levels: H2, H1, O-Level and IGCSE. Physics has H2 sets for both the 9478 and 9749 syllabuses, and an O-Level set covering all eleven topics. English has a PSLE guide to syllabus 0001 and an O-Level guide to 1184. Science has a PSLE set on matter and materials and the N(T)-Level Food Matters module from syllabus 5148. Maths runs across three: H2 Mathematics (syllabus 9758), PSLE Mathematics (0008), and both O-Level papers — Additional Mathematics (4049) and Elementary Mathematics (4052). A-Level General Paper has five Raffles Institution 2024 infopacks. Every subject card in the library has real files behind it — nothing on this page is a placeholder download, and a subject with no notes yet is simply absent rather than promised.',
   },
   {
     question: 'What is in the O-Level Chemistry notes?',
     answer:
       'Twenty-three pages across all eleven syllabus topics, from states of matter and stoichiometry through electrochemistry, energetics, acids and salts, the Periodic Table, metals, environmental and organic chemistry. The last third is exam technique rather than content: sentence templates for the "explain" questions, the qualitative analysis tables for cations, anions and gases, apparatus precision, and how to separate systematic from random error in a titration. The set is written to Cambridge syllabus 5070, which matches the Singapore-Cambridge 6092 syllabus topic for topic, so it works for either. The IGCSE guide covers the same ground in seventeen pages.',
+  },
+  {
+    question: 'What is in the PSLE English guide?',
+    answer:
+      'Seventeen pages on syllabus 0001, weighted towards the two papers where preparation moves the grade most. Writing is 25% of the subject: the guide gives the band descriptors, seven narrative techniques with worked phrasing, and the traps that pull a script down a band. Oral is another 20% — fifteen marks for Reading Aloud and twenty-five for the stimulus-based conversation — and it is the paper most families leave until last. Paper 2 gets the synthesis and transformation rules, one master rule and four checking gates. It ends on a phrase and idiom bank and an exam-day checklist.',
   },
   {
     question: 'What is in the O-Level English guide?',

@@ -22,6 +22,7 @@ const LIBRARY_ANCHOR = {
   'physics': '#notes-secondary',
   'psle-math': '#notes-primary',
   'o-level-english': '#notes-secondary',
+  'psle-english': '#notes-primary',
   'h2-maths': '#notes-jc',
   'o-level': '#notes-secondary',
   'n-level': '#notes-secondary',
@@ -65,7 +66,7 @@ export default function FreeNotesPage() {
         collection={{
           name: 'Free Study Notes: PSLE, O-Level and A-Level',
           description:
-            'Free revision notes to download for PSLE, O-Level and A-Level students. The library holds Chemistry notes for H2, H1, O-Level and IGCSE, H2 Physics for both the 9478 and 9749 syllabuses, H2 Maths, O-Level Physics and English, PSLE Maths and Science, N(T)-Level Science, O-Level A-Math and E-Math, and A-Level General Paper infopacks.',
+            'Free revision notes to download for PSLE, O-Level and A-Level students. The library holds Chemistry notes for H2, H1, O-Level and IGCSE, H2 Physics for both the 9478 and 9749 syllabuses, H2 Maths, O-Level Physics and English, PSLE English, Maths and Science, N(T)-Level Science, O-Level A-Math and E-Math, and A-Level General Paper infopacks.',
           items: NOTE_SECTIONS.map((section) => ({
             name: section.label,
             url: `/free-notes#${section.id}`,
@@ -84,15 +85,15 @@ export default function FreeNotesPage() {
               Revision notes to download, free and without an account, across PSLE, O-Level
               and A-Level &mdash; Chemistry for H2, H1, O-Level and IGCSE, H2 Physics for
               both the current and legacy syllabuses, H2 Maths, O-Level Physics and English,
-              PSLE Maths and Science, N(T)-Level Science, both O-Level maths papers and
-              A-Level General Paper infopacks.
+              PSLE English, Maths and Science, N(T)-Level Science, both O-Level maths papers
+              and A-Level General Paper infopacks.
             </p>
             <nav aria-label="Jump to a subject" className="flex flex-wrap items-center justify-center gap-2">
               {NOTE_SECTIONS.map((section) => (
                 <a
                   key={section.id}
                   href={`#${section.id}`}
-                  className="rounded-full border border-[#0474BA]/25 bg-white px-4 py-2 text-center text-sm font-semibold text-[#0474BA] shadow-sm transition-colors hover:border-[#0474BA] hover:bg-[#0474BA]/5"
+                  className="inline-flex items-center justify-center rounded-full border border-[#0474BA]/25 bg-white px-4 py-2 text-center text-sm font-semibold text-[#0474BA] shadow-sm transition-colors hover:border-[#0474BA] hover:bg-[#0474BA]/5"
                 >
                   {section.label}
                 </a>

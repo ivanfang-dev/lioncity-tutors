@@ -11,6 +11,7 @@ import useTuitionRequestForm from "@/components/useTuitionRequestForm";
 import FormBenefits from "@/components/FormBenefits";
 import { CheckCircle } from "lucide-react";
 import TableOfContents from "@/components/TableOfContents";
+import Link from 'next/link';
 import GuideSchema from '@/components/seo/GuideSchema';
 import {
   GuideHeader, SectionHeading, GuideCard, TopicCard, GuideTimeline, KeyTakeaways, ICON_STROKE,
@@ -367,6 +368,23 @@ export default function PSLEEnglish() {
               <section id="resources" className="scroll-mt-24">
                 <SectionHeading icon={BookOpen}>Essential PSLE English resources</SectionHeading>
                 <div className="space-y-4">
+                  <div>
+                    <h4 className="font-semibold text-gray-900 mb-1.5">Free from us</h4>
+                    <ul className="list-disc ml-5 text-sm space-y-1 text-gray-700">
+                      <li>
+                        <Link href="/free-notes" className="text-primary underline underline-offset-2">PSLE English study guide</Link>
+                        {' '}&mdash; 17 pages on syllabus 0001: the band descriptors and seven narrative techniques for Writing, the synthesis and transformation checking gates, the oral blueprint, and a phrase and idiom bank
+                      </li>
+                      <li>
+                        <Link href="/free-test-papers" className="text-primary underline underline-offset-2">Free test papers</Link>
+                        {' '}&mdash; Primary 6 English prelim and school papers, to sit whole and to time
+                      </li>
+                      <li>
+                        <Link href="/how-to-study/psle-english" className="text-primary underline underline-offset-2">How to study for PSLE English</Link>
+                        {' '}&mdash; why forty of the two hundred marks are decided in about ten minutes of oral
+                      </li>
+                    </ul>
+                  </div>
                   <div>
                     <h4 className="font-semibold text-gray-900 mb-1.5">Recommended series</h4>
                     <ul className="list-disc ml-5 text-sm space-y-1 text-gray-700">

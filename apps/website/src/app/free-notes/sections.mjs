@@ -61,6 +61,15 @@ export const NOTE_SECTIONS = [
     links: ['how-to-study-psle-math', 'psle-math'],
   },
   {
+    id: 'psle-english',
+    label: 'PSLE English notes',
+    heading: 'Are there free PSLE English notes?',
+    answer:
+      'One guide, 17 pages on syllabus 0001. It sets out how the 200 marks divide across the four papers, then spends its length on the two that reward preparation most: Writing, at 25%, with the band descriptors, seven narrative techniques and the traps that cost bands; and Oral, at 20%, split into Reading Aloud and the stimulus-based conversation. In between sit the synthesis and transformation rules — one master rule and four checking gates — and it closes on a phrase and idiom bank and an exam-day checklist.',
+    linkLead: 'For where the marks actually sit, including 40 of them in ten minutes of oral, read',
+    links: ['how-to-study-psle-english', 'psle-english'],
+  },
+  {
     id: 'psle-science',
     label: 'PSLE Science notes',
     heading: 'Are there free PSLE Science notes?',
