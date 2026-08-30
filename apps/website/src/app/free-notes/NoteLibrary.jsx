@@ -384,8 +384,8 @@ export default function NoteLibrary() {
           <p className="text-gray-600 max-w-xl mx-auto px-4">
             {noteCount} files, free to download: H2 Physics for both the current and legacy
             syllabuses, chemistry study notes for H2, H1, O-Level and IGCSE, H2 Maths, H2
-            Biology for both syllabuses, O-Level Physics and English, PSLE English and Maths
-            and a PSLE Science set on
+            Biology for both syllabuses, O-Level Biology, Physics and English, PSLE English
+            and Maths and a PSLE Science set on
             matter and materials, the N(T)-Level Food Matters module, revision sets for
             O-Level A-Math and E-Math, and five A-Level General Paper infopacks. Every subject shown here has real files
             behind it. Where a subject is missing entirely &mdash; H2 Biology is the

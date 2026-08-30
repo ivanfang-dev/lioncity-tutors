@@ -47,6 +47,7 @@ export const metadata = {
 };
 
 import TableOfContents from '@/components/TableOfContents';
+import Link from 'next/link';
 import GuideSchema from '@/components/seo/GuideSchema';
 import { DEFAULT_OG_IMAGE } from '@/lib/seo/openGraph';
 import {
@@ -519,6 +520,23 @@ Preferred days & timing: `;
             <section id="resources" className="scroll-mt-24">
               <SectionHeading icon={BookOpen}>Essential O Level Biology Resources</SectionHeading>
               <div className="space-y-4">
+                <div>
+                  <h4 className="font-semibold text-gray-900 mb-1.5">Free from us</h4>
+                  <ul className="list-disc ml-5 text-sm space-y-1 text-gray-700">
+                    <li>
+                      <Link href="/free-notes" className="text-primary underline underline-offset-2">O-Level Biology study guide</Link>
+                      {' '}&mdash; 16 pages on syllabus 6093: the three compulsory papers with their section splits, the syllabus swept from cell structure to genetics and ecology, and the skill areas Paper 3 marks
+                    </li>
+                    <li>
+                      <Link href="/free-test-papers" className="text-primary underline underline-offset-2">Free test papers</Link>
+                      {' '}&mdash; Secondary 4 Biology prelim and school papers, to work unseen and to time
+                    </li>
+                    <li>
+                      <Link href="/how-to-study/o-level-biology" className="text-primary underline underline-offset-2">How to study for O-Level Biology</Link>
+                      {' '}&mdash; why most of the theory marks are not awarded for knowing things, and what that changes about revision
+                    </li>
+                  </ul>
+                </div>
                 <div>
                   <h4 className="font-semibold text-gray-900 mb-1.5">Recommended Textbooks</h4>
                   <ul className="list-disc ml-5 text-sm space-y-1 text-gray-700">

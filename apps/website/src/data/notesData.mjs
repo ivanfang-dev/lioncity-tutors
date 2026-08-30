@@ -52,6 +52,13 @@ export const notesData = {
           fileKey: "notes/secondary/o-level/chemistry/o-level-chemistry-study-notes.pdf",
         },
       ],
+      biology: [
+        {
+          title: "O-Level Biology Study Guide",
+          description: "Syllabus 6093 — the three compulsory papers with their weightings and section splits, the syllabus swept topic by topic from cell structure to genetics and ecology, and the Paper 3 practical skill areas",
+          fileKey: "notes/secondary/o-level/biology/o-level-biology-study-guide.pdf",
+        },
+      ],
       physics: [
         {
           title: "O-Level Physics Study Notes",

@@ -235,6 +235,7 @@ Preferred days & timing: `;
                     <li><strong>Learn the vocabulary as contrasted sets</strong> rather than one term at a time, so the distinctions stay sharp under pressure.</li>
                     <li><strong>Rehearse planning on paper</strong> for the practical: variable to change, variables to control, measurements, and how the comparison stays fair.</li>
                     <li><strong>Use unseen past papers.</strong> Prelim and past-year O-Level Biology papers are in our <Link href="/free-test-papers" className="text-primary underline underline-offset-2">free test papers library</Link>.</li>
+                    <li><strong>Rehearse the practical as its own paper.</strong> Paper 3 is compulsory under 6093 &mdash; there is no alternative-to-practical route &mdash; and our free <Link href="/free-notes" className="text-primary underline underline-offset-2">O-Level Biology study guide</Link> sets out the skill areas it marks alongside the full topic sweep.</li>
                   </ul>
                 </GuideCard>
                 <p className="mt-4 text-pretty">

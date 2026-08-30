@@ -66,7 +66,7 @@ export default function FreeNotesPage() {
         collection={{
           name: 'Free Study Notes: PSLE, O-Level and A-Level',
           description:
-            'Free revision notes to download for PSLE, O-Level and A-Level students. The library holds Chemistry notes for H2, H1, O-Level and IGCSE, H2 Physics for both the 9478 and 9749 syllabuses, H2 Maths, H2 Biology for both the 9477 and 9744 syllabuses, O-Level Physics and English, PSLE English, Maths and Science, N(T)-Level Science, O-Level A-Math and E-Math, and A-Level General Paper infopacks.',
+            'Free revision notes to download for PSLE, O-Level and A-Level students. The library holds Chemistry notes for H2, H1, O-Level and IGCSE, H2 Physics for both the 9478 and 9749 syllabuses, H2 Maths, H2 Biology for both the 9477 and 9744 syllabuses, O-Level Biology, Physics and English, PSLE English, Maths and Science, N(T)-Level Science, O-Level A-Math and E-Math, and A-Level General Paper infopacks.',
           items: NOTE_SECTIONS.map((section) => ({
             name: section.label,
             url: `/free-notes#${section.id}`,

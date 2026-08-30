@@ -107,11 +107,11 @@ export const NOTE_SECTIONS = [
   },
   {
     id: 'h2-sciences',
-    label: 'H2 Biology notes',
-    heading: 'Are there free H2 Biology notes?',
+    label: 'Biology notes: H2 and O-Level',
+    heading: 'What free Biology notes are available?',
     answer:
-      'Both syllabuses, as a pair. Take 9477: it is what every school candidate sits from 2026, and it carries the four core ideas and two extension topics against the current paper structure — Paper 2 at 90 marks, Paper 3 split 55 and 20, and a 50-mark practical. The 9744 set is kept because that syllabus has its final examination in 2026 for private and repeat candidates; its biology carries across, but its assessment table does not, so a school candidate should not revise paper structure from it.',
-    linkLead: 'For where the marks sit and how to read unfamiliar stimulus material, read',
-    links: ['how-to-study-h2-biology', 'a-level-biology', 'free-test-papers'],
+      'Three sets. H2 Biology comes in both syllabuses: take 9477, which every school candidate sits from 2026 and which carries the four core ideas and two extension topics against the current paper structure — Paper 2 at 90 marks, Paper 3 split 55 and 20, a 50-mark practical. The 9744 set is kept for the private and repeat candidates who still sit it; its biology carries across but its assessment table does not. The O-Level set covers syllabus 6093 in 16 pages: three compulsory papers, the syllabus swept from cell structure through genetics to ecology, and the skill areas Paper 3 marks in the lab.',
+    linkLead: 'For where the marks sit in each, read',
+    links: ['how-to-study-h2-biology', 'a-level-biology', 'how-to-study-o-level-biology', 'o-level-biology'],
   },
 ];
