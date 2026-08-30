@@ -179,7 +179,7 @@ Preferred days & timing: `;
           <GuideHeader
             title="O Level English Guide 2026: Master Language & Literature"
             author="By the LionCity Tutors English Team"
-            meta="Updated May 19, 2026 · 15 min read"
+            meta="Updated August 29, 2026 · 15 min read"
             imageSrc="/english-tuition.webp"
             imageAlt="A student writing at a desk — the language and literature skills at the heart of O Level English."
           />
@@ -237,10 +237,10 @@ Preferred days & timing: `;
                     <h5 className="font-semibold text-gray-900">English Literature (2065) &mdash; Paper 1 &amp; 2</h5>
                     <ul className="list-disc ml-5 mt-1.5 space-y-1 text-sm text-gray-700">
                       <li>Optional subject for higher-achieving students</li>
-                      <li>Enhances critical thinking and analytical skills</li>
-                      <li>Valuable for humanities and arts university courses</li>
-                      <li>Paper 1: Poetry &amp; Prose (50 marks, 2 hours)</li>
-                      <li>Paper 2: Drama (50 marks, 2 hours)</li>
+                      <li>Four questions in total across two sittings (3 hours 10 minutes combined)</li>
+                      <li>Paper 1: Prose and Unseen Poetry &mdash; 1 hour 40 minutes, 50%</li>
+                      <li>Paper 2: Drama &mdash; 1 hour 30 minutes, 50%</li>
+                      <li>Each question is 25% of the subject; at least one Singapore text is set each year</li>
                     </ul>
                   </div>
                 </div>
@@ -301,23 +301,23 @@ Preferred days & timing: `;
               <SectionHeading icon={BookOpenText}>English Literature (2065) Mastery Guide</SectionHeading>
               <div className="space-y-4">
                 <TopicCard
-                  title="Paper 1: Poetry & Prose (50 marks)"
-                  chips={['Unseen Poetry', 'Set Text Analysis', 'Comparative Questions']}
+                  title="Paper 1: Prose and Unseen Poetry (1 h 40 min, 50%)"
+                  chips={['Set Prose Text', 'Passage-based or Essay', 'Unseen Poetry']}
                   points={[
-                    'Master poetic devices and literary techniques',
-                    'Practice close reading and textual analysis',
-                    'Learn to write structured literary essays',
-                    'Memorize key quotes and their significance',
+                    'Section A: one question on one of six set prose texts — a passage-based question or an essay',
+                    'Section B: one of two unseen poems; one of the two poems is a Singapore text each year',
+                    'There is no comparative set-text question on this paper',
+                    'Each answer is 25% of the Literature grade',
                   ]}
                 />
                 <TopicCard
-                  title="Paper 2: Drama (50 marks)"
-                  chips={['Set Drama Text', 'Character Analysis', 'Theme Exploration']}
+                  title="Paper 2: Drama (1 h 30 min, 50%)"
+                  chips={['Set Drama Text', 'Compulsory Passage-based', 'Essay']}
                   points={[
-                    'Understand dramatic conventions and staging',
-                    'Analyze character development and motivations',
-                    'Explore themes and their dramatic presentation',
-                    'Practice writing about dramatic techniques',
+                    'You answer two questions on the same set play: a compulsory passage-based question and one essay',
+                    'Each question is 25% of the Literature grade',
+                    'Understand dramatic conventions and staging, not only plot and character',
+                    'One or two Singapore drama texts are set each year',
                   ]}
                 />
                 <TopicCard
@@ -364,10 +364,10 @@ Preferred days & timing: `;
                 <GuideCard>
                   <h4 className="font-semibold text-gray-900 mb-2">Paper 1 (Writing) Strategy</h4>
                   <ul className="list-disc ml-5 space-y-1 text-sm text-gray-700">
-                    <li>Allocate 35 minutes for Situational Writing, 55 minutes for Continuous Writing</li>
-                    <li>Plan both essays before starting to write</li>
+                    <li>Spend a few minutes on Editing (10 marks) before the two writing tasks</li>
+                    <li>Allocate roughly 35 minutes for Situational Writing and 55 minutes for Continuous Writing</li>
+                    <li>Plan both writing tasks before starting to write</li>
                     <li>Use varied sentence structures and vocabulary</li>
-                    <li>Check grammar, punctuation, and spelling carefully</li>
                     <li>Ensure appropriate tone and register for each task</li>
                   </ul>
                 </GuideCard>

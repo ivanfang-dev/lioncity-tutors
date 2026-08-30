@@ -34,7 +34,7 @@ import {
 import {
   FileText, CalendarClock, Gauge, Waves, Zap, Brain, Target,
   TriangleAlert, CalendarDays, BookOpen, Ruler, GraduationCap, Users,
-  Hourglass, HeartHandshake, Flag, ListChecks, HelpCircle,
+  Hourglass, HeartHandshake, Flag, ListChecks, HelpCircle, Flame, Radiation,
 } from 'lucide-react';
 import { O_LEVEL_PHYSICS_FAQS } from './faqs.mjs';
 import { DEFAULT_OG_IMAGE } from '@/lib/seo/openGraph';
@@ -43,9 +43,11 @@ const tableOfContents = [
   { id: 'structure', label: 'Exam & paper structure' },
   { id: 'exam-dates', label: '2026 exam timetable' },
   { id: 'timeline', label: '18-month study timeline' },
-  { id: 'mechanics', label: 'Mechanics' },
-  { id: 'waves', label: 'Waves & optics' },
+  { id: 'mechanics', label: 'Newtonian mechanics' },
+  { id: 'thermal', label: 'Thermal physics' },
+  { id: 'waves', label: 'Waves & light' },
   { id: 'electromagnetism', label: 'Electricity & magnetism' },
+  { id: 'radioactivity', label: 'Radioactivity' },
   { id: 'study-techniques', label: 'Study techniques that work' },
   { id: 'exam-strategies', label: 'Paper-by-paper exam strategy' },
   { id: 'mistakes', label: '10 common mistakes' },
@@ -272,84 +274,108 @@ Preferred days & timing: `;
             </section>
 
             <section id="mechanics" className="scroll-mt-24">
-              <SectionHeading icon={Gauge}>Mechanics Mastery Guide</SectionHeading>
+              <SectionHeading icon={Gauge}>Newtonian Mechanics</SectionHeading>
               <div className="space-y-4">
                 <TopicCard
                   title="Kinematics & Dynamics"
-                  weight="25–30% of papers"
-                  chips={['Motion Graphs', 'Newton’s Laws', 'Forces', 'Momentum', 'Energy Conservation']}
+                  chips={['Motion Graphs', "Newton’s Laws", 'Forces', 'Free-fall', 'Energy']}
                   points={[
-                    'Master motion graph interpretation',
-                    'Practice force diagrams and free body analysis',
-                    'Understand energy conservation principles',
-                    'Learn to solve projectile motion problems',
+                    'Master displacement–time and velocity–time graphs in one dimension',
+                    'Practice free-body diagrams (forces in at most two dimensions)',
+                    'Understand energy, work and power',
+                    'Kinematics here is one-dimensional — including free-fall, not projectile motion',
                   ]}
                 />
                 <TopicCard
                   title="Turning Effects & Pressure"
-                  weight="15–20% of papers"
-                  chips={['Moments', 'Center of Gravity', 'Pressure', 'Hydraulics']}
+                  chips={['Moments', 'Centre of Gravity', 'Pressure', 'Hydraulic Press']}
                   points={[
-                    'Master moment calculations',
-                    'Practice pressure problems',
-                    'Understand hydraulic principles',
-                    'Learn to solve equilibrium problems',
+                    'Master moment calculations and equilibrium',
+                    'Apply P = F/A and liquid-column pressure',
+                    'Explain pressure transmission in a hydraulic press',
+                    'Learn to solve centre-of-gravity and stability questions',
+                  ]}
+                />
+              </div>
+            </section>
+
+            <section id="thermal" className="scroll-mt-24">
+              <SectionHeading icon={Flame}>Thermal Physics</SectionHeading>
+              <div className="space-y-4">
+                <TopicCard
+                  title="Kinetic Model, Processes & Properties"
+                  chips={['Kinetic Particle Model', 'Conduction, Convection, Radiation', 'Specific Heat Capacity', 'Latent Heat']}
+                  points={[
+                    'Link particle motion to temperature and changes of state',
+                    'Explain the three thermal processes with everyday examples',
+                    'Practise specific heat capacity and latent heat calculations',
+                    'Treat thermal physics as its own section — it is not folded into mechanics',
                   ]}
                 />
               </div>
             </section>
 
             <section id="waves" className="scroll-mt-24">
-              <SectionHeading icon={Waves}>Waves & Optics Mastery Guide</SectionHeading>
+              <SectionHeading icon={Waves}>Waves & Light</SectionHeading>
               <div className="space-y-4">
                 <TopicCard
-                  title="Wave Properties & Behavior"
-                  weight="20–25% of papers"
-                  chips={['Wave Characteristics', 'Sound Waves', 'Light Waves', 'Reflection', 'Refraction']}
+                  title="Wave Properties, Sound & EM Spectrum"
+                  chips={['Wave Characteristics', 'Sound', 'Electromagnetic Spectrum']}
                   points={[
-                    'Master wave equation applications',
-                    'Practice ray diagram construction',
-                    'Understand wave phenomena',
-                    'Learn to solve optics problems',
+                    'Apply v = fλ and compare transverse with longitudinal waves',
+                    'Relate loudness to amplitude and pitch to frequency; use echoes and ultrasound',
+                    'Order the EM spectrum and recall typical uses and hazards',
                   ]}
                 />
                 <TopicCard
-                  title="Lenses & Optical Instruments"
-                  weight="15–20% of papers"
-                  chips={['Convex & Concave Lenses', 'Magnification', 'Microscopes', 'Telescopes']}
+                  title="Light"
+                  chips={['Reflection', 'Refraction', 'Total Internal Reflection', 'Thin Converging Lenses']}
                   points={[
-                    'Master lens equation applications',
-                    'Practice ray diagram construction',
-                    'Understand optical instrument principles',
-                    'Learn to solve magnification problems',
+                    'Use i = r, Snell’s law, refractive index, critical angle and optical fibres',
+                    'Draw ray diagrams for a thin converging lens only',
+                    'Describe images as real/virtual, magnified/diminished, upright/inverted',
+                    'The syllabus does not require the lens formula, diverging lenses, microscopes or telescopes',
                   ]}
                 />
               </div>
             </section>
 
             <section id="electromagnetism" className="scroll-mt-24">
-              <SectionHeading icon={Zap}>Electricity & Magnetism Mastery Guide</SectionHeading>
+              <SectionHeading icon={Zap}>Electricity & Magnetism</SectionHeading>
               <div className="space-y-4">
                 <TopicCard
                   title="Electric Circuits"
-                  weight="20–25% of papers"
-                  chips={['Current', 'Voltage', 'Resistance', 'Series & Parallel Circuits', 'Power']}
+                  chips={['Static Electricity', 'Current', 'Voltage', 'Resistance', 'D.C. Circuits', 'Practical Electricity']}
                   points={[
-                    'Master circuit analysis techniques',
-                    'Practice Ohm’s Law applications',
-                    'Understand power calculations',
-                    'Learn to solve complex circuit problems',
+                    'Master circuit analysis and Ohm’s Law',
+                    'Practice series and parallel combinations',
+                    'Understand power, energy and household electricity',
+                    'Learn static electricity alongside current electricity',
                   ]}
                 />
                 <TopicCard
-                  title="Magnetism & Electromagnetism"
-                  weight="15–20% of papers"
-                  chips={['Magnetic Fields', 'Electromagnetic Induction', 'Transformers', 'Motors']}
+                  title="Magnetism, Electromagnetism & Induction"
+                  chips={['Magnetic Fields', 'Electromagnetism', 'Electromagnetic Induction']}
                   points={[
-                    'Master magnetic field concepts',
-                    'Practice induction problems',
-                    'Understand transformer principles',
-                    'Learn to solve motor problems',
+                    'Sketch field patterns and the field due to a current',
+                    'Explain motors using the force on a current-carrying conductor',
+                    'Apply electromagnetic induction and transformers',
+                  ]}
+                />
+              </div>
+            </section>
+
+            <section id="radioactivity" className="scroll-mt-24">
+              <SectionHeading icon={Radiation}>Radioactivity</SectionHeading>
+              <div className="space-y-4">
+                <TopicCard
+                  title="The Nucleus & Radioactive Decay"
+                  chips={['Atomic Model', 'α, β and γ', 'Half-life', 'Uses & Hazards']}
+                  points={[
+                    'Describe the composition of the nucleus and the three types of emission',
+                    'Use half-life in calculations and interpret decay graphs',
+                    'Discuss uses of radioisotopes and the hazards of ionising radiation',
+                    'This is its own syllabus section — do not leave it until the last week',
                   ]}
                 />
               </div>
@@ -395,13 +421,13 @@ Preferred days & timing: `;
                 </GuideCard>
 
                 <GuideCard>
-                  <h4 className="font-semibold text-gray-900 mb-2">Paper 2 (Structured Questions) Strategy</h4>
+                  <h4 className="font-semibold text-gray-900 mb-2">Paper 2 (Structured &amp; Free Response) Strategy</h4>
                   <ul className="list-disc ml-5 space-y-1 text-sm text-gray-700">
-                    <li>Read all questions first and start with your strongest topics</li>
+                    <li>Section A is compulsory (70 marks); one of the last two questions is data-based (8–12 marks)</li>
+                    <li>Read both Section B questions fully before choosing the 10-mark one</li>
                     <li>Show all working clearly &mdash; partial credit is available</li>
                     <li>Use proper units and significant figures</li>
                     <li>Draw clear diagrams with proper labels</li>
-                    <li>Check calculations and units in your final answers</li>
                   </ul>
                 </GuideCard>
 
@@ -484,7 +510,7 @@ Preferred days & timing: `;
                   <ul className="list-disc ml-5 text-sm space-y-1 text-gray-700">
                     <li>
                       <Link href="/free-notes" className="text-primary underline underline-offset-2">O-Level Physics study notes</Link>
-                      {' '}&mdash; every formula with its SI unit attached, across all eleven topics, then answer templates, instrument precision and the graphing rules. Written to Cambridge 5054, which matches syllabus 6091 topic for topic
+                      {' '}&mdash; every formula with its SI unit attached, across all eleven topics, then answer templates, instrument precision and the graphing rules. Written against syllabus 6091
                     </li>
                     <li>
                       <Link href="/free-test-papers" className="text-primary underline underline-offset-2">Free test papers</Link>

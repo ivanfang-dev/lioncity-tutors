@@ -43,9 +43,9 @@ const tableOfContents = [
   { id: 'structure', label: 'Exam & paper structure' },
   { id: 'exam-dates', label: '2026 exam timetable' },
   { id: 'timeline', label: '12-month study timeline' },
-  { id: 'physical', label: 'Physical chemistry' },
-  { id: 'inorganic', label: 'Inorganic chemistry' },
-  { id: 'organic', label: 'Organic chemistry' },
+  { id: 'physical', label: 'Matter & reactions' },
+  { id: 'inorganic', label: 'Periodic table & metals' },
+  { id: 'organic', label: 'Organic & air quality' },
   { id: 'exam-strategies', label: 'Paper-by-paper exam strategy' },
   { id: 'mistakes', label: '10 common mistakes' },
   { id: 'schedule', label: 'Weekly study schedule' },
@@ -186,7 +186,7 @@ Preferred days & timing: `;
           <GuideHeader
             title="O Level Chemistry Guide 2026: Master Physical, Organic & Inorganic Chemistry"
             author="By the LionCity Tutors Chemistry Team"
-            meta="Updated May 23, 2026 · 18 min read"
+            meta="Updated August 29, 2026 · 18 min read"
             imageSrc="/o-level-chemistry.webp"
             imageAlt="Laboratory glassware and reagents — the hands-on craft at the heart of O Level Chemistry."
           />
@@ -224,25 +224,33 @@ Preferred days & timing: `;
             <section id="structure" className="scroll-mt-24">
               <SectionHeading icon={FileText}>Understanding O Level Chemistry Structure</SectionHeading>
               <p className="text-pretty">
-                Singapore&rsquo;s O Level Chemistry (Paper 6092) is a comprehensive subject that builds the foundation for further studies in science and engineering. The subject is available in both Pure and Combined Science streams.
+                Singapore&rsquo;s O Level Chemistry (syllabus 6092) builds the foundation for further studies in science and engineering. Combined Science (Chemistry) is a different subject &mdash; 5086 or 5088 &mdash; with a 20% MCQ paper, two 32.5% theory papers and a 15% practical, not the Pure Chemistry split below.
               </p>
               <GuideCard className="mt-4">
                 <h4 className="font-semibold text-gray-900 mb-4">O Level Chemistry Papers Breakdown</h4>
                 <div className="space-y-5">
                   <div>
-                    <h5 className="font-semibold text-gray-900">Pure Chemistry</h5>
+                    <h5 className="font-semibold text-gray-900">Paper 1: Multiple Choice</h5>
                     <ul className="list-disc ml-5 mt-1.5 space-y-1 text-sm text-gray-700">
-                      <li>Paper 1: Multiple Choice (30%)</li>
-                      <li>Paper 2: Structured &amp; Free Response (50%)</li>
-                      <li>Paper 3: Practical Assessment (20%)</li>
+                      <li>40 compulsory items, 40 marks, 1 hour, 30%</li>
+                      <li>A Periodic Table is printed in the paper</li>
                     </ul>
                   </div>
                   <div>
-                    <h5 className="font-semibold text-gray-900">Combined Science (Chemistry)</h5>
+                    <h5 className="font-semibold text-gray-900">Paper 2: Structured and Free Response</h5>
                     <ul className="list-disc ml-5 mt-1.5 space-y-1 text-sm text-gray-700">
-                      <li>Paper 1: Multiple Choice (30%)</li>
-                      <li>Paper 2: Structured &amp; Free Response (50%)</li>
-                      <li>Paper 3: Practical Assessment (20%)</li>
+                      <li>80 marks, 1 hour 45 minutes, 50%</li>
+                      <li>Section A: 70 marks of compulsory structured questions; the last two share 20 marks, one a data-based question worth 8–12</li>
+                      <li>Section B: 10 marks &mdash; two questions, answer one</li>
+                      <li>A Periodic Table is printed; the Notes for Qualitative Analysis are not</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <h5 className="font-semibold text-gray-900">Paper 3: Practical</h5>
+                    <ul className="list-disc ml-5 mt-1.5 space-y-1 text-sm text-gray-700">
+                      <li>40 marks, 1 hour 50 minutes, 20%</li>
+                      <li>Compulsory practical questions; planning may be assessed</li>
+                      <li>Notes for Qualitative Analysis are printed in this paper only</li>
                     </ul>
                   </div>
                 </div>
@@ -264,95 +272,65 @@ Preferred days & timing: `;
             </section>
 
             <section id="physical" className="scroll-mt-24">
-              <SectionHeading icon={Atom}>Physical Chemistry Mastery Guide</SectionHeading>
+              <SectionHeading icon={Atom}>Matter, Bonding &amp; Chemical Reactions</SectionHeading>
               <div className="space-y-4">
                 <TopicCard
-                  title="Atomic Structure & Chemical Bonding"
-                  weight="20–25% of papers"
-                  chips={['Electronic Configuration', 'Periodic Trends', 'Ionic/Covalent Bonding', 'Intermolecular Forces']}
+                  title="Matter — Structures and Properties"
+                  chips={['Experimental Chemistry', 'Particulate Nature of Matter', 'Chemical Bonding and Structure']}
                   points={[
-                    'Master electron configuration patterns',
-                    'Understand periodic trends with underlying principles',
-                    'Practice predicting molecular shapes',
-                    'Learn to explain properties based on bonding types',
+                    'Know apparatus, purification methods and chromatograms (including Rf)',
+                    'Master atomic structure, isotopes and kinetic particle theory',
+                    'Explain properties from ionic, covalent and metallic structure',
+                    'Brownian motion is not required',
                   ]}
                 />
                 <TopicCard
-                  title="Energy Changes"
-                  weight="15–20% of papers"
-                  chips={['Exothermic/Endothermic Reactions', 'Energy Level Diagrams', 'Bond Energy']}
+                  title="Chemical Reactions"
+                  chips={['Calculations', 'Acid–Base', 'Qualitative Analysis', 'Redox & Electrolysis', 'Periodic Table', 'Energetics', 'Rates']}
                   points={[
-                    'Master energy level diagrams',
-                    'Practice bond energy calculations',
-                    'Understand energy changes in reactions',
-                    'Learn to predict reaction energetics',
-                  ]}
-                />
-                <TopicCard
-                  title="Chemical Calculations"
-                  weight="20–25% of papers"
-                  chips={['Moles', 'Concentration', 'Gas Laws', 'Stoichiometry']}
-                  points={[
-                    'Master mole concept calculations',
-                    'Practice concentration problems',
-                    'Understand gas law applications',
-                    'Learn to solve stoichiometry problems',
+                    'Repair the mole concept before anything else — it underpins titration, concentration and gas-volume work',
+                    'Learn the pH scale, indicators and salt preparation; numerical pH = −log[H+] is not on this syllabus',
+                    'Memorise QA tests for Paper 2; they are printed only in Paper 3',
+                    'Work electrolysis from the ions present, not from a memorised example',
                   ]}
                 />
               </div>
             </section>
 
             <section id="inorganic" className="scroll-mt-24">
-              <SectionHeading icon={Gem}>Inorganic Chemistry Mastery Guide</SectionHeading>
+              <SectionHeading icon={Gem}>Periodic Table, Metals &amp; the Rest of Section II</SectionHeading>
               <div className="space-y-4">
                 <TopicCard
-                  title="Acids, Bases & Salts"
-                  weight="20–25% of papers"
-                  chips={['pH Scale', 'Neutralization', 'Salt Preparation', 'Titration']}
+                  title="Patterns in the Periodic Table"
+                  chips={['Group Properties', 'Reactivity Series', 'Extraction of Metals', 'Alloys']}
                   points={[
-                    'Master pH calculations and indicators',
-                    'Practice salt preparation methods',
-                    'Understand titration techniques',
-                    'Learn to solve acid-base problems',
-                  ]}
-                />
-                <TopicCard
-                  title="Metals & Non-metals"
-                  weight="15–20% of papers"
-                  chips={['Reactivity Series', 'Extraction', 'Corrosion', 'Alloys']}
-                  points={[
-                    'Master reactivity series applications',
-                    'Practice extraction methods',
-                    'Understand corrosion prevention',
-                    'Learn to explain metal properties',
+                    'Use the Periodic Table printed in Papers 1 and 2',
+                    'Apply the reactivity series to displacement, extraction and cells',
+                    'Explain rusting and its prevention',
                   ]}
                 />
               </div>
             </section>
 
             <section id="organic" className="scroll-mt-24">
-              <SectionHeading icon={Hexagon}>Organic Chemistry Mastery Guide</SectionHeading>
+              <SectionHeading icon={Hexagon}>Organic Chemistry &amp; Air Quality</SectionHeading>
               <div className="space-y-4">
                 <TopicCard
-                  title="Hydrocarbons"
-                  weight="15–20% of papers"
-                  chips={['Alkanes', 'Alkenes', 'Fuels', 'Cracking']}
+                  title="Organic Chemistry"
+                  chips={['Fuels & Hydrocarbons', 'Alcohols & Carboxylic Acids', 'Polymers']}
                   points={[
-                    'Master hydrocarbon reactions',
-                    'Practice naming organic compounds',
-                    'Understand fuel properties',
-                    'Learn to explain cracking processes',
+                    'Learn by functional group and reaction conditions, not isolated examples',
+                    'Practise naming and distinguishing alkanes from alkenes',
+                    'Treat polymerisation as part of organic chemistry, not a separate paper',
                   ]}
                 />
                 <TopicCard
-                  title="Functional Groups"
-                  weight="15–20% of papers"
-                  chips={['Alcohols', 'Carboxylic Acids', 'Esters', 'Polymers']}
+                  title="Maintaining Air Quality"
+                  chips={['Air Pollutants', 'Ozone', 'Greenhouse Gases']}
                   points={[
-                    'Master functional group reactions',
-                    'Practice polymer formation',
-                    'Understand esterification',
-                    'Learn to explain macromolecules',
+                    'Name the main air pollutants, their sources and effects',
+                    'Link combustion of fuels to air quality',
+                    'This is a full syllabus topic, not an optional extra',
                   ]}
                 />
               </div>
@@ -373,13 +351,13 @@ Preferred days & timing: `;
                 </GuideCard>
 
                 <GuideCard>
-                  <h4 className="font-semibold text-gray-900 mb-2">Paper 2 (Structured & Free Response) Strategy</h4>
+                  <h4 className="font-semibold text-gray-900 mb-2">Paper 2 (Structured &amp; Free Response) Strategy</h4>
                   <ul className="list-disc ml-5 space-y-1 text-sm text-gray-700">
-                    <li>Read all questions first and start with your strongest topics</li>
+                    <li>Section A is compulsory (70 marks); one of the last two questions is data-based (8–12 marks)</li>
+                    <li>Read both Section B questions fully before choosing the 10-mark one</li>
                     <li>Show all working clearly &mdash; partial credit is available</li>
-                    <li>Use proper chemical notation and balanced equations</li>
-                    <li>Draw clear diagrams with proper labels</li>
-                    <li>Check units and significant figures in calculations</li>
+                    <li>Use proper chemical notation and balanced equations with state symbols</li>
+                    <li>QA in this paper is unaided &mdash; the printed notes appear only in Paper 3</li>
                   </ul>
                 </GuideCard>
 

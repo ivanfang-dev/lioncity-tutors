@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import mongoose from 'mongoose';
 import { dbConnect } from '@/lib/mongoose';
 import { presignDownload } from '@/lib/r2.mjs';
-import { isKnownFileKey, isKnownPaperKey } from '@/lib/downloadKeys.mjs';
+import { isKnownFileKey, isKnownPaperKey, downloadFilename } from '@/lib/downloadKeys.mjs';
 
 const testPaperLeadSchema = new mongoose.Schema({
   email: { type: String, required: true },
@@ -56,7 +56,7 @@ export async function POST(request) {
 
     let downloadUrl;
     if (fileKey) {
-      downloadUrl = await presignDownload(fileKey, fileKey.split('/').pop());
+      downloadUrl = await presignDownload(fileKey, downloadFilename(fileKey));
     }
     return NextResponse.json({ success: true, message: 'Download tracked successfully!', downloadUrl });
   } catch (err) {

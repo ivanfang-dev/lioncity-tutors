@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import mongoose from 'mongoose';
 import { dbConnect } from '@/lib/mongoose';
 import { presignDownload } from '@/lib/r2.mjs';
-import { isKnownFileKey } from '@/lib/downloadKeys.mjs';
+import { isKnownFileKey, downloadFilename } from '@/lib/downloadKeys.mjs';
 
 // /free-notes has always posted here, but the route did not exist: every notes
 // download 404'd, showed the error toast and never opened the file. Mirrors
@@ -51,7 +51,7 @@ export async function POST(request) {
 
     let downloadUrl;
     if (fileKey) {
-      downloadUrl = await presignDownload(fileKey, fileKey.split('/').pop());
+      downloadUrl = await presignDownload(fileKey, downloadFilename(fileKey));
     }
     return NextResponse.json({ success: true, downloadUrl });
   } catch (err) {

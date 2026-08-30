@@ -210,7 +210,7 @@ Preferred days & timing: `;
           <GuideHeader
             title="O Level Biology Guide 2026: Master Cells, Human Systems & Ecology"
             author="By the LionCity Tutors Biology Team"
-            meta="Updated May 26, 2026 · 15 min read"
+            meta="Updated August 29, 2026 · 15 min read"
             imageSrc="/o-level-biology.webp"
             imageAlt="A biology study session — the cells, systems and ecosystems at the heart of O Level Biology."
           />
@@ -248,25 +248,31 @@ Preferred days & timing: `;
             <section id="structure" className="scroll-mt-24">
               <SectionHeading icon={FileText}>Understanding O Level Biology Structure</SectionHeading>
               <p className="text-pretty">
-                Singapore&rsquo;s O Level Biology (Paper 6093) builds the foundation for further studies in the life sciences and healthcare. The subject is offered in both the Pure Biology and Combined Science streams, with the same three-paper assessment shape.
+                Singapore&rsquo;s O Level Biology (syllabus 6093) builds the foundation for further studies in the life sciences and healthcare. Combined Science (Biology) is a different subject &mdash; 5087 or 5088 &mdash; with a 20% MCQ paper, two 32.5% theory papers and a 15% practical, not the Pure Biology split below.
               </p>
               <GuideCard className="mt-4">
                 <h4 className="font-semibold text-gray-900 mb-4">O Level Biology Papers Breakdown</h4>
                 <div className="space-y-5">
                   <div>
-                    <h5 className="font-semibold text-gray-900">Pure Biology</h5>
+                    <h5 className="font-semibold text-gray-900">Paper 1: Multiple Choice</h5>
                     <ul className="list-disc ml-5 mt-1.5 space-y-1 text-sm text-gray-700">
-                      <li>Paper 1: Multiple Choice (30%)</li>
-                      <li>Paper 2: Structured &amp; Free Response (50%)</li>
-                      <li>Paper 3: Practical Assessment (20%)</li>
+                      <li>40 compulsory items, 40 marks, 1 hour, 30%</li>
                     </ul>
                   </div>
                   <div>
-                    <h5 className="font-semibold text-gray-900">Combined Science (Biology)</h5>
+                    <h5 className="font-semibold text-gray-900">Paper 2: Structured and Free Response</h5>
                     <ul className="list-disc ml-5 mt-1.5 space-y-1 text-sm text-gray-700">
-                      <li>Paper 1: Multiple Choice (30%)</li>
-                      <li>Paper 2: Structured &amp; Free Response (50%)</li>
-                      <li>Paper 3: Practical Assessment (20%)</li>
+                      <li>80 marks, 1 hour 45 minutes, 50%</li>
+                      <li>Section A: 70 marks of compulsory structured questions, ending with one free-response and one data-based question sharing 20 marks (data-based is 8–12)</li>
+                      <li>Section B: 10 marks &mdash; two free-response questions, answer one</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <h5 className="font-semibold text-gray-900">Paper 3: Practical</h5>
+                    <ul className="list-disc ml-5 mt-1.5 space-y-1 text-sm text-gray-700">
+                      <li>40 marks, 1 hour 50 minutes, 20%</li>
+                      <li>Two to three compulsory practical questions; planning may be assessed</li>
+                      <li>No notes or textbooks</li>
                     </ul>
                   </div>
                 </div>
@@ -292,19 +298,17 @@ Preferred days & timing: `;
               <div className="space-y-4">
                 <TopicCard
                   title="Cell Structure & Movement of Substances"
-                  weight="15–20% of papers"
-                  chips={['Cell Organelles', 'Diffusion', 'Osmosis', 'Active Transport']}
+                  chips={['Plant & Animal Cells', 'Specialisation', 'Diffusion', 'Osmosis', 'Active Transport']}
                   points={[
-                    'Compare plant and animal cell structures and their organelle functions',
-                    'Contrast diffusion, osmosis and active transport with clear examples',
-                    'Explain osmosis in plant and animal cells (turgor, plasmolysis, haemolysis)',
-                    'Relate surface-area-to-volume ratio to the rate of exchange',
+                    'Identify organelles from diagrams, light micrographs and electron micrographs',
+                    'Contrast diffusion, osmosis and active transport with syllabus examples',
+                    'Explain osmosis in plant and animal tissues',
+                    'Calculations on water potential are not required',
                   ]}
                 />
                 <TopicCard
                   title="Biological Molecules & Enzymes"
-                  weight="15–20% of papers"
-                  chips={['Carbohydrates', 'Proteins', 'Lipids', 'Enzymes']}
+                  chips={['Carbohydrates', 'Proteins', 'Fats', 'Enzymes']}
                   points={[
                     'Identify the elements and food tests for carbohydrates, proteins and fats',
                     'Explain enzyme action using the lock-and-key model',
@@ -320,24 +324,22 @@ Preferred days & timing: `;
               <div className="space-y-4">
                 <TopicCard
                   title="Nutrition, Transport & Respiration"
-                  weight="20–25% of papers"
                   chips={['Digestion', 'Blood Circulation', 'Gas Exchange', 'Respiration']}
                   points={[
                     'Trace food through the digestive system, naming enzymes and products',
                     'Relate the structure of arteries, veins and capillaries to their functions',
-                    'Compare aerobic and anaerobic respiration and their energy yields',
+                    'Compare aerobic and anaerobic respiration',
                     'Explain gas exchange in the alveoli and the effects of exercise',
                   ]}
                 />
                 <TopicCard
-                  title="Coordination & Homeostasis"
-                  weight="15–20% of papers"
-                  chips={['Nervous System', 'Hormones', 'Homeostasis', 'Excretion']}
+                  title="Excretion, Coordination, Homeostasis & Infectious Disease"
+                  chips={['Kidney', 'Nervous System', 'Hormones', 'Homeostasis', 'Infectious Diseases']}
                   points={[
                     'Sequence a reflex arc and explain nervous versus hormonal control',
                     'Explain homeostasis using blood-glucose and temperature regulation',
                     'Describe the role of the kidney in excretion and water balance',
-                    'Work through a negative-feedback example end-to-end',
+                    'Infectious diseases in humans is a full topic on syllabus 6093 — do not skip it',
                   ]}
                 />
               </div>
@@ -347,25 +349,22 @@ Preferred days & timing: `;
               <SectionHeading icon={Dna}>Genetics & Reproduction Mastery Guide</SectionHeading>
               <div className="space-y-4">
                 <TopicCard
-                  title="Cell Division & Inheritance"
-                  weight="15–20% of papers"
-                  chips={['Mitosis', 'Meiosis', 'Monohybrid Inheritance', 'Variation']}
+                  title="Cell Division, Reproduction & Inheritance"
+                  chips={['Mitosis', 'Meiosis', 'Flowering Plants', 'Human Reproduction', 'Monohybrid Inheritance']}
                   points={[
-                    'Contrast mitosis and meiosis and their roles',
-                    'Solve monohybrid crosses with full genetic diagrams and Punnett squares',
-                    'Explain dominant, recessive and codominant inheritance with examples',
-                    'Distinguish continuous and discontinuous variation',
+                    'Contrast mitosis and meiosis and their roles — stages of the cycles are not a drawing exercise unless asked',
+                    'Solve monohybrid crosses with full genetic diagrams',
+                    'Compare insect- and wind-pollinated flowers',
+                    'Include sexually transmitted diseases as listed in the reproduction topic',
                   ]}
                 />
                 <TopicCard
-                  title="Molecular Genetics & Reproduction"
-                  weight="10–15% of papers"
-                  chips={['DNA & Genes', 'Genetic Engineering', 'Sexual Reproduction', 'Development']}
+                  title="Molecular Genetics"
+                  chips={['DNA & Genes', 'Genetic Engineering']}
                   points={[
-                    'Describe DNA as the genetic material and the role of genes',
-                    'Outline genetic engineering and its applications (e.g. insulin production)',
-                    'Compare sexual and asexual reproduction',
-                    'Describe fertilisation and early development in humans',
+                    'Outline DNA structure, complementary base pairing and genes as units of inheritance',
+                    'Details of transcription and translation are not required',
+                    'Outline insulin production in bacteria and discuss benefits and ethical issues',
                   ]}
                 />
               </div>
@@ -375,25 +374,22 @@ Preferred days & timing: `;
               <SectionHeading icon={Leaf}>Ecology & the Environment Mastery Guide</SectionHeading>
               <div className="space-y-4">
                 <TopicCard
-                  title="Ecosystems & Cycles"
-                  weight="10–15% of papers"
-                  chips={['Food Chains & Webs', 'Energy Flow', 'Carbon Cycle', 'Nitrogen Cycle']}
+                  title="Nutrition and Transport in Flowering Plants"
+                  chips={['Photosynthesis', 'Xylem', 'Phloem', 'Transpiration']}
                   points={[
-                    'Construct food chains and webs and explain energy loss between trophic levels',
-                    'Diagram the carbon and nitrogen cycles, naming key processes and microbes',
-                    'Interpret pyramids of numbers, biomass and energy',
-                    'Apply concepts to local examples such as the Sungei Buloh mangroves',
+                    'Investigate limiting factors on the rate of photosynthesis',
+                    'Outline the pathway of water and the meaning of translocation',
+                    'Explain wilting and the factors that change transpiration rate',
                   ]}
                 />
                 <TopicCard
-                  title="Human Impact & Conservation"
-                  weight="10–15% of papers"
-                  chips={['Pollution', 'Deforestation', 'Conservation', 'Biodiversity']}
+                  title="Organisms and their Environment"
+                  chips={['Food Chains & Webs', 'Energy Flow', 'Carbon Cycle', 'Global Warming', 'Conservation']}
                   points={[
-                    'Explain the causes and effects of water and air pollution',
-                    'Evaluate the impact of deforestation and eutrophication',
-                    'Discuss conservation strategies and the importance of biodiversity',
-                    'Relate human impact to Singapore’s environment and green initiatives',
+                    'Construct food chains and webs and explain energy loss between trophic levels',
+                    'Interpret pyramids of numbers and biomass (not pyramids of energy)',
+                    'Describe the carbon cycle, carbon sinks, and how human activity drives global warming',
+                    'The nitrogen cycle is not a named topic on syllabus 6093',
                   ]}
                 />
               </div>
@@ -418,7 +414,7 @@ Preferred days & timing: `;
                   </div>
                   <div>
                     <p><strong className="text-gray-900">Mnemonics for Sequences:</strong></p>
-                    <p>Use memory aids to lock down ordered facts (organelles, blood vessels, the nitrogen cycle) &mdash; built on real understanding, not instead of it.</p>
+                    <p>Use memory aids to lock down ordered facts (organelles, blood vessels, the carbon cycle) &mdash; built on real understanding, not instead of it.</p>
                   </div>
                 </div>
               </GuideCard>
@@ -439,13 +435,13 @@ Preferred days & timing: `;
                 </GuideCard>
 
                 <GuideCard>
-                  <h4 className="font-semibold text-gray-900 mb-2">Paper 2 (Structured & Free Response) Strategy</h4>
+                  <h4 className="font-semibold text-gray-900 mb-2">Paper 2 (Structured &amp; Free Response) Strategy</h4>
                   <ul className="list-disc ml-5 space-y-1 text-sm text-gray-700">
-                    <li>Read all questions first and start with your strongest topics</li>
+                    <li>Section A is compulsory; the last two questions share 20 marks, including a data-based stem of 8–12 marks</li>
+                    <li>Read both Section B free-response questions fully before choosing</li>
                     <li>Answer to the command word &mdash; state, describe, explain or compare</li>
                     <li>Use precise biological terminology, not vague phrasing</li>
                     <li>Draw large, clearly labelled diagrams where asked</li>
-                    <li>Structure longer answers: state the point, explain it, then give an example</li>
                   </ul>
                 </GuideCard>
 

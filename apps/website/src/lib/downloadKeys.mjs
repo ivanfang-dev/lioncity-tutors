@@ -26,6 +26,52 @@ export function isKnownFileKey(key) {
   return cachedSet.has(key);
 }
 
+const BRAND = "LionCity Tutors";
+
+/** Titles by fileKey, for both papers and notes. */
+function collectTitles(node, out) {
+  if (Array.isArray(node)) {
+    for (const item of node) if (item?.fileKey && item.title) out.set(item.fileKey, item.title);
+    return out;
+  }
+  if (node && typeof node === "object") {
+    for (const value of Object.values(node)) collectTitles(value, out);
+  }
+  return out;
+}
+
+let cachedTitles;
+
+export function titleForKey(key) {
+  if (!cachedTitles) {
+    cachedTitles = new Map();
+    collectTitles(testPapers, cachedTitles);
+    collectTitles(notesData, cachedTitles);
+  }
+  return cachedTitles.get(key) ?? null;
+}
+
+/**
+ * What the reader's browser saves the file as. The R2 key is a storage slug —
+ * served as-is it lands in a Downloads folder as
+ * "jc-h2-physics-9478-master-study-notes.pdf", and reads like a leaked file
+ * when a student forwards it on. The brand leads because chat apps and file
+ * lists truncate the end, so a prefix is the only position that always
+ * survives. Falls back to the key's last segment for anything untitled.
+ */
+export function downloadFilename(key) {
+  const title = titleForKey(key);
+  if (!title) return key.split("/").pop();
+  const clean = title
+    .replace(/[:/\\]+/g, " - ")
+    .replace(/["*?<>|]/g, "")
+    // eslint-disable-next-line no-control-regex
+    .replace(/[\u0000-\u001f]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+  return `${BRAND} - ${clean}`.slice(0, 120).trim() + ".pdf";
+}
+
 /** Stable per-paper identity: the R2 key when we host it, the source URL otherwise. */
 export function paperKeyOf(paper) {
   return paper?.fileKey || paper?.downloadUrl || null;

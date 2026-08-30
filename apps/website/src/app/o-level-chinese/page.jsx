@@ -242,7 +242,7 @@ Preferred days & timing: `;
             <GuideHeader
               title="O-Level Chinese Guide 2026 (1160): the 实用文 Email, 口试 and Where the Marks Actually Are"
               author="By the LionCity Tutors Chinese Team"
-              meta="Updated August 22, 2026 · 9 min read"
+            meta="Updated August 29, 2026 · 9 min read"
             />
 
             <article className="space-y-12 text-gray-700 leading-relaxed">
@@ -278,8 +278,7 @@ Preferred days & timing: `;
                   ))}
                 </div>
                 <p className="mt-6 text-pretty">
-                  Higher Chinese (syllabus 1116) follows the same shape with a heavier reading load and
-                  more demanding 作文 topics. The email format below applies to both.
+                  Higher Chinese (syllabus 1116) is a different paper, not a heavier version of 1160. Writing is 80 marks / 40% (实用文 of 220 characters or more, plus 作文 of 500 or more, including 演讲词). Paper 2 is 80 marks / 40% over 1 hour 45 minutes, with 病句改正 and a 80-character 片段缩写. Oral is 口头报告 and 讨论 (40 marks / 20%, about 20 minutes) &mdash; there is no 朗读短文 paper in the 1160 shape. The 1160 email skeleton still helps for the 1116 电邮, but do not revise 1116 as if it were 1160.
                 </p>
               </section>
 
