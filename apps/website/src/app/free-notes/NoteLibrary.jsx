@@ -142,7 +142,7 @@ const SubjectCard = ({ subjectTitle, subjectData, onDownloadClick, searchTerm, t
 };
 
 // Level section with note count.
-// `id` is the anchor the subject answer blocks above the library link into.
+// `id` is the anchor the pill nav and the subject answer blocks link into.
 // `heading` is what the reader sees; `title` stays the short label, because it
 // is also the level recorded against every download lead.
 const LevelSection = ({ id, title, heading, icon, notes, onDownloadClick, searchTerm, tint }) => {

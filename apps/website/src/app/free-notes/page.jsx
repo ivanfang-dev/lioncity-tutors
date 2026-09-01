@@ -12,9 +12,10 @@ import { NOTES_DISCLAIMER } from './disclaimer.mjs';
 
 const SLUG = 'free-notes';
 
-// Which library section each answer block sends the reader to. The H2 sciences
-// have no shelf of their own yet, so that block points at the JC section where
-// the General Paper notes live.
+// Which library shelf each subject maps to — used by both the pill nav and the
+// "Go to the notes" link in each answer block. The H2 sciences have no shelf of
+// their own yet, so they point at the JC section where the General Paper notes
+// live.
 const LIBRARY_ANCHOR = {
   'general-paper': '#notes-jc',
   'h2-sciences': '#notes-jc',
@@ -92,7 +93,7 @@ export default function FreeNotesPage() {
               {NOTE_SECTIONS.map((section) => (
                 <a
                   key={section.id}
-                  href={`#${section.id}`}
+                  href={LIBRARY_ANCHOR[section.id]}
                   className="inline-flex items-center justify-center rounded-full border border-[#0474BA]/25 bg-white px-4 py-2 text-center text-sm font-semibold text-[#0474BA] shadow-sm transition-colors hover:border-[#0474BA] hover:bg-[#0474BA]/5"
                 >
                   {section.label}
@@ -101,7 +102,11 @@ export default function FreeNotesPage() {
             </nav>
           </section>
 
-          {/* Subject answer blocks: what the library holds, and what it doesn't. */}
+          <NoteLibrary />
+
+          {/* Subject answer blocks: what the library holds, and what it doesn't.
+              They sit below the library, not above it — on a phone they stack to
+              nine screens, which is nine screens between the reader and a file. */}
           <div className="mx-auto grid max-w-5xl gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {NOTE_SECTIONS.map((section) => (
               <section
@@ -129,8 +134,6 @@ export default function FreeNotesPage() {
               </section>
             ))}
           </div>
-
-          <NoteLibrary />
 
           {/* Collections hosted elsewhere: described here, downloaded there. */}
           <section aria-labelledby="elsewhere" className="mx-auto max-w-5xl">
