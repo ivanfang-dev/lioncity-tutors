@@ -25,6 +25,15 @@ const LIBRARY_ANCHOR = {
   psle: '#papers-primary',
 };
 
+// The shelf below renders papers inside tabs, and an inactive tab is not in the
+// HTML. These level indexes are the flat list, and the crawl path to every paper.
+const LEVEL_INDEX = {
+  'o-level': '/free-test-papers/secondary',
+  'n-level': '/free-test-papers/secondary',
+  'a-level': '/free-test-papers/jc',
+  psle: '/free-test-papers/primary',
+};
+
 const whatsappMessage = `Hi LionCity Tutors! I've been using your free test papers and I'd like help finding a tutor.
 
 Student level (e.g. P6 / Sec 4 / JC2):
@@ -95,18 +104,26 @@ export default async function FreeTestPapersPage() {
                     </Link>
                     .
                   </p>
-                  <a
-                    href={LIBRARY_ANCHOR[section.id]}
-                    className="group mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-[#F17720]"
-                  >
-                    <FileText className="h-4 w-4" strokeWidth={ICON_STROKE} aria-hidden="true" />
-                    Go to the papers
-                    <ArrowRight
-                      className="h-4 w-4 transition-transform group-hover:translate-x-0.5"
-                      strokeWidth={ICON_STROKE}
-                      aria-hidden="true"
-                    />
-                  </a>
+                  <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2">
+                    <a
+                      href={LIBRARY_ANCHOR[section.id]}
+                      className="group inline-flex min-h-11 items-center gap-1.5 text-sm font-semibold text-[#F17720]"
+                    >
+                      <FileText className="h-4 w-4" strokeWidth={ICON_STROKE} aria-hidden="true" />
+                      Go to the papers
+                      <ArrowRight
+                        className="h-4 w-4 transition-transform group-hover:translate-x-0.5"
+                        strokeWidth={ICON_STROKE}
+                        aria-hidden="true"
+                      />
+                    </a>
+                    <Link
+                      href={LEVEL_INDEX[section.id]}
+                      className="inline-flex min-h-11 items-center text-sm font-semibold text-[#0474BA] underline underline-offset-2"
+                    >
+                      See the full list
+                    </Link>
+                  </div>
                 </section>
               );
             })}

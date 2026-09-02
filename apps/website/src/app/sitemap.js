@@ -1,6 +1,7 @@
 import { execSync } from 'node:child_process';
 import path from 'node:path';
 import { HUBS, SPOKES } from '@/lib/seo/clusters.mjs';
+import { getAllPapers } from '@/lib/papers/registry.mjs';
 
 const SITE_URL = 'https://www.lioncitytutors.com';
 
@@ -66,6 +67,14 @@ export default function sitemap() {
   const registryPages = [
     ...Object.values(HUBS).map((h) => ({ path: h.url, priority: 0.9 })),
     ...Object.values(SPOKES).map((s) => ({ path: s.url, priority: 0.7 })),
+    // The three level indexes, then one page per paper. Both are generated from
+    // testPapers.mjs rather than the hub/spoke registry, so lastModified never
+    // resolves for them.
+    ...['primary', 'secondary', 'jc'].map((level) => ({
+      path: `/free-test-papers/${level}`,
+      priority: 0.6,
+    })),
+    ...getAllPapers().map((p) => ({ path: p.url, priority: 0.4 })),
   ];
 
   const datesAreTrustworthy = hasTrustworthyHistory();

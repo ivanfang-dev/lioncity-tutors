@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useState, useEffect } from "react";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -12,6 +13,7 @@ import { Download, BookOpen, GraduationCap, Atom, FileText, Search, Clock } from
 import { testPapers } from "../../data/testPapers.mjs";
 import { LEVEL_TINTS } from "@/lib/levelTints";
 import { paperKeyOf } from "@/lib/downloadKeys.mjs";
+import { getPaperUrlByKey } from "@/lib/papers/registry.mjs";
 import { gaEvent } from "@/utils/analytics";
 import { paperStats } from "./stats";
 
@@ -37,15 +39,27 @@ const ComingSoonCard = ({ examType, tint }) => (
 const PaperListItem = ({ paper, onDownloadClick, tint }) => {
   const { perPaper } = React.useContext(DownloadCounts);
   const downloads = perPaper[paperKeyOf(paper)] ?? 0;
+  // The title links to the paper's own page, which is what Google can crawl —
+  // the download itself stays gated behind the lead form either way.
+  const paperUrl = getPaperUrlByKey(paperKeyOf(paper));
 
   return (
     <li className={`flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 sm:gap-4 p-4 rounded-lg border border-gray-200 bg-white hover:shadow-md transition-all duration-200 ${tint.rowHover}`}>
       <div className="flex items-start gap-3 min-w-0 flex-1">
         <FileText className="h-5 w-5 text-gray-400 mt-0.5 flex-shrink-0" />
         <div className="min-w-0 flex-1">
-          <span className="font-medium text-gray-800 text-sm sm:text-base leading-tight block">
-            {paper.title}
-          </span>
+          {paperUrl ? (
+            <Link
+              href={paperUrl}
+              className="font-medium text-gray-800 text-sm sm:text-base leading-tight block hover:text-primary hover:underline underline-offset-2"
+            >
+              {paper.title}
+            </Link>
+          ) : (
+            <span className="font-medium text-gray-800 text-sm sm:text-base leading-tight block">
+              {paper.title}
+            </span>
+          )}
           {paper.description && (
             <span className="text-xs text-gray-500 mt-1 block">{paper.description}</span>
           )}
