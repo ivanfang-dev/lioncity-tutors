@@ -8,11 +8,17 @@ import Dropdown from "./Dropdown";
 import AnimatedBadge from "./AnimatedBadge";
 import { subjects, levels, resources, forParents, forTutors } from "../data/navigation";
 
+// Below this the bar always stays: the reader has not started reading yet.
+const NAV_HIDE_AFTER_PX = 200;
+// Ignore scroll jitter so momentum scrolling cannot flap the bar.
+const NAV_HIDE_DELTA_PX = 6;
+
 export default function Navbar() {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState(null);
   const [scrolled, setScrolled] = useState(false);
+  const [navHidden, setNavHidden] = useState(false);
 
   const navLinkStyle = (path) =>
     `text-sm font-medium px-4 py-2 rounded-lg hover:bg-gray-100 transition-colors whitespace-nowrap ${
@@ -31,6 +37,34 @@ export default function Navbar() {
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  /**
+   * Yield the bar while the reader is going down the page, bring it back the
+   * moment they head up. The nav and the mobile CTA bar are both pinned, and
+   * together they were holding 150px of an 844px phone screen — 18% — on pages
+   * that already run 20+ screens. Reading is the one thing that band is not for.
+   *
+   * Above NAV_HIDE_AFTER_PX nothing hides: near the top the reader has not
+   * committed to reading yet, and a bar that vanishes on the first flick reads
+   * as a glitch. The delta gate keeps momentum scrolling from flapping it.
+   */
+  useEffect(() => {
+    // The panel hangs off the bottom of the nav, so hiding one hides the other.
+    if (menuOpen) {
+      setNavHidden(false);
+      return;
+    }
+    let lastY = window.scrollY;
+    const onScroll = () => {
+      const y = window.scrollY;
+      const delta = y - lastY;
+      if (Math.abs(delta) < NAV_HIDE_DELTA_PX) return;
+      setNavHidden(delta > 0 && y > NAV_HIDE_AFTER_PX);
+      lastY = y;
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [menuOpen]);
 
   useEffect(() => {
     setOpenDropdown(null);
@@ -82,7 +116,7 @@ export default function Navbar() {
         scrolled
           ? "bg-white/80 backdrop-blur-xl shadow-sm border-b border-gray-200/60"
           : "bg-white"
-      }`}
+      } ${navHidden ? "-translate-y-full" : "translate-y-0"} lg:translate-y-0 motion-reduce:translate-y-0 motion-reduce:transition-none`}
     >
       {/* Logo */}
       <Link href="/" className="flex items-center gap-2.5 flex-shrink-0">
