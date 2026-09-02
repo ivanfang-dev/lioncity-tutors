@@ -22,6 +22,13 @@ import { paperStats } from "./stats";
 const MIN_DOWNLOADS_SHOWN = 10;
 const DownloadCounts = React.createContext({ perPaper: {}, perSubject: {} });
 
+// Shelf anchor -> level filter, so the hero pills both jump and filter.
+const LEVEL_FOR_ANCHOR = {
+  "#papers-primary": "primary",
+  "#papers-secondary": "secondary",
+  "#papers-jc": "jc",
+};
+
 // Coming Soon Component for empty arrays
 const ComingSoonCard = ({ examType, tint }) => (
   <div className={`flex flex-col items-center justify-center p-6 rounded-lg border-2 border-dashed transition-colors ${tint.placeholder}`}>
@@ -313,6 +320,19 @@ export default function PaperLibrary({ counts = { perPaper: {}, perSubject: {}, 
     for (const [key, n] of Object.entries(justDownloaded)) perPaper[key] = (perPaper[key] ?? 0) + n;
     return { perPaper, perSubject: counts.perSubject };
   }, [counts, justDownloaded]);
+
+  // The hero pills link to a shelf anchor. Honouring them as a filter too means
+  // a parent who taps "O-Level" never renders the primary shelf they were
+  // scrolling 11.5 phone screens past to reach it.
+  useEffect(() => {
+    const applyHash = () => {
+      const level = LEVEL_FOR_ANCHOR[window.location.hash];
+      if (level) setSelectedLevel(level);
+    };
+    applyHash();
+    window.addEventListener("hashchange", applyHash);
+    return () => window.removeEventListener("hashchange", applyHash);
+  }, []);
 
   useEffect(() => {
     const savedEmail = localStorage.getItem("email");

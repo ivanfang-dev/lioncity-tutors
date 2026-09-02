@@ -62,8 +62,9 @@ export default async function FreeTestPapersPage() {
       />
 
       <div className="bg-gray-50 min-h-screen">
-        <div className="p-4 sm:p-6 md:p-8 max-w-7xl mx-auto space-y-16">
-          <section className="text-center py-8 space-y-6">
+        {/* Tighter rhythm on small screens: the shelf has to reach the fold. */}
+        <div className="p-4 sm:p-6 md:p-8 max-w-7xl mx-auto space-y-10 sm:space-y-16">
+          <section className="text-center pt-2 pb-4 sm:py-8 space-y-5 sm:space-y-6">
             <h1 className="page-title text-primary">
               Free Test Papers
             </h1>
@@ -72,12 +73,17 @@ export default async function FreeTestPapersPage() {
               papers from Singapore schools, {paperStats.firstYear} to {paperStats.lastYear},
               sorted by level, subject and exam.
             </p>
-            <nav aria-label="Jump to a level" className="flex flex-wrap items-center justify-center gap-2">
+            {/* These used to land on the level answer blocks — prose, not papers —
+                so reaching a paper took two taps. They go to the shelf now. */}
+            <nav
+              aria-label="Jump to a level"
+              className="mx-auto grid max-w-xl grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:justify-center"
+            >
               {PAPER_SECTIONS.map((section) => (
                 <a
                   key={section.id}
-                  href={`#${section.id}`}
-                  className="inline-flex items-center justify-center rounded-full border border-[#0474BA]/25 bg-white px-4 py-2 text-center text-sm font-semibold text-[#0474BA] shadow-sm transition-colors hover:border-[#0474BA] hover:bg-[#0474BA]/5"
+                  href={LIBRARY_ANCHOR[section.id]}
+                  className="inline-flex min-h-11 items-center justify-center rounded-full border border-[#0474BA]/25 bg-white px-4 py-2 text-center text-sm font-semibold text-[#0474BA] shadow-sm transition-colors hover:border-[#0474BA] hover:bg-[#0474BA]/5"
                 >
                   {section.label}
                 </a>
@@ -85,7 +91,12 @@ export default async function FreeTestPapersPage() {
             </nav>
           </section>
 
-          {/* Level answer blocks: what the library holds for each exam level. */}
+          <PaperLibrary counts={counts} />
+
+          {/* Level answer blocks: what the library holds for each exam level.
+              These sit below the shelf, not above it. They answer "what is in
+              here", which is worth reading once you can see it — in front, they
+              were 2,300px of prose between a parent and the papers they came for. */}
           <div className="mx-auto grid max-w-5xl gap-6 sm:grid-cols-2">
             {PAPER_SECTIONS.map((section) => {
               const hub = getPage(section.hub);
@@ -128,8 +139,6 @@ export default async function FreeTestPapersPage() {
               );
             })}
           </div>
-
-          <PaperLibrary counts={counts} />
 
           <section aria-labelledby="faq" className="mx-auto max-w-3xl">
             <SectionHeading id="faq" icon={HelpCircle}>
