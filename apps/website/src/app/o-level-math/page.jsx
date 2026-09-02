@@ -212,7 +212,7 @@ Preferred days & timing: `;
               <ol className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2 text-sm">
                 {tableOfContents.map((item) => (
                   <li key={item.id}>
-                    <a href={`#${item.id}`} className="text-gray-700 hover:text-primary transition-colors">{item.label}</a>
+                    <a href={`#${item.id}`} className="flex min-h-11 items-center text-gray-700 hover:text-primary transition-colors">{item.label}</a>
                   </li>
                 ))}
               </ol>
@@ -472,19 +472,19 @@ Preferred days & timing: `;
                   <h4 className="font-semibold text-gray-900 mb-1.5">Free from us</h4>
                   <ul className="list-disc ml-5 text-sm space-y-1 text-gray-700">
                     <li>
-                      <Link href="/free-notes" className="text-primary underline underline-offset-2">A-Math revision notes</Link>
+                      <Link href="/free-notes" className="inline-flex min-h-11 items-center text-primary underline underline-offset-2">A-Math revision notes</Link>
                       {' '}&mdash; 17 pages on syllabus 4049: a formula reference for every topic, worked examples and the errors that cost method marks
                     </li>
                     <li>
-                      <Link href="/free-notes" className="text-primary underline underline-offset-2">E-Math revision notes</Link>
+                      <Link href="/free-notes" className="inline-flex min-h-11 items-center text-primary underline underline-offset-2">E-Math revision notes</Link>
                       {' '}&mdash; the same for syllabus 4052 in 16 pages, across all seventeen topics from numbers and algebra to vectors and probability
                     </li>
                     <li>
-                      <Link href="/free-test-papers" className="text-primary underline underline-offset-2">Free test papers</Link>
+                      <Link href="/free-test-papers" className="inline-flex min-h-11 items-center text-primary underline underline-offset-2">Free test papers</Link>
                       {' '}&mdash; school prelim papers for E-Math and A-Math, to work unseen and to time
                     </li>
                     <li>
-                      <Link href="/how-to-study/o-level-a-math" className="text-primary underline underline-offset-2">How to study for A-Math</Link>
+                      <Link href="/how-to-study/o-level-a-math" className="inline-flex min-h-11 items-center text-primary underline underline-offset-2">How to study for A-Math</Link>
                       {' '}and{' '}
                       <Link href="/how-to-study/o-level-e-math" className="text-primary underline underline-offset-2">for E-Math</Link>
                       {' '}&mdash; which formulae are printed for you, and where the method marks go

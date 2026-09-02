@@ -146,7 +146,7 @@ Preferred days & timing: `;
               <ol className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2 text-sm">
                 {tableOfContents.map((item) => (
                   <li key={item.id}>
-                    <a href={`#${item.id}`} className="text-gray-700 hover:text-primary transition-colors">{item.label}</a>
+                    <a href={`#${item.id}`} className="flex min-h-11 items-center text-gray-700 hover:text-primary transition-colors">{item.label}</a>
                   </li>
                 ))}
               </ol>
@@ -411,15 +411,15 @@ Preferred days & timing: `;
                   <h4 className="font-semibold text-gray-900 mb-1.5">Free from us</h4>
                   <ul className="list-disc ml-5 text-sm space-y-1 text-gray-700">
                     <li>
-                      <Link href="/free-notes" className="text-primary underline underline-offset-2">H2 Maths revision notes</Link>
+                      <Link href="/free-notes" className="inline-flex min-h-11 items-center text-primary underline underline-offset-2">H2 Maths revision notes</Link>
                       {' '}&mdash; 19 pages on syllabus 9758: the calculator and formula-list rules, a Pure and Statistics reference, and the topics the syllabus excludes but old Ten-Year Series papers still carry
                     </li>
                     <li>
-                      <Link href="/free-test-papers" className="text-primary underline underline-offset-2">Free test papers</Link>
+                      <Link href="/free-test-papers" className="inline-flex min-h-11 items-center text-primary underline underline-offset-2">Free test papers</Link>
                       {' '}&mdash; JC prelim papers, to sit as full three-hour papers
                     </li>
                     <li>
-                      <Link href="/how-to-study/h2-maths" className="text-primary underline underline-offset-2">How to study for H2 Maths</Link>
+                      <Link href="/how-to-study/h2-maths" className="inline-flex min-h-11 items-center text-primary underline underline-offset-2">How to study for H2 Maths</Link>
                       {' '}&mdash; the graphing calculator rules that decide marks, and the A-Math knowledge the syllabus assumes
                     </li>
                   </ul>

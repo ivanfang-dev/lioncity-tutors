@@ -126,7 +126,7 @@ export default function PSLEEnglish() {
                 <ol className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2 text-sm">
                   {tableOfContents.map((item) => (
                     <li key={item.id}>
-                      <a href={`#${item.id}`} className="text-gray-700 hover:text-primary transition-colors">{item.label}</a>
+                      <a href={`#${item.id}`} className="flex min-h-11 items-center text-gray-700 hover:text-primary transition-colors">{item.label}</a>
                     </li>
                   ))}
                 </ol>
@@ -372,15 +372,15 @@ export default function PSLEEnglish() {
                     <h4 className="font-semibold text-gray-900 mb-1.5">Free from us</h4>
                     <ul className="list-disc ml-5 text-sm space-y-1 text-gray-700">
                       <li>
-                        <Link href="/free-notes" className="text-primary underline underline-offset-2">PSLE English study guide</Link>
+                        <Link href="/free-notes" className="inline-flex min-h-11 items-center text-primary underline underline-offset-2">PSLE English study guide</Link>
                         {' '}&mdash; 17 pages on syllabus 0001: the band descriptors and seven narrative techniques for Writing, the synthesis and transformation checking gates, the oral blueprint, and a phrase and idiom bank
                       </li>
                       <li>
-                        <Link href="/free-test-papers" className="text-primary underline underline-offset-2">Free test papers</Link>
+                        <Link href="/free-test-papers" className="inline-flex min-h-11 items-center text-primary underline underline-offset-2">Free test papers</Link>
                         {' '}&mdash; Primary 6 English prelim and school papers, to sit whole and to time
                       </li>
                       <li>
-                        <Link href="/how-to-study/psle-english" className="text-primary underline underline-offset-2">How to study for PSLE English</Link>
+                        <Link href="/how-to-study/psle-english" className="inline-flex min-h-11 items-center text-primary underline underline-offset-2">How to study for PSLE English</Link>
                         {' '}&mdash; why forty of the two hundred marks are decided in about ten minutes of oral
                       </li>
                     </ul>

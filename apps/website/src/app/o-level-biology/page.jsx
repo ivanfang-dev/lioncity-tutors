@@ -240,7 +240,7 @@ Preferred days & timing: `;
               <ol className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2 text-sm">
                 {tableOfContents.map((item) => (
                   <li key={item.id}>
-                    <a href={`#${item.id}`} className="text-gray-700 hover:text-primary transition-colors">{item.label}</a>
+                    <a href={`#${item.id}`} className="flex min-h-11 items-center text-gray-700 hover:text-primary transition-colors">{item.label}</a>
                   </li>
                 ))}
               </ol>
@@ -524,15 +524,15 @@ Preferred days & timing: `;
                   <h4 className="font-semibold text-gray-900 mb-1.5">Free from us</h4>
                   <ul className="list-disc ml-5 text-sm space-y-1 text-gray-700">
                     <li>
-                      <Link href="/free-notes" className="text-primary underline underline-offset-2">O-Level Biology study guide</Link>
+                      <Link href="/free-notes" className="inline-flex min-h-11 items-center text-primary underline underline-offset-2">O-Level Biology study guide</Link>
                       {' '}&mdash; 16 pages on syllabus 6093: the three compulsory papers with their section splits, the syllabus swept from cell structure to genetics and ecology, and the skill areas Paper 3 marks
                     </li>
                     <li>
-                      <Link href="/free-test-papers" className="text-primary underline underline-offset-2">Free test papers</Link>
+                      <Link href="/free-test-papers" className="inline-flex min-h-11 items-center text-primary underline underline-offset-2">Free test papers</Link>
                       {' '}&mdash; Secondary 4 Biology prelim and school papers, to work unseen and to time
                     </li>
                     <li>
-                      <Link href="/how-to-study/o-level-biology" className="text-primary underline underline-offset-2">How to study for O-Level Biology</Link>
+                      <Link href="/how-to-study/o-level-biology" className="inline-flex min-h-11 items-center text-primary underline underline-offset-2">How to study for O-Level Biology</Link>
                       {' '}&mdash; why most of the theory marks are not awarded for knowing things, and what that changes about revision
                     </li>
                   </ul>

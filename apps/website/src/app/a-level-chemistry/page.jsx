@@ -152,7 +152,7 @@ Preferred days & timing: `;
               <ol className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2 text-sm">
                 {tableOfContents.map((item) => (
                   <li key={item.id}>
-                    <a href={`#${item.id}`} className="text-gray-700 hover:text-primary transition-colors">{item.label}</a>
+                    <a href={`#${item.id}`} className="flex min-h-11 items-center text-gray-700 hover:text-primary transition-colors">{item.label}</a>
                   </li>
                 ))}
               </ol>
@@ -491,19 +491,19 @@ Preferred days & timing: `;
                   <h4 className="font-semibold text-gray-900 mb-1.5">Free from us</h4>
                   <ul className="list-disc ml-5 text-sm space-y-1 text-gray-700">
                     <li>
-                      <Link href="/free-notes" className="text-primary underline underline-offset-2">H2 Chemistry study notes</Link>
+                      <Link href="/free-notes" className="inline-flex min-h-11 items-center text-primary underline underline-offset-2">H2 Chemistry study notes</Link>
                       {' '}&mdash; 15 pages across all thirteen topics, plus Paper 4 practical technique and a key-equations sheet. Written to 9729, whose content the revised 9476 keeps &mdash; only the mark allocations changed
                     </li>
                     <li>
-                      <Link href="/free-notes" className="text-primary underline underline-offset-2">H1 Chemistry study notes</Link>
+                      <Link href="/free-notes" className="inline-flex min-h-11 items-center text-primary underline underline-offset-2">H1 Chemistry study notes</Link>
                       {' '}&mdash; for H1 candidates: the eight core topics, both Materials extension topics, and a list of what H1 leaves to H2 so revision does not over-reach
                     </li>
                     <li>
-                      <Link href="/free-test-papers" className="text-primary underline underline-offset-2">Free test papers</Link>
+                      <Link href="/free-test-papers" className="inline-flex min-h-11 items-center text-primary underline underline-offset-2">Free test papers</Link>
                       {' '}&mdash; JC2 H2 Chemistry prelim papers, to work unseen and to time
                     </li>
                     <li>
-                      <Link href="/how-to-study/h2-chemistry" className="text-primary underline underline-offset-2">How to study for H2 Chemistry</Link>
+                      <Link href="/how-to-study/h2-chemistry" className="inline-flex min-h-11 items-center text-primary underline underline-offset-2">How to study for H2 Chemistry</Link>
                       {' '}&mdash; how the four papers are weighted, and which category of marks revision usually misses
                     </li>
                   </ul>

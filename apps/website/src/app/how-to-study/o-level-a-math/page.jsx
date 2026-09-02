@@ -180,7 +180,7 @@ Preferred days & timing: `;
                 <ol className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2 text-sm">
                   {tableOfContents.map((item) => (
                     <li key={item.id}>
-                      <a href={`#${item.id}`} className="text-gray-700 hover:text-primary transition-colors">{item.label}</a>
+                      <a href={`#${item.id}`} className="flex min-h-11 items-center text-gray-700 hover:text-primary transition-colors">{item.label}</a>
                     </li>
                   ))}
                 </ol>

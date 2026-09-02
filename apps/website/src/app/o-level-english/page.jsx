@@ -208,7 +208,7 @@ Preferred days & timing: `;
               <ol className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2 text-sm">
                 {tableOfContents.map((item) => (
                   <li key={item.id}>
-                    <a href={`#${item.id}`} className="text-gray-700 hover:text-primary transition-colors">{item.label}</a>
+                    <a href={`#${item.id}`} className="flex min-h-11 items-center text-gray-700 hover:text-primary transition-colors">{item.label}</a>
                   </li>
                 ))}
               </ol>
@@ -468,15 +468,15 @@ Preferred days & timing: `;
                   <h4 className="font-semibold text-gray-900 mb-1.5">Free from us</h4>
                   <ul className="list-disc ml-5 text-sm space-y-1 text-gray-700">
                     <li>
-                      <Link href="/free-notes" className="text-primary underline underline-offset-2">O-Level English Language study guide</Link>
+                      <Link href="/free-notes" className="inline-flex min-h-11 items-center text-primary underline underline-offset-2">O-Level English Language study guide</Link>
                       {' '}&mdash; 20 pages on syllabus 1184: all four papers with their weightings, the six situational text-type formats, and the planning methods that make every content point visible to the marker
                     </li>
                     <li>
-                      <Link href="/free-test-papers" className="text-primary underline underline-offset-2">Free test papers</Link>
+                      <Link href="/free-test-papers" className="inline-flex min-h-11 items-center text-primary underline underline-offset-2">Free test papers</Link>
                       {' '}&mdash; prelim and past-year O-Level English papers, to work to time
                     </li>
                     <li>
-                      <Link href="/how-to-study/o-level-english" className="text-primary underline underline-offset-2">How to study for O-Level English</Link>
+                      <Link href="/how-to-study/o-level-english" className="inline-flex min-h-11 items-center text-primary underline underline-offset-2">How to study for O-Level English</Link>
                       {' '}&mdash; why Oral at 20% is the most under-rehearsed paper on the syllabus
                     </li>
                   </ul>

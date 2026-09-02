@@ -151,7 +151,7 @@ export default function SecondarySchoolTuition() {
                 <CardContent className="p-6">
                   <h3 className="font-semibold text-lg text-gray-900 mb-2">{item.decision}</h3>
                   <p className="text-sm text-gray-700 mb-3">{item.detail}</p>
-                  <Link href={item.href} className="text-sm text-primary underline underline-offset-2">
+                  <Link href={item.href} className="inline-flex min-h-11 items-center text-sm text-primary underline underline-offset-2">
                     {item.linkText}
                   </Link>
                 </CardContent>
@@ -242,12 +242,12 @@ export default function SecondarySchoolTuition() {
           <div className="mt-4">
             <p className="text-gray-700 mb-2">Subject guides, each with the ten mistakes we correct most:</p>
             <ul className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-sm">
-              <li><Link href="/o-level-math" className="text-primary underline underline-offset-2">O-Level Maths</Link></li>
-              <li><Link href="/o-level-physics" className="text-primary underline underline-offset-2">O-Level Physics</Link></li>
-              <li><Link href="/o-level-chemistry" className="text-primary underline underline-offset-2">O-Level Chemistry</Link></li>
-              <li><Link href="/o-level-biology" className="text-primary underline underline-offset-2">O-Level Biology</Link></li>
-              <li><Link href="/o-level-english" className="text-primary underline underline-offset-2">O-Level English</Link></li>
-              <li><Link href="/combined-science-overview" className="text-primary underline underline-offset-2">Combined Science</Link></li>
+              <li><Link href="/o-level-math" className="inline-flex min-h-11 items-center text-primary underline underline-offset-2">O-Level Maths</Link></li>
+              <li><Link href="/o-level-physics" className="inline-flex min-h-11 items-center text-primary underline underline-offset-2">O-Level Physics</Link></li>
+              <li><Link href="/o-level-chemistry" className="inline-flex min-h-11 items-center text-primary underline underline-offset-2">O-Level Chemistry</Link></li>
+              <li><Link href="/o-level-biology" className="inline-flex min-h-11 items-center text-primary underline underline-offset-2">O-Level Biology</Link></li>
+              <li><Link href="/o-level-english" className="inline-flex min-h-11 items-center text-primary underline underline-offset-2">O-Level English</Link></li>
+              <li><Link href="/combined-science-overview" className="inline-flex min-h-11 items-center text-primary underline underline-offset-2">Combined Science</Link></li>
             </ul>
           </div>
         </section>

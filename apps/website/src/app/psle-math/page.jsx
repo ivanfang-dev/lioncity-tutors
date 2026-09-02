@@ -125,7 +125,7 @@ export default function PSLEMath() {
                 <ol className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2 text-sm">
                   {tableOfContents.map((item) => (
                     <li key={item.id}>
-                      <a href={`#${item.id}`} className="text-gray-700 hover:text-primary transition-colors">{item.label}</a>
+                      <a href={`#${item.id}`} className="flex min-h-11 items-center text-gray-700 hover:text-primary transition-colors">{item.label}</a>
                     </li>
                   ))}
                 </ol>
@@ -336,15 +336,15 @@ export default function PSLEMath() {
                     <h4 className="font-semibold text-gray-900 mb-1.5">Free from us</h4>
                     <ul className="list-disc ml-5 text-sm space-y-1 text-gray-700">
                       <li>
-                        <Link href="/free-notes" className="text-primary underline underline-offset-2">PSLE Maths revision notes</Link>
+                        <Link href="/free-notes" className="inline-flex min-h-11 items-center text-primary underline underline-offset-2">PSLE Maths revision notes</Link>
                         {' '}&mdash; what changed for the 2026 exam, the working discipline that earns method marks, and seven heuristics worked through one at a time
                       </li>
                       <li>
-                        <Link href="/free-test-papers" className="text-primary underline underline-offset-2">Free test papers</Link>
+                        <Link href="/free-test-papers" className="inline-flex min-h-11 items-center text-primary underline underline-offset-2">Free test papers</Link>
                         {' '}&mdash; Primary 6 Maths prelim and school papers, to sit whole and to time
                       </li>
                       <li>
-                        <Link href="/how-to-study/psle-math" className="text-primary underline underline-offset-2">How to study for PSLE Maths</Link>
+                        <Link href="/how-to-study/psle-math" className="inline-flex min-h-11 items-center text-primary underline underline-offset-2">How to study for PSLE Maths</Link>
                         {' '}&mdash; the full format table, and why the ten long-answer questions deserve the majority of practice time
                       </li>
                     </ul>

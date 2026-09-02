@@ -612,7 +612,7 @@ export default function RegisterAsTutor() {
                   <div>
                     <label className="block text-sm font-medium mb-1">Gender <span className="text-error-text" aria-hidden="true">*</span><span className="sr-only"> (required)</span></label>
                     <div className="flex space-x-6 items-center">
-                      <label className="inline-flex items-center">
+                      <label className="inline-flex min-h-11 items-center">
                         <input 
                           type="radio" 
                           name="gender" 
@@ -624,7 +624,7 @@ export default function RegisterAsTutor() {
                         />
                         <span className="ml-2">Male</span>
                       </label>
-                      <label className="inline-flex items-center">
+                      <label className="inline-flex min-h-11 items-center">
                         <input 
                           type="radio" 
                           name="gender" 
@@ -655,7 +655,7 @@ export default function RegisterAsTutor() {
                   <div>
                     <label className="block text-sm font-medium mb-1">Nationality <span className="text-error-text" aria-hidden="true">*</span><span className="sr-only"> (required)</span></label>
                     <div className="space-y-2">
-                      <label className="inline-flex items-center">
+                      <label className="inline-flex min-h-11 items-center">
                         <input 
                           type="radio" 
                           name="nationality" 
@@ -668,7 +668,7 @@ export default function RegisterAsTutor() {
                         <span className="ml-1">Singaporean</span>
                         <span className="ml-4"></span>
                       </label>
-                      <label className="inline-flex items-center">
+                      <label className="inline-flex min-h-11 items-center">
                         <input 
                           type="radio" 
                           name="nationality" 
@@ -680,7 +680,7 @@ export default function RegisterAsTutor() {
                         <span className="ml-1">Singapore PR</span>
                         <span className="ml-4"></span>
                       </label>
-                      <label className="inline-flex items-center">
+                      <label className="inline-flex min-h-11 items-center">
                         <input 
                           type="radio" 
                           name="nationality" 
@@ -776,7 +776,7 @@ export default function RegisterAsTutor() {
                       {openSections[levelKey] && (
                         <div className={`grid grid-cols-2 ${levelData.gridCols} gap-3 pt-4 border-t mt-3`}>
                           {Object.entries(levelData.subjects).map(([subjectKey, subjectLabel]) => (
-                            <label key={subjectKey} className="inline-flex items-center">
+                            <label key={subjectKey} className="inline-flex min-h-11 items-center">
                               <input
                                 type="checkbox"
                                 checked={formData.teachingLevels[levelKey]?.[subjectKey] || false}
@@ -802,7 +802,7 @@ export default function RegisterAsTutor() {
                 <div className="space-y-6">
                   {/* North */}
                   <div className="border-t border-gray-200 pt-3">
-                    <label className="inline-flex items-center mb-2">
+                    <label className="inline-flex min-h-11 items-center mb-2">
                       <input 
                         type="checkbox" 
                         checked={formData.locations.north} 
@@ -818,7 +818,7 @@ export default function RegisterAsTutor() {
                   
                   {/* South */}
                   <div className="border-t border-gray-200 pt-3">
-                    <label className="inline-flex items-center mb-2">
+                    <label className="inline-flex min-h-11 items-center mb-2">
                       <input 
                         type="checkbox" 
                         checked={formData.locations.south} 
@@ -834,7 +834,7 @@ export default function RegisterAsTutor() {
                   
                   {/* East */}
                   <div className="border-t border-gray-200 pt-3">
-                    <label className="inline-flex items-center mb-2">
+                    <label className="inline-flex min-h-11 items-center mb-2">
                       <input 
                         type="checkbox" 
                         checked={formData.locations.east} 
@@ -850,7 +850,7 @@ export default function RegisterAsTutor() {
                   
                   {/* West */}
                   <div className="border-t border-gray-200 pt-3">
-                    <label className="inline-flex items-center mb-2">
+                    <label className="inline-flex min-h-11 items-center mb-2">
                       <input 
                         type="checkbox" 
                         checked={formData.locations.west} 
@@ -866,7 +866,7 @@ export default function RegisterAsTutor() {
                   
                   {/* Central */}
                   <div className="border-t border-gray-200 pt-3">
-                    <label className="inline-flex items-center mb-2">
+                    <label className="inline-flex min-h-11 items-center mb-2">
                       <input 
                         type="checkbox" 
                         checked={formData.locations.central} 
@@ -882,7 +882,7 @@ export default function RegisterAsTutor() {
                   
                   {/* North-East */}
                   <div className="border-t border-gray-200 pt-3">
-                    <label className="inline-flex items-center mb-2">
+                    <label className="inline-flex min-h-11 items-center mb-2">
                       <input 
                         type="checkbox" 
                         checked={formData.locations.northeast} 
@@ -898,7 +898,7 @@ export default function RegisterAsTutor() {
                   
                   {/* North-West */}
                   <div className="border-t border-gray-200 pt-3">
-                    <label className="inline-flex items-center mb-2">
+                    <label className="inline-flex min-h-11 items-center mb-2">
                       <input 
                         type="checkbox" 
                         checked={formData.locations.northwest} 
@@ -913,7 +913,7 @@ export default function RegisterAsTutor() {
                   </div>
                   {/* Online Lesson */}
                   <div className="border-t border-gray-200 pt-3">
-                    <label className="inline-flex items-center mb-2">
+                    <label className="inline-flex min-h-11 items-center mb-2">
                       <input 
                         type="checkbox" 
                         checked={formData.locations.online} 
@@ -938,7 +938,7 @@ export default function RegisterAsTutor() {
                   <div>
                     <label className="block text-sm font-medium mb-1">Tutor Type <span className="text-error-text" aria-hidden="true">*</span><span className="sr-only"> (required)</span></label>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                      <label className="inline-flex items-center">
+                      <label className="inline-flex min-h-11 items-center">
                         <input 
                           type="radio" 
                           name="tutorType" 
@@ -950,7 +950,7 @@ export default function RegisterAsTutor() {
                         />
                         <span className="ml-2">Full-time Tutor</span>
                       </label>
-                      <label className="inline-flex items-center">
+                      <label className="inline-flex min-h-11 items-center">
                         <input 
                           type="radio" 
                           name="tutorType" 
@@ -961,7 +961,7 @@ export default function RegisterAsTutor() {
                         />
                         <span className="ml-2">Part-time Tutor</span>
                       </label>
-                      <label className="inline-flex items-center">
+                      <label className="inline-flex min-h-11 items-center">
                         <input 
                           type="radio" 
                           name="tutorType" 
@@ -972,7 +972,7 @@ export default function RegisterAsTutor() {
                         />
                         <span className="ml-2">MOE Teacher</span>
                       </label>
-                      <label className="inline-flex items-center">
+                      <label className="inline-flex min-h-11 items-center">
                         <input 
                           type="radio" 
                           name="tutorType" 
@@ -983,7 +983,7 @@ export default function RegisterAsTutor() {
                         />
                         <span className="ml-2">Ex-MOE Teacher</span>
                       </label>
-                      <label className="inline-flex items-center">
+                      <label className="inline-flex min-h-11 items-center">
                         <input 
                           type="radio" 
                           name="tutorType" 
@@ -994,7 +994,7 @@ export default function RegisterAsTutor() {
                         />
                         <span className="ml-2">NIE Trainee</span>
                       </label>
-                      <label className="inline-flex items-center">
+                      <label className="inline-flex min-h-11 items-center">
                         <input 
                           type="radio" 
                           name="tutorType" 
@@ -1274,7 +1274,7 @@ export default function RegisterAsTutor() {
                   <div>
                     <h3 className="font-medium mb-2">Weekdays:</h3>
                     <div className="flex flex-wrap gap-4">
-                      <label className="inline-flex items-center">
+                      <label className="inline-flex min-h-11 items-center">
                         <input 
                           type="checkbox" 
                           checked={formData.availableTimeSlots.weekdayMorning} 
@@ -1283,7 +1283,7 @@ export default function RegisterAsTutor() {
                         />
                         <span className="ml-2">Morning (8am-12pm)</span>
                       </label>
-                      <label className="inline-flex items-center">
+                      <label className="inline-flex min-h-11 items-center">
                         <input 
                           type="checkbox" 
                           checked={formData.availableTimeSlots.weekdayAfternoon} 
@@ -1292,7 +1292,7 @@ export default function RegisterAsTutor() {
                         />
                         <span className="ml-2">Afternoon (12pm-5pm)</span>
                       </label>
-                      <label className="inline-flex items-center">
+                      <label className="inline-flex min-h-11 items-center">
                         <input 
                           type="checkbox" 
                           checked={formData.availableTimeSlots.weekdayEvening} 
@@ -1307,7 +1307,7 @@ export default function RegisterAsTutor() {
                   <div>
                     <h3 className="font-medium mb-2">Weekends:</h3>
                     <div className="flex flex-wrap gap-4">
-                      <label className="inline-flex items-center">
+                      <label className="inline-flex min-h-11 items-center">
                         <input 
                           type="checkbox" 
                           checked={formData.availableTimeSlots.weekendMorning} 
@@ -1316,7 +1316,7 @@ export default function RegisterAsTutor() {
                         />
                         <span className="ml-2">Morning (8am-12pm)</span>
                       </label>
-                      <label className="inline-flex items-center">
+                      <label className="inline-flex min-h-11 items-center">
                         <input 
                           type="checkbox" 
                           checked={formData.availableTimeSlots.weekendAfternoon} 
@@ -1325,7 +1325,7 @@ export default function RegisterAsTutor() {
                         />
                         <span className="ml-2">Afternoon (12pm-5pm)</span>
                       </label>
-                      <label className="inline-flex items-center">
+                      <label className="inline-flex min-h-11 items-center">
                         <input 
                           type="checkbox" 
                           checked={formData.availableTimeSlots.weekendEvening} 
@@ -1341,7 +1341,7 @@ export default function RegisterAsTutor() {
 
               {/* Terms & Conditions */}
               <div className="mb-8">
-                <label className="inline-flex items-center">
+                <label className="inline-flex min-h-11 items-center">
                   <input 
                     type="checkbox" 
                     required 
