@@ -23,12 +23,12 @@ export default function GuideHeader({ title, author, meta, imageSrc, imageAlt })
         <span className="block sm:inline">{meta}</span>
       </p>
       {imageSrc ? (
-        <div className="relative mt-8 aspect-[16/7] overflow-hidden rounded-2xl border border-gray-100 bg-gray-50">
+        <div className="relative mt-8 hidden aspect-[16/7] overflow-hidden rounded-2xl border border-gray-100 bg-gray-50 sm:block">
           <Image
             src={imageSrc}
             alt={imageAlt}
             fill
-            priority
+            loading="lazy"
             sizes="(max-width: 1024px) 100vw, 672px"
             className="object-cover"
           />

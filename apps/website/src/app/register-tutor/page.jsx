@@ -496,8 +496,11 @@ export default function RegisterAsTutor() {
     <div className="bg-gradient-to-r from-blue-50 via-white to-blue-50 min-h-screen">
       <div className="max-w-4xl mx-auto px-6 py-12">
 
-        {/* Telegram Assignments Section - ADDED AT TOP */}
-        <div className="mb-12 bg-primary/5 border border-primary/10 p-6 sm:p-8 rounded-xl shadow-md text-center">
+        <h1 className="page-title text-primary text-center mb-6">Register as a Tutor</h1>
+        <p className="text-center text-gray-600 mb-8">Fill out the form below to register as a tutor with LionCity Tutors.</p>
+
+        {/* Telegram Assignments Section */}
+        <div className="mb-12 mt-2 bg-primary/5 border border-primary/10 p-6 sm:p-8 rounded-xl shadow-md text-center">
           <h2 className="section-title text-primary mb-4">View Available Assignments</h2>
           <p className="font-medium mb-2">Fill up the form below to start signing up for available assignments 🙂</p>
           <p className="mb-4">(Join our Telegram Group for full-listing & daily updates of assignments)</p>
@@ -512,8 +515,6 @@ export default function RegisterAsTutor() {
           </a>
           <p className="text-sm mt-2 text-gray-600 italic">(Don't forget to fill up the form below!)</p>
         </div>
-        <h1 className="page-title text-primary text-center mb-6">Register as a Tutor</h1>
-        <p className="text-center text-gray-600 mb-8">Fill out the form below to register as a tutor with LionCity Tutors.</p>
 
         <form onSubmit={handleSubmit} className="bg-white p-8 rounded-xl shadow-lg">
           {status.error && (
@@ -536,9 +537,9 @@ export default function RegisterAsTutor() {
                 <h2 className="section-title text-primary mb-6">1. Personal Information</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-medium mb-1">Full Name <span className="text-error-text" aria-hidden="true">*</span><span className="sr-only"> (required)</span></label>
+                    <label htmlFor="fullName" className="block text-sm font-medium mb-1">Full Name <span className="text-error-text" aria-hidden="true">*</span><span className="sr-only"> (required)</span></label>
                     <input 
-                      name="fullName" 
+                      name="fullName" id="fullName" 
                       value={formData.fullName} 
                       onChange={handleInputChange} 
                       className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" 
@@ -547,9 +548,9 @@ export default function RegisterAsTutor() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-1">Contact Number (Fill Accurately) <span className="text-error-text" aria-hidden="true">*</span><span className="sr-only"> (required)</span></label>
+                    <label htmlFor="contactNumber" className="block text-sm font-medium mb-1">Contact Number (Fill Accurately) <span className="text-error-text" aria-hidden="true">*</span><span className="sr-only"> (required)</span></label>
                     <input 
-                      name="contactNumber"
+                      name="contactNumber" id="contactNumber"
                       type="tel"
                       inputMode="tel"
                       autoComplete="tel"
@@ -562,9 +563,9 @@ export default function RegisterAsTutor() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-1">Email <span className="text-error-text" aria-hidden="true">*</span><span className="sr-only"> (required)</span></label>
+                    <label htmlFor="email" className="block text-sm font-medium mb-1">Email <span className="text-error-text" aria-hidden="true">*</span><span className="sr-only"> (required)</span></label>
                     <input 
-                      name="email" 
+                      name="email" id="email" 
                       type="email" 
                       value={formData.email} 
                       onChange={handleInputChange} 
@@ -639,9 +640,9 @@ export default function RegisterAsTutor() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-1">Age <span className="text-error-text" aria-hidden="true">*</span><span className="sr-only"> (required)</span></label>
+                    <label htmlFor="age" className="block text-sm font-medium mb-1">Age <span className="text-error-text" aria-hidden="true">*</span><span className="sr-only"> (required)</span></label>
                     <input 
-                      name="age" 
+                      name="age" id="age" 
                       type="number" 
                       value={formData.age} 
                       onChange={handleInputChange} 
@@ -706,9 +707,9 @@ export default function RegisterAsTutor() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-1">Race <span className="text-error-text" aria-hidden="true">*</span><span className="sr-only"> (required)</span></label>
+                    <label htmlFor="race" className="block text-sm font-medium mb-1">Race <span className="text-error-text" aria-hidden="true">*</span><span className="sr-only"> (required)</span></label>
                     <select 
-                      name="race" 
+                      name="race" id="race" 
                       value={formData.race} 
                       onChange={handleInputChange} 
                       className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" 
@@ -726,9 +727,9 @@ export default function RegisterAsTutor() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-1">NRIC (Last 4 Digits) <span className="text-error-text" aria-hidden="true">*</span><span className="sr-only"> (required)</span></label>
+                    <label htmlFor="nricLast4" className="block text-sm font-medium mb-1">NRIC (Last 4 Digits) <span className="text-error-text" aria-hidden="true">*</span><span className="sr-only"> (required)</span></label>
                     <input 
-                      name="nricLast4" 
+                      name="nricLast4" id="nricLast4" 
                       maxLength={4} 
                       value={formData.nricLast4} 
                       onChange={handleInputChange} 
@@ -740,9 +741,9 @@ export default function RegisterAsTutor() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-1">Home Postal Code</label>
+                    <label htmlFor="postalDistrict" className="block text-sm font-medium mb-1">Home Postal Code</label>
                     <input
-                      name="postalDistrict"
+                      name="postalDistrict" id="postalDistrict"
                       maxLength={6}
                       value={formData.postalDistrict}
                       onChange={handleInputChange}
@@ -1009,9 +1010,9 @@ export default function RegisterAsTutor() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-1">Years of Teaching Experience <span className="text-error-text" aria-hidden="true">*</span><span className="sr-only"> (required)</span></label>
+                    <label htmlFor="yearsOfExperience" className="block text-sm font-medium mb-1">Years of Teaching Experience <span className="text-error-text" aria-hidden="true">*</span><span className="sr-only"> (required)</span></label>
                     <select 
-                      name="yearsOfExperience" 
+                      name="yearsOfExperience" id="yearsOfExperience" 
                       value={formData.yearsOfExperience} 
                       onChange={handleInputChange} 
                       className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" 
@@ -1027,9 +1028,9 @@ export default function RegisterAsTutor() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-1">Highest Education Level <span className="text-error-text" aria-hidden="true">*</span><span className="sr-only"> (required)</span></label>
+                    <label htmlFor="highestEducation" className="block text-sm font-medium mb-1">Highest Education Level <span className="text-error-text" aria-hidden="true">*</span><span className="sr-only"> (required)</span></label>
                     <select 
-                      name="highestEducation" 
+                      name="highestEducation" id="highestEducation" 
                       value={formData.highestEducation} 
                       onChange={handleInputChange} 
                       className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" 
@@ -1046,9 +1047,9 @@ export default function RegisterAsTutor() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-1">Current School/University/Workplace <span className="text-error-text" aria-hidden="true">*</span><span className="sr-only"> (required)</span></label>
+                    <label htmlFor="currentSchool" className="block text-sm font-medium mb-1">Current School/University/Workplace <span className="text-error-text" aria-hidden="true">*</span><span className="sr-only"> (required)</span></label>
                     <input 
-                      name="currentSchool" 
+                      name="currentSchool" id="currentSchool" 
                       value={formData.currentSchool} 
                       onChange={handleInputChange} 
                       className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" 
