@@ -175,6 +175,31 @@ export default function Navbar() {
           >
             Get Free Tutor Matching
           </Link>
+
+          {/* Free Test Papers is the single most-clicked page on the site and sat
+              two taps deep, behind the Free Resources accordion — as did Free
+              Notes. Everything else can stay categorised; these two earn a
+              shortcut. */}
+          <div className="mt-3 flex gap-2">
+            {[
+              { href: '/free-test-papers', label: 'Free Test Papers' },
+              { href: '/free-notes', label: 'Free Notes' },
+            ].map(({ href, label }) => (
+              <Link
+                key={href}
+                href={href}
+                onClick={() => setMenuOpen(false)}
+                tabIndex={menuOpen ? 0 : -1}
+                className={`flex min-h-11 flex-1 items-center justify-center rounded-full border px-3 text-center text-xs font-semibold transition-colors ${
+                  pathname === href
+                    ? 'border-primary bg-primary/5 text-primary'
+                    : 'border-gray-200 bg-white text-gray-700 hover:border-primary hover:text-primary'
+                }`}
+              >
+                {label}
+              </Link>
+            ))}
+          </div>
         </div>
 
         {/* Navigation Items */}
