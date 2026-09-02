@@ -1,4 +1,9 @@
 export default {
+    // Next serves WebP only by default. AVIF is typically 20-30% smaller again,
+    // and every hero on the site is already a WebP source.
+    images: {
+      formats: ['image/avif', 'image/webp'],
+    },
     async redirects() {
       return [
         // Moved out of /blog/ when the how-to-study series got its own path.

@@ -58,10 +58,15 @@ export const metadata = {
 
 import HomePageClient from './HomePageClient';
 
-export default function HomePage(props) {
+// No props: taking them meant taking `searchParams`, which opts the route into
+// dynamic rendering. That cost the home page every static-render benefit —
+// Vercel served it `no-store` on a cache MISS while every other page was a HIT,
+// and Lighthouse mobile scored it 73 against 96-99 elsewhere. HomePageClient
+// has never declared a prop.
+export default function HomePage() {
   return (
     <>
-      <HomePageClient {...props} />
+      <HomePageClient />
       
       {/* Combined and optimized JSON-LD structured data */}
       <script
