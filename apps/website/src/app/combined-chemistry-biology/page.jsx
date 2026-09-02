@@ -212,7 +212,7 @@ export default function CombinedChemBioNA() {
                 />
               </div>
               <div>
-                <h3 className="font-semibold text-[#F17720] mb-2">N-Level Combined Chemistry/Biology</h3>
+                <h3 className="font-semibold text-accent-text mb-2">N-Level Combined Chemistry/Biology</h3>
                 <ExamTimetable
                   examSlug="n-level"
                   subjectSlugs={['combined-science-chem-bio']}

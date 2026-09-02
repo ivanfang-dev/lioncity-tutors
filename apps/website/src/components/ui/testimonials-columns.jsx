@@ -36,12 +36,12 @@ export const TestimonialsColumn = (props) => {
                   </div>
                   <div>{text}</div>
                   <div className="flex items-center gap-2 mt-5">
-                    <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold text-sm shrink-0">
+                    <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary-deep font-semibold text-sm shrink-0">
                       {initials}
                     </div>
                     <div className="flex flex-col">
                       <div className="font-medium tracking-tight leading-5">{name}</div>
-                      <div className="leading-5 opacity-60 tracking-tight">{relation}</div>
+                      <div className="leading-5 tracking-tight text-gray-600">{relation}</div>
                     </div>
                   </div>
                 </div>

@@ -145,7 +145,7 @@ function RequestForTutorContent(){
                 <div className="flex items-start gap-3">
                   <Info className="text-primary mt-0.5 flex-shrink-0" size={20} aria-hidden="true" />
                   <div>
-                    <h4 className="font-semibold text-primary mb-2">How It Works</h4>
+                    <h4 className="font-semibold text-primary-deep mb-2">How It Works</h4>
                     <ol className="text-sm text-text-secondary space-y-1 list-decimal pl-4 marker:text-primary marker:font-semibold">
                       <li>Fill out this form</li>
                       <li>We match you with suitable tutors</li>

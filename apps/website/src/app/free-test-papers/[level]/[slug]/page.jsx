@@ -103,7 +103,7 @@ export default async function PaperPage({ params }) {
           </nav>
 
           <header className="space-y-4">
-            <p className="text-sm font-semibold uppercase tracking-wide text-[#F17720]">
+            <p className="text-sm font-semibold uppercase tracking-wide text-accent-text">
               {paper.levelLabel} &middot; {paper.examLabel} {paper.year}
             </p>
             <h1 className="page-title text-gray-900 text-balance">{heading}</h1>

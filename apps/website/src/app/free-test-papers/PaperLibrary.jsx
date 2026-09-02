@@ -29,6 +29,10 @@ const LEVEL_FOR_ANCHOR = {
   "#papers-jc": "jc",
 };
 
+// Radix builds aria-controls ids from the tab value, and exam keys like
+// "Prelim Paper 1" put a space in the id, which is not a valid IDREF.
+const tabValue = (type) => type.replace(/[^a-zA-Z0-9_-]+/g, "-");
+
 // Coming Soon Component for empty arrays
 const ComingSoonCard = ({ examType, tint }) => (
   <div className={`flex flex-col items-center justify-center p-6 rounded-lg border-2 border-dashed transition-colors ${tint.placeholder}`}>
@@ -36,7 +40,7 @@ const ComingSoonCard = ({ examType, tint }) => (
     <p className="text-gray-500 font-medium text-center">
       Coming Soon
     </p>
-    <p className="text-gray-400 text-sm text-center mt-1">
+    <p className="text-gray-600 text-sm text-center mt-1">
       {examType.replace(/_/g, ' ').toUpperCase()} papers will be available soon
     </p>
   </div>
@@ -68,10 +72,10 @@ const PaperListItem = ({ paper, onDownloadClick, tint }) => {
             </span>
           )}
           {paper.description && (
-            <span className="text-xs text-gray-500 mt-1 block">{paper.description}</span>
+            <span className="text-sm text-gray-600 mt-1 block">{paper.description}</span>
           )}
           {downloads >= MIN_DOWNLOADS_SHOWN && (
-            <span className="mt-1 flex items-center gap-1 text-xs text-gray-500">
+            <span className="mt-1 flex items-center gap-1 text-sm text-gray-600">
               <Download className="h-3 w-3" aria-hidden="true" />
               <span className="tabular-nums">{downloads.toLocaleString()}</span> downloads
             </span>
@@ -148,8 +152,8 @@ const SubjectCard = ({ subjectKey, subjectTitle, subjectData, onDownloadClick, s
     <Card className="hover:shadow-xl hover:-translate-y-1 transition-all duration-300 ease-in-out rounded-2xl overflow-hidden">
       <CardContent className="p-6 space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-          <h4 className="font-bold text-xl text-gray-900">{subjectTitle}</h4>
-          <div className="text-xs text-gray-500 bg-gray-100 px-3 py-1.5 rounded-full whitespace-nowrap self-start sm:self-auto">
+          <h3 className="font-bold text-xl text-gray-900">{subjectTitle}</h3>
+          <div className="text-sm text-gray-600 bg-gray-100 px-3 py-1.5 rounded-full whitespace-nowrap self-start sm:self-auto">
             <span className="tabular-nums">{availablePapers}</span> papers
             {downloads >= MIN_DOWNLOADS_SHOWN && (
               <> &middot; <span className="tabular-nums">{downloads.toLocaleString()}</span> downloads</>
@@ -158,21 +162,21 @@ const SubjectCard = ({ subjectKey, subjectTitle, subjectData, onDownloadClick, s
         </div>
         
         {hasExamTypes ? (
-          <Tabs defaultValue={examTypes[0]} className="w-full">
+          <Tabs defaultValue={tabValue(examTypes[0])} className="w-full">
             {/* `h-auto` overrides the base `h-9`/`h-[calc(100%-1px)]`, which clip a wrapped second row. */}
             <TabsList className="flex h-auto flex-wrap gap-2 bg-gray-100 p-2 rounded-lg w-full">
               {examTypes.map((type) => (
                 <TabsTrigger
                   key={type}
-                  value={type}
-                  className={`h-auto flex-none rounded-full px-3 py-2 text-xs font-semibold transition-all ${tint.tab}`}
+                  value={tabValue(type)}
+                  className={`h-auto flex-none rounded-full px-3 py-2 text-sm font-semibold transition-all ${tint.tab}`}
                 >
                   {type.replace(/_/g, ' ').toUpperCase()}
                 </TabsTrigger>
               ))}
             </TabsList>
             {examTypes.map((type) => (
-              <TabsContent key={type} value={type} className="mt-4">
+              <TabsContent key={type} value={tabValue(type)} className="mt-4">
                 {Array.isArray(subjectData[type]) ? (
                   subjectData[type].length === 0 ? (
                     <ComingSoonCard examType={type} tint={tint} />
@@ -194,9 +198,9 @@ const SubjectCard = ({ subjectKey, subjectTitle, subjectData, onDownloadClick, s
                   <div className="space-y-4">
                     {Object.entries(subjectData[type] || {}).map(([subType, papers]) => (
                       <div key={subType} className="space-y-2">
-                        <h5 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">
+                        <h4 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">
                           {subType.replace(/_/g, ' ')}
-                        </h5>
+                        </h4>
                         {Array.isArray(papers) && papers.length === 0 ? (
                           <ComingSoonCard examType={`${type} ${subType}`} tint={tint} />
                         ) : (
@@ -273,7 +277,7 @@ const LevelSection = ({ id, title, icon, papers, onDownloadClick, searchTerm, ti
           {icon}
           <h2 className={`text-2xl sm:text-3xl font-bold ${tint.heading}`}>{title}</h2>
         </div>
-        <div className="text-sm text-gray-500 bg-white px-3 py-2 rounded-full border whitespace-nowrap self-start sm:self-auto">
+        <div className="text-sm text-gray-600 bg-white px-3 py-2 rounded-full border whitespace-nowrap self-start sm:self-auto">
           {totalPapers} papers available
         </div>
       </div>
@@ -451,22 +455,32 @@ export default function PaperLibrary({ counts = { perPaper: {}, perSubject: {}, 
           </div>
         </div>
 
-        {/* Enhanced Level Filter Menu */}
+        {/* A segmented control, not tabs: there are no tab panels to control, so
+            Radix Tabs emitted aria-controls pointing at ids that do not exist. */}
         <div className="flex justify-center">
-          <Tabs value={selectedLevel} onValueChange={setSelectedLevel} className="w-full max-w-2xl">
-            <TabsList className="grid w-full grid-cols-4 p-1 bg-white rounded-full h-auto shadow-sm border">
-              {levelFilters.map((level) => (
-                <TabsTrigger
+          <div
+            role="group"
+            aria-label="Filter papers by level"
+            className="grid w-full max-w-2xl grid-cols-4 gap-1 rounded-full border bg-white p-1 shadow-sm"
+          >
+            {levelFilters.map((level) => {
+              const active = selectedLevel === level;
+              return (
+                <button
                   key={level}
-                  value={level}
-                  className="rounded-full data-[state=active]:bg-primary data-[state=active]:text-white data-[state=active]:shadow-sm font-semibold px-4 py-3 transition-all duration-200"
+                  type="button"
+                  onClick={() => setSelectedLevel(level)}
+                  aria-pressed={active}
+                  className={`min-h-11 rounded-full px-4 py-3 text-sm font-semibold transition-all duration-200 ${
+                    active ? "bg-primary text-white shadow-sm" : "text-gray-700 hover:bg-gray-50"
+                  }`}
                 >
                   {level === "jc" ? "JC" : level.charAt(0).toUpperCase() + level.slice(1)}
                   {level === "all" && " Levels"}
-                </TabsTrigger>
-              ))}
-            </TabsList>
-          </Tabs>
+                </button>
+              );
+            })}
+          </div>
         </div>
 
         {/* Test Papers Sections */}
@@ -547,7 +561,7 @@ export default function PaperLibrary({ counts = { perPaper: {}, perSubject: {}, 
               Download: {selectedPaper?.title}
             </DialogTitle>
             {paperInfo && (
-              <div className="text-sm text-gray-500 bg-gray-50 p-3 rounded-lg">
+              <div className="text-sm text-gray-600 bg-gray-50 p-3 rounded-lg">
                 <div className="flex items-center gap-2">
                   <div className="w-2 h-2 bg-primary rounded-full"></div>
                   <span className="font-medium">{paperInfo.level}</span>
@@ -615,7 +629,7 @@ export default function PaperLibrary({ counts = { perPaper: {}, perSubject: {}, 
                 </div>
               )}
             </Button>
-            <p className="text-xs text-gray-500 text-center leading-relaxed">
+            <p className="text-sm text-gray-600 text-center leading-relaxed">
               By downloading, you agree to receive educational content and updates. 
               Your information is secure and won't be shared with third parties.
             </p>

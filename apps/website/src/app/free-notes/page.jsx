@@ -121,7 +121,7 @@ export default function FreeNotesPage() {
                 </p>
                 <a
                   href={LIBRARY_ANCHOR[section.id]}
-                  className="group mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-[#F17720]"
+                  className="group mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-accent-text"
                 >
                   <FileText className="h-4 w-4" strokeWidth={ICON_STROKE} aria-hidden="true" />
                   Go to the notes
@@ -165,7 +165,7 @@ export default function FreeNotesPage() {
                     href={resource.url}
                     target="_blank"
                     rel="noopener noreferrer nofollow"
-                    className="group mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-[#F17720]"
+                    className="group mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-accent-text"
                   >
                     <ExternalLink className="h-4 w-4" strokeWidth={ICON_STROKE} aria-hidden="true" />
                     Open the {resource.subject} folder

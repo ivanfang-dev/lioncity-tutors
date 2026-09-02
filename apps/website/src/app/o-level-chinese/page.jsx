@@ -557,7 +557,7 @@ Preferred days & timing: `;
                   href="https://www.seab.gov.sg/gce-o-level/o-level-syllabuses-examined-for-school-candidates-2026/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-[#F17720]"
+                  className="group mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-accent-text"
                 >
                   <Languages className="h-4 w-4" strokeWidth={ICON_STROKE} aria-hidden="true" />
                   Read the SEAB 1160 syllabus in full

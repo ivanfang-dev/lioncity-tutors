@@ -118,7 +118,7 @@ export default async function FreeTestPapersPage() {
                   <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2">
                     <a
                       href={LIBRARY_ANCHOR[section.id]}
-                      className="group inline-flex min-h-11 items-center gap-1.5 text-sm font-semibold text-[#F17720]"
+                      className="group inline-flex min-h-11 items-center gap-1.5 text-sm font-semibold text-accent-text"
                     >
                       <FileText className="h-4 w-4" strokeWidth={ICON_STROKE} aria-hidden="true" />
                       Go to the papers

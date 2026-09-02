@@ -6,6 +6,13 @@
   /* ── Brand Colors ── */
   --color-primary: #0474BA;       /* Trustworthy Blue — brand, headings, links */
   --color-accent: #F17720;        /* Action Orange — brand mark / icon tints (never white text on it) */
+  --color-primary-deep: #03629B;  /* Text-safe blue for tinted surfaces — 6.51:1 on white,
+                                     6.2:1 on the primary/10 wash. Harbour Blue is 4.99:1 on
+                                     white but drops to 4.34:1 on its own tint, so small text
+                                     sitting on a blue wash uses this one. */
+  --color-accent-text: #B0560F;   /* Text-safe orange — 5.02:1 on white, 4.60:1 on gray-100.
+                                     The bright accent is 2.84:1, so it may never carry small
+                                     text. Same split, and the same reason, as error / error-text. */
   --color-accent-fill: #EB711D;   /* CTA fill — 3.04:1 on white. Only clears AA via the
                                      large-text rule, so any white label on this MUST be
                                      >=18.66px AND bold (text-xl font-bold). text-lg is

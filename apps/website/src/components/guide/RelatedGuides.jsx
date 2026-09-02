@@ -87,7 +87,7 @@ export default function RelatedGuides({
               href={s.url}
               className="group block h-full rounded-xl border border-gray-200 p-5 transition-all hover:-translate-y-0.5 hover:border-[#F17720] hover:shadow-md"
             >
-              <span className="block font-semibold text-gray-900 group-hover:text-[#F17720] first-letter:uppercase">
+              <span className="block font-semibold text-gray-900 group-hover:text-accent-text first-letter:uppercase">
                 {s.anchor}
               </span>
               <span className="mt-1 block text-sm text-gray-600">{s.blurb}</span>
