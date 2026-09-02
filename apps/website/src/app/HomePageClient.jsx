@@ -277,7 +277,11 @@ Preferred days & timing: `;
                   alt="A dedicated tutor helping a student."
                   fill
                   priority
-                  sizes="(max-width: 768px) 100vw, 50vw"
+                  /* Measured, not guessed: the hero sits in a max-w-7xl grid with
+                     px-4/px-6 padding and a lg:gap-16 second column, so it renders
+                     358px at a 390px viewport and 608px past 1280 — never 100vw.
+                     Claiming 100vw pushed phones onto the w=828 candidate. */
+                  sizes="(max-width: 1023px) 94vw, (max-width: 1280px) 45vw, 608px"
                   className="object-cover"
                 />
               </motion.div>

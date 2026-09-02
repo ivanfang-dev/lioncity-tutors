@@ -49,12 +49,10 @@ export const viewport = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en-SG" className={inter.variable}>
-      <head>
-        {/* Preconnect to external domains for faster resource loading */}
-        <link rel="preconnect" href="https://www.google-analytics.com" />
-        <link rel="preconnect" href="https://www.googletagmanager.com" />
-        <link rel="dns-prefetch" href="https://www.google-analytics.com" />
-      </head>
+      {/* No preconnect for analytics: both tags below are lazyOnload, so warming
+          those connections spends TLS round trips on the critical path for
+          resources deliberately deferred — competing with the CSS, font and
+          hero image that first paint actually waits on. */}
       <Script
         strategy="lazyOnload"
         src="https://www.googletagmanager.com/gtag/js?id=G-BRCN6DHYT1"
