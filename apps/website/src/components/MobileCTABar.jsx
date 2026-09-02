@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { motion, useReducedMotion } from 'framer-motion';
 import { DURATION, EASE_STANDARD } from '@/lib/motion';
 
@@ -29,17 +30,28 @@ const SHOW_AFTER_PX = 640;
  */
 const CHROME_FLAG = 'mobileCtaBar';
 
-export default function MobileCTABar({ onRequest, formRef, whatsappHref }) {
+/**
+ * `onRequest` scrolls to a form on the same page (home). `href` is the link mode
+ * used by every other page, which has no form to scroll to.
+ */
+export default function MobileCTABar({
+  onRequest,
+  href,
+  formRef,
+  whatsappHref,
+  label = 'Request tutors',
+  showAfterPx = SHOW_AFTER_PX,
+}) {
   const prefersReducedMotion = useReducedMotion();
   const [pastHero, setPastHero] = useState(false);
   const [formInView, setFormInView] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setPastHero(window.scrollY > SHOW_AFTER_PX);
+    const onScroll = () => setPastHero(window.scrollY > showAfterPx);
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
-  }, []);
+  }, [showAfterPx]);
 
   // Stand down at the form. Covering the fields with a button that scrolls to
   // those same fields is noise, and the bar sits exactly over the first inputs.
@@ -81,13 +93,22 @@ export default function MobileCTABar({ onRequest, formRef, whatsappHref }) {
       <div className="mx-auto flex max-w-md items-center gap-3">
         {/* 18.7px/700 is the smallest label brand orange can carry at AA — white
             on accent-fill is 2.89:1, which only clears the 3:1 large-text bar. */}
-        <button
-          type="button"
-          onClick={onRequest}
-          className="min-w-0 flex-1 rounded-full bg-accent-fill px-5 py-3.5 text-[18.7px] font-bold text-white shadow-md transition-colors hover:bg-accent-fill-hover"
-        >
-          Request tutors
-        </button>
+        {href ? (
+          <Link
+            href={href}
+            className="min-w-0 flex-1 rounded-full bg-accent-fill px-5 py-3.5 text-center text-[18.7px] font-bold text-white shadow-md transition-colors hover:bg-accent-fill-hover"
+          >
+            {label}
+          </Link>
+        ) : (
+          <button
+            type="button"
+            onClick={onRequest}
+            className="min-w-0 flex-1 rounded-full bg-accent-fill px-5 py-3.5 text-[18.7px] font-bold text-white shadow-md transition-colors hover:bg-accent-fill-hover"
+          >
+            {label}
+          </button>
+        )}
 
         <a
           href={whatsappHref}

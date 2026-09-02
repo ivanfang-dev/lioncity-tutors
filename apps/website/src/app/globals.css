@@ -479,6 +479,14 @@ a:focus-visible {
   [data-mobile-cta-bar="on"] .floating-chrome {
     display: none;
   }
+
+  /* Reserve that band for good. Whichever of the two is up, it is fixed over the
+     end of the page — the bar was covering a footer link, the WhatsApp button
+     was landing mid-paragraph. Padding here rather than on the bar appearing,
+     so the page height never changes under the reader. */
+  body {
+    padding-bottom: 5.5rem;
+  }
 }
 
 /* Mobile Navigation Animations */

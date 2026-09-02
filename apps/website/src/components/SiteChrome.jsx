@@ -2,6 +2,7 @@
 
 import { usePathname } from 'next/navigation';
 import BackToTop from './BackToTop';
+import GuideMobileCTA from './GuideMobileCTA';
 
 // The marketing chrome (navbar, footer, floating WhatsApp button, back-to-top) wraps every
 // public page but must stay off the ops console, which is an internal tool with its own header
@@ -19,6 +20,7 @@ export default function SiteChrome({ navbar, footer, whatsapp, children }) {
       {footer}
       {whatsapp}
       <BackToTop />
+      <GuideMobileCTA />
     </>
   );
 }
