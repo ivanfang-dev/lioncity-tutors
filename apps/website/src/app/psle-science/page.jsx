@@ -136,17 +136,17 @@ export default function PSLEScience() {
                   PSLE Science is set as a single paper of two booklets, worth 100 marks over 1 hour 45 minutes. Each subject is now graded by Achievement Level (AL1 to AL8), where AL1 is the top band.
                 </p>
                 <GuideCard className="mt-4">
-                  <h4 className="font-semibold text-gray-900 mb-4">PSLE Science paper breakdown</h4>
+                  <h3 className="font-semibold text-gray-900 mb-4">PSLE Science paper breakdown</h3>
                   <div className="space-y-5">
                     <div>
-                      <h5 className="font-semibold text-gray-900">Booklet A &mdash; 56 marks</h5>
+                      <h4 className="font-semibold text-gray-900">Booklet A &mdash; 56 marks</h4>
                       <ul className="list-disc ml-5 mt-1.5 space-y-1 text-sm text-gray-700">
                         <li>Multiple-choice questions</li>
                         <li>Tests knowledge and understanding of concepts</li>
                       </ul>
                     </div>
                     <div>
-                      <h5 className="font-semibold text-gray-900">Booklet B &mdash; 44 marks</h5>
+                      <h4 className="font-semibold text-gray-900">Booklet B &mdash; 44 marks</h4>
                       <ul className="list-disc ml-5 mt-1.5 space-y-1 text-sm text-gray-700">
                         <li>A set of open-ended questions</li>
                         <li>Tests application of concepts and process skills</li>
@@ -228,7 +228,7 @@ export default function PSLEScience() {
               <section id="process-skills" className="scroll-mt-24">
                 <SectionHeading icon={Search}>Process skills &amp; answering open-ended questions</SectionHeading>
                 <GuideCard>
-                  <h4 className="font-semibold text-gray-900 mb-3">How Booklet B marks are actually awarded</h4>
+                  <h3 className="font-semibold text-gray-900 mb-3">How Booklet B marks are actually awarded</h3>
                   <div className="space-y-3 text-sm">
                     <div>
                       <p><strong className="text-gray-900">Claim → Evidence → Reasoning:</strong></p>
@@ -253,7 +253,7 @@ export default function PSLEScience() {
               <section id="techniques" className="scroll-mt-24">
                 <SectionHeading icon={Brain}>Study techniques that work</SectionHeading>
                 <GuideCard>
-                  <h4 className="font-semibold text-gray-900 mb-3">Habits that lift PSLE Science marks</h4>
+                  <h3 className="font-semibold text-gray-900 mb-3">Habits that lift PSLE Science marks</h3>
                   <div className="space-y-3 text-sm">
                     <div>
                       <p><strong className="text-gray-900">Concept mapping:</strong></p>
@@ -279,7 +279,7 @@ export default function PSLEScience() {
                 <SectionHeading icon={Target}>Booklet-by-booklet exam strategy</SectionHeading>
                 <div className="space-y-4">
                   <GuideCard>
-                    <h4 className="font-semibold text-gray-900 mb-2">Booklet A (MCQ)</h4>
+                    <h3 className="font-semibold text-gray-900 mb-2">Booklet A (MCQ)</h3>
                     <ul className="list-disc ml-5 space-y-1 text-sm text-gray-700">
                       <li>Read each stem carefully and underline the keyword</li>
                       <li>Eliminate the clearly wrong options first</li>
@@ -288,7 +288,7 @@ export default function PSLEScience() {
                     </ul>
                   </GuideCard>
                   <GuideCard>
-                    <h4 className="font-semibold text-gray-900 mb-2">Booklet B (open-ended)</h4>
+                    <h3 className="font-semibold text-gray-900 mb-2">Booklet B (open-ended)</h3>
                     <ul className="list-disc ml-5 space-y-1 text-sm text-gray-700">
                       <li>Study every diagram, table and graph before writing</li>
                       <li>Answer with the Claim–Evidence–Reasoning structure</li>
@@ -302,7 +302,7 @@ export default function PSLEScience() {
               <section id="mistakes" className="scroll-mt-24">
                 <SectionHeading icon={TriangleAlert}>Common mistakes to avoid</SectionHeading>
                 <GuideCard>
-                  <h4 className="font-semibold text-gray-900 mb-3">Where PSLE Science marks slip away</h4>
+                  <h3 className="font-semibold text-gray-900 mb-3">Where PSLE Science marks slip away</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3 text-sm">
                     <div>
                       <ol className="list-decimal ml-5 space-y-1 text-gray-700">
@@ -329,7 +329,7 @@ export default function PSLEScience() {
               <section id="schedule" className="scroll-mt-24">
                 <SectionHeading icon={CalendarDays}>A realistic weekly schedule</SectionHeading>
                 <GuideCard>
-                  <h4 className="font-semibold text-gray-900 mb-3">Recommended weekly rhythm (Primary 6)</h4>
+                  <h3 className="font-semibold text-gray-900 mb-3">Recommended weekly rhythm (Primary 6)</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
                     <div>
                       <p className="font-semibold text-gray-900 mb-1.5">School days</p>
@@ -357,7 +357,7 @@ export default function PSLEScience() {
                 <SectionHeading icon={BookOpen}>Essential PSLE Science resources</SectionHeading>
                 <div className="space-y-4">
                   <div>
-                    <h4 className="font-semibold text-gray-900 mb-1.5">Free from us</h4>
+                    <h3 className="font-semibold text-gray-900 mb-1.5">Free from us</h3>
                     <ul className="list-disc ml-5 text-sm space-y-1 text-gray-700">
                       <li>
                         <Link href="/free-notes" className="inline-flex min-h-11 items-center text-primary underline underline-offset-2">PSLE Science notes on matter and materials</Link>
@@ -374,14 +374,14 @@ export default function PSLEScience() {
                     </ul>
                   </div>
                   <div>
-                    <h4 className="font-semibold text-gray-900 mb-1.5">Recommended series</h4>
+                    <h3 className="font-semibold text-gray-900 mb-1.5">Recommended series</h3>
                     <ul className="list-disc ml-5 text-sm space-y-1 text-gray-700">
                       <li>My Pals Are Here! Science (Marshall Cavendish)</li>
                       <li>A structured PSLE Science revision guide organised by theme</li>
                     </ul>
                   </div>
                   <div>
-                    <h4 className="font-semibold text-gray-900 mb-1.5">Practice materials</h4>
+                    <h3 className="font-semibold text-gray-900 mb-1.5">Practice materials</h3>
                     <ul className="list-disc ml-5 text-sm space-y-1 text-gray-700">
                       <li>PSLE past papers (last 5 years)</li>
                       <li>Top-school preliminary examination papers</li>

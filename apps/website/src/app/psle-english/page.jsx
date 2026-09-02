@@ -138,17 +138,17 @@ export default function PSLEEnglish() {
                   PSLE English is set over four papers worth 200 marks in total. Each subject is now graded by Achievement Level (AL1 to AL8), where AL1 is the top band.
                 </p>
                 <GuideCard className="mt-4">
-                  <h4 className="font-semibold text-gray-900 mb-4">PSLE English papers breakdown</h4>
+                  <h3 className="font-semibold text-gray-900 mb-4">PSLE English papers breakdown</h3>
                   <div className="space-y-5">
                     <div>
-                      <h5 className="font-semibold text-gray-900">Paper 1: Writing &mdash; 55 marks, 1h 10min</h5>
+                      <h4 className="font-semibold text-gray-900">Paper 1: Writing &mdash; 55 marks, 1h 10min</h4>
                       <ul className="list-disc ml-5 mt-1.5 space-y-1 text-sm text-gray-700">
                         <li>Situational Writing (15 marks)</li>
                         <li>Continuous Writing (40 marks)</li>
                       </ul>
                     </div>
                     <div>
-                      <h5 className="font-semibold text-gray-900">Paper 2: Language Use &amp; Comprehension &mdash; 95 marks, 1h 50min</h5>
+                      <h4 className="font-semibold text-gray-900">Paper 2: Language Use &amp; Comprehension &mdash; 95 marks, 1h 50min</h4>
                       <ul className="list-disc ml-5 mt-1.5 space-y-1 text-sm text-gray-700">
                         <li>Grammar, vocabulary, cloze and editing</li>
                         <li>Synthesis &amp; transformation</li>
@@ -156,13 +156,13 @@ export default function PSLEEnglish() {
                       </ul>
                     </div>
                     <div>
-                      <h5 className="font-semibold text-gray-900">Paper 3: Listening Comprehension &mdash; 20 marks</h5>
+                      <h4 className="font-semibold text-gray-900">Paper 3: Listening Comprehension &mdash; 20 marks</h4>
                       <ul className="list-disc ml-5 mt-1.5 space-y-1 text-sm text-gray-700">
                         <li>Multiple-choice questions across varied text types</li>
                       </ul>
                     </div>
                     <div>
-                      <h5 className="font-semibold text-gray-900">Paper 4: Oral Communication &mdash; 30 marks</h5>
+                      <h4 className="font-semibold text-gray-900">Paper 4: Oral Communication &mdash; 30 marks</h4>
                       <ul className="list-disc ml-5 mt-1.5 space-y-1 text-sm text-gray-700">
                         <li>Reading Aloud (10 marks)</li>
                         <li>Stimulus-based Conversation (20 marks)</li>
@@ -253,7 +253,7 @@ export default function PSLEEnglish() {
               <section id="techniques" className="scroll-mt-24">
                 <SectionHeading icon={Brain}>Study techniques that work</SectionHeading>
                 <GuideCard>
-                  <h4 className="font-semibold text-gray-900 mb-3">Habits that lift PSLE English marks</h4>
+                  <h3 className="font-semibold text-gray-900 mb-3">Habits that lift PSLE English marks</h3>
                   <div className="space-y-3 text-sm">
                     <div>
                       <p><strong className="text-gray-900">Read widely:</strong></p>
@@ -279,7 +279,7 @@ export default function PSLEEnglish() {
                 <SectionHeading icon={Target}>Paper-by-paper exam strategy</SectionHeading>
                 <div className="space-y-4">
                   <GuideCard>
-                    <h4 className="font-semibold text-gray-900 mb-2">Paper 1 (Writing)</h4>
+                    <h3 className="font-semibold text-gray-900 mb-2">Paper 1 (Writing)</h3>
                     <ul className="list-disc ml-5 space-y-1 text-sm text-gray-700">
                       <li>Spend 5–10 minutes planning before writing</li>
                       <li>Check the situational-writing format and purpose carefully</li>
@@ -289,7 +289,7 @@ export default function PSLEEnglish() {
                     </ul>
                   </GuideCard>
                   <GuideCard>
-                    <h4 className="font-semibold text-gray-900 mb-2">Paper 2 (Language Use &amp; Comprehension)</h4>
+                    <h3 className="font-semibold text-gray-900 mb-2">Paper 2 (Language Use &amp; Comprehension)</h3>
                     <ul className="list-disc ml-5 space-y-1 text-sm text-gray-700">
                       <li>Read each question stem carefully</li>
                       <li>Use context, not gut feel, for cloze passages</li>
@@ -299,7 +299,7 @@ export default function PSLEEnglish() {
                     </ul>
                   </GuideCard>
                   <GuideCard>
-                    <h4 className="font-semibold text-gray-900 mb-2">Papers 3 &amp; 4 (Listening &amp; Oral)</h4>
+                    <h3 className="font-semibold text-gray-900 mb-2">Papers 3 &amp; 4 (Listening &amp; Oral)</h3>
                     <ul className="list-disc ml-5 space-y-1 text-sm text-gray-700">
                       <li>Read the options before each listening clip</li>
                       <li>Take brief notes as you listen</li>
@@ -314,7 +314,7 @@ export default function PSLEEnglish() {
               <section id="mistakes" className="scroll-mt-24">
                 <SectionHeading icon={TriangleAlert}>Common mistakes to avoid</SectionHeading>
                 <GuideCard>
-                  <h4 className="font-semibold text-gray-900 mb-3">Where PSLE English marks slip away</h4>
+                  <h3 className="font-semibold text-gray-900 mb-3">Where PSLE English marks slip away</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3 text-sm">
                     <div>
                       <ol className="list-decimal ml-5 space-y-1 text-gray-700">
@@ -341,7 +341,7 @@ export default function PSLEEnglish() {
               <section id="schedule" className="scroll-mt-24">
                 <SectionHeading icon={CalendarDays}>A realistic weekly schedule</SectionHeading>
                 <GuideCard>
-                  <h4 className="font-semibold text-gray-900 mb-3">Recommended weekly rhythm (Primary 6)</h4>
+                  <h3 className="font-semibold text-gray-900 mb-3">Recommended weekly rhythm (Primary 6)</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
                     <div>
                       <p className="font-semibold text-gray-900 mb-1.5">School days</p>
@@ -369,7 +369,7 @@ export default function PSLEEnglish() {
                 <SectionHeading icon={BookOpen}>Essential PSLE English resources</SectionHeading>
                 <div className="space-y-4">
                   <div>
-                    <h4 className="font-semibold text-gray-900 mb-1.5">Free from us</h4>
+                    <h3 className="font-semibold text-gray-900 mb-1.5">Free from us</h3>
                     <ul className="list-disc ml-5 text-sm space-y-1 text-gray-700">
                       <li>
                         <Link href="/free-notes" className="inline-flex min-h-11 items-center text-primary underline underline-offset-2">PSLE English study guide</Link>
@@ -386,14 +386,14 @@ export default function PSLEEnglish() {
                     </ul>
                   </div>
                   <div>
-                    <h4 className="font-semibold text-gray-900 mb-1.5">Recommended series</h4>
+                    <h3 className="font-semibold text-gray-900 mb-1.5">Recommended series</h3>
                     <ul className="list-disc ml-5 text-sm space-y-1 text-gray-700">
                       <li>Structured PSLE English practice papers</li>
                       <li>A thematic vocabulary and model-composition guide</li>
                     </ul>
                   </div>
                   <div>
-                    <h4 className="font-semibold text-gray-900 mb-1.5">Practice materials</h4>
+                    <h3 className="font-semibold text-gray-900 mb-1.5">Practice materials</h3>
                     <ul className="list-disc ml-5 text-sm space-y-1 text-gray-700">
                       <li>PSLE past papers (last 5 years)</li>
                       <li>Top-school preliminary examination papers</li>
@@ -401,7 +401,7 @@ export default function PSLEEnglish() {
                     </ul>
                   </div>
                   <div>
-                    <h4 className="font-semibold text-gray-900 mb-1.5">Reading materials</h4>
+                    <h3 className="font-semibold text-gray-900 mb-1.5">Reading materials</h3>
                     <ul className="list-disc ml-5 text-sm space-y-1 text-gray-700">
                       <li>Age-appropriate novels and short stories</li>
                       <li>Newspapers and children&rsquo;s magazines</li>

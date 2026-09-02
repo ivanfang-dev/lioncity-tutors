@@ -21,12 +21,12 @@ export default function TopicCard({
 }) {
   return (
     <GuideCard>
-      <h4 className="font-semibold text-gray-900 mb-3">
+      <h3 className="font-semibold text-gray-900 mb-3">
         {title}
         {weight ? (
           <span className="font-normal text-sm text-gray-500 tabular-nums"> ({weight})</span>
         ) : null}
-      </h4>
+      </h3>
       {chips.length > 0 && (
         <div className="flex flex-wrap gap-2 mb-4">
           {chips.map((chip) => (

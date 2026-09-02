@@ -158,10 +158,10 @@ Preferred days & timing: `;
                 Singapore&rsquo;s A Level Mathematics offers two distinct levels, each designed for different university pathways and degree requirements.
               </p>
               <GuideCard className="mt-4">
-                <h4 className="font-semibold text-gray-900 mb-4">A Level Math Subjects Breakdown</h4>
+                <h3 className="font-semibold text-gray-900 mb-4">A Level Math Subjects Breakdown</h3>
                 <div className="space-y-5">
                   <div>
-                    <h5 className="font-semibold text-gray-900">H1 Mathematics &mdash; Paper 8865</h5>
+                    <h4 className="font-semibold text-gray-900">H1 Mathematics &mdash; Paper 8865</h4>
                     <ul className="list-disc ml-5 mt-1.5 space-y-1 text-sm text-gray-700">
                       <li>For students not pursuing STEM degrees</li>
                       <li>Required for Economics, Business, Social Sciences</li>
@@ -171,7 +171,7 @@ Preferred days & timing: `;
                     </ul>
                   </div>
                   <div>
-                    <h5 className="font-semibold text-gray-900">H2 Mathematics &mdash; Paper 9758</h5>
+                    <h4 className="font-semibold text-gray-900">H2 Mathematics &mdash; Paper 9758</h4>
                     <ul className="list-disc ml-5 mt-1.5 space-y-1 text-sm text-gray-700">
                       <li>Essential for Engineering, Medicine, Science degrees</li>
                       <li>Prerequisite for competitive university courses</li>
@@ -279,7 +279,7 @@ Preferred days & timing: `;
             <section id="study-techniques" className="scroll-mt-24">
               <SectionHeading icon={Brain}>A Level Math Study Techniques That Work</SectionHeading>
               <GuideCard>
-                <h4 className="font-semibold text-gray-900 mb-3">Proven A Level Math Study Methods</h4>
+                <h3 className="font-semibold text-gray-900 mb-3">Proven A Level Math Study Methods</h3>
                 <div className="space-y-3 text-sm">
                   <div>
                     <p><strong className="text-gray-900">The Deep Practice Method:</strong></p>
@@ -305,7 +305,7 @@ Preferred days & timing: `;
               <SectionHeading icon={Target}>A Level Math Exam Strategies</SectionHeading>
               <div className="space-y-4">
                 <GuideCard>
-                  <h4 className="font-semibold text-gray-900 mb-2">H1 Mathematics Exam Strategy</h4>
+                  <h3 className="font-semibold text-gray-900 mb-2">H1 Mathematics Exam Strategy</h3>
                   <ul className="list-disc ml-5 space-y-1 text-sm text-gray-700">
                     <li>Paper 1 (Pure): Focus on accuracy over speed, show all working clearly</li>
                     <li>Paper 2 (Statistics): Practice statistical interpretation and communication</li>
@@ -316,7 +316,7 @@ Preferred days & timing: `;
                 </GuideCard>
 
                 <GuideCard>
-                  <h4 className="font-semibold text-gray-900 mb-2">H2 Mathematics Exam Strategy</h4>
+                  <h3 className="font-semibold text-gray-900 mb-2">H2 Mathematics Exam Strategy</h3>
                   <ul className="list-disc ml-5 space-y-1 text-sm text-gray-700">
                     <li>Paper 1: Start with your strongest pure math topics, manage the 3-hour duration carefully</li>
                     <li>Paper 2: Balance pure math and statistics sections effectively</li>
@@ -327,7 +327,7 @@ Preferred days & timing: `;
                 </GuideCard>
 
                 <GuideCard>
-                  <h4 className="font-semibold text-gray-900 mb-2">Graphing Calculator Mastery</h4>
+                  <h3 className="font-semibold text-gray-900 mb-2">Graphing Calculator Mastery</h3>
                   <ul className="list-disc ml-5 space-y-1 text-sm text-gray-700">
                     <li>Learn all statistical functions (regression, hypothesis testing)</li>
                     <li>Master graphing techniques for function analysis</li>
@@ -342,7 +342,7 @@ Preferred days & timing: `;
             <section id="mistakes" className="scroll-mt-24">
               <SectionHeading icon={TriangleAlert}>Common A Level Math Mistakes to Avoid</SectionHeading>
               <GuideCard>
-                <h4 className="font-semibold text-gray-900 mb-3">Top 12 A Level Math Pitfalls</h4>
+                <h3 className="font-semibold text-gray-900 mb-3">Top 12 A Level Math Pitfalls</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3 text-sm">
                   <div>
                     <ol className="list-decimal ml-5 space-y-1 text-gray-700">
@@ -371,7 +371,7 @@ Preferred days & timing: `;
             <section id="schedule" className="scroll-mt-24">
               <SectionHeading icon={CalendarDays}>Creating Your A Level Math Study Schedule</SectionHeading>
               <GuideCard>
-                <h4 className="font-semibold text-gray-900 mb-3">Recommended Weekly Schedule (JC2)</h4>
+                <h3 className="font-semibold text-gray-900 mb-3">Recommended Weekly Schedule (JC2)</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
                   <div>
                     <p className="font-semibold text-gray-900 mb-1.5">School Days (H1 Math)</p>
@@ -408,7 +408,7 @@ Preferred days & timing: `;
               <SectionHeading icon={BookOpen}>Essential A Level Math Resources</SectionHeading>
               <div className="space-y-4">
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-1.5">Free from us</h4>
+                  <h3 className="font-semibold text-gray-900 mb-1.5">Free from us</h3>
                   <ul className="list-disc ml-5 text-sm space-y-1 text-gray-700">
                     <li>
                       <Link href="/free-notes" className="inline-flex min-h-11 items-center text-primary underline underline-offset-2">H2 Maths revision notes</Link>
@@ -425,7 +425,7 @@ Preferred days & timing: `;
                   </ul>
                 </div>
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-1.5">Recommended Textbooks</h4>
+                  <h3 className="font-semibold text-gray-900 mb-1.5">Recommended Textbooks</h3>
                   <ul className="list-disc ml-5 text-sm space-y-1 text-gray-700">
                     <li>H2 Mathematics (Coursebook) by Lee Peng Yee &mdash; comprehensive coverage</li>
                     <li>Understanding Mathematics by Lee Hong Kang &mdash; conceptual approach</li>
@@ -434,7 +434,7 @@ Preferred days & timing: `;
                   </ul>
                 </div>
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-1.5">Practice Materials</h4>
+                  <h3 className="font-semibold text-gray-900 mb-1.5">Practice Materials</h3>
                   <ul className="list-disc ml-5 text-sm space-y-1 text-gray-700">
                     <li>Cambridge A Level past papers (minimum 10 years)</li>
                     <li>Local JC preliminary examination papers</li>
@@ -443,7 +443,7 @@ Preferred days & timing: `;
                   </ul>
                 </div>
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-1.5">Digital Tools</h4>
+                  <h3 className="font-semibold text-gray-900 mb-1.5">Digital Tools</h3>
                   <ul className="list-disc ml-5 text-sm space-y-1 text-gray-700">
                     <li>GeoGebra for advanced function visualization</li>
                     <li>Desmos Graphing Calculator for complex analysis</li>
@@ -472,7 +472,7 @@ Preferred days & timing: `;
             <section id="university" className="scroll-mt-24">
               <SectionHeading icon={GraduationCap}>University Pathways After A Level Math</SectionHeading>
               <GuideCard>
-                <h4 className="font-semibold text-gray-900 mb-3">Your A Level Math Results Determine University Options</h4>
+                <h3 className="font-semibold text-gray-900 mb-3">Your A Level Math Results Determine University Options</h3>
                 <div className="space-y-4 text-sm">
                   <div>
                     <strong className="text-gray-900">H2 Mathematics Grade A or B:</strong>
@@ -522,7 +522,7 @@ Preferred days & timing: `;
             <section id="final-months" className="scroll-mt-24">
               <SectionHeading icon={Hourglass}>Final Months A Level Math Preparation</SectionHeading>
               <GuideCard>
-                <h4 className="font-semibold text-gray-900 mb-3">Last 60 Days Strategy</h4>
+                <h3 className="font-semibold text-gray-900 mb-3">Last 60 Days Strategy</h3>
                 <div className="space-y-4 text-sm">
                   <div>
                     <strong className="text-gray-900">Week 1–4: Intensive Practice Phase</strong>

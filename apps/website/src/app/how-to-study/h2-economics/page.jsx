@@ -176,7 +176,7 @@ Preferred days & timing: `;
                   {papers.map((item) => (
                     <GuideCard key={item.paper}>
                       <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 mb-2">
-                        <h4 className="font-semibold text-gray-900">{item.paper}</h4>
+                        <h3 className="font-semibold text-gray-900">{item.paper}</h3>
                         <span className="text-sm font-semibold text-primary tabular-nums">{item.stat}</span>
                       </div>
                       <p className="text-sm text-gray-700">{item.detail}</p>
@@ -194,7 +194,7 @@ Preferred days & timing: `;
                   The syllabus splits each paper by which assessment objectives a question tests. On Paper 1, questions testing AO1 to AO3 are about 40% of the marks, and those adding AO4 are about 60%. Paper 2 shows the same shape.
                 </p>
                 <GuideCard className="mt-5">
-                  <h4 className="font-semibold text-gray-900 mb-3">What evaluating actually looks like</h4>
+                  <h3 className="font-semibold text-gray-900 mb-3">What evaluating actually looks like</h3>
                   <ul className="list-disc ml-5 space-y-1.5 text-sm text-gray-700">
                     <li><strong>Conditions</strong> — under what assumptions does this argument hold, and when does it break?</li>
                     <li><strong>Magnitude</strong> — how large is the effect likely to be, and compared with what?</li>
@@ -217,7 +217,7 @@ Preferred days & timing: `;
                   The consequence is worth stating plainly, because it changes revision strategy: you cannot specialise. A student who prepares microeconomics thoroughly and macroeconomics loosely will still have to write a macro essay, and it will be chosen from three questions rather than six. Both halves need to be usable, and the freedom of the third essay is the only place preference can be exercised.
                 </p>
                 <GuideCard className="mt-5">
-                  <h4 className="font-semibold text-gray-900 mb-3">Choosing well in the exam</h4>
+                  <h3 className="font-semibold text-gray-900 mb-3">Choosing well in the exam</h3>
                   <ul className="list-disc ml-5 space-y-1.5 text-sm text-gray-700">
                     <li><strong>Pick the compulsory two first</strong> — the strongest option in each section — before deciding the third.</li>
                     <li><strong>Read every part of a question</strong> before committing. Two-part essays often hide the difficulty in part (b).</li>
@@ -262,7 +262,7 @@ Preferred days & timing: `;
                           {index + 1}
                         </span>
                         <div>
-                          <h4 className="font-semibold text-gray-900 mb-1.5">{item.mistake}</h4>
+                          <h3 className="font-semibold text-gray-900 mb-1.5">{item.mistake}</h3>
                           <p className="text-sm text-gray-700 mb-2">{item.detail}</p>
                           <p className="text-sm text-gray-700">
                             <span className="font-semibold text-gray-900">The fix: </span>

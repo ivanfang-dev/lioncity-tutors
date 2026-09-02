@@ -201,7 +201,7 @@ Preferred days & timing: `;
                   {papers.map((item) => (
                     <GuideCard key={item.paper}>
                       <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 mb-3">
-                        <h4 className="font-semibold text-gray-900">{item.paper}</h4>
+                        <h3 className="font-semibold text-gray-900">{item.paper}</h3>
                         <span className="text-sm font-semibold text-primary tabular-nums">{item.stat}</span>
                       </div>
                       <ul className="space-y-2 text-sm">
@@ -225,7 +225,7 @@ Preferred days & timing: `;
                   Thirty marks, 20% of the subject, in about twenty minutes — of which ten are preparation. Part 1 is a planned response to a video clip and prompt shown on a screen; Part 2 is a discussion with the examiners on a topic drawn from the same clip, and the two parts may be thematically linked.
                 </p>
                 <GuideCard className="mt-5">
-                  <h4 className="font-semibold text-gray-900 mb-3">What the ten minutes of preparation are for</h4>
+                  <h3 className="font-semibold text-gray-900 mb-3">What the ten minutes of preparation are for</h3>
                   <ul className="list-disc ml-5 space-y-1.5 text-sm text-gray-700">
                     <li><strong>Decide your position</strong> on the prompt before deciding how to phrase it.</li>
                     <li><strong>Choose two reasons</strong> you can develop, rather than five you can only mention.</li>
@@ -254,7 +254,7 @@ Preferred days & timing: `;
                   A visual text appears twice in this subject: in Paper 1 Section B, where situational writing involves viewing one, and in Paper 2 Section A, where one of the two texts is visual.
                 </p>
                 <GuideCard className="mt-4">
-                  <h4 className="font-semibold text-gray-900 mb-3">Reading a visual for marks</h4>
+                  <h3 className="font-semibold text-gray-900 mb-3">Reading a visual for marks</h3>
                   <ul className="list-disc ml-5 space-y-1.5 text-sm text-gray-700">
                     <li><strong>Purpose</strong> — what is this trying to make the viewer do or believe?</li>
                     <li><strong>Audience</strong> — who was it made for, and what shows that?</li>
@@ -302,7 +302,7 @@ Preferred days & timing: `;
                           {index + 1}
                         </span>
                         <div>
-                          <h4 className="font-semibold text-gray-900 mb-1.5">{item.mistake}</h4>
+                          <h3 className="font-semibold text-gray-900 mb-1.5">{item.mistake}</h3>
                           <p className="text-sm text-gray-700 mb-2">{item.detail}</p>
                           <p className="text-sm text-gray-700">
                             <span className="font-semibold text-gray-900">The fix: </span>

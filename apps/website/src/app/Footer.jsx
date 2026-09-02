@@ -75,7 +75,7 @@ export default function Footer() {
                 <FaFacebook className="w-5 h-5" />
               </a>
               <a href="https://www.carousell.sg/u/lioncity_tutors/" target="_blank" rel="noopener noreferrer" aria-label="Carousell" className="text-text-tertiary hover:text-primary transition-colors p-3">
-                <img src="/carousell_fixed.svg" alt="Carousell" className="w-5 h-5 opacity-50 hover:opacity-100 transition-opacity" />
+                <img src="/carousell.png" alt="Carousell" width="20" height="20" loading="lazy" decoding="async" className="w-5 h-5 opacity-50 hover:opacity-100 transition-opacity" />
               </a>
             </div>
           </div>

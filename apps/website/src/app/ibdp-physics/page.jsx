@@ -168,10 +168,10 @@ Preferred days & timing: `;
                 The IBDP Physics course is designed to develop students&rsquo; understanding of the fundamental principles of physics and their application to real-world situations. The course is available at both Standard Level (SL) and Higher Level (HL).
               </p>
               <GuideCard className="mt-4">
-                <h4 className="font-semibold text-gray-900 mb-4">IBDP Physics Assessment Breakdown</h4>
+                <h3 className="font-semibold text-gray-900 mb-4">IBDP Physics Assessment Breakdown</h3>
                 <div className="space-y-5">
                   <div>
-                    <h5 className="font-semibold text-gray-900">External Assessment (80%)</h5>
+                    <h4 className="font-semibold text-gray-900">External Assessment (80%)</h4>
                     <ul className="list-disc ml-5 mt-1.5 space-y-1 text-sm text-gray-700">
                       <li>Paper 1: Multiple Choice (20%)</li>
                       <li>Paper 2: Structured Questions (40%)</li>
@@ -179,7 +179,7 @@ Preferred days & timing: `;
                     </ul>
                   </div>
                   <div>
-                    <h5 className="font-semibold text-gray-900">Internal Assessment (20%)</h5>
+                    <h4 className="font-semibold text-gray-900">Internal Assessment (20%)</h4>
                     <ul className="list-disc ml-5 mt-1.5 space-y-1 text-sm text-gray-700">
                       <li>Individual Scientific Investigation</li>
                       <li>10 hours of lab work</li>
@@ -321,7 +321,7 @@ Preferred days & timing: `;
             <section id="ia" className="scroll-mt-24">
               <SectionHeading icon={ClipboardList}>Internal Assessment (IA) Guide</SectionHeading>
               <GuideCard>
-                <h4 className="font-semibold text-gray-900 mb-3">Key Components of a Successful IA</h4>
+                <h3 className="font-semibold text-gray-900 mb-3">Key Components of a Successful IA</h3>
                 <div className="space-y-3 text-sm">
                   <div>
                     <p><strong className="text-gray-900">Research Question:</strong></p>
@@ -351,7 +351,7 @@ Preferred days & timing: `;
               <SectionHeading icon={Target}>IBDP Physics Exam Strategies</SectionHeading>
               <div className="space-y-4">
                 <GuideCard>
-                  <h4 className="font-semibold text-gray-900 mb-2">Paper 1 (MCQ) Strategy</h4>
+                  <h3 className="font-semibold text-gray-900 mb-2">Paper 1 (MCQ) Strategy</h3>
                   <ul className="list-disc ml-5 space-y-1 text-sm text-gray-700">
                     <li>Allocate 1.5 minutes per question maximum</li>
                     <li>Use the elimination method for difficult questions</li>
@@ -362,7 +362,7 @@ Preferred days & timing: `;
                 </GuideCard>
 
                 <GuideCard>
-                  <h4 className="font-semibold text-gray-900 mb-2">Paper 2 (Structured Questions) Strategy</h4>
+                  <h3 className="font-semibold text-gray-900 mb-2">Paper 2 (Structured Questions) Strategy</h3>
                   <ul className="list-disc ml-5 space-y-1 text-sm text-gray-700">
                     <li>Read all questions first and start with your strongest topics</li>
                     <li>Show all working clearly &mdash; partial credit is available</li>
@@ -373,7 +373,7 @@ Preferred days & timing: `;
                 </GuideCard>
 
                 <GuideCard>
-                  <h4 className="font-semibold text-gray-900 mb-2">Paper 3 (Data Analysis) Strategy</h4>
+                  <h3 className="font-semibold text-gray-900 mb-2">Paper 3 (Data Analysis) Strategy</h3>
                   <ul className="list-disc ml-5 space-y-1 text-sm text-gray-700">
                     <li>Read the entire question before starting</li>
                     <li>Identify key data points and relationships</li>
@@ -388,7 +388,7 @@ Preferred days & timing: `;
             <section id="mistakes" className="scroll-mt-24">
               <SectionHeading icon={TriangleAlert}>Common IBDP Physics Mistakes to Avoid</SectionHeading>
               <GuideCard>
-                <h4 className="font-semibold text-gray-900 mb-3">Top 12 IBDP Physics Pitfalls</h4>
+                <h3 className="font-semibold text-gray-900 mb-3">Top 12 IBDP Physics Pitfalls</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3 text-sm">
                   <div>
                     <ol className="list-decimal ml-5 space-y-1 text-gray-700">
@@ -417,7 +417,7 @@ Preferred days & timing: `;
             <section id="schedule" className="scroll-mt-24">
               <SectionHeading icon={CalendarDays}>Creating Your IBDP Physics Study Schedule</SectionHeading>
               <GuideCard>
-                <h4 className="font-semibold text-gray-900 mb-3">Recommended Weekly Schedule (Year 2)</h4>
+                <h3 className="font-semibold text-gray-900 mb-3">Recommended Weekly Schedule (Year 2)</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
                   <div>
                     <p className="font-semibold text-gray-900 mb-1.5">School Days</p>
@@ -447,7 +447,7 @@ Preferred days & timing: `;
               <SectionHeading icon={BookOpen}>Essential IBDP Physics Resources</SectionHeading>
               <div className="space-y-4">
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-1.5">Recommended Textbooks</h4>
+                  <h3 className="font-semibold text-gray-900 mb-1.5">Recommended Textbooks</h3>
                   <ul className="list-disc ml-5 text-sm space-y-1 text-gray-700">
                     <li>IB Physics Course Book (Oxford) &mdash; comprehensive coverage</li>
                     <li>Physics for the IB Diploma (Cambridge) &mdash; detailed explanations</li>
@@ -455,7 +455,7 @@ Preferred days & timing: `;
                   </ul>
                 </div>
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-1.5">Practice Materials</h4>
+                  <h3 className="font-semibold text-gray-900 mb-1.5">Practice Materials</h3>
                   <ul className="list-disc ml-5 text-sm space-y-1 text-gray-700">
                     <li>IBDP past papers (last 5 years minimum)</li>
                     <li>School mock examination papers</li>
@@ -464,7 +464,7 @@ Preferred days & timing: `;
                   </ul>
                 </div>
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-1.5">Digital Tools</h4>
+                  <h3 className="font-semibold text-gray-900 mb-1.5">Digital Tools</h3>
                   <ul className="list-disc ml-5 text-sm space-y-1 text-gray-700">
                     <li>PhET simulations for visualizing physics concepts</li>
                     <li>Physics problem-solving apps</li>
@@ -478,7 +478,7 @@ Preferred days & timing: `;
             <section id="career" className="scroll-mt-24">
               <SectionHeading icon={GraduationCap}>University and Career Pathways</SectionHeading>
               <GuideCard>
-                <h4 className="font-semibold text-gray-900 mb-3">Your IBDP Physics Results Open These Doors</h4>
+                <h3 className="font-semibold text-gray-900 mb-3">Your IBDP Physics Results Open These Doors</h3>
                 <div className="space-y-4 text-sm">
                   <div>
                     <strong className="text-gray-900">Level 6-7 in IBDP Physics:</strong>
@@ -521,7 +521,7 @@ Preferred days & timing: `;
             <section id="final-months" className="scroll-mt-24">
               <SectionHeading icon={Hourglass}>Final Two Months IBDP Preparation</SectionHeading>
               <GuideCard>
-                <h4 className="font-semibold text-gray-900 mb-3">Last 8 Weeks Strategy</h4>
+                <h3 className="font-semibold text-gray-900 mb-3">Last 8 Weeks Strategy</h3>
                 <div className="space-y-4 text-sm">
                   <div>
                     <strong className="text-gray-900">Weeks 1–3: Intensive Practice Phase</strong>
@@ -558,7 +558,7 @@ Preferred days & timing: `;
               <SectionHeading icon={HeartHandshake}>Mental Preparation and Exam Day Success</SectionHeading>
               <div className="space-y-4">
                 <GuideCard>
-                  <h4 className="font-semibold text-gray-900 mb-2">Stress Management Techniques</h4>
+                  <h3 className="font-semibold text-gray-900 mb-2">Stress Management Techniques</h3>
                   <ul className="list-disc ml-5 space-y-1 text-sm text-gray-700">
                     <li>Practice deep breathing exercises before and during exams</li>
                     <li>Use positive visualization &mdash; imagine yourself succeeding</li>
@@ -569,7 +569,7 @@ Preferred days & timing: `;
                 </GuideCard>
 
                 <GuideCard>
-                  <h4 className="font-semibold text-gray-900 mb-2">Exam Day Protocol</h4>
+                  <h3 className="font-semibold text-gray-900 mb-2">Exam Day Protocol</h3>
                   <ul className="list-disc ml-5 space-y-1 text-sm text-gray-700">
                     <li>Arrive 30 minutes early with all required materials</li>
                     <li>Bring multiple pens, pencils, a calculator, and your data booklet</li>
@@ -588,7 +588,7 @@ Preferred days & timing: `;
                 Regardless of how you feel after your IBDP Physics exams, focus on the opportunities ahead. Strong physics knowledge opens doors to numerous exciting career paths in engineering, research, technology, and industry.
               </p>
               <GuideCard className="mt-4">
-                <h4 className="font-semibold text-gray-900 mb-2">Moving Forward</h4>
+                <h3 className="font-semibold text-gray-900 mb-2">Moving Forward</h3>
                 <ul className="list-disc ml-5 space-y-1 text-sm text-gray-700">
                   <li>Use the university application period to explore different engineering programs</li>
                   <li>Consider internships or research opportunities in physics-related fields</li>

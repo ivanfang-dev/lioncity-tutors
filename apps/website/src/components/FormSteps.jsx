@@ -77,7 +77,7 @@ const TypeInfo = ({ id, title, points, open, onToggle }) => (
 // ===================================
 export const Step1 = ({ nextStep, formData, handleChange, handleLevelSubjectChange, addLevelSubject, removeLevelSubject, errors }) => ( // <-- 1. Accept `errors` prop here
   <div className="space-y-6 animate-fadeIn">
-      <h3 className="text-2xl font-bold text-text-default">Step 1: Your Details</h3>
+      <h2 className="text-2xl font-bold text-text-default">Step 1: Your Details</h2>
       <div className="space-y-4">
           <div>
               <Label htmlFor="name" className="text-base font-medium text-text-secondary">Name<span className="text-error-text -ml-0.5" aria-hidden="true">*</span><span className="sr-only"> (required)</span></Label>
@@ -148,7 +148,7 @@ export const Step1 = ({ nextStep, formData, handleChange, handleLevelSubjectChan
 // ===================================
 export const Step2 = ({ nextStep, prevStep, formData, handleChange, errors }) => (
   <div className="space-y-6 animate-fadeIn">
-    <h3 className="text-2xl font-bold text-text-default">Step 2: Lesson Details</h3>
+    <h2 className="text-2xl font-bold text-text-default">Step 2: Lesson Details</h2>
     <div>
         <Label htmlFor="location" className="text-base font-medium text-text-secondary">Location<span className="text-error-text -ml-0.5" aria-hidden="true">*</span><span className="sr-only"> (required)</span></Label>
         <Input
@@ -265,11 +265,11 @@ export const Step3 = ({ prevStep, formData, handleChange, status }) => {
 
   return (
       <div className="space-y-8 animate-fadeIn">
-          <h3 className="text-2xl font-bold text-text-default">Step 3: Tutor Preferences</h3>
+          <h2 className="text-2xl font-bold text-text-default">Step 3: Tutor Preferences</h2>
 
           {/* Tutor Type Section */}
           <div className="border border-border rounded-xl p-4 sm:p-6 space-y-5">
-              <h4 className="text-lg font-semibold text-text-default">Tutor Type (Select all that apply)</h4>
+              <h3 className="text-lg font-semibold text-text-default">Tutor Type (Select all that apply)</h3>
               <p className="-mt-3 text-sm text-text-tertiary text-pretty">
                   Our rates for <span className="font-medium text-text-secondary">{rateBands.caption}</span>, reviewed {RATES_REVIEWED}.
               </p>
@@ -310,7 +310,7 @@ export const Step3 = ({ prevStep, formData, handleChange, status }) => {
 
         {/* Budget Section */}
         <div className="border border-border rounded-xl p-4 sm:p-6 space-y-5">
-            <h4 className="text-lg font-semibold text-text-default">Your Budget</h4>
+            <h3 className="text-lg font-semibold text-text-default">Your Budget</h3>
             {rateHint && (
                 <div className="flex items-start gap-2 rounded-lg bg-primary/5 border border-primary/15 p-3">
                     <Info size={16} className="text-primary mt-0.5 flex-shrink-0" aria-hidden="true" />
@@ -347,7 +347,7 @@ export const Step3 = ({ prevStep, formData, handleChange, status }) => {
             than booleans so the payload the backend already receives keeps its
             shape. */}
         <div className="border border-border rounded-xl p-4 sm:p-6 space-y-5">
-            <h4 className="text-lg font-semibold text-text-default">Tutor Fit</h4>
+            <h3 className="text-lg font-semibold text-text-default">Tutor Fit</h3>
 
             <div>
                 <Label htmlFor="genderPreference" className="text-base font-medium text-text-secondary">Tutor gender</Label>

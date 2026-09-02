@@ -45,7 +45,7 @@ export default function GuideTimeline({ items = [], variant = 'list' }) {
                     {item.period ? (
                       <p className="mb-1 text-sm font-semibold text-gray-500 tabular-nums">{item.period}</p>
                     ) : null}
-                    <h4 className="font-semibold text-gray-900">{item.title}</h4>
+                    <h3 className="font-semibold text-gray-900">{item.title}</h3>
                     {item.description ? (
                       <p className="mt-2 text-left text-sm text-gray-700">{item.description}</p>
                     ) : null}
@@ -75,7 +75,7 @@ export default function GuideTimeline({ items = [], variant = 'list' }) {
             <div className="absolute left-0 top-0 flex h-8 w-8 items-center justify-center rounded-full bg-primary text-white text-sm font-semibold tabular-nums shadow-sm">
               {index + 1}
             </div>
-            <h4 className="font-semibold text-gray-900">{item.title}</h4>
+            <h3 className="font-semibold text-gray-900">{item.title}</h3>
             <ul className="list-disc ml-5 mt-2 space-y-1 text-gray-700">
               {item.points.map((point) => (
                 <li key={point}>{point}</li>

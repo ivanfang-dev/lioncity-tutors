@@ -201,7 +201,7 @@ Preferred days & timing: `;
                   It also behaves differently from PSLE Maths. In Maths, a wrong short answer can still earn a method mark. Here a wrong option earns nothing at all, and each one costs two marks. The gap between a pupil who eliminates and a pupil who guesses is worth more in this subject than in any other at the level.
                 </p>
                 <GuideCard className="mt-5">
-                  <h4 className="font-semibold text-gray-900 mb-3">Reviewing MCQs properly</h4>
+                  <h3 className="font-semibold text-gray-900 mb-3">Reviewing MCQs properly</h3>
                   <ul className="list-disc ml-5 space-y-1.5 text-sm text-gray-700">
                     <li><strong>Explain every wrong option,</strong> not just the right one. The distractors are written around specific misconceptions.</li>
                     <li><strong>Note which ones were guessed,</strong> even when correct. A lucky guess is an unlearned question.</li>
@@ -217,7 +217,7 @@ Preferred days & timing: `;
                   Forty marks across ten or eleven questions worth 2 to 5 marks each. These reward explanation, and explanation at this level means a chain rather than a statement.
                 </p>
                 <GuideCard className="mt-4">
-                  <h4 className="font-semibold text-gray-900 mb-3">The shape of a scoring answer</h4>
+                  <h3 className="font-semibold text-gray-900 mb-3">The shape of a scoring answer</h3>
                   <ul className="list-disc ml-5 space-y-1.5 text-sm text-gray-700">
                     <li><strong>Name the concept</strong> that applies.</li>
                     <li><strong>Apply it to the situation in the question</strong> — the specific plant, circuit or experiment described.</li>
@@ -267,7 +267,7 @@ Preferred days & timing: `;
                           {index + 1}
                         </span>
                         <div>
-                          <h4 className="font-semibold text-gray-900 mb-1.5">{item.mistake}</h4>
+                          <h3 className="font-semibold text-gray-900 mb-1.5">{item.mistake}</h3>
                           <p className="text-sm text-gray-700 mb-2">{item.detail}</p>
                           <p className="text-sm text-gray-700">
                             <span className="font-semibold text-gray-900">The fix: </span>

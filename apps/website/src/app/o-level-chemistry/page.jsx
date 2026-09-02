@@ -227,17 +227,17 @@ Preferred days & timing: `;
                 Singapore&rsquo;s O Level Chemistry (syllabus 6092) builds the foundation for further studies in science and engineering. Combined Science (Chemistry) is a different subject &mdash; 5086 or 5088 &mdash; with a 20% MCQ paper, two 32.5% theory papers and a 15% practical, not the Pure Chemistry split below.
               </p>
               <GuideCard className="mt-4">
-                <h4 className="font-semibold text-gray-900 mb-4">O Level Chemistry Papers Breakdown</h4>
+                <h3 className="font-semibold text-gray-900 mb-4">O Level Chemistry Papers Breakdown</h3>
                 <div className="space-y-5">
                   <div>
-                    <h5 className="font-semibold text-gray-900">Paper 1: Multiple Choice</h5>
+                    <h4 className="font-semibold text-gray-900">Paper 1: Multiple Choice</h4>
                     <ul className="list-disc ml-5 mt-1.5 space-y-1 text-sm text-gray-700">
                       <li>40 compulsory items, 40 marks, 1 hour, 30%</li>
                       <li>A Periodic Table is printed in the paper</li>
                     </ul>
                   </div>
                   <div>
-                    <h5 className="font-semibold text-gray-900">Paper 2: Structured and Free Response</h5>
+                    <h4 className="font-semibold text-gray-900">Paper 2: Structured and Free Response</h4>
                     <ul className="list-disc ml-5 mt-1.5 space-y-1 text-sm text-gray-700">
                       <li>80 marks, 1 hour 45 minutes, 50%</li>
                       <li>Section A: 70 marks of compulsory structured questions; the last two share 20 marks, one a data-based question worth 8–12</li>
@@ -246,7 +246,7 @@ Preferred days & timing: `;
                     </ul>
                   </div>
                   <div>
-                    <h5 className="font-semibold text-gray-900">Paper 3: Practical</h5>
+                    <h4 className="font-semibold text-gray-900">Paper 3: Practical</h4>
                     <ul className="list-disc ml-5 mt-1.5 space-y-1 text-sm text-gray-700">
                       <li>40 marks, 1 hour 50 minutes, 20%</li>
                       <li>Compulsory practical questions; planning may be assessed</li>
@@ -340,7 +340,7 @@ Preferred days & timing: `;
               <SectionHeading icon={Target}>O Level Chemistry Exam Strategies</SectionHeading>
               <div className="space-y-4">
                 <GuideCard>
-                  <h4 className="font-semibold text-gray-900 mb-2">Paper 1 (MCQ) Strategy</h4>
+                  <h3 className="font-semibold text-gray-900 mb-2">Paper 1 (MCQ) Strategy</h3>
                   <ul className="list-disc ml-5 space-y-1 text-sm text-gray-700">
                     <li>Allocate 1.5 minutes per question maximum</li>
                     <li>Use the elimination method for difficult questions</li>
@@ -351,7 +351,7 @@ Preferred days & timing: `;
                 </GuideCard>
 
                 <GuideCard>
-                  <h4 className="font-semibold text-gray-900 mb-2">Paper 2 (Structured &amp; Free Response) Strategy</h4>
+                  <h3 className="font-semibold text-gray-900 mb-2">Paper 2 (Structured &amp; Free Response) Strategy</h3>
                   <ul className="list-disc ml-5 space-y-1 text-sm text-gray-700">
                     <li>Section A is compulsory (70 marks); one of the last two questions is data-based (8–12 marks)</li>
                     <li>Read both Section B questions fully before choosing the 10-mark one</li>
@@ -362,7 +362,7 @@ Preferred days & timing: `;
                 </GuideCard>
 
                 <GuideCard>
-                  <h4 className="font-semibold text-gray-900 mb-2">Paper 3 (Practical) Strategy</h4>
+                  <h3 className="font-semibold text-gray-900 mb-2">Paper 3 (Practical) Strategy</h3>
                   <ul className="list-disc ml-5 space-y-1 text-sm text-gray-700">
                     <li>Read instructions carefully before starting</li>
                     <li>Record all observations immediately</li>
@@ -390,7 +390,7 @@ Preferred days & timing: `;
                         {index + 1}
                       </span>
                       <div>
-                        <h4 className="font-semibold text-gray-900 mb-1.5">{item.mistake}</h4>
+                        <h3 className="font-semibold text-gray-900 mb-1.5">{item.mistake}</h3>
                         <p className="text-sm text-gray-700 mb-2">{item.detail}</p>
                         <p className="text-sm text-gray-700">
                           <span className="font-semibold text-gray-900">The fix: </span>
@@ -406,7 +406,7 @@ Preferred days & timing: `;
             <section id="schedule" className="scroll-mt-24">
               <SectionHeading icon={CalendarDays}>Creating Your O Level Chemistry Study Schedule</SectionHeading>
               <GuideCard>
-                <h4 className="font-semibold text-gray-900 mb-3">Recommended Weekly Schedule</h4>
+                <h3 className="font-semibold text-gray-900 mb-3">Recommended Weekly Schedule</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
                   <div>
                     <p className="font-semibold text-gray-900 mb-1.5">School Days</p>
@@ -436,7 +436,7 @@ Preferred days & timing: `;
               <SectionHeading icon={BookOpen}>Essential O Level Chemistry Resources</SectionHeading>
               <div className="space-y-4">
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-1.5">Free from us</h4>
+                  <h3 className="font-semibold text-gray-900 mb-1.5">Free from us</h3>
                   <ul className="list-disc ml-5 text-sm space-y-1 text-gray-700">
                     <li>
                       <Link href="/free-notes" className="inline-flex min-h-11 items-center text-primary underline underline-offset-2">O-Level Chemistry study notes</Link>
@@ -453,7 +453,7 @@ Preferred days & timing: `;
                   </ul>
                 </div>
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-1.5">Recommended Textbooks</h4>
+                  <h3 className="font-semibold text-gray-900 mb-1.5">Recommended Textbooks</h3>
                   <ul className="list-disc ml-5 text-sm space-y-1 text-gray-700">
                     <li>Chemistry Matters (Marshall Cavendish) &mdash; comprehensive coverage</li>
                     <li>Understanding Chemistry (Pearson) &mdash; detailed explanations</li>
@@ -461,7 +461,7 @@ Preferred days & timing: `;
                   </ul>
                 </div>
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-1.5">Practice Materials</h4>
+                  <h3 className="font-semibold text-gray-900 mb-1.5">Practice Materials</h3>
                   <ul className="list-disc ml-5 text-sm space-y-1 text-gray-700">
                     <li>GCE O Level past papers (last 5 years minimum)</li>
                     <li>School preliminary examination papers</li>
@@ -470,7 +470,7 @@ Preferred days & timing: `;
                   </ul>
                 </div>
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-1.5">Digital Tools</h4>
+                  <h3 className="font-semibold text-gray-900 mb-1.5">Digital Tools</h3>
                   <ul className="list-disc ml-5 text-sm space-y-1 text-gray-700">
                     <li>ChemSketch for drawing molecular structures</li>
                     <li>PhET simulations for visualizing chemical processes</li>
@@ -499,7 +499,7 @@ Preferred days & timing: `;
             <section id="pathways" className="scroll-mt-24">
               <SectionHeading icon={GraduationCap}>Future Pathways</SectionHeading>
               <GuideCard>
-                <h4 className="font-semibold text-gray-900 mb-3">Your O Level Chemistry Results Open These Doors</h4>
+                <h3 className="font-semibold text-gray-900 mb-3">Your O Level Chemistry Results Open These Doors</h3>
                 <div className="space-y-4 text-sm">
                   <div>
                     <strong className="text-gray-900">A1-A2 grades in O Level Chemistry:</strong>
@@ -542,7 +542,7 @@ Preferred days & timing: `;
             <section id="final-months" className="scroll-mt-24">
               <SectionHeading icon={Hourglass}>Final Two Months O Level Preparation</SectionHeading>
               <GuideCard>
-                <h4 className="font-semibold text-gray-900 mb-3">Last 8 Weeks Strategy</h4>
+                <h3 className="font-semibold text-gray-900 mb-3">Last 8 Weeks Strategy</h3>
                 <div className="space-y-4 text-sm">
                   <div>
                     <strong className="text-gray-900">Weeks 1–3: Intensive Practice Phase</strong>
@@ -579,7 +579,7 @@ Preferred days & timing: `;
               <SectionHeading icon={HeartHandshake}>Mental Preparation and Exam Day Success</SectionHeading>
               <div className="space-y-4">
                 <GuideCard>
-                  <h4 className="font-semibold text-gray-900 mb-2">Stress Management Techniques</h4>
+                  <h3 className="font-semibold text-gray-900 mb-2">Stress Management Techniques</h3>
                   <ul className="list-disc ml-5 space-y-1 text-sm text-gray-700">
                     <li>Practice deep breathing exercises before and during exams</li>
                     <li>Use positive visualization &mdash; imagine yourself succeeding</li>
@@ -590,7 +590,7 @@ Preferred days & timing: `;
                 </GuideCard>
 
                 <GuideCard>
-                  <h4 className="font-semibold text-gray-900 mb-2">Exam Day Protocol</h4>
+                  <h3 className="font-semibold text-gray-900 mb-2">Exam Day Protocol</h3>
                   <ul className="list-disc ml-5 space-y-1 text-sm text-gray-700">
                     <li>Arrive 30 minutes early with all required materials</li>
                     <li>Bring multiple pens, pencils, a calculator, and your data booklet</li>
@@ -609,7 +609,7 @@ Preferred days & timing: `;
                 Regardless of how you feel after your O Level Chemistry exams, focus on the opportunities ahead. Strong chemistry knowledge opens doors to numerous exciting career paths in science, engineering, and technology.
               </p>
               <GuideCard className="mt-4">
-                <h4 className="font-semibold text-gray-900 mb-2">Moving Forward</h4>
+                <h3 className="font-semibold text-gray-900 mb-2">Moving Forward</h3>
                 <ul className="list-disc ml-5 space-y-1 text-sm text-gray-700">
                   <li>Use the post-exam period to explore different science and engineering programs</li>
                   <li>Consider internships or research opportunities in chemistry-related fields</li>

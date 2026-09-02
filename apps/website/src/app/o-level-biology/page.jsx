@@ -252,16 +252,16 @@ Preferred days & timing: `;
                 Singapore&rsquo;s O Level Biology (syllabus 6093) builds the foundation for further studies in the life sciences and healthcare. Combined Science (Biology) is a different subject &mdash; 5087 or 5088 &mdash; with a 20% MCQ paper, two 32.5% theory papers and a 15% practical, not the Pure Biology split below.
               </p>
               <GuideCard className="mt-4">
-                <h4 className="font-semibold text-gray-900 mb-4">O Level Biology Papers Breakdown</h4>
+                <h3 className="font-semibold text-gray-900 mb-4">O Level Biology Papers Breakdown</h3>
                 <div className="space-y-5">
                   <div>
-                    <h5 className="font-semibold text-gray-900">Paper 1: Multiple Choice</h5>
+                    <h4 className="font-semibold text-gray-900">Paper 1: Multiple Choice</h4>
                     <ul className="list-disc ml-5 mt-1.5 space-y-1 text-sm text-gray-700">
                       <li>40 compulsory items, 40 marks, 1 hour, 30%</li>
                     </ul>
                   </div>
                   <div>
-                    <h5 className="font-semibold text-gray-900">Paper 2: Structured and Free Response</h5>
+                    <h4 className="font-semibold text-gray-900">Paper 2: Structured and Free Response</h4>
                     <ul className="list-disc ml-5 mt-1.5 space-y-1 text-sm text-gray-700">
                       <li>80 marks, 1 hour 45 minutes, 50%</li>
                       <li>Section A: 70 marks of compulsory structured questions, ending with one free-response and one data-based question sharing 20 marks (data-based is 8–12)</li>
@@ -269,7 +269,7 @@ Preferred days & timing: `;
                     </ul>
                   </div>
                   <div>
-                    <h5 className="font-semibold text-gray-900">Paper 3: Practical</h5>
+                    <h4 className="font-semibold text-gray-900">Paper 3: Practical</h4>
                     <ul className="list-disc ml-5 mt-1.5 space-y-1 text-sm text-gray-700">
                       <li>40 marks, 1 hour 50 minutes, 20%</li>
                       <li>Two to three compulsory practical questions; planning may be assessed</li>
@@ -399,7 +399,7 @@ Preferred days & timing: `;
             <section id="study-techniques" className="scroll-mt-24">
               <SectionHeading icon={Brain}>O Level Biology Study Techniques That Work</SectionHeading>
               <GuideCard>
-                <h4 className="font-semibold text-gray-900 mb-3">Proven O Level Biology Study Methods</h4>
+                <h3 className="font-semibold text-gray-900 mb-3">Proven O Level Biology Study Methods</h3>
                 <div className="space-y-3 text-sm">
                   <div>
                     <p><strong className="text-gray-900">The Process-Mapping Method:</strong></p>
@@ -425,7 +425,7 @@ Preferred days & timing: `;
               <SectionHeading icon={Target}>O Level Biology Exam Strategies</SectionHeading>
               <div className="space-y-4">
                 <GuideCard>
-                  <h4 className="font-semibold text-gray-900 mb-2">Paper 1 (MCQ) Strategy</h4>
+                  <h3 className="font-semibold text-gray-900 mb-2">Paper 1 (MCQ) Strategy</h3>
                   <ul className="list-disc ml-5 space-y-1 text-sm text-gray-700">
                     <li>Allocate about 1.5 minutes per question</li>
                     <li>Use the elimination method for difficult questions</li>
@@ -436,7 +436,7 @@ Preferred days & timing: `;
                 </GuideCard>
 
                 <GuideCard>
-                  <h4 className="font-semibold text-gray-900 mb-2">Paper 2 (Structured &amp; Free Response) Strategy</h4>
+                  <h3 className="font-semibold text-gray-900 mb-2">Paper 2 (Structured &amp; Free Response) Strategy</h3>
                   <ul className="list-disc ml-5 space-y-1 text-sm text-gray-700">
                     <li>Section A is compulsory; the last two questions share 20 marks, including a data-based stem of 8–12 marks</li>
                     <li>Read both Section B free-response questions fully before choosing</li>
@@ -447,7 +447,7 @@ Preferred days & timing: `;
                 </GuideCard>
 
                 <GuideCard>
-                  <h4 className="font-semibold text-gray-900 mb-2">Paper 3 (Practical) Strategy</h4>
+                  <h3 className="font-semibold text-gray-900 mb-2">Paper 3 (Practical) Strategy</h3>
                   <ul className="list-disc ml-5 space-y-1 text-sm text-gray-700">
                     <li>Read the entire question before starting</li>
                     <li>Record observations and readings immediately, with units</li>
@@ -475,7 +475,7 @@ Preferred days & timing: `;
                         {index + 1}
                       </span>
                       <div>
-                        <h4 className="font-semibold text-gray-900 mb-1.5">{item.mistake}</h4>
+                        <h3 className="font-semibold text-gray-900 mb-1.5">{item.mistake}</h3>
                         <p className="text-sm text-gray-700 mb-2">{item.detail}</p>
                         <p className="text-sm text-gray-700">
                           <span className="font-semibold text-gray-900">The fix: </span>
@@ -491,7 +491,7 @@ Preferred days & timing: `;
             <section id="schedule" className="scroll-mt-24">
               <SectionHeading icon={CalendarDays}>Creating Your O Level Biology Study Schedule</SectionHeading>
               <GuideCard>
-                <h4 className="font-semibold text-gray-900 mb-3">Recommended Weekly Schedule (Secondary 4)</h4>
+                <h3 className="font-semibold text-gray-900 mb-3">Recommended Weekly Schedule (Secondary 4)</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
                   <div>
                     <p className="font-semibold text-gray-900 mb-1.5">School Days</p>
@@ -521,7 +521,7 @@ Preferred days & timing: `;
               <SectionHeading icon={BookOpen}>Essential O Level Biology Resources</SectionHeading>
               <div className="space-y-4">
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-1.5">Free from us</h4>
+                  <h3 className="font-semibold text-gray-900 mb-1.5">Free from us</h3>
                   <ul className="list-disc ml-5 text-sm space-y-1 text-gray-700">
                     <li>
                       <Link href="/free-notes" className="inline-flex min-h-11 items-center text-primary underline underline-offset-2">O-Level Biology study guide</Link>
@@ -538,7 +538,7 @@ Preferred days & timing: `;
                   </ul>
                 </div>
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-1.5">Recommended Textbooks</h4>
+                  <h3 className="font-semibold text-gray-900 mb-1.5">Recommended Textbooks</h3>
                   <ul className="list-disc ml-5 text-sm space-y-1 text-gray-700">
                     <li>Biology Matters (Marshall Cavendish) &mdash; comprehensive coverage</li>
                     <li>GCE O Level Biology (Shinglee) &mdash; exam-focused</li>
@@ -546,7 +546,7 @@ Preferred days & timing: `;
                   </ul>
                 </div>
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-1.5">Practice Materials</h4>
+                  <h3 className="font-semibold text-gray-900 mb-1.5">Practice Materials</h3>
                   <ul className="list-disc ml-5 text-sm space-y-1 text-gray-700">
                     <li>GCE O Level past papers (last 10 years minimum)</li>
                     <li>School preliminary examination papers</li>
@@ -555,7 +555,7 @@ Preferred days & timing: `;
                   </ul>
                 </div>
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-1.5">Digital Tools & Local Resources</h4>
+                  <h3 className="font-semibold text-gray-900 mb-1.5">Digital Tools & Local Resources</h3>
                   <ul className="list-disc ml-5 text-sm space-y-1 text-gray-700">
                     <li>PhET and virtual labs for enzyme and osmosis simulations</li>
                     <li>Anki for memorizing terms and processes</li>
@@ -584,7 +584,7 @@ Preferred days & timing: `;
             <section id="career" className="scroll-mt-24">
               <SectionHeading icon={GraduationCap}>Future Pathways</SectionHeading>
               <GuideCard>
-                <h4 className="font-semibold text-gray-900 mb-3">Your O Level Biology Results Open These Doors</h4>
+                <h3 className="font-semibold text-gray-900 mb-3">Your O Level Biology Results Open These Doors</h3>
                 <div className="space-y-4 text-sm">
                   <div>
                     <strong className="text-gray-900">A1-A2 grades in O Level Biology:</strong>
@@ -627,7 +627,7 @@ Preferred days & timing: `;
             <section id="final-months" className="scroll-mt-24">
               <SectionHeading icon={Hourglass}>Final Two Months O Level Preparation</SectionHeading>
               <GuideCard>
-                <h4 className="font-semibold text-gray-900 mb-3">Last 8 Weeks Strategy</h4>
+                <h3 className="font-semibold text-gray-900 mb-3">Last 8 Weeks Strategy</h3>
                 <div className="space-y-4 text-sm">
                   <div>
                     <strong className="text-gray-900">Weeks 1–3: Intensive Practice Phase</strong>
@@ -664,7 +664,7 @@ Preferred days & timing: `;
               <SectionHeading icon={HeartHandshake}>Mental Preparation and Exam Day Success</SectionHeading>
               <div className="space-y-4">
                 <GuideCard>
-                  <h4 className="font-semibold text-gray-900 mb-2">Stress Management Techniques</h4>
+                  <h3 className="font-semibold text-gray-900 mb-2">Stress Management Techniques</h3>
                   <ul className="list-disc ml-5 space-y-1 text-sm text-gray-700">
                     <li>Practice deep breathing exercises before and during exams</li>
                     <li>Use positive visualization &mdash; imagine yourself succeeding</li>
@@ -675,7 +675,7 @@ Preferred days & timing: `;
                 </GuideCard>
 
                 <GuideCard>
-                  <h4 className="font-semibold text-gray-900 mb-2">Exam Day Protocol</h4>
+                  <h3 className="font-semibold text-gray-900 mb-2">Exam Day Protocol</h3>
                   <ul className="list-disc ml-5 space-y-1 text-sm text-gray-700">
                     <li>Arrive 30 minutes early with all required materials</li>
                     <li>Bring multiple pens, pencils, a calculator, and your data booklet</li>
@@ -694,7 +694,7 @@ Preferred days & timing: `;
                 Regardless of how you feel after your O Level Biology exams, focus on the opportunities ahead. Strong biology knowledge opens doors to numerous pathways in healthcare, research, environmental science, and biotechnology.
               </p>
               <GuideCard className="mt-4">
-                <h4 className="font-semibold text-gray-900 mb-2">Moving Forward</h4>
+                <h3 className="font-semibold text-gray-900 mb-2">Moving Forward</h3>
                 <ul className="list-disc ml-5 space-y-1 text-sm text-gray-700">
                   <li>Use the post-exam period to explore JC and polytechnic science options</li>
                   <li>Consider projects or volunteering in biology-related fields</li>

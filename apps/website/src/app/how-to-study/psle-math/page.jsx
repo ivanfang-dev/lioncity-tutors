@@ -227,13 +227,13 @@ Preferred days & timing: `;
                   The two papers carry the same 50 marks and ask for almost opposite things.
                 </p>
                 <GuideCard className="mt-5">
-                  <h4 className="font-semibold text-gray-900 mb-1">Paper 1 — 1 h 10 min, 30 questions, no calculator</h4>
+                  <h3 className="font-semibold text-gray-900 mb-1">Paper 1 — 1 h 10 min, 30 questions, no calculator</h3>
                   <p className="text-sm text-gray-700">
                     Roughly two minutes a question, and every calculation done by hand. This paper rewards arithmetic fluency and steadiness more than problem-solving depth.
                   </p>
                 </GuideCard>
                 <GuideCard className="mt-4">
-                  <h4 className="font-semibold text-gray-900 mb-1">Paper 2 — 1 h 20 min, 15 questions, calculator allowed</h4>
+                  <h3 className="font-semibold text-gray-900 mb-1">Paper 2 — 1 h 20 min, 15 questions, calculator allowed</h3>
                   <p className="text-sm text-gray-700">
                     Roughly five minutes a question, ten of them worth 3 to 5 marks each. This paper rewards reading the problem properly and setting out a method.
                   </p>
@@ -278,7 +278,7 @@ Preferred days & timing: `;
                           {index + 1}
                         </span>
                         <div>
-                          <h4 className="font-semibold text-gray-900 mb-1.5">{item.mistake}</h4>
+                          <h3 className="font-semibold text-gray-900 mb-1.5">{item.mistake}</h3>
                           <p className="text-sm text-gray-700 mb-2">{item.detail}</p>
                           <p className="text-sm text-gray-700">
                             <span className="font-semibold text-gray-900">The fix: </span>

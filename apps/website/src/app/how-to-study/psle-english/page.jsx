@@ -200,7 +200,7 @@ Preferred days & timing: `;
                   {papers.map((item) => (
                     <GuideCard key={item.paper}>
                       <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 mb-2">
-                        <h4 className="font-semibold text-gray-900">{item.paper}</h4>
+                        <h3 className="font-semibold text-gray-900">{item.paper}</h3>
                         <span className="text-sm font-semibold text-primary tabular-nums">{item.stat}</span>
                       </div>
                       <ul className="space-y-1 text-sm text-gray-700">
@@ -225,7 +225,7 @@ Preferred days & timing: `;
                   Nothing else in PSLE English concentrates marks like that, and nothing else is rehearsed less — because it needs a listener rather than a worksheet.
                 </p>
                 <GuideCard className="mt-5">
-                  <h4 className="font-semibold text-gray-900 mb-3">Reading Aloud — 15 marks</h4>
+                  <h3 className="font-semibold text-gray-900 mb-3">Reading Aloud — 15 marks</h3>
                   <ul className="list-disc ml-5 space-y-1.5 text-sm text-gray-700">
                     <li><strong>Slow down.</strong> Clarity and expression are what is marked; speed hides both.</li>
                     <li><strong>Pause at punctuation</strong> deliberately — it is the easiest way to sound assured.</li>
@@ -233,7 +233,7 @@ Preferred days & timing: `;
                   </ul>
                 </GuideCard>
                 <GuideCard className="mt-4">
-                  <h4 className="font-semibold text-gray-900 mb-3">Stimulus-based Conversation — 25 marks</h4>
+                  <h3 className="font-semibold text-gray-900 mb-3">Stimulus-based Conversation — 25 marks</h3>
                   <ul className="list-disc ml-5 space-y-1.5 text-sm text-gray-700">
                     <li><strong>Answer, reason, example.</strong> Three sentences where one was invited.</li>
                     <li><strong>Have a personal experience ready</strong> — the strongest development is usually something that happened to you.</li>
@@ -248,7 +248,7 @@ Preferred days & timing: `;
                   Paper 2 carries 90 marks — nearly half the subject — and splits unevenly between its two booklets. Booklet A is 25 marks of multiple choice. Booklet B is 65 marks of writing.
                 </p>
                 <GuideCard className="mt-5">
-                  <h4 className="font-semibold text-gray-900 mb-3">Booklet B, component by component</h4>
+                  <h3 className="font-semibold text-gray-900 mb-3">Booklet B, component by component</h3>
                   <ul className="space-y-1 text-sm text-gray-700">
                     {bookletB.map(([name, marks]) => (
                       <li key={name} className="flex justify-between gap-4">
@@ -300,7 +300,7 @@ Preferred days & timing: `;
                           {index + 1}
                         </span>
                         <div>
-                          <h4 className="font-semibold text-gray-900 mb-1.5">{item.mistake}</h4>
+                          <h3 className="font-semibold text-gray-900 mb-1.5">{item.mistake}</h3>
                           <p className="text-sm text-gray-700 mb-2">{item.detail}</p>
                           <p className="text-sm text-gray-700">
                             <span className="font-semibold text-gray-900">The fix: </span>

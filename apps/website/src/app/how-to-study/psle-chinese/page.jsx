@@ -183,7 +183,7 @@ Preferred days & timing: `;
                   {papers.map((item) => (
                     <GuideCard key={item.paper}>
                       <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 mb-2">
-                        <h4 className="font-semibold text-gray-900">{item.paper}</h4>
+                        <h3 className="font-semibold text-gray-900">{item.paper}</h3>
                         <span className="text-sm font-semibold text-primary tabular-nums">{item.stat}</span>
                       </div>
                       <p className="text-sm text-gray-700">{item.detail}</p>
@@ -198,7 +198,7 @@ Preferred days & timing: `;
                   Fifty marks in about ten minutes of examination. Compare that with the writing paper: 40 marks across fifty minutes. Oral is worth more, takes less time, and is almost always the last thing a family practises — because it needs a listener.
                 </p>
                 <GuideCard className="mt-5">
-                  <h4 className="font-semibold text-gray-900 mb-3">Using the ten minutes of preparation</h4>
+                  <h3 className="font-semibold text-gray-900 mb-3">Using the ten minutes of preparation</h3>
                   <p className="text-sm text-gray-700 mb-3">
                     Before the examination, candidates are given ten minutes to read the passage silently and watch the video clip — and within that time they may do each more than once. That permission is worth using deliberately.
                   </p>
@@ -265,7 +265,7 @@ Preferred days & timing: `;
                           {index + 1}
                         </span>
                         <div>
-                          <h4 className="font-semibold text-gray-900 mb-1.5">{item.mistake}</h4>
+                          <h3 className="font-semibold text-gray-900 mb-1.5">{item.mistake}</h3>
                           <p className="text-sm text-gray-700 mb-2">{item.detail}</p>
                           <p className="text-sm text-gray-700">
                             <span className="font-semibold text-gray-900">The fix: </span>

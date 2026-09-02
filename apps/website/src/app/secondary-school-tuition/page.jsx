@@ -265,7 +265,7 @@ export default function SecondarySchoolTuition() {
                 <li>Customised lesson plans</li>
               </ul>
               <Link href="/secondary-school-tuition/o-level-tuition" className="mt-auto">
-                <Button className="h-auto py-3 w-full bg-primary hover:bg-primary/90 text-white">Learn More</Button>
+                <Button className="h-auto py-3 w-full bg-primary hover:bg-primary/90 text-white">Explore O-Level tuition</Button>
               </Link>
             </CardContent>
           </Card>
@@ -280,7 +280,7 @@ export default function SecondarySchoolTuition() {
                 <li>Support for progression to O-Levels or ITE</li>
               </ul>
               <Link href="/secondary-school-tuition/n-level-tuition" className="mt-auto">
-                <Button className="h-auto py-3 w-full text-[18.7px] font-bold bg-accent-fill hover:bg-accent-fill-hover text-white">Learn More</Button>
+                <Button className="h-auto py-3 w-full text-[18.7px] font-bold bg-accent-fill hover:bg-accent-fill-hover text-white">Explore N-Level tuition</Button>
               </Link>
             </CardContent>
           </Card>

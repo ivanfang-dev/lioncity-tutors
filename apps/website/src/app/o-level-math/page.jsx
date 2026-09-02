@@ -224,10 +224,10 @@ Preferred days & timing: `;
                 Singapore&rsquo;s O Level Mathematics offers two distinct subjects, each serving different academic pathways and university prerequisites.
               </p>
               <GuideCard className="mt-4">
-                <h4 className="font-semibold text-gray-900 mb-4">O Level Math Subjects Breakdown</h4>
+                <h3 className="font-semibold text-gray-900 mb-4">O Level Math Subjects Breakdown</h3>
                 <div className="space-y-5">
                   <div>
-                    <h5 className="font-semibold text-gray-900">Elementary Mathematics (E Math) &mdash; syllabus 4052</h5>
+                    <h4 className="font-semibold text-gray-900">Elementary Mathematics (E Math) &mdash; syllabus 4052</h4>
                     <ul className="list-disc ml-5 mt-1.5 space-y-1 text-sm text-gray-700">
                       <li>Compulsory for all O Level students</li>
                       <li>Prerequisite for polytechnic and JC admission</li>
@@ -237,7 +237,7 @@ Preferred days & timing: `;
                     </ul>
                   </div>
                   <div>
-                    <h5 className="font-semibold text-gray-900">Additional Mathematics (A Math) &mdash; syllabus 4049</h5>
+                    <h4 className="font-semibold text-gray-900">Additional Mathematics (A Math) &mdash; syllabus 4049</h4>
                     <ul className="list-disc ml-5 mt-1.5 space-y-1 text-sm text-gray-700">
                       <li>Optional subject for higher-achieving students</li>
                       <li>Essential for H2 Mathematics in JC</li>
@@ -340,7 +340,7 @@ Preferred days & timing: `;
             <section id="study-techniques" className="scroll-mt-24">
               <SectionHeading icon={Brain}>O Level Math Study Techniques That Work</SectionHeading>
               <GuideCard>
-                <h4 className="font-semibold text-gray-900 mb-3">Proven O Level Math Study Methods</h4>
+                <h3 className="font-semibold text-gray-900 mb-3">Proven O Level Math Study Methods</h3>
                 <div className="space-y-3 text-sm">
                   <div>
                     <p><strong className="text-gray-900">The 10-10-10 Method:</strong></p>
@@ -366,7 +366,7 @@ Preferred days & timing: `;
               <SectionHeading icon={Target}>O Level Math Exam Strategies</SectionHeading>
               <div className="space-y-4">
                 <GuideCard>
-                  <h4 className="font-semibold text-gray-900 mb-2">Paper 1 (Short Answer) Strategy</h4>
+                  <h3 className="font-semibold text-gray-900 mb-2">Paper 1 (Short Answer) Strategy</h3>
                   <ul className="list-disc ml-5 space-y-1 text-sm text-gray-700">
                     <li>About 26 questions in 2 hours 15 minutes &mdash; keep moving, then return</li>
                     <li>Show essential working; a correct answer with nothing above it can still lose marks</li>
@@ -377,7 +377,7 @@ Preferred days & timing: `;
                 </GuideCard>
 
                 <GuideCard>
-                  <h4 className="font-semibold text-gray-900 mb-2">Paper 2 (Longer Questions) Strategy</h4>
+                  <h3 className="font-semibold text-gray-900 mb-2">Paper 2 (Longer Questions) Strategy</h3>
                   <ul className="list-disc ml-5 space-y-1 text-sm text-gray-700">
                     <li>Read all questions first and start with your strongest topics</li>
                     <li>Show all working clearly &mdash; method marks are crucial</li>
@@ -388,7 +388,7 @@ Preferred days & timing: `;
                 </GuideCard>
 
                 <GuideCard>
-                  <h4 className="font-semibold text-gray-900 mb-2">Calculator Mastery Tips</h4>
+                  <h3 className="font-semibold text-gray-900 mb-2">Calculator Mastery Tips</h3>
                   <ul className="list-disc ml-5 space-y-1 text-sm text-gray-700">
                     <li>Learn all calculator functions relevant to O Level Math</li>
                     <li>Practice calculator shortcuts for common operations</li>
@@ -416,7 +416,7 @@ Preferred days & timing: `;
                         {index + 1}
                       </span>
                       <div>
-                        <h4 className="font-semibold text-gray-900 mb-1.5">{item.mistake}</h4>
+                        <h3 className="font-semibold text-gray-900 mb-1.5">{item.mistake}</h3>
                         <p className="text-sm text-gray-700 mb-2">{item.detail}</p>
                         <p className="text-sm text-gray-700">
                           <span className="font-semibold text-gray-900">The fix: </span>
@@ -432,7 +432,7 @@ Preferred days & timing: `;
             <section id="schedule" className="scroll-mt-24">
               <SectionHeading icon={CalendarDays}>Creating Your O Level Math Study Schedule</SectionHeading>
               <GuideCard>
-                <h4 className="font-semibold text-gray-900 mb-3">Recommended Weekly Schedule (Secondary 4)</h4>
+                <h3 className="font-semibold text-gray-900 mb-3">Recommended Weekly Schedule (Secondary 4)</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
                   <div>
                     <p className="font-semibold text-gray-900 mb-1.5">School Days (E Math)</p>
@@ -469,7 +469,7 @@ Preferred days & timing: `;
               <SectionHeading icon={BookOpen}>Essential O Level Math Resources</SectionHeading>
               <div className="space-y-4">
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-1.5">Free from us</h4>
+                  <h3 className="font-semibold text-gray-900 mb-1.5">Free from us</h3>
                   <ul className="list-disc ml-5 text-sm space-y-1 text-gray-700">
                     <li>
                       <Link href="/free-notes" className="inline-flex min-h-11 items-center text-primary underline underline-offset-2">A-Math revision notes</Link>
@@ -492,7 +492,7 @@ Preferred days & timing: `;
                   </ul>
                 </div>
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-1.5">Recommended Textbooks</h4>
+                  <h3 className="font-semibold text-gray-900 mb-1.5">Recommended Textbooks</h3>
                   <ul className="list-disc ml-5 text-sm space-y-1 text-gray-700">
                     <li>New Syllabus Mathematics (Shinglee) &mdash; comprehensive coverage</li>
                     <li>Additional Mathematics 360 (Marshall Cavendish) &mdash; A Math focused</li>
@@ -500,7 +500,7 @@ Preferred days & timing: `;
                   </ul>
                 </div>
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-1.5">Practice Materials</h4>
+                  <h3 className="font-semibold text-gray-900 mb-1.5">Practice Materials</h3>
                   <ul className="list-disc ml-5 text-sm space-y-1 text-gray-700">
                     <li>GCE O Level past papers (last 10 years minimum)</li>
                     <li>School preliminary examination papers</li>
@@ -509,7 +509,7 @@ Preferred days & timing: `;
                   </ul>
                 </div>
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-1.5">Digital Tools</h4>
+                  <h3 className="font-semibold text-gray-900 mb-1.5">Digital Tools</h3>
                   <ul className="list-disc ml-5 text-sm space-y-1 text-gray-700">
                     <li>GeoGebra for visualization and graphing</li>
                     <li>Desmos Calculator for function exploration</li>
@@ -538,7 +538,7 @@ Preferred days & timing: `;
             <section id="pathways" className="scroll-mt-24">
               <SectionHeading icon={GraduationCap}>Post-O Level Math Pathways</SectionHeading>
               <GuideCard>
-                <h4 className="font-semibold text-gray-900 mb-3">Your O Level Math Results Open These Doors</h4>
+                <h3 className="font-semibold text-gray-900 mb-3">Your O Level Math Results Open These Doors</h3>
                 <div className="space-y-4 text-sm">
                   <div>
                     <strong className="text-gray-900">A1-B3 in E Math + A1-B3 in A Math:</strong>
@@ -579,7 +579,7 @@ Preferred days & timing: `;
             <section id="final-months" className="scroll-mt-24">
               <SectionHeading icon={Hourglass}>Final Month O Level Math Preparation</SectionHeading>
               <GuideCard>
-                <h4 className="font-semibold text-gray-900 mb-3">Last 30 Days Strategy</h4>
+                <h3 className="font-semibold text-gray-900 mb-3">Last 30 Days Strategy</h3>
                 <div className="space-y-4 text-sm">
                   <div>
                     <strong className="text-gray-900">Week 1–2: Intensive Practice</strong>

@@ -160,10 +160,10 @@ Preferred days & timing: `;
                 The A Level GP examination consists of two papers, each testing different but complementary skills:
               </p>
               <GuideCard className="mt-4">
-                <h4 className="font-semibold text-gray-900 mb-4">A Level GP Papers Breakdown</h4>
+                <h3 className="font-semibold text-gray-900 mb-4">A Level GP Papers Breakdown</h3>
                 <div className="space-y-5">
                   <div>
-                    <h5 className="font-semibold text-gray-900">Paper 1: Essay (8881/01)</h5>
+                    <h4 className="font-semibold text-gray-900">Paper 1: Essay (8881/01)</h4>
                     <ul className="list-disc ml-5 mt-1.5 space-y-1 text-sm text-gray-700">
                       <li>Choose 1 out of 8 questions, writing 500&ndash;800 words</li>
                       <li>Topics span society and culture, economics, politics, the arts and humanities, science and technology, and the environment</li>
@@ -172,7 +172,7 @@ Preferred days & timing: `;
                     </ul>
                   </div>
                   <div>
-                    <h5 className="font-semibold text-gray-900">Paper 2: Comprehension (8881/02)</h5>
+                    <h4 className="font-semibold text-gray-900">Paper 2: Comprehension (8881/02)</h4>
                     <ul className="list-disc ml-5 mt-1.5 space-y-1 text-sm text-gray-700">
                       <li>Three passages (about 1,200 words total) allowing for comparative analysis, with short-answer, summary, and application questions</li>
                       <li>Tests understanding, inference, summary, and critical response</li>
@@ -230,7 +230,7 @@ Preferred days & timing: `;
             <section id="study-techniques" className="scroll-mt-24">
               <SectionHeading icon={Brain}>A Level GP Study Techniques That Work</SectionHeading>
               <GuideCard>
-                <h4 className="font-semibold text-gray-900 mb-3">Proven A Level GP Study Methods</h4>
+                <h3 className="font-semibold text-gray-900 mb-3">Proven A Level GP Study Methods</h3>
                 <div className="space-y-3 text-sm">
                   <div>
                     <p><strong className="text-gray-900">Current Affairs Journal:</strong></p>
@@ -256,7 +256,7 @@ Preferred days & timing: `;
               <SectionHeading icon={Target}>A Level GP Exam Strategies</SectionHeading>
               <div className="space-y-4">
                 <GuideCard>
-                  <h4 className="font-semibold text-gray-900 mb-2">Paper 1 (Essay) Strategy</h4>
+                  <h3 className="font-semibold text-gray-900 mb-2">Paper 1 (Essay) Strategy</h3>
                   <ul className="list-disc ml-5 space-y-1 text-sm text-gray-700">
                     <li>Spend 10–15 minutes planning before writing</li>
                     <li>Choose questions that play to your strengths and knowledge</li>
@@ -267,7 +267,7 @@ Preferred days & timing: `;
                 </GuideCard>
 
                 <GuideCard>
-                  <h4 className="font-semibold text-gray-900 mb-2">Paper 2 (Comprehension) Strategy</h4>
+                  <h3 className="font-semibold text-gray-900 mb-2">Paper 2 (Comprehension) Strategy</h3>
                   <ul className="list-disc ml-5 space-y-1 text-sm text-gray-700">
                     <li>Read all questions before reading the passage</li>
                     <li>Underline key information and argument shifts</li>
@@ -282,7 +282,7 @@ Preferred days & timing: `;
             <section id="mistakes" className="scroll-mt-24">
               <SectionHeading icon={TriangleAlert}>Common A Level GP Mistakes to Avoid</SectionHeading>
               <GuideCard>
-                <h4 className="font-semibold text-gray-900 mb-3">Top 10 A Level GP Pitfalls</h4>
+                <h3 className="font-semibold text-gray-900 mb-3">Top 10 A Level GP Pitfalls</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3 text-sm">
                   <div>
                     <ol className="list-decimal ml-5 space-y-1 text-gray-700">
@@ -309,7 +309,7 @@ Preferred days & timing: `;
             <section id="schedule" className="scroll-mt-24">
               <SectionHeading icon={CalendarDays}>Creating Your A Level GP Study Schedule</SectionHeading>
               <GuideCard>
-                <h4 className="font-semibold text-gray-900 mb-3">Recommended Weekly Schedule (JC2)</h4>
+                <h3 className="font-semibold text-gray-900 mb-3">Recommended Weekly Schedule (JC2)</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
                   <div>
                     <p className="font-semibold text-gray-900 mb-1.5">School Days</p>
@@ -337,7 +337,7 @@ Preferred days & timing: `;
               <SectionHeading icon={BookOpen}>Essential A Level GP Resources</SectionHeading>
               <div className="space-y-4">
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-1.5">Recommended Textbooks</h4>
+                  <h3 className="font-semibold text-gray-900 mb-1.5">Recommended Textbooks</h3>
                   <ul className="list-disc ml-5 text-sm space-y-1 text-gray-700">
                     <li>Cambridge General Paper (Hodder Education) &mdash; comprehensive coverage</li>
                     <li>General Paper Essays (Marshall Cavendish) &mdash; essay practice</li>
@@ -345,7 +345,7 @@ Preferred days & timing: `;
                   </ul>
                 </div>
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-1.5">Practice Materials</h4>
+                  <h3 className="font-semibold text-gray-900 mb-1.5">Practice Materials</h3>
                   <ul className="list-disc ml-5 text-sm space-y-1 text-gray-700">
                     <li>Cambridge A Level past year papers (last 10 years minimum)</li>
                     <li>School preliminary examination papers</li>
@@ -354,7 +354,7 @@ Preferred days & timing: `;
                   </ul>
                 </div>
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-1.5">Reading Materials</h4>
+                  <h3 className="font-semibold text-gray-900 mb-1.5">Reading Materials</h3>
                   <ul className="list-disc ml-5 text-sm space-y-1 text-gray-700">
                     <li>Quality newspapers and magazines</li>
                     <li>Academic journals and opinion pieces</li>
@@ -383,7 +383,7 @@ Preferred days & timing: `;
             <section id="pathways" className="scroll-mt-24">
               <SectionHeading icon={GraduationCap}>Post-A Level GP Pathways</SectionHeading>
               <GuideCard>
-                <h4 className="font-semibold text-gray-900 mb-3">Your A Level GP Results Open These Doors</h4>
+                <h3 className="font-semibold text-gray-900 mb-3">Your A Level GP Results Open These Doors</h3>
                 <div className="space-y-4 text-sm">
                   <div>
                     <strong className="text-gray-900">A in GP:</strong>
@@ -424,7 +424,7 @@ Preferred days & timing: `;
             <section id="final-months" className="scroll-mt-24">
               <SectionHeading icon={Hourglass}>Final Month A Level GP Preparation</SectionHeading>
               <GuideCard>
-                <h4 className="font-semibold text-gray-900 mb-3">Last 30 Days Strategy</h4>
+                <h3 className="font-semibold text-gray-900 mb-3">Last 30 Days Strategy</h3>
                 <div className="space-y-4 text-sm">
                   <div>
                     <strong className="text-gray-900">Week 1–2: Intensive Practice</strong>

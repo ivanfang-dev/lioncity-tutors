@@ -224,7 +224,7 @@ Preferred days & timing: `;
                 </p>
 
                 <GuideCard className="mt-5">
-                  <h4 className="font-semibold text-gray-900 mb-1">Paper 1 — Essay · 1h 30m · 50 marks</h4>
+                  <h3 className="font-semibold text-gray-900 mb-1">Paper 1 — Essay · 1h 30m · 50 marks</h3>
                   <p className="text-sm text-gray-600 mb-3">Eight questions are set; you answer one, in 500 to 800 words.</p>
                   <ul className="space-y-2 text-sm text-gray-700">
                     {paper1.map((row) => (
@@ -239,7 +239,7 @@ Preferred days & timing: `;
                 </GuideCard>
 
                 <GuideCard className="mt-4">
-                  <h4 className="font-semibold text-gray-900 mb-1">Paper 2 — Comprehension · 1h 30m · 50 marks</h4>
+                  <h3 className="font-semibold text-gray-900 mb-1">Paper 2 — Comprehension · 1h 30m · 50 marks</h3>
                   <p className="text-sm text-gray-600 mb-3">
                     Three passages totalling roughly 1,200 words, with eight or nine questions across them. Content is worth 35; language is worth 15.
                   </p>
@@ -261,7 +261,7 @@ Preferred days & timing: `;
                 <div className="mt-5 space-y-4">
                   {bandMoves.map((item) => (
                     <GuideCard key={item.move}>
-                      <h4 className="font-semibold text-gray-900 mb-1">{item.move}</h4>
+                      <h3 className="font-semibold text-gray-900 mb-1">{item.move}</h3>
                       <p className="text-sm text-primary font-medium mb-2">{item.driver}</p>
                       <p className="text-sm text-gray-700">{item.detail}</p>
                     </GuideCard>
@@ -281,7 +281,7 @@ Preferred days & timing: `;
                   {paper2.map((item) => (
                     <GuideCard key={item.question}>
                       <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 mb-1">
-                        <h4 className="font-semibold text-gray-900">{item.question}</h4>
+                        <h3 className="font-semibold text-gray-900">{item.question}</h3>
                         <span className="text-sm font-semibold text-primary tabular-nums">{item.marks}</span>
                       </div>
                       <p className="text-sm text-gray-700 mb-3 italic">{item.wants}</p>
@@ -305,7 +305,7 @@ Preferred days & timing: `;
                   &ldquo;Read the news&rdquo; is true and nearly useless as an instruction, because passive reading does not survive an exam hall. What works is converting reading into something retrievable.
                 </p>
                 <GuideCard className="mt-4">
-                  <h4 className="font-semibold text-gray-900 mb-3">One note per issue</h4>
+                  <h3 className="font-semibold text-gray-900 mb-3">One note per issue</h3>
                   <ul className="list-disc ml-5 space-y-1 text-sm text-gray-700">
                     <li><strong>The issue</strong>, in a sentence you could use as an essay point.</li>
                     <li><strong>Two opposing positions</strong>, stated fairly — you need the other side to write a balanced paragraph.</li>
@@ -317,7 +317,7 @@ Preferred days & timing: `;
                   Thirty of these, spread across the six question areas, will carry a student further than a year of undirected reading — and because each one already contains a connection, they feed straight into the skill the top band is looking for. Keep a separate handful rooted in Singapore, since &ldquo;your society&rdquo; questions need a specific society rather than a general one.
                 </p>
                 <GuideCard className="mt-4">
-                  <h4 className="font-semibold text-gray-900 mb-2">Notes you can start from</h4>
+                  <h3 className="font-semibold text-gray-900 mb-2">Notes you can start from</h3>
                   <p className="text-sm text-gray-700">
                     If building a bank from scratch is the part that never happens, start from someone else&rsquo;s. Our{' '}
                     <Link href="/free-notes" className="text-primary underline underline-offset-2">free notes library</Link>{' '}
@@ -358,7 +358,7 @@ Preferred days & timing: `;
                           {index + 1}
                         </span>
                         <div>
-                          <h4 className="font-semibold text-gray-900 mb-1.5">{item.mistake}</h4>
+                          <h3 className="font-semibold text-gray-900 mb-1.5">{item.mistake}</h3>
                           <p className="text-sm text-gray-700 mb-2">{item.detail}</p>
                           <p className="text-sm text-gray-700">
                             <span className="font-semibold text-gray-900">The fix: </span>

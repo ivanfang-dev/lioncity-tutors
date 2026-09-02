@@ -228,7 +228,7 @@ Preferred days & timing: `;
                   {papers.map((item) => (
                     <GuideCard key={item.paper}>
                       <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 mb-2">
-                        <h4 className="font-semibold text-gray-900">{item.paper}</h4>
+                        <h3 className="font-semibold text-gray-900">{item.paper}</h3>
                         <span className="text-sm font-semibold text-primary tabular-nums">{item.stat}</span>
                       </div>
                       <p className="text-sm text-gray-700">{item.detail}</p>
@@ -247,7 +247,7 @@ Preferred days & timing: `;
                 </p>
 
                 <GuideCard className="mt-5">
-                  <h4 className="font-semibold text-gray-900 mb-3">Tests for anions</h4>
+                  <h3 className="font-semibold text-gray-900 mb-3">Tests for anions</h3>
                   <div className="overflow-x-auto">
                     <table className="w-full text-sm text-left border-collapse">
                       <thead>
@@ -271,7 +271,7 @@ Preferred days & timing: `;
                 </GuideCard>
 
                 <GuideCard className="mt-4">
-                  <h4 className="font-semibold text-gray-900 mb-3">Tests for aqueous cations</h4>
+                  <h3 className="font-semibold text-gray-900 mb-3">Tests for aqueous cations</h3>
                   <div className="overflow-x-auto">
                     <table className="w-full text-sm text-left border-collapse">
                       <thead>
@@ -298,7 +298,7 @@ Preferred days & timing: `;
                 </GuideCard>
 
                 <GuideCard className="mt-4">
-                  <h4 className="font-semibold text-gray-900 mb-3">Tests for gases</h4>
+                  <h3 className="font-semibold text-gray-900 mb-3">Tests for gases</h3>
                   <div className="overflow-x-auto">
                     <table className="w-full text-sm text-left border-collapse">
                       <thead>
@@ -372,7 +372,7 @@ Preferred days & timing: `;
                           {index + 1}
                         </span>
                         <div>
-                          <h4 className="font-semibold text-gray-900 mb-1.5">{item.mistake}</h4>
+                          <h3 className="font-semibold text-gray-900 mb-1.5">{item.mistake}</h3>
                           <p className="text-sm text-gray-700 mb-2">{item.detail}</p>
                           <p className="text-sm text-gray-700">
                             <span className="font-semibold text-gray-900">The fix: </span>

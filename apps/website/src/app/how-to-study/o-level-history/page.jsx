@@ -199,7 +199,7 @@ Preferred days & timing: `;
                   History is assessed on what you can do with the content, not on how much of it you can reproduce. That single distinction explains most of the marks our tutors recover. A student who has memorised a topic thoroughly and answers every source question the same way will score consistently in the middle; a student who knows less but can infer, compare and judge will score above them.
                 </p>
                 <GuideCard className="mt-4">
-                  <h4 className="font-semibold text-gray-900 mb-3">The skills being marked</h4>
+                  <h3 className="font-semibold text-gray-900 mb-3">The skills being marked</h3>
                   <ul className="list-disc ml-5 space-y-1 text-sm text-gray-700">
                     <li><strong>Inference</strong> — reading what a source implies, not only what it states.</li>
                     <li><strong>Comparison</strong> — establishing the relationship between two accounts.</li>
@@ -218,7 +218,7 @@ Preferred days & timing: `;
                 <div className="mt-5 space-y-4">
                   {sourceQuestionTypes.map((item) => (
                     <GuideCard key={item.type}>
-                      <h4 className="font-semibold text-gray-900 mb-1">{item.type}</h4>
+                      <h3 className="font-semibold text-gray-900 mb-1">{item.type}</h3>
                       <p className="text-sm text-gray-700 mb-3 italic">{item.asks}</p>
                       <p className="text-sm text-gray-700 mb-1.5">
                         <span className="font-semibold text-gray-900">Weak answer: </span>{item.weak}
@@ -237,7 +237,7 @@ Preferred days & timing: `;
                   The single biggest difference between a mid-band and a top-band History essay is whether it takes a position. Narrative essays describe what happened in order and leave the marker to infer the argument. Top-band essays decide something in the first paragraph and spend the rest of the essay proving it.
                 </p>
                 <GuideCard className="mt-4">
-                  <h4 className="font-semibold text-gray-900 mb-3">What a paragraph needs</h4>
+                  <h3 className="font-semibold text-gray-900 mb-3">What a paragraph needs</h3>
                   <ul className="list-disc ml-5 space-y-1 text-sm text-gray-700">
                     <li><strong>A point</strong> that answers the question, not a topic sentence announcing a subject.</li>
                     <li><strong>Specific evidence</strong> — named, dated, concrete. Evidence proves; it does not decorate.</li>
@@ -282,7 +282,7 @@ Preferred days & timing: `;
                           {index + 1}
                         </span>
                         <div>
-                          <h4 className="font-semibold text-gray-900 mb-1.5">{item.mistake}</h4>
+                          <h3 className="font-semibold text-gray-900 mb-1.5">{item.mistake}</h3>
                           <p className="text-sm text-gray-700 mb-2">{item.detail}</p>
                           <p className="text-sm text-gray-700">
                             <span className="font-semibold text-gray-900">The fix: </span>

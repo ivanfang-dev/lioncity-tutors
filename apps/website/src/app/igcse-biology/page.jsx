@@ -167,10 +167,10 @@ Preferred days & timing: `;
                 The IGCSE Biology course is designed to develop students&rsquo; understanding of biological concepts and their application to real-world situations. The course is available in both Core and Extended levels.
               </p>
               <GuideCard className="mt-4">
-                <h4 className="font-semibold text-gray-900 mb-4">IGCSE Biology Assessment Breakdown</h4>
+                <h3 className="font-semibold text-gray-900 mb-4">IGCSE Biology Assessment Breakdown</h3>
                 <div className="space-y-5">
                   <div>
-                    <h5 className="font-semibold text-gray-900">External Assessment (80%)</h5>
+                    <h4 className="font-semibold text-gray-900">External Assessment (80%)</h4>
                     <ul className="list-disc ml-5 mt-1.5 space-y-1 text-sm text-gray-700">
                       <li>Paper 1: Multiple Choice (30%)</li>
                       <li>Paper 2: Theory (50%)</li>
@@ -178,7 +178,7 @@ Preferred days & timing: `;
                     </ul>
                   </div>
                   <div>
-                    <h5 className="font-semibold text-gray-900">Coursework (20%)</h5>
+                    <h4 className="font-semibold text-gray-900">Coursework (20%)</h4>
                     <ul className="list-disc ml-5 mt-1.5 space-y-1 text-sm text-gray-700">
                       <li>Practical Investigations</li>
                       <li>Laboratory Reports</li>
@@ -310,7 +310,7 @@ Preferred days & timing: `;
               <SectionHeading icon={Target}>IGCSE Biology Exam Strategies</SectionHeading>
               <div className="space-y-4">
                 <GuideCard>
-                  <h4 className="font-semibold text-gray-900 mb-2">Paper 1 (MCQ) Strategy</h4>
+                  <h3 className="font-semibold text-gray-900 mb-2">Paper 1 (MCQ) Strategy</h3>
                   <ul className="list-disc ml-5 space-y-1 text-sm text-gray-700">
                     <li>Allocate 1.5 minutes per question maximum</li>
                     <li>Use the elimination method for difficult questions</li>
@@ -321,7 +321,7 @@ Preferred days & timing: `;
                 </GuideCard>
 
                 <GuideCard>
-                  <h4 className="font-semibold text-gray-900 mb-2">Paper 2 (Theory) Strategy</h4>
+                  <h3 className="font-semibold text-gray-900 mb-2">Paper 2 (Theory) Strategy</h3>
                   <ul className="list-disc ml-5 space-y-1 text-sm text-gray-700">
                     <li>Read all questions first and start with your strongest topics</li>
                     <li>Show all working clearly &mdash; partial credit is available</li>
@@ -332,7 +332,7 @@ Preferred days & timing: `;
                 </GuideCard>
 
                 <GuideCard>
-                  <h4 className="font-semibold text-gray-900 mb-2">Paper 3 (Practical) Strategy</h4>
+                  <h3 className="font-semibold text-gray-900 mb-2">Paper 3 (Practical) Strategy</h3>
                   <ul className="list-disc ml-5 space-y-1 text-sm text-gray-700">
                     <li>Read the entire question before starting</li>
                     <li>Identify key data points and relationships</li>
@@ -347,7 +347,7 @@ Preferred days & timing: `;
             <section id="mistakes" className="scroll-mt-24">
               <SectionHeading icon={TriangleAlert}>Common IGCSE Biology Mistakes to Avoid</SectionHeading>
               <GuideCard>
-                <h4 className="font-semibold text-gray-900 mb-3">Top 12 IGCSE Biology Pitfalls</h4>
+                <h3 className="font-semibold text-gray-900 mb-3">Top 12 IGCSE Biology Pitfalls</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3 text-sm">
                   <div>
                     <ol className="list-decimal ml-5 space-y-1 text-gray-700">
@@ -376,7 +376,7 @@ Preferred days & timing: `;
             <section id="schedule" className="scroll-mt-24">
               <SectionHeading icon={CalendarDays}>Creating Your IGCSE Biology Study Schedule</SectionHeading>
               <GuideCard>
-                <h4 className="font-semibold text-gray-900 mb-3">Recommended Weekly Schedule</h4>
+                <h3 className="font-semibold text-gray-900 mb-3">Recommended Weekly Schedule</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
                   <div>
                     <p className="font-semibold text-gray-900 mb-1.5">School Days</p>
@@ -406,7 +406,7 @@ Preferred days & timing: `;
               <SectionHeading icon={BookOpen}>Essential IGCSE Biology Resources</SectionHeading>
               <div className="space-y-4">
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-1.5">Recommended Textbooks</h4>
+                  <h3 className="font-semibold text-gray-900 mb-1.5">Recommended Textbooks</h3>
                   <ul className="list-disc ml-5 text-sm space-y-1 text-gray-700">
                     <li>Cambridge IGCSE Biology Coursebook (Cambridge) &mdash; comprehensive coverage</li>
                     <li>IGCSE Biology (Pearson) &mdash; detailed explanations</li>
@@ -414,7 +414,7 @@ Preferred days & timing: `;
                   </ul>
                 </div>
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-1.5">Practice Materials</h4>
+                  <h3 className="font-semibold text-gray-900 mb-1.5">Practice Materials</h3>
                   <ul className="list-disc ml-5 text-sm space-y-1 text-gray-700">
                     <li>IGCSE past papers (last 5 years minimum)</li>
                     <li>School mock examination papers</li>
@@ -423,7 +423,7 @@ Preferred days & timing: `;
                   </ul>
                 </div>
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-1.5">Digital Tools</h4>
+                  <h3 className="font-semibold text-gray-900 mb-1.5">Digital Tools</h3>
                   <ul className="list-disc ml-5 text-sm space-y-1 text-gray-700">
                     <li>Biology simulations and animations</li>
                     <li>Biology problem-solving apps</li>
@@ -437,7 +437,7 @@ Preferred days & timing: `;
             <section id="pathways" className="scroll-mt-24">
               <SectionHeading icon={GraduationCap}>Future Pathways</SectionHeading>
               <GuideCard>
-                <h4 className="font-semibold text-gray-900 mb-3">Your IGCSE Biology Results Open These Doors</h4>
+                <h3 className="font-semibold text-gray-900 mb-3">Your IGCSE Biology Results Open These Doors</h3>
                 <div className="space-y-4 text-sm">
                   <div>
                     <strong className="text-gray-900">A*-A grades in IGCSE Biology:</strong>
@@ -480,7 +480,7 @@ Preferred days & timing: `;
             <section id="final-months" className="scroll-mt-24">
               <SectionHeading icon={Hourglass}>Final Two Months IGCSE Preparation</SectionHeading>
               <GuideCard>
-                <h4 className="font-semibold text-gray-900 mb-3">Last 8 Weeks Strategy</h4>
+                <h3 className="font-semibold text-gray-900 mb-3">Last 8 Weeks Strategy</h3>
                 <div className="space-y-4 text-sm">
                   <div>
                     <strong className="text-gray-900">Weeks 1–3: Intensive Practice Phase</strong>
@@ -517,7 +517,7 @@ Preferred days & timing: `;
               <SectionHeading icon={HeartHandshake}>Mental Preparation and Exam Day Success</SectionHeading>
               <div className="space-y-4">
                 <GuideCard>
-                  <h4 className="font-semibold text-gray-900 mb-2">Stress Management Techniques</h4>
+                  <h3 className="font-semibold text-gray-900 mb-2">Stress Management Techniques</h3>
                   <ul className="list-disc ml-5 space-y-1 text-sm text-gray-700">
                     <li>Practice deep breathing exercises before and during exams</li>
                     <li>Use positive visualization &mdash; imagine yourself succeeding</li>
@@ -528,7 +528,7 @@ Preferred days & timing: `;
                 </GuideCard>
 
                 <GuideCard>
-                  <h4 className="font-semibold text-gray-900 mb-2">Exam Day Protocol</h4>
+                  <h3 className="font-semibold text-gray-900 mb-2">Exam Day Protocol</h3>
                   <ul className="list-disc ml-5 space-y-1 text-sm text-gray-700">
                     <li>Arrive 30 minutes early with all required materials</li>
                     <li>Bring multiple pens, pencils, a calculator, and your data booklet</li>
@@ -547,7 +547,7 @@ Preferred days & timing: `;
                 Regardless of how you feel after your IGCSE Biology exams, focus on the opportunities ahead. Strong biology knowledge opens doors to numerous exciting career paths in healthcare, research, environmental science, and biotechnology.
               </p>
               <GuideCard className="mt-4">
-                <h4 className="font-semibold text-gray-900 mb-2">Moving Forward</h4>
+                <h3 className="font-semibold text-gray-900 mb-2">Moving Forward</h3>
                 <ul className="list-disc ml-5 space-y-1 text-sm text-gray-700">
                   <li>Use the post-exam period to explore different science programs</li>
                   <li>Consider internships or research opportunities in biology-related fields</li>

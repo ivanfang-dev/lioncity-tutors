@@ -213,7 +213,7 @@ Preferred days & timing: `;
                   {papers.map((item) => (
                     <GuideCard key={item.paper}>
                       <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 mb-2">
-                        <h4 className="font-semibold text-gray-900">{item.paper}</h4>
+                        <h3 className="font-semibold text-gray-900">{item.paper}</h3>
                         <span className="text-sm font-semibold text-primary tabular-nums">{item.stat}</span>
                       </div>
                       <p className="text-sm text-gray-700">{item.detail}</p>
@@ -233,7 +233,7 @@ Preferred days & timing: `;
                 <div className="mt-5 space-y-4">
                   {calculatorRules.map((item) => (
                     <GuideCard key={item.rule}>
-                      <h4 className="font-semibold text-gray-900 mb-1.5">{item.rule}</h4>
+                      <h3 className="font-semibold text-gray-900 mb-1.5">{item.rule}</h3>
                       <p className="text-sm text-gray-700">{item.detail}</p>
                     </GuideCard>
                   ))}
@@ -330,7 +330,7 @@ Preferred days & timing: `;
                           {index + 1}
                         </span>
                         <div>
-                          <h4 className="font-semibold text-gray-900 mb-1.5">{item.mistake}</h4>
+                          <h3 className="font-semibold text-gray-900 mb-1.5">{item.mistake}</h3>
                           <p className="text-sm text-gray-700 mb-2">{item.detail}</p>
                           <p className="text-sm text-gray-700">
                             <span className="font-semibold text-gray-900">The fix: </span>

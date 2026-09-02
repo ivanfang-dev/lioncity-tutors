@@ -137,10 +137,10 @@ export default function PSLEMath() {
                   PSLE Mathematics is set over two papers, worth 100 marks in total. Each subject is now graded by Achievement Level (AL1 to AL8), where AL1 is the top band &mdash; the aggregate score is the sum of a child&rsquo;s four subject ALs.
                 </p>
                 <GuideCard className="mt-4">
-                  <h4 className="font-semibold text-gray-900 mb-4">PSLE Maths papers breakdown</h4>
+                  <h3 className="font-semibold text-gray-900 mb-4">PSLE Maths papers breakdown</h3>
                   <div className="space-y-5">
                     <div>
-                      <h5 className="font-semibold text-gray-900">Paper 1 &mdash; 1 hour 10 minutes (no calculator)</h5>
+                      <h4 className="font-semibold text-gray-900">Paper 1 &mdash; 1 hour 10 minutes (no calculator)</h4>
                       <ul className="list-disc ml-5 mt-1.5 space-y-1 text-sm text-gray-700">
                         <li>Booklet A: multiple-choice questions</li>
                         <li>Booklet B: short-answer questions</li>
@@ -148,7 +148,7 @@ export default function PSLEMath() {
                       </ul>
                     </div>
                     <div>
-                      <h5 className="font-semibold text-gray-900">Paper 2 &mdash; 1 hour 20 minutes (calculator allowed)</h5>
+                      <h4 className="font-semibold text-gray-900">Paper 2 &mdash; 1 hour 20 minutes (calculator allowed)</h4>
                       <ul className="list-disc ml-5 mt-1.5 space-y-1 text-sm text-gray-700">
                         <li>Short-answer and longer structured questions</li>
                         <li>Rewards problem-solving, heuristics and clear working</li>
@@ -227,7 +227,7 @@ export default function PSLEMath() {
               <section id="techniques" className="scroll-mt-24">
                 <SectionHeading icon={Brain}>Study techniques that work</SectionHeading>
                 <GuideCard>
-                  <h4 className="font-semibold text-gray-900 mb-3">Habits that lift PSLE Maths marks</h4>
+                  <h3 className="font-semibold text-gray-900 mb-3">Habits that lift PSLE Maths marks</h3>
                   <div className="space-y-3 text-sm">
                     <div>
                       <p><strong className="text-gray-900">Show every step:</strong></p>
@@ -253,7 +253,7 @@ export default function PSLEMath() {
                 <SectionHeading icon={Target}>Paper-by-paper exam strategy</SectionHeading>
                 <div className="space-y-4">
                   <GuideCard>
-                    <h4 className="font-semibold text-gray-900 mb-2">Paper 1 (no calculator)</h4>
+                    <h3 className="font-semibold text-gray-900 mb-2">Paper 1 (no calculator)</h3>
                     <ul className="list-disc ml-5 space-y-1 text-sm text-gray-700">
                       <li>Clear Booklet A steadily &mdash; mark and return to any MCQ you stall on</li>
                       <li>Show working in Booklet B even for short answers</li>
@@ -263,7 +263,7 @@ export default function PSLEMath() {
                     </ul>
                   </GuideCard>
                   <GuideCard>
-                    <h4 className="font-semibold text-gray-900 mb-2">Paper 2 (calculator allowed)</h4>
+                    <h3 className="font-semibold text-gray-900 mb-2">Paper 2 (calculator allowed)</h3>
                     <ul className="list-disc ml-5 space-y-1 text-sm text-gray-700">
                       <li>Read the whole paper first and start with your surest questions</li>
                       <li>Set out working in clear, labelled steps for the long-answer marks</li>
@@ -278,7 +278,7 @@ export default function PSLEMath() {
               <section id="mistakes" className="scroll-mt-24">
                 <SectionHeading icon={TriangleAlert}>Common mistakes to avoid</SectionHeading>
                 <GuideCard>
-                  <h4 className="font-semibold text-gray-900 mb-3">Where PSLE Maths marks slip away</h4>
+                  <h3 className="font-semibold text-gray-900 mb-3">Where PSLE Maths marks slip away</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3 text-sm">
                     <div>
                       <ol className="list-decimal ml-5 space-y-1 text-gray-700">
@@ -305,7 +305,7 @@ export default function PSLEMath() {
               <section id="schedule" className="scroll-mt-24">
                 <SectionHeading icon={CalendarDays}>A realistic weekly schedule</SectionHeading>
                 <GuideCard>
-                  <h4 className="font-semibold text-gray-900 mb-3">Recommended weekly rhythm (Primary 6)</h4>
+                  <h3 className="font-semibold text-gray-900 mb-3">Recommended weekly rhythm (Primary 6)</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
                     <div>
                       <p className="font-semibold text-gray-900 mb-1.5">School days</p>
@@ -333,7 +333,7 @@ export default function PSLEMath() {
                 <SectionHeading icon={BookOpen}>Essential PSLE Maths resources</SectionHeading>
                 <div className="space-y-4">
                   <div>
-                    <h4 className="font-semibold text-gray-900 mb-1.5">Free from us</h4>
+                    <h3 className="font-semibold text-gray-900 mb-1.5">Free from us</h3>
                     <ul className="list-disc ml-5 text-sm space-y-1 text-gray-700">
                       <li>
                         <Link href="/free-notes" className="inline-flex min-h-11 items-center text-primary underline underline-offset-2">PSLE Maths revision notes</Link>
@@ -350,7 +350,7 @@ export default function PSLEMath() {
                     </ul>
                   </div>
                   <div>
-                    <h4 className="font-semibold text-gray-900 mb-1.5">Recommended series</h4>
+                    <h3 className="font-semibold text-gray-900 mb-1.5">Recommended series</h3>
                     <ul className="list-disc ml-5 text-sm space-y-1 text-gray-700">
                       <li>My Pals Are Here! Maths (Marshall Cavendish)</li>
                       <li>Shaping Maths (Marshall Cavendish)</li>
@@ -358,7 +358,7 @@ export default function PSLEMath() {
                     </ul>
                   </div>
                   <div>
-                    <h4 className="font-semibold text-gray-900 mb-1.5">Practice materials</h4>
+                    <h3 className="font-semibold text-gray-900 mb-1.5">Practice materials</h3>
                     <ul className="list-disc ml-5 text-sm space-y-1 text-gray-700">
                       <li>PSLE past papers (last 5 years)</li>
                       <li>Top-school preliminary examination papers</li>

@@ -115,7 +115,7 @@ function RequestForTutorContent(){
 
               {/* Trust Indicators */}
               <div className="bg-white rounded-xl shadow-lg p-5 sm:p-6">
-                <h3 className="text-lg font-semibold text-gray-800 mb-4">Why Choose Us?</h3>
+                <h2 className="text-lg font-semibold text-gray-800 mb-4">Why Choose Us?</h2>
                 <div className="space-y-4">
                   {[
                     { title: '100+ Successful Matches', body: 'Helped over 100 students find qualified tutors' },
@@ -130,7 +130,7 @@ function RequestForTutorContent(){
                         <Check className="h-3 w-3 text-primary" strokeWidth={2.5} />
                       </span>
                       <div>
-                        <h4 className="font-semibold text-primary">{title}</h4>
+                        <h3 className="font-semibold text-primary">{title}</h3>
                         <p className="text-sm text-text-secondary">{body}</p>
                       </div>
                     </div>
@@ -145,7 +145,7 @@ function RequestForTutorContent(){
                 <div className="flex items-start gap-3">
                   <Info className="text-primary mt-0.5 flex-shrink-0" size={20} aria-hidden="true" />
                   <div>
-                    <h4 className="font-semibold text-primary-deep mb-2">How It Works</h4>
+                    <h3 className="font-semibold text-primary-deep mb-2">How It Works</h3>
                     <ol className="text-sm text-text-secondary space-y-1 list-decimal pl-4 marker:text-primary marker:font-semibold">
                       <li>Fill out this form</li>
                       <li>We match you with suitable tutors</li>

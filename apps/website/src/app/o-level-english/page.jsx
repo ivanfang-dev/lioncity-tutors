@@ -220,10 +220,10 @@ Preferred days & timing: `;
                 Singapore&rsquo;s O Level English offers two distinct components, each testing different aspects of language proficiency and literary appreciation.
               </p>
               <GuideCard className="mt-4">
-                <h4 className="font-semibold text-gray-900 mb-4">O Level English Components Breakdown</h4>
+                <h3 className="font-semibold text-gray-900 mb-4">O Level English Components Breakdown</h3>
                 <div className="space-y-5">
                   <div>
-                    <h5 className="font-semibold text-gray-900">English Language (1184) &mdash; four papers</h5>
+                    <h4 className="font-semibold text-gray-900">English Language (1184) &mdash; four papers</h4>
                     <ul className="list-disc ml-5 mt-1.5 space-y-1 text-sm text-gray-700">
                       <li>Compulsory for all O Level students</li>
                       <li>Prerequisites for polytechnic and JC admission</li>
@@ -234,7 +234,7 @@ Preferred days & timing: `;
                     </ul>
                   </div>
                   <div>
-                    <h5 className="font-semibold text-gray-900">English Literature (2065) &mdash; Paper 1 &amp; 2</h5>
+                    <h4 className="font-semibold text-gray-900">English Literature (2065) &mdash; Paper 1 &amp; 2</h4>
                     <ul className="list-disc ml-5 mt-1.5 space-y-1 text-sm text-gray-700">
                       <li>Optional subject for higher-achieving students</li>
                       <li>Four questions in total across two sittings (3 hours 10 minutes combined)</li>
@@ -336,7 +336,7 @@ Preferred days & timing: `;
             <section id="study-techniques" className="scroll-mt-24">
               <SectionHeading icon={Brain}>O Level English Study Techniques That Work</SectionHeading>
               <GuideCard>
-                <h4 className="font-semibold text-gray-900 mb-3">Proven O Level English Study Methods</h4>
+                <h3 className="font-semibold text-gray-900 mb-3">Proven O Level English Study Methods</h3>
                 <div className="space-y-3 text-sm">
                   <div>
                     <p><strong className="text-gray-900">The Reading-Writing Connection:</strong></p>
@@ -362,7 +362,7 @@ Preferred days & timing: `;
               <SectionHeading icon={Target}>O Level English Exam Strategies</SectionHeading>
               <div className="space-y-4">
                 <GuideCard>
-                  <h4 className="font-semibold text-gray-900 mb-2">Paper 1 (Writing) Strategy</h4>
+                  <h3 className="font-semibold text-gray-900 mb-2">Paper 1 (Writing) Strategy</h3>
                   <ul className="list-disc ml-5 space-y-1 text-sm text-gray-700">
                     <li>Spend a few minutes on Editing (10 marks) before the two writing tasks</li>
                     <li>Allocate roughly 35 minutes for Situational Writing and 55 minutes for Continuous Writing</li>
@@ -373,7 +373,7 @@ Preferred days & timing: `;
                 </GuideCard>
 
                 <GuideCard>
-                  <h4 className="font-semibold text-gray-900 mb-2">Paper 2 (Comprehension) Strategy</h4>
+                  <h3 className="font-semibold text-gray-900 mb-2">Paper 2 (Comprehension) Strategy</h3>
                   <ul className="list-disc ml-5 space-y-1 text-sm text-gray-700">
                     <li>Read questions first to understand what to look for</li>
                     <li>Skim the passage for main ideas before detailed reading</li>
@@ -384,7 +384,7 @@ Preferred days & timing: `;
                 </GuideCard>
 
                 <GuideCard>
-                  <h4 className="font-semibold text-gray-900 mb-2">Literature Paper Strategy</h4>
+                  <h3 className="font-semibold text-gray-900 mb-2">Literature Paper Strategy</h3>
                   <ul className="list-disc ml-5 space-y-1 text-sm text-gray-700">
                     <li>Choose questions that play to your strengths</li>
                     <li>Always support arguments with textual evidence</li>
@@ -412,7 +412,7 @@ Preferred days & timing: `;
                         {index + 1}
                       </span>
                       <div>
-                        <h4 className="font-semibold text-gray-900 mb-1.5">{item.mistake}</h4>
+                        <h3 className="font-semibold text-gray-900 mb-1.5">{item.mistake}</h3>
                         <p className="text-sm text-gray-700 mb-2">{item.detail}</p>
                         <p className="text-sm text-gray-700">
                           <span className="font-semibold text-gray-900">The fix: </span>
@@ -428,7 +428,7 @@ Preferred days & timing: `;
             <section id="schedule" className="scroll-mt-24">
               <SectionHeading icon={CalendarDays}>Creating Your O Level English Study Schedule</SectionHeading>
               <GuideCard>
-                <h4 className="font-semibold text-gray-900 mb-3">Recommended Weekly Schedule (Secondary 4)</h4>
+                <h3 className="font-semibold text-gray-900 mb-3">Recommended Weekly Schedule (Secondary 4)</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
                   <div>
                     <p className="font-semibold text-gray-900 mb-1.5">School Days (Language)</p>
@@ -465,7 +465,7 @@ Preferred days & timing: `;
               <SectionHeading icon={BookOpen}>Essential O Level English Resources</SectionHeading>
               <div className="space-y-4">
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-1.5">Free from us</h4>
+                  <h3 className="font-semibold text-gray-900 mb-1.5">Free from us</h3>
                   <ul className="list-disc ml-5 text-sm space-y-1 text-gray-700">
                     <li>
                       <Link href="/free-notes" className="inline-flex min-h-11 items-center text-primary underline underline-offset-2">O-Level English Language study guide</Link>
@@ -482,7 +482,7 @@ Preferred days & timing: `;
                   </ul>
                 </div>
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-1.5">Recommended Textbooks</h4>
+                  <h3 className="font-semibold text-gray-900 mb-1.5">Recommended Textbooks</h3>
                   <ul className="list-disc ml-5 text-sm space-y-1 text-gray-700">
                     <li>O Level English Language (Marshall Cavendish) &mdash; comprehensive coverage</li>
                     <li>English Literature Guide (Cambridge) &mdash; literature focused</li>
@@ -490,7 +490,7 @@ Preferred days & timing: `;
                   </ul>
                 </div>
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-1.5">Practice Materials</h4>
+                  <h3 className="font-semibold text-gray-900 mb-1.5">Practice Materials</h3>
                   <ul className="list-disc ml-5 text-sm space-y-1 text-gray-700">
                     <li>GCE O Level past papers (last 10 years minimum)</li>
                     <li>School preliminary examination papers</li>
@@ -499,7 +499,7 @@ Preferred days & timing: `;
                   </ul>
                 </div>
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-1.5">Reading Materials</h4>
+                  <h3 className="font-semibold text-gray-900 mb-1.5">Reading Materials</h3>
                   <ul className="list-disc ml-5 text-sm space-y-1 text-gray-700">
                     <li>Quality newspapers and magazines</li>
                     <li>Classic and contemporary literature</li>
@@ -528,7 +528,7 @@ Preferred days & timing: `;
             <section id="pathways" className="scroll-mt-24">
               <SectionHeading icon={GraduationCap}>Post-O Level English Pathways</SectionHeading>
               <GuideCard>
-                <h4 className="font-semibold text-gray-900 mb-3">Your O Level English Results Open These Doors</h4>
+                <h3 className="font-semibold text-gray-900 mb-3">Your O Level English Results Open These Doors</h3>
                 <div className="space-y-4 text-sm">
                   <div>
                     <strong className="text-gray-900">A1-B3 in English Language:</strong>
@@ -569,7 +569,7 @@ Preferred days & timing: `;
             <section id="final-months" className="scroll-mt-24">
               <SectionHeading icon={Hourglass}>Final Month O Level English Preparation</SectionHeading>
               <GuideCard>
-                <h4 className="font-semibold text-gray-900 mb-3">Last 30 Days Strategy</h4>
+                <h3 className="font-semibold text-gray-900 mb-3">Last 30 Days Strategy</h3>
                 <div className="space-y-4 text-sm">
                   <div>
                     <strong className="text-gray-900">Week 1–2: Intensive Practice</strong>

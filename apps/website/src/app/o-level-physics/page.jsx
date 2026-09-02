@@ -229,10 +229,10 @@ Preferred days & timing: `;
                 Singapore&rsquo;s O Level Physics (syllabus 6091) is designed to develop students&rsquo; understanding of physics principles and their applications in everyday life and technology. Combined Science (Physics) is a different subject &mdash; 5086 or 5087 &mdash; with its own papers and weightings.
               </p>
               <GuideCard className="mt-4">
-                <h4 className="font-semibold text-gray-900 mb-4">O Level Physics Papers Breakdown</h4>
+                <h3 className="font-semibold text-gray-900 mb-4">O Level Physics Papers Breakdown</h3>
                 <div className="space-y-5">
                   <div>
-                    <h5 className="font-semibold text-gray-900">Paper 1: Multiple Choice</h5>
+                    <h4 className="font-semibold text-gray-900">Paper 1: Multiple Choice</h4>
                     <ul className="list-disc ml-5 mt-1.5 space-y-1 text-sm text-gray-700">
                       <li>40 compulsory items, 40 marks</li>
                       <li>Duration: 1 hour</li>
@@ -240,7 +240,7 @@ Preferred days & timing: `;
                     </ul>
                   </div>
                   <div>
-                    <h5 className="font-semibold text-gray-900">Paper 2: Structured and Free Response</h5>
+                    <h4 className="font-semibold text-gray-900">Paper 2: Structured and Free Response</h4>
                     <ul className="list-disc ml-5 mt-1.5 space-y-1 text-sm text-gray-700">
                       <li>80 marks, 1 hour 45 minutes, 50% of the grade</li>
                       <li>Section A: 70 marks of compulsory structured questions; the last two share 20 marks, one a data-based question worth 8–12</li>
@@ -248,7 +248,7 @@ Preferred days & timing: `;
                     </ul>
                   </div>
                   <div>
-                    <h5 className="font-semibold text-gray-900">Paper 3: Practical</h5>
+                    <h4 className="font-semibold text-gray-900">Paper 3: Practical</h4>
                     <ul className="list-disc ml-5 mt-1.5 space-y-1 text-sm text-gray-700">
                       <li>40 marks, 1 hour 50 minutes, 20% of the grade</li>
                       <li>Section A: 20 marks, 1–2 experiments in 55 minutes</li>
@@ -384,7 +384,7 @@ Preferred days & timing: `;
             <section id="study-techniques" className="scroll-mt-24">
               <SectionHeading icon={Brain}>O Level Physics Study Techniques That Work</SectionHeading>
               <GuideCard>
-                <h4 className="font-semibold text-gray-900 mb-3">Proven O Level Physics Study Methods</h4>
+                <h3 className="font-semibold text-gray-900 mb-3">Proven O Level Physics Study Methods</h3>
                 <div className="space-y-3 text-sm">
                   <div>
                     <p><strong className="text-gray-900">The Problem-Solving Method:</strong></p>
@@ -410,7 +410,7 @@ Preferred days & timing: `;
               <SectionHeading icon={Target}>O Level Physics Exam Strategies</SectionHeading>
               <div className="space-y-4">
                 <GuideCard>
-                  <h4 className="font-semibold text-gray-900 mb-2">Paper 1 (MCQ) Strategy</h4>
+                  <h3 className="font-semibold text-gray-900 mb-2">Paper 1 (MCQ) Strategy</h3>
                   <ul className="list-disc ml-5 space-y-1 text-sm text-gray-700">
                     <li>Allocate 1.5 minutes per question maximum</li>
                     <li>Use the elimination method for difficult questions</li>
@@ -421,7 +421,7 @@ Preferred days & timing: `;
                 </GuideCard>
 
                 <GuideCard>
-                  <h4 className="font-semibold text-gray-900 mb-2">Paper 2 (Structured &amp; Free Response) Strategy</h4>
+                  <h3 className="font-semibold text-gray-900 mb-2">Paper 2 (Structured &amp; Free Response) Strategy</h3>
                   <ul className="list-disc ml-5 space-y-1 text-sm text-gray-700">
                     <li>Section A is compulsory (70 marks); one of the last two questions is data-based (8–12 marks)</li>
                     <li>Read both Section B questions fully before choosing the 10-mark one</li>
@@ -432,7 +432,7 @@ Preferred days & timing: `;
                 </GuideCard>
 
                 <GuideCard>
-                  <h4 className="font-semibold text-gray-900 mb-2">Paper 3 (Practical) Strategy</h4>
+                  <h3 className="font-semibold text-gray-900 mb-2">Paper 3 (Practical) Strategy</h3>
                   <ul className="list-disc ml-5 space-y-1 text-sm text-gray-700">
                     <li>Read instructions carefully before starting</li>
                     <li>Record all measurements with proper units</li>
@@ -460,7 +460,7 @@ Preferred days & timing: `;
                         {index + 1}
                       </span>
                       <div>
-                        <h4 className="font-semibold text-gray-900 mb-1.5">{item.mistake}</h4>
+                        <h3 className="font-semibold text-gray-900 mb-1.5">{item.mistake}</h3>
                         <p className="text-sm text-gray-700 mb-2">{item.detail}</p>
                         <p className="text-sm text-gray-700">
                           <span className="font-semibold text-gray-900">The fix: </span>
@@ -476,7 +476,7 @@ Preferred days & timing: `;
             <section id="schedule" className="scroll-mt-24">
               <SectionHeading icon={CalendarDays}>Creating Your O Level Physics Study Schedule</SectionHeading>
               <GuideCard>
-                <h4 className="font-semibold text-gray-900 mb-3">Recommended Weekly Schedule (Secondary 4)</h4>
+                <h3 className="font-semibold text-gray-900 mb-3">Recommended Weekly Schedule (Secondary 4)</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
                   <div>
                     <p className="font-semibold text-gray-900 mb-1.5">School Days</p>
@@ -506,7 +506,7 @@ Preferred days & timing: `;
               <SectionHeading icon={BookOpen}>Essential O Level Physics Resources</SectionHeading>
               <div className="space-y-4">
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-1.5">Free from us</h4>
+                  <h3 className="font-semibold text-gray-900 mb-1.5">Free from us</h3>
                   <ul className="list-disc ml-5 text-sm space-y-1 text-gray-700">
                     <li>
                       <Link href="/free-notes" className="inline-flex min-h-11 items-center text-primary underline underline-offset-2">O-Level Physics study notes</Link>
@@ -523,7 +523,7 @@ Preferred days & timing: `;
                   </ul>
                 </div>
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-1.5">Recommended Textbooks</h4>
+                  <h3 className="font-semibold text-gray-900 mb-1.5">Recommended Textbooks</h3>
                   <ul className="list-disc ml-5 text-sm space-y-1 text-gray-700">
                     <li>Physics Matters (Marshall Cavendish) &mdash; comprehensive coverage</li>
                     <li>O Level Physics Guide (Shinglee) &mdash; exam-focused</li>
@@ -531,7 +531,7 @@ Preferred days & timing: `;
                   </ul>
                 </div>
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-1.5">Practice Materials</h4>
+                  <h3 className="font-semibold text-gray-900 mb-1.5">Practice Materials</h3>
                   <ul className="list-disc ml-5 text-sm space-y-1 text-gray-700">
                     <li>GCE O Level past papers (last 10 years minimum)</li>
                     <li>School preliminary examination papers</li>
@@ -540,7 +540,7 @@ Preferred days & timing: `;
                   </ul>
                 </div>
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-1.5">Digital Tools</h4>
+                  <h3 className="font-semibold text-gray-900 mb-1.5">Digital Tools</h3>
                   <ul className="list-disc ml-5 text-sm space-y-1 text-gray-700">
                     <li>PhET simulations for visualizing physics concepts</li>
                     <li>Physics problem-solving apps</li>
@@ -569,7 +569,7 @@ Preferred days & timing: `;
             <section id="pathways" className="scroll-mt-24">
               <SectionHeading icon={GraduationCap}>Post-O Level Physics Pathways</SectionHeading>
               <GuideCard>
-                <h4 className="font-semibold text-gray-900 mb-3">Your O Level Physics Results Open These Doors</h4>
+                <h3 className="font-semibold text-gray-900 mb-3">Your O Level Physics Results Open These Doors</h3>
                 <div className="space-y-4 text-sm">
                   <div>
                     <strong className="text-gray-900">A1-B3 grades in O Level Physics:</strong>
@@ -610,7 +610,7 @@ Preferred days & timing: `;
             <section id="final-months" className="scroll-mt-24">
               <SectionHeading icon={Hourglass}>Final Month O Level Physics Preparation</SectionHeading>
               <GuideCard>
-                <h4 className="font-semibold text-gray-900 mb-3">Last 30 Days Strategy</h4>
+                <h3 className="font-semibold text-gray-900 mb-3">Last 30 Days Strategy</h3>
                 <div className="space-y-4 text-sm">
                   <div>
                     <strong className="text-gray-900">Week 1–2: Intensive Practice</strong>
@@ -644,7 +644,7 @@ Preferred days & timing: `;
               <SectionHeading icon={HeartHandshake}>Mental Preparation and Exam Day Success</SectionHeading>
               <div className="space-y-4">
                 <GuideCard>
-                  <h4 className="font-semibold text-gray-900 mb-2">Stress Management Techniques</h4>
+                  <h3 className="font-semibold text-gray-900 mb-2">Stress Management Techniques</h3>
                   <ul className="list-disc ml-5 space-y-1 text-sm text-gray-700">
                     <li>Practice deep breathing exercises before and during exams</li>
                     <li>Use positive visualization &mdash; imagine yourself succeeding</li>
@@ -655,7 +655,7 @@ Preferred days & timing: `;
                 </GuideCard>
 
                 <GuideCard>
-                  <h4 className="font-semibold text-gray-900 mb-2">Exam Day Protocol</h4>
+                  <h3 className="font-semibold text-gray-900 mb-2">Exam Day Protocol</h3>
                   <ul className="list-disc ml-5 space-y-1 text-sm text-gray-700">
                     <li>Arrive 30 minutes early with all required materials</li>
                     <li>Bring multiple pens, pencils, a calculator, and your data booklet</li>

@@ -320,10 +320,10 @@ Preferred days & timing: `;
                         <span className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-[#0474BA]/10 text-sm font-bold tabular-nums text-[#0474BA]">
                           {index + 1}
                         </span>
-                        <h4 className="font-semibold text-gray-900">
+                        <h3 className="font-semibold text-gray-900">
                           {row.part}
                           <span className="ml-2 font-normal text-sm text-gray-500">{row.english}</span>
-                        </h4>
+                        </h3>
                       </div>
                       <p className="mt-2 pl-10 text-pretty">{row.detail}</p>
                     </GuideCard>
@@ -339,7 +339,7 @@ Preferred days & timing: `;
                 </p>
                 <div className="mt-6 grid gap-5 sm:grid-cols-2">
                   <GuideCard>
-                    <h4 className="font-semibold text-gray-900">内容 &middot; 10 marks</h4>
+                    <h3 className="font-semibold text-gray-900">内容 &middot; 10 marks</h3>
                     <p className="mt-2 text-pretty">
                       The top band asks for 内容充实，切合题意 &mdash; substantial content, on the point of
                       the question &mdash; and 内容有层次，说明详尽、有条理: layered, thoroughly explained,
@@ -348,7 +348,7 @@ Preferred days & timing: `;
                     </p>
                   </GuideCard>
                   <GuideCard>
-                    <h4 className="font-semibold text-gray-900">语文与结构 &middot; 10 marks</h4>
+                    <h3 className="font-semibold text-gray-900">语文与结构 &middot; 10 marks</h3>
                     <p className="mt-2 text-pretty">
                       Sentence fluency, characters, vocabulary, grammar and punctuation &ldquo;almost all
                       correct, and any errors minor&rdquo;; expression that is clear; and 组织得当，衔接紧凑，
@@ -371,7 +371,7 @@ Preferred days & timing: `;
                 <div className="mt-2 space-y-4">
                   {EMAIL_MISTAKES.map((item) => (
                     <GuideCard key={item.title}>
-                      <h4 className="font-semibold text-gray-900">{item.title}</h4>
+                      <h3 className="font-semibold text-gray-900">{item.title}</h3>
                       <p className="mt-2 text-pretty">{item.body}</p>
                     </GuideCard>
                   ))}
@@ -450,7 +450,7 @@ Preferred days & timing: `;
                 <div className="mt-4 space-y-4">
                   {COMPREHENSION_MOVES.map((move) => (
                     <GuideCard key={move.title}>
-                      <h4 className="font-semibold text-gray-900">{move.title}</h4>
+                      <h3 className="font-semibold text-gray-900">{move.title}</h3>
                       <p className="mt-2 text-pretty">{move.body}</p>
                     </GuideCard>
                   ))}
@@ -479,10 +479,10 @@ Preferred days & timing: `;
                 </p>
                 <div className="mt-6 grid gap-5 sm:grid-cols-2">
                   <GuideCard>
-                    <h4 className="font-semibold text-gray-900">
+                    <h3 className="font-semibold text-gray-900">
                       朗读短文
                       <span className="ml-2 font-normal text-sm text-gray-500 tabular-nums">10 marks</span>
-                    </h4>
+                    </h3>
                     <p className="mt-2 text-pretty">
                       Graded on two things only: 语音和清晰度 (accurate, clear pronunciation) and
                       语速、语调和流利度 &mdash; pace with a sense of rhythm, natural intonation
@@ -492,10 +492,10 @@ Preferred days & timing: `;
                     </p>
                   </GuideCard>
                   <GuideCard>
-                    <h4 className="font-semibold text-gray-900">
+                    <h3 className="font-semibold text-gray-900">
                       会话
                       <span className="ml-2 font-normal text-sm text-gray-500 tabular-nums">40 marks</span>
-                    </h4>
+                    </h3>
                     <p className="mt-2 text-pretty">
                       Four times the weight of the reading, split into 个人意见和内容的组织 (20) and
                       语文表达和流利度 (20). The examiner is assessing whether you can hold a view and

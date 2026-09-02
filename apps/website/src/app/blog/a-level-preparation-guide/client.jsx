@@ -445,10 +445,10 @@ Preferred days & timing: `;
                 <Reveal className="grid gap-6 md:grid-cols-2">
                   {subjectData.map((subject) => (
                     <GuideCard key={subject.name}>
-                      <h4 className="mb-3 flex items-center gap-2 text-base font-semibold text-gray-900">
+                      <h3 className="mb-3 flex items-center gap-2 text-base font-semibold text-gray-900">
                         <span className="text-xl" aria-hidden="true">{subject.icon}</span>
                         {subject.name}
-                      </h4>
+                      </h3>
                       <div className="space-y-3">
                         {subject.tips.map((tip) => (
                           <div key={tip.title}>
@@ -465,7 +465,7 @@ Preferred days & timing: `;
               <section id="techniques" className="scroll-mt-24">
                 <SectionHeading icon={Lightbulb}>Study Techniques That Work</SectionHeading>
                 <GuideCard>
-                  <h4 className="mb-3 font-semibold text-gray-900">Proven Methods for Deeper Learning</h4>
+                  <h3 className="mb-3 font-semibold text-gray-900">Proven Methods for Deeper Learning</h3>
                   <div className="space-y-3 text-sm">
                     {studyTechniques.map((technique) => (
                       <div key={technique.title}>
@@ -482,7 +482,7 @@ Preferred days & timing: `;
                 <div className="space-y-4">
                   {examStrategyPhases.map((phase) => (
                     <GuideCard key={phase.title}>
-                      <h4 className="mb-2 font-semibold text-gray-900">{phase.title}</h4>
+                      <h3 className="mb-2 font-semibold text-gray-900">{phase.title}</h3>
                       <ul className="ml-5 list-disc space-y-1 text-sm text-gray-700">
                         {phase.points.map((point) => (
                           <li key={point}>{point}</li>
@@ -498,7 +498,7 @@ Preferred days & timing: `;
                 <Reveal className="grid gap-6 md:grid-cols-2">
                   {mistakes.map((mistake) => (
                     <div key={mistake.title} className="rounded-xl border border-red-100 bg-red-50 p-5">
-                      <h4 className="mb-2 font-semibold text-red-800">{mistake.title}</h4>
+                      <h3 className="mb-2 font-semibold text-red-800">{mistake.title}</h3>
                       <p className="mb-3 text-sm text-gray-700">{mistake.description}</p>
                       <div className="rounded-lg border border-green-200 bg-green-50 p-3">
                         <p className="text-sm text-green-900"><strong className="font-semibold">The fix:</strong> {mistake.solution}</p>
@@ -511,7 +511,7 @@ Preferred days & timing: `;
               <section id="study-plan" className="scroll-mt-24">
                 <SectionHeading icon={Clock}>Creating Your Weekly Study Plan</SectionHeading>
                 <GuideCard>
-                  <h4 className="mb-3 font-semibold text-gray-900">A Starting Template — Adapt It to Your CCA and Energy Levels</h4>
+                  <h3 className="mb-3 font-semibold text-gray-900">A Starting Template — Adapt It to Your CCA and Energy Levels</h3>
                   <div className="grid gap-6 text-sm md:grid-cols-2">
                     <div>
                       <p className="mb-1.5 font-semibold text-gray-900">Weekdays</p>
@@ -538,7 +538,7 @@ Preferred days & timing: `;
                 <div className="space-y-4">
                   {resourceGroups.map((group) => (
                     <div key={group.title}>
-                      <h4 className="mb-1.5 font-semibold text-gray-900">{group.title}</h4>
+                      <h3 className="mb-1.5 font-semibold text-gray-900">{group.title}</h3>
                       <ul className="ml-5 list-disc space-y-1 text-sm text-gray-700">
                         {group.items.map((item) => (
                           <li key={item}>{item}</li>
@@ -558,7 +558,7 @@ Preferred days & timing: `;
                       <div className={`mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full ${pillar.iconClass}`}>
                         <pillar.icon className="h-6 w-6" strokeWidth={ICON_STROKE} aria-hidden="true" />
                       </div>
-                      <h4 className="mb-1.5 font-semibold text-gray-900">{pillar.title}</h4>
+                      <h3 className="mb-1.5 font-semibold text-gray-900">{pillar.title}</h3>
                       <p className="text-sm text-gray-700">{pillar.description}</p>
                     </div>
                   ))}
@@ -574,7 +574,7 @@ Preferred days & timing: `;
                       <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
                         <path.icon className="h-5 w-5" strokeWidth={ICON_STROKE} aria-hidden="true" />
                       </div>
-                      <h4 className="mb-2 font-semibold text-gray-900">{path.title}</h4>
+                      <h3 className="mb-2 font-semibold text-gray-900">{path.title}</h3>
                       <p className="text-sm text-gray-700">{path.description}</p>
                     </GuideCard>
                   ))}
@@ -596,7 +596,7 @@ Preferred days & timing: `;
               <section id="countdown" className="scroll-mt-24">
                 <SectionHeading icon={Target}>The Final 60-Day Countdown</SectionHeading>
                 <GuideCard>
-                  <h4 className="mb-3 font-semibold text-gray-900">An Intensive Strategy for the Home Stretch</h4>
+                  <h3 className="mb-3 font-semibold text-gray-900">An Intensive Strategy for the Home Stretch</h3>
                   <div className="space-y-4 text-sm">
                     {countdownPhases.map((phase) => (
                       <div key={phase.range}>

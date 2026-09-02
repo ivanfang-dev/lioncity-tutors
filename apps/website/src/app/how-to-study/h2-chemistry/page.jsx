@@ -192,7 +192,7 @@ Preferred days & timing: `;
                   {papers.map((item) => (
                     <GuideCard key={item.paper}>
                       <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 mb-2">
-                        <h4 className="font-semibold text-gray-900">{item.paper}</h4>
+                        <h3 className="font-semibold text-gray-900">{item.paper}</h3>
                         <span className="text-sm font-semibold text-primary tabular-nums">{item.stat}</span>
                       </div>
                       <p className="text-sm text-gray-700">{item.detail}</p>
@@ -242,13 +242,13 @@ Preferred days & timing: `;
                   Two different reference documents appear in this subject, and they appear in different papers. Knowing which is which decides what is worth memorising.
                 </p>
                 <GuideCard className="mt-5">
-                  <h4 className="font-semibold text-gray-900 mb-1">Theory papers — Papers 1, 2 and 3</h4>
+                  <h3 className="font-semibold text-gray-900 mb-1">Theory papers — Papers 1, 2 and 3</h3>
                   <p className="text-sm text-gray-700">
                     A <strong>Data Booklet</strong>, including the Periodic Table. The syllabus itself points to it for things like the factors influencing ionisation energies, so questions are written on the assumption you will consult it.
                   </p>
                 </GuideCard>
                 <GuideCard className="mt-4">
-                  <h4 className="font-semibold text-gray-900 mb-1">Practical — Paper 4</h4>
+                  <h3 className="font-semibold text-gray-900 mb-1">Practical — Paper 4</h3>
                   <p className="text-sm text-gray-700">
                     The <strong>Qualitative Analysis Notes</strong> are made available. The Data Booklet belongs to the theory papers; do not plan the practical around it.
                   </p>
@@ -295,7 +295,7 @@ Preferred days & timing: `;
                           {index + 1}
                         </span>
                         <div>
-                          <h4 className="font-semibold text-gray-900 mb-1.5">{item.mistake}</h4>
+                          <h3 className="font-semibold text-gray-900 mb-1.5">{item.mistake}</h3>
                           <p className="text-sm text-gray-700 mb-2">{item.detail}</p>
                           <p className="text-sm text-gray-700">
                             <span className="font-semibold text-gray-900">The fix: </span>
