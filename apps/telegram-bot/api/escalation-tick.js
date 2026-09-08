@@ -18,7 +18,6 @@ import { notifyOwner, opsButtonRow } from '../utils/ownerAlert.js';
 import { formatAssignmentForChannel } from '../utils/channelFormat.js';
 import { escapeMd } from '../utils/markdown.js';
 import { shortlistDecided, shortlistedContacts } from '../../../packages/shared/utils/outreachState.js';
-import { recordParentReject, resumeOutreach } from '../utils/parentOutcome.js';
 
 // Give the background sends (which run after the response) room to finish.
 export const maxDuration = 60;
@@ -368,9 +367,10 @@ async function releaseHoldingShortlists(now) {
 }
 
 // Ping the owner about a parent who's gone quiet on a released shortlist: a nudge (24h) carries
-// a drafted reminder behind a wa.me button, a flag (48h) just marks it for manual follow-up.
+// a drafted reminder behind a wa.me button, a flag (48h) marks it for manual follow-up and offers
+// a fresh search behind a button (never automatically — see nudgeSilentParents).
 // Both re-show the outcome-capture buttons so the owner can still record the result from here.
-async function alertOwnerParentSilent(assignment, kind, { repitch = true } = {}) {
+async function alertOwnerParentSilent(assignment, kind, { canSearch = false } = {}) {
   const shortlisted = shortlistedContacts(assignment)
     .map(c => ({ tutorId: c.tutorId, tutorName: c.tutorName, shortlistRank: c.shortlistRank }));
 
@@ -384,14 +384,15 @@ async function alertOwnerParentSilent(assignment, kind, { repitch = true } = {})
       if (btn) rows.push([btn]);
       else text += `\n\n📋 Open [WhatsApp](${waMeLink(assignment.parentContact)}) with ${assignment.parentContact} and paste:\n\n${draft}`;
     }
-  } else if (repitch) {
+  } else if (canSearch) {
+    // The shortlist stays exactly as sent. This is the last automatic word on the assignment —
+    // no further nagging, and no tutor hears anything unless the owner taps below.
     text =
-      `🚩 *Parent silent ~48h* on *${escapeMd(assignment.title)}* — treating it as a pass and searching again.\n` +
-      `Fresh tutors are being messaged now; you'll get a new shortlist when enough say yes.\n` +
-      `The current profiles still count — record a pick below if the parent comes back.`;
+      `🚩 *Parent silent ~48h* on *${escapeMd(assignment.title)}* — nothing recorded yet.\n` +
+      `Keeping the shortlist as sent; no tutors will be messaged unless you ask.\n` +
+      `Record the outcome below, or search for new tutors if the parent has gone cold.`;
+    rows.push([{ text: '🔄 Search for new tutors', callback_data: `searchmore_${assignment._id}` }]);
   } else {
-    // Nothing new to offer, so the shortlist stays exactly as sent. This is the last word on the
-    // assignment — no further nagging, and no follow-up "ran out of tutors" a minute later.
     text =
       `🚩 *Parent silent ~48h* on *${escapeMd(assignment.title)}* — and there are no fresh tutors left to search.\n` +
       `Keeping the shortlist as sent; nothing more will be messaged automatically.\n` +
@@ -421,25 +422,17 @@ async function nudgeSilentParents(now) {
     const action = parentSilenceAction(assignment, now);
     if (!action) continue;
     try {
-      // A parent who never answered is a soft pass: retire this shortlist and go find new tutors,
-      // because a fresh name is a reason to reply and a re-pitch of the same three is not. That
-      // only holds if there ARE fresh names — with the pool dry, rejecting strips the only tutors
-      // we have, the resumed wave immediately gives up, and the owner gets "ran out of tutors"
-      // seconds later on an assignment whose real problem is that nobody has replied to them.
-      const repitch = action === 'flag' ? await hasFreshTutors(assignment) : false;
+      // The flag used to treat silence as a pass: reject the shortlist and start new waves. But
+      // silence here means "no outcome was tapped", not "the parent said no" — the owner chases
+      // parents over WhatsApp directly and ignores these pings — so it spent real outreach on an
+      // inference. The flag now only offers the search; nothing is messaged until it's asked for,
+      // and it's only offered when there's actually someone new to find.
+      const canSearch = action === 'flag' ? await hasFreshTutors(assignment) : false;
       // Record the gate FIRST so a slow owner-alert can't cause a double-nudge on the next tick.
       const field = action === 'nudge' ? 'outreach.parentNudgedAt' : 'outreach.parentSilenceEscalatedAt';
       await Assignment.updateOne({ _id: assignment._id }, { $set: { [field]: now } });
-      // Alert before the reject so the owner reads it against the shortlist they were sent.
-      await alertOwnerParentSilent(assignment, action, { repitch });
-      if (repitch) {
-        const res = await recordParentReject({ assignmentId: assignment._id, reason: 'silence' });
-        if (res.ok) {
-          await resumeOutreach(res.assignment, { botUsername: BOT_USERNAME })
-            .catch(err => console.error(`Silence resume wave failed for ${assignment._id}:`, err.message));
-        }
-      }
-      console.log(`Parent-silence ${action} for ${assignment._id}${action === 'flag' && !repitch ? ' (holding shortlist — no fresh tutors)' : ''}`);
+      await alertOwnerParentSilent(assignment, action, { canSearch });
+      console.log(`Parent-silence ${action} for ${assignment._id}${action === 'flag' ? ` (shortlist held, search ${canSearch ? 'offered' : 'unavailable'})` : ''}`);
     } catch (err) {
       console.error(`Parent silence follow-up failed for ${assignment._id}:`, err.message);
     }

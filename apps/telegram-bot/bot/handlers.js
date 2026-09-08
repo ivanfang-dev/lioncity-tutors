@@ -3376,6 +3376,44 @@ async function handleCallbackQuery(
     // Reject those tutors (they stop counting toward the interested target via
     // viableInterestedCount, and stay in contactedTutorIds so they're never re-messaged), reset
     // the outreach clock, and fire a fresh wave — resuming the wave engine until new tutors say Yes.
+    // The 48h silence flag offers this instead of searching on its own: the owner's silence means
+    // he hasn't tapped anything, not that the parent passed, so the shortlist is only given up
+    // when he says so. Records reason 'silence' (there's no reason to ask for — the parent never
+    // answered) through the same recorder the reject buttons use, then fires one wave.
+    if (data.startsWith('searchmore_')) {
+      if (!isAdmin(userId, ADMIN_USERS)) {
+        return await ack({ text: 'Not authorized.' });
+      }
+      const assignmentId = data.replace('searchmore_', '');
+      const recorded = await recordParentReject({ assignmentId, reason: 'silence' });
+      if (!recorded.ok) {
+        return await ack({
+          text: recorded.error === 'assignment_not_found' ? 'Assignment not found.' : 'Something went wrong — try again.'
+        });
+      }
+      const { assignment, rejectedCount } = recorded;
+      await ack({ text: '🔄 Finding more tutors…' });
+      waitUntil((async () => {
+        try {
+          const result = await resumeOutreach(assignment, { botUsername: BOT_USERNAME });
+          if (result.exhausted) {
+            await safeSend(bot, chatId,
+              `📭 *No fresh matching tutors left* for *${escapeMd(assignment.title)}* — you've contacted everyone in the pool. You'll need to follow up manually.`,
+              { parse_mode: 'Markdown' });
+          } else {
+            await safeSend(bot, chatId,
+              `🔄 *Searching again* for *${escapeMd(assignment.title)}* — messaging fresh tutors` +
+              (rejectedCount ? ` (the ${rejectedCount} already shown to the parent ${rejectedCount === 1 ? 'is' : 'are'} excluded).` : '.'),
+              { parse_mode: 'Markdown' });
+          }
+        } catch (err) {
+          console.error('Silence search-again escalation failed:', err.message);
+          await safeSend(bot, chatId, '❌ Something went wrong resuming outreach — try again.');
+        }
+      })());
+      return;
+    }
+
     if (data.startsWith('findmore_')) {
       if (!isAdmin(userId, ADMIN_USERS)) {
         return await ack({ text: 'Not authorized.' });
