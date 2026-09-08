@@ -7,6 +7,7 @@ import {
   MIN_PICKED_SUBJECTS,
   buildAssignmentDrafts,
   siblingTitle,
+  titleMismatchWarning,
   subjectModeKeyboard,
   subjectModePrompt,
 } from './assignmentSubjects.js';
@@ -254,5 +255,32 @@ describe('siblingTitle', () => {
 
   test('tidies up the whitespace it leaves behind', () => {
     expect(siblingTitle('P4  Maths  and  Science', 'Science', both)).toBe('P4 Science');
+  });
+});
+
+describe('titleMismatchWarning', () => {
+  const both = ['Mathematics', 'Science'];
+
+  test('says nothing when the title names every picked subject', () => {
+    expect(titleMismatchWarning('P4 Maths and Science', both)).toBeNull();
+    expect(titleMismatchWarning('P4 Math & Sci at Bishan', both)).toBeNull();
+  });
+
+  test('names both sides when the title covers only some of the picks', () => {
+    const warning = titleMismatchWarning('P4 Maths tuition', both);
+    expect(warning).toContain('Maths');
+    expect(warning).toContain('Science');
+  });
+
+  test('flags a title that names none of them', () => {
+    expect(titleMismatchWarning('P4 tuition at Bishan', both)).toContain('Mathematics');
+  });
+
+  test('a subject the title names but you did not pick still counts as naming none', () => {
+    expect(titleMismatchWarning('P4 Chinese tuition', both)).not.toBeNull();
+  });
+
+  test('says nothing for an ordinary single-subject assignment', () => {
+    expect(titleMismatchWarning('Sec 3 Maths', [])).toBeNull();
   });
 });

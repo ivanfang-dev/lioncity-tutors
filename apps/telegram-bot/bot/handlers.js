@@ -1,7 +1,7 @@
 import { EDUCATION_LEVELS, getSubjectsForLevel, RATE_MAPPINGS, LEVEL_SUBJECT_MAPPINGS } from '../../../packages/shared/index.js';
 import {
   toggleSubjectPick, buildSubjectPickerKeyboard, subjectPickerPrompt, formatSubject,
-  subjectModeKeyboard, subjectModePrompt, buildAssignmentDrafts,
+  subjectModeKeyboard, subjectModePrompt, buildAssignmentDrafts, titleMismatchWarning,
   MIN_PICKED_SUBJECTS,
 } from '../utils/assignmentSubjects.js';
 import { generatePhoneVariations } from '../../../packages/shared/utils/phoneUtils.js';
@@ -1455,7 +1455,10 @@ async function handleAssignmentStep(bot, chatId, text, userSessions, Assignment)
         const heading = groupId
           ? `📋 *Assignment Preview* — ${savedDrafts.length} separate assignments`
           : '📋 *Assignment Preview*';
-        await safeSend(bot, chatId, `${heading}\n\n${confirmationMsg}\n\n✅ *Ready to post?*`, {
+        // Surfaced, not enforced: a short title is legitimate, a contradicting one usually isn't.
+        const mismatch = titleMismatchWarning(assignmentData.title, assignmentData.subjects || []);
+        const header = mismatch ? `${mismatch}\n\n${heading}` : heading;
+        await safeSend(bot, chatId, `${header}\n\n${confirmationMsg}\n\n✅ *Ready to post?*`, {
           parse_mode: 'Markdown',
           reply_markup: {
             inline_keyboard: [

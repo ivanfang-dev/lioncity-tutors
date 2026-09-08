@@ -134,3 +134,21 @@ function removeSubjectPhrase(title, text) {
   }
   return title;
 }
+
+// A title that disagrees with the picked subjects — flagged above the preview, never blocking. The
+// title is free text and often deliberately short, but "P4 Maths tuition" with Maths and Science
+// ticked is usually one of the two being wrong, and it is easy to skim past in the preview.
+// Returns null when there is nothing to say.
+export function titleMismatchWarning(title, picked) {
+  if (!picked || picked.length === 0) return null;
+
+  const mentioned = subjectMentions(title).filter(m => picked.includes(m.subject));
+  const named = [...new Set(mentioned.map(m => m.text))];
+  if (named.length === 0) {
+    return `\u26a0\ufe0f Your title doesn't mention any of the subjects you picked (${picked.join(' + ')}).`;
+  }
+
+  const missing = picked.filter(p => !mentioned.some(m => m.subject === p));
+  if (missing.length === 0) return null;
+  return `\u26a0\ufe0f Your title mentions ${named.join(', ')}, but you picked ${picked.join(' + ')}.`;
+}
