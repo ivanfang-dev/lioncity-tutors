@@ -43,3 +43,24 @@ export async function loadCappedTutorIds({ model = Assignment, cap = EXPOSURE_CA
 }
 
 export { EXPOSURE_CAP };
+
+// Tutors already contacted on a SIBLING of this assignment — the other subjects of one parent
+// request that was split into an assignment each. A tutor who teaches two of them would otherwise
+// be messaged twice about the same family and spend their whole exposure cap on it. Unlike the cap
+// above this is per-assignment, so it's resolved at wave time rather than once per tick.
+export async function siblingContactedTutorIds(assignment, { model = Assignment } = {}) {
+  if (!assignment.siblingGroupId) return new Set();
+
+  const siblings = await model
+    .find({ siblingGroupId: assignment.siblingGroupId, _id: { $ne: assignment._id } })
+    .select('outreach.contacts.tutorId')
+    .lean();
+
+  const ids = new Set();
+  for (const sibling of siblings) {
+    for (const contact of sibling.outreach?.contacts || []) {
+      if (contact.tutorId) ids.add(String(contact.tutorId));
+    }
+  }
+  return ids;
+}

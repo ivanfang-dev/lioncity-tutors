@@ -9,7 +9,7 @@ import { formatTimeSlots } from '../../../packages/shared/utils/timeSlots.js';
 import { sendWhatsAppTemplate } from './whatsappSender.js';
 import { sendAssignmentDM } from './telegramOutreach.js';
 import { computeWaveSize, trailingInterestRate } from './waveSizing.js';
-import { loadCappedTutorIds } from './exposureCaps.js';
+import { loadCappedTutorIds, siblingContactedTutorIds } from './exposureCaps.js';
 import { notifyOwner, opsButtonRow } from './ownerAlert.js';
 
 // The interested-tutor target an assignment aims for before holding (mirrors escalation-tick and
@@ -195,8 +195,13 @@ async function notifyMatchedTutors(assignment, botUsername) {
     // Pull the top 40 quality-ranked matches (with their score breakdown for the decision log). The
     // ranking now folds in each tutor's extracted qualityGrade, so wave 1 takes its top 8 directly —
     // no query-time Gemini re-rank (removed an API call, a failure mode, and ~5s from wave 1).
-    // Exposure caps (Phase 10 step 4): exclude tutors already holding ≥2 unresolved offers.
-    const excludeTutorIds = await loadCappedTutorIds();
+    // Exposure caps (Phase 10 step 4): exclude tutors already holding ≥2 unresolved offers, plus
+    // anyone already contacted on a sibling — the other subjects of a split request are the same
+    // family, and messaging one tutor about each is how a cap gets spent on a single parent.
+    const excludeTutorIds = new Set([
+      ...await loadCappedTutorIds(),
+      ...await siblingContactedTutorIds(assignment),
+    ]);
     const { scored, relaxed } = await findMatchingTutorsForWave(assignment, 40, { excludeTutorIds });
 
     // Too few matches to reach the target: tell the owner NOW, with the filter that cost the most
@@ -240,8 +245,13 @@ async function notifyMatchedTutors(assignment, botUsername) {
 // the matching pool has no fresh tutors left to try.
 async function escalateAssignment(assignment, botUsername, { waveSize = 6, excludeTutorIds = null } = {}) {
   // Exposure caps (Phase 10 step 4): the tick passes the set of tutors already holding ≥2 unresolved
-  // offers, held out of this wave. Computed once per tick by the caller.
-  const { scored } = await findMatchingTutorsForWave(assignment, 40, { excludeTutorIds });
+  // offers, held out of this wave. Computed once per tick by the caller. Siblings are per-assignment,
+  // so they're resolved here and unioned in rather than asked of every caller.
+  const excluded = new Set([
+    ...(excludeTutorIds || []),
+    ...await siblingContactedTutorIds(assignment),
+  ]);
+  const { scored } = await findMatchingTutorsForWave(assignment, 40, { excludeTutorIds: excluded });
   const contacted = new Set(assignment.contactedTutorIds());
   // Re-rank the not-yet-contacted tutors 1..N — the escalation decision only ever chooses among
   // these, so ranks relative to the fresh pool are what the decision log should record.

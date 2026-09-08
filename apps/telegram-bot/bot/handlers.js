@@ -1,6 +1,7 @@
 import { EDUCATION_LEVELS, getSubjectsForLevel, RATE_MAPPINGS, LEVEL_SUBJECT_MAPPINGS } from '../../../packages/shared/index.js';
 import {
   toggleSubjectPick, buildSubjectPickerKeyboard, subjectPickerPrompt, formatSubject,
+  subjectModeKeyboard, subjectModePrompt, buildAssignmentDrafts,
   MIN_PICKED_SUBJECTS,
 } from '../utils/assignmentSubjects.js';
 import { generatePhoneVariations } from '../../../packages/shared/utils/phoneUtils.js';
@@ -1441,16 +1442,29 @@ async function handleAssignmentStep(bot, chatId, text, userSessions, Assignment)
         assignmentData.createdAt = new Date();
         assignmentData.updatedAt = new Date();
 
-        const draft = new Assignment(assignmentData);
-        const savedDraft = await draft.save();
+        // "Separate tutors" writes one assignment per subject. Saved one at a time rather than with
+        // insertMany, which skips the pre-save hook that derives budgetNumeric — matching needs it.
+        const savedDrafts = [];
+        for (const payload of buildAssignmentDrafts(assignmentData)) {
+          savedDrafts.push(await new Assignment(payload).save());
+        }
+        const savedDraft = savedDrafts[0];
+        const groupId = savedDrafts.length > 1 ? savedDraft.siblingGroupId : null;
 
-        const confirmationMsg = formatAssignmentPreview(assignmentData);
-        await safeSend(bot, chatId, `📋 *Assignment Preview*\n\n${confirmationMsg}\n\n✅ *Ready to post this assignment?*`, {
+        const confirmationMsg = savedDrafts.map(formatAssignmentPreview).join('\n\n━━━━━━━━━━\n\n');
+        const heading = groupId
+          ? `📋 *Assignment Preview* — ${savedDrafts.length} separate assignments`
+          : '📋 *Assignment Preview*';
+        await safeSend(bot, chatId, `${heading}\n\n${confirmationMsg}\n\n✅ *Ready to post?*`, {
           parse_mode: 'Markdown',
           reply_markup: {
             inline_keyboard: [
-              [{ text: '✅ Confirm & Post Assignment', callback_data: `confirm_post_assignment_${savedDraft._id}` }],
-              [{ text: '❌ Cancel', callback_data: `cancel_draft_${savedDraft._id}` }]
+              [groupId
+                ? { text: `✅ Confirm & Post ${savedDrafts.length} Assignments`, callback_data: `confirm_post_group_${groupId}` }
+                : { text: '✅ Confirm & Post Assignment', callback_data: `confirm_post_assignment_${savedDraft._id}` }],
+              [groupId
+                ? { text: '❌ Cancel', callback_data: `cancel_group_${groupId}` }
+                : { text: '❌ Cancel', callback_data: `cancel_draft_${savedDraft._id}` }]
             ]
           }
         });
@@ -1546,7 +1560,19 @@ async function handleAssignmentCallbackQuery(
 
     } else if (data === 'confirm_subjects') {
       // The Done button only exists above the minimum, but a stale keyboard could still send this.
-      if ((session.assignmentData.subjects || []).length < MIN_PICKED_SUBJECTS) return;
+      const picked = session.assignmentData.subjects || [];
+      if (picked.length < MIN_PICKED_SUBJECTS) return;
+      session.currentStep = 'subjectMode';
+
+      await bot.editMessageText(subjectModePrompt(picked), {
+        chat_id: chatId,
+        message_id: callbackQuery.message.message_id,
+        parse_mode: 'Markdown',
+        reply_markup: { inline_keyboard: subjectModeKeyboard(picked) }
+      });
+
+    } else if (data === 'subject_mode_one' || data === 'subject_mode_split') {
+      session.assignmentData.subjectMode = data.replace('subject_mode_', '');
       session.currentStep = 'location';
 
       await bot.editMessageText('🎯 *Creating New Assignment*\n\nStep 4 of 11: Select the location:', {
@@ -1801,7 +1827,14 @@ function formatBudgetCalibration(calib, assignment) {
   return `📊 *Budget check* — before outreach:\n${lines.join('\n')}`;
 }
 
-async function confirmPostAssignment(bot, chatId, userSessions, Assignment, channelId, botUsername, draftId) {
+// `withGuidance` false suppresses the owner/parent extras (budget calibration, the paste-ready
+// parent blurbs) — for a split request those are about the one parent, not the one subject, so the
+// group path runs them on the first sibling only. `notify` false hands outreach back to the caller,
+// which the group path uses to run the siblings' waves in sequence. Returns the posted assignment.
+async function confirmPostAssignment(
+  bot, chatId, userSessions, Assignment, channelId, botUsername, draftId,
+  { withGuidance = true, notify = true } = {}
+) {
   try {
     console.log('Channel ID being used:', channelId);
 
@@ -1859,7 +1892,7 @@ async function confirmPostAssignment(bot, chatId, userSessions, Assignment, chan
     // Purely informational: it NEVER blocks posting (the assignment is already Open above), and any
     // failure is swallowed. When the budget looks thin, also hand over a parent-forwardable
     // renegotiation blurb (owner-in-the-loop wa.me button, same seam as every parent message).
-    try {
+    if (withGuidance) try {
       const calib = await budgetCalibration(savedAssignment);
       const calibText = formatBudgetCalibration(calib, savedAssignment);
       if (calibText) {
@@ -1881,7 +1914,7 @@ async function confirmPostAssignment(bot, chatId, userSessions, Assignment, chan
     // Parent expectation blurb: hand the owner a paste-ready "we're searching, ~6h" message to
     // forward so the parent knows profiles are coming. Owner-in-the-loop — never messaged
     // directly (Repo facts). Only when we have a parent number; best-effort (never blocks posting).
-    if (savedAssignment.parentContact) {
+    if (withGuidance && savedAssignment.parentContact) {
       try {
         const blurb = await draftParentMessage('expectation', { assignment: savedAssignment });
         const waButton = buildWaMeButton(savedAssignment.parentContact, blurb, '📤 Send to parent via WhatsApp');
@@ -1896,14 +1929,18 @@ async function confirmPostAssignment(bot, chatId, userSessions, Assignment, chan
 
     // Register the notification work with Vercel directly so the function stays alive
     // after the webhook response is sent, without blocking on it.
-    waitUntil(
-      notifyMatchedTutors(savedAssignment, botUsername).then(result => {
-        console.log(`WhatsApp notifications done: ${result.sent} sent, ${result.failed} failed, AI used: ${result.aiUsed}`);
-      }).catch(err => {
-        console.error('Tutor notification error:', err);
-      })
-    );
-    
+    if (notify) {
+      waitUntil(
+        notifyMatchedTutors(savedAssignment, botUsername).then(result => {
+          console.log(`WhatsApp notifications done: ${result.sent} sent, ${result.failed} failed, AI used: ${result.aiUsed}`);
+        }).catch(err => {
+          console.error('Tutor notification error:', err);
+        })
+      );
+    }
+
+    return savedAssignment;
+
   } catch (error) {
     console.error('Error confirming assignment:', error);
     await safeSend(bot, chatId, '❌ Failed to post assignment. Please try again.');
@@ -3092,6 +3129,45 @@ async function handleCallbackQuery(
       // long enough that the button would otherwise spin until the finally-block below.
       await ack();
       return await confirmPostAssignment(bot, chatId, userSessions, Assignment, CHANNEL_ID, BOT_USERNAME, draftId);
+    }
+
+    if (data.startsWith('confirm_post_group_')) {
+      if (!isAdmin(userId, ADMIN_USERS)) {
+        return await safeSend(bot, chatId, 'You are not authorized to post assignments.');
+      }
+      const groupId = data.replace('confirm_post_group_', '');
+      await ack();
+
+      const drafts = await Assignment.find({ siblingGroupId: groupId, status: 'Draft' })
+        .select('_id').sort({ createdAt: 1 }).lean();
+
+      // The parent-facing extras are about the one parent, not the one subject — first sibling only.
+      const posted = [];
+      for (const [i, draft] of drafts.entries()) {
+        const assignment = await confirmPostAssignment(
+          bot, chatId, userSessions, Assignment, CHANNEL_ID, BOT_USERNAME, draft._id,
+          { withGuidance: i === 0, notify: false }
+        );
+        if (assignment) posted.push(assignment);
+      }
+
+      // Outreach runs in sequence, not in parallel: each sibling's wave excludes tutors already
+      // contacted on the earlier ones (siblingContactedTutorIds), which only works if their
+      // contacts are already written.
+      waitUntil((async () => {
+        for (const assignment of posted) {
+          await notifyMatchedTutors(assignment, BOT_USERNAME)
+            .then(r => console.log(`Sibling ${assignment.subject}: ${r.sent} sent, ${r.failed} failed`))
+            .catch(err => console.error('Tutor notification error:', err));
+        }
+      })());
+      return;
+    }
+
+    if (data.startsWith('cancel_group_')) {
+      const groupId = data.replace('cancel_group_', '');
+      await Assignment.deleteMany({ siblingGroupId: groupId, status: 'Draft' }).catch(() => {});
+      return await showAdminPanel(chatId, bot);
     }
 
     if (data.startsWith('cancel_draft_')) {

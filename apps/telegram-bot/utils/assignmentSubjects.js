@@ -44,3 +44,43 @@ export function formatSubject(assignment) {
     ? assignment.subjects.join(' + ')
     : assignment.subject;
 }
+
+// One parent request → the assignment documents to write. "One tutor" stays a single assignment
+// carrying its subject list; "separate tutors" becomes one ordinary single-subject assignment per
+// picked subject, linked by a shared siblingGroupId so outreach can tell they are the same family.
+// Pure: the id generator is injected so the split is testable.
+export function buildAssignmentDrafts(assignmentData, makeGroupId = () => crypto.randomUUID()) {
+  const { subjectMode, subjects = [], ...rest } = assignmentData;
+
+  if (subjectMode !== 'split' || subjects.length < MIN_PICKED_SUBJECTS) {
+    const single = { ...rest };
+    if (subjects.length > 0) single.subjects = subjects;
+    return [single];
+  }
+
+  const siblingGroupId = makeGroupId();
+  return subjects.map(subject => ({
+    ...rest,
+    subject,
+    // Named per subject so the channel posts, and the owner's own list, are tellable apart.
+    title: `${rest.title} (${subject})`,
+    siblingGroupId,
+  }));
+}
+
+// Step 3c: one tutor for everything, or a tutor per subject. This is the only thing that tells the
+// two apart — matching can't infer from a subject list whether the parent wanted one person.
+export function subjectModeKeyboard(picked = []) {
+  return [
+    [{ text: '👤 One tutor for all', callback_data: 'subject_mode_one' }],
+    [{ text: `👥 Separate tutors — ${Math.max(picked.length, MIN_PICKED_SUBJECTS)} assignments`, callback_data: 'subject_mode_split' }],
+    [{ text: '❌ Cancel', callback_data: 'admin_panel' }],
+  ];
+}
+
+export function subjectModePrompt(picked) {
+  return '🎯 *Creating New Assignment*\n\nStep 3c of 11: One tutor, or one per subject?\n\n'
+    + `*Subjects:* ${picked.join(', ')}\n\n`
+    + '_One tutor prioritises tutors who teach all of them. Separate tutors posts each subject '
+    + 'on its own, so they fill independently._';
+}

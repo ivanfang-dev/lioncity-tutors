@@ -1,5 +1,7 @@
 import { describe, test, expect } from '@jest/globals';
-import { openOffersByTutor, cappedTutorIds, loadCappedTutorIds } from './exposureCaps.js';
+import {
+  openOffersByTutor, cappedTutorIds, loadCappedTutorIds, siblingContactedTutorIds,
+} from './exposureCaps.js';
 
 // Assignments as the lean query returns them: each with outreach.contacts [{ tutorId, status }].
 const A = (contacts) => ({ outreach: { contacts } });
@@ -60,5 +62,39 @@ describe('loadCappedTutorIds', () => {
     const model = { find: () => ({ select: () => ({ lean: async () => docs }) }) };
     const capped = await loadCappedTutorIds({ model });
     expect([...capped]).toEqual(['t1']);
+  });
+});
+
+describe('siblingContactedTutorIds', () => {
+  const contacts = (...ids) => ({ outreach: { contacts: ids.map(tutorId => ({ tutorId })) } });
+  const fakeModel = (docs) => ({
+    find: (query) => ({
+      select: () => ({ lean: async () => docs.filter(d => d.siblingGroupId === query.siblingGroupId) }),
+    }),
+  });
+
+  test('collects everyone already contacted on the other assignments in the group', async () => {
+    const model = fakeModel([
+      { _id: 'a', siblingGroupId: 'g1', ...contacts('t1', 't2') },
+      { _id: 'b', siblingGroupId: 'g1', ...contacts('t3') },
+    ]);
+    const ids = await siblingContactedTutorIds({ _id: 'c', siblingGroupId: 'g1' }, { model });
+    expect([...ids].sort()).toEqual(['t1', 't2', 't3']);
+  });
+
+  test('an assignment with no siblings excludes nobody, without querying', async () => {
+    const model = { find: () => { throw new Error('should not query'); } };
+    expect(await siblingContactedTutorIds({ _id: 'a' }, { model })).toEqual(new Set());
+  });
+
+  test('ids come back as strings, so they compare against the matcher pool', async () => {
+    const model = fakeModel([{ _id: 'a', siblingGroupId: 'g1', ...contacts({ toString: () => 't1' }) }]);
+    const ids = await siblingContactedTutorIds({ _id: 'b', siblingGroupId: 'g1' }, { model });
+    expect(ids.has('t1')).toBe(true);
+  });
+
+  test('siblings that have not been sent anything yet contribute nothing', async () => {
+    const model = fakeModel([{ _id: 'a', siblingGroupId: 'g1', outreach: {} }]);
+    expect(await siblingContactedTutorIds({ _id: 'b', siblingGroupId: 'g1' }, { model })).toEqual(new Set());
   });
 });

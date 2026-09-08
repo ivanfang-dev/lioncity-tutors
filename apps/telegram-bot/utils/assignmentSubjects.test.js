@@ -5,6 +5,9 @@ import {
   subjectPickerPrompt,
   formatSubject,
   MIN_PICKED_SUBJECTS,
+  buildAssignmentDrafts,
+  subjectModeKeyboard,
+  subjectModePrompt,
 } from './assignmentSubjects.js';
 
 const primary = ['English Language', 'Chinese', 'Mathematics', 'Science', 'Art'];
@@ -103,5 +106,96 @@ describe('formatSubject', () => {
 
   test('leaves an ordinary single-subject assignment alone', () => {
     expect(formatSubject({ subject: 'Mathematics' })).toBe('Mathematics');
+  });
+});
+
+describe('buildAssignmentDrafts', () => {
+  const base = {
+    title: 'P4 Maths and Science',
+    level: 'Primary 4',
+    subject: 'Multiple Subjects',
+    subjects: ['Mathematics', 'Science'],
+    location: 'Bishan',
+    rate: '$40/hr',
+    frequency: 'Twice a week',
+  };
+  const ids = () => { let n = 0; return () => `grp${++n}`; };
+
+  test('one tutor stays a single assignment carrying the picked subjects', () => {
+    const drafts = buildAssignmentDrafts({ ...base, subjectMode: 'one' }, ids());
+    expect(drafts).toHaveLength(1);
+    expect(drafts[0]).toMatchObject({
+      title: 'P4 Maths and Science',
+      subject: 'Multiple Subjects',
+      subjects: ['Mathematics', 'Science'],
+    });
+    expect(drafts[0].siblingGroupId).toBeUndefined();
+  });
+
+  test('separate tutors becomes one assignment per subject', () => {
+    const drafts = buildAssignmentDrafts({ ...base, subjectMode: 'split' }, ids());
+    expect(drafts.map(d => d.subject)).toEqual(['Mathematics', 'Science']);
+  });
+
+  test('each split assignment is an ordinary single-subject one', () => {
+    // Nothing downstream should treat a sibling specially — it carries a real subject, so the
+    // matcher's normal path handles it and no title parsing or coverage logic gets involved.
+    for (const draft of buildAssignmentDrafts({ ...base, subjectMode: 'split' }, ids())) {
+      expect(draft.subjects).toBeUndefined();
+      expect(draft.subjectMode).toBeUndefined();
+    }
+  });
+
+  test('titles name their subject, so the channel posts are tellable apart', () => {
+    expect(buildAssignmentDrafts({ ...base, subjectMode: 'split' }, ids()).map(d => d.title))
+      .toEqual(['P4 Maths and Science (Mathematics)', 'P4 Maths and Science (Science)']);
+  });
+
+  test('siblings share one group id, and it is theirs alone', () => {
+    const drafts = buildAssignmentDrafts({ ...base, subjectMode: 'split' }, ids());
+    expect(drafts[0].siblingGroupId).toBe('grp1');
+    expect(drafts[1].siblingGroupId).toBe('grp1');
+    const other = buildAssignmentDrafts({ ...base, subjectMode: 'split' }, ids());
+    expect(other[0].siblingGroupId).not.toBe(drafts[0].siblingGroupId + 'x');
+  });
+
+  test('the wizard mode never reaches the database', () => {
+    expect(buildAssignmentDrafts({ ...base, subjectMode: 'one' }, ids())[0].subjectMode).toBeUndefined();
+  });
+
+  test('carries the rest of the assignment onto every sibling', () => {
+    for (const draft of buildAssignmentDrafts({ ...base, subjectMode: 'split' }, ids())) {
+      expect(draft).toMatchObject({ level: 'Primary 4', location: 'Bishan', rate: '$40/hr' });
+    }
+  });
+
+  test('too few subjects to split falls back to a single assignment', () => {
+    expect(buildAssignmentDrafts({ ...base, subjects: ['Mathematics'], subjectMode: 'split' }, ids()))
+      .toHaveLength(1);
+    expect(buildAssignmentDrafts({ ...base, subjects: [], subjectMode: 'split' }, ids()))
+      .toHaveLength(1);
+  });
+
+  test('an ordinary single-subject assignment is untouched', () => {
+    const single = { title: 'Sec 3 Maths', level: 'Secondary 3', subject: 'Mathematics', rate: '$50/hr' };
+    expect(buildAssignmentDrafts(single, ids())).toEqual([single]);
+  });
+});
+
+describe('subjectModeKeyboard', () => {
+  test('offers exactly the two ways a multi-subject request gets staffed', () => {
+    expect(subjectModeKeyboard().flat().map(b => b.callback_data))
+      .toEqual(['subject_mode_one', 'subject_mode_split', 'admin_panel']);
+  });
+
+  test('says how many assignments splitting would create', () => {
+    const split = subjectModeKeyboard().flat().find(b => b.callback_data === 'subject_mode_split');
+    expect(split.text).toContain('2');
+  });
+});
+
+describe('subjectModePrompt', () => {
+  test('names the subjects the choice is about', () => {
+    expect(subjectModePrompt(['Mathematics', 'Science'])).toContain('Mathematics, Science');
   });
 });
