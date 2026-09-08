@@ -128,10 +128,24 @@ async function alertOwnerInterested(assignment, tutorName, interestedCount, { re
   );
 }
 
+// The gate both reply recorders match on. `status: 'Open'` is the load-bearing half: outreach
+// stays 'Fulfilled' forever, so without it a tap on a weeks-old DM for an assignment since
+// Filled or Closed still recorded and pinged the owner. The outreach states are the ones that can
+// still act on a reply — a yes after the shortlist went out is scored against it (see
+// handleLateInterest), and a yes after outreach gave up is still real interest worth recording.
+// Fresh object per call so a caller spreading it can't mutate the shared gate.
+export function replyableAssignmentMatch() {
+  return {
+    status: 'Open',
+    'outreach.status': { $in: ['Active', 'Holding', 'Fulfilled', 'Exhausted'] },
+  };
+}
+
 // Record a tutor's reply ('yes' | 'no') against the most recent active outreach that
-// messaged this number. Returns a result object; { matched: false } when the reply can't
-// be tied to an open outreach (so callers can skip acknowledging strangers). Never throws
-// for a bad reply value — returns { matched: false, error } instead.
+// messaged this number. Returns a result object; { matched: false, reason } when the reply can't
+// be tied to an open outreach — reason 'closed' (we did message them, but that assignment is no
+// longer Open) or 'unknown' (a stranger), so callers can ack the first and escalate only the
+// second. Never throws for a bad reply value — returns { matched: false, error } instead.
 export async function recordTutorReply(phone, reply) {
   const decision = reply === 'yes' ? 'Interested' : reply === 'no' ? 'Declined' : null;
   if (!phone || !decision) {
@@ -149,10 +163,7 @@ export async function recordTutorReply(phone, reply) {
   // (A tutor in several open assignments → the sort attributes it to the latest wave.)
   const assignment = await Assignment.findOneAndUpdate(
     {
-      // Accept replies while Active, Holding, Fulfilled AND Exhausted. A yes after the shortlist
-      // went out is scored against it (see handleLateInterest); a yes after outreach gave up is
-      // still real interest on a still-open assignment, so it's recorded rather than discarded.
-      'outreach.status': { $in: ['Active', 'Holding', 'Fulfilled', 'Exhausted'] },
+      ...replyableAssignmentMatch(),
       'outreach.contacts': { $elemMatch: { phone: norm, status: 'Sent' } }
     },
     {
@@ -169,7 +180,13 @@ export async function recordTutorReply(phone, reply) {
   );
 
   if (!assignment) {
-    return { matched: false };
+    // Distinguish "we did message you, but that assignment is done" from a genuine stranger, so
+    // the caller can ack the tutor without pulling the owner into a dead assignment.
+    const onDead = await Assignment.exists({
+      status: { $ne: 'Open' },
+      'outreach.contacts': { $elemMatch: { phone: norm, status: 'Sent' } }
+    });
+    return { matched: false, reason: onDead ? 'closed' : 'unknown' };
   }
 
   // `new: true` returns the post-update doc, so the flipped contact already carries
@@ -296,9 +313,7 @@ export async function recordTutorReplyByTutorId(tutorId, reply, assignmentId) {
   const assignment = await Assignment.findOneAndUpdate(
     {
       _id: assignmentId,
-      // Active, Holding, Fulfilled OR Exhausted — a late Telegram yes is scored against the
-      // released shortlist, or recorded against a given-up outreach, rather than dropped.
-      'outreach.status': { $in: ['Active', 'Holding', 'Fulfilled', 'Exhausted'] },
+      ...replyableAssignmentMatch(),
       'outreach.contacts': { $elemMatch: { tutorId: tid, status: 'Sent' } }
     },
     {
@@ -314,7 +329,12 @@ export async function recordTutorReplyByTutorId(tutorId, reply, assignmentId) {
   );
 
   if (!assignment) {
-    return { matched: false };
+    const onDead = await Assignment.exists({
+      _id: assignmentId,
+      status: { $ne: 'Open' },
+      'outreach.contacts': { $elemMatch: { tutorId: tid, status: 'Sent' } }
+    });
+    return { matched: false, reason: onDead ? 'closed' : 'unknown' };
   }
 
   const contact = assignment.outreach.contacts.find(c => c.tutorId?.toString() === tid.toString());

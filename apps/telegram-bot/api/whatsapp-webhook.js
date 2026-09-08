@@ -208,6 +208,13 @@ async function handleInbound(from, msg) {
   if (inbound.kind === 'reply') {
     const result = await recordTutorReply(from, inbound.reply);
     console.log(`Webhook reply '${inbound.reply}' from ${from} → matched=${result.matched}`, result.assignmentId || '');
+    // The assignment we messaged them about is no longer Open. Thank them and stop there —
+    // there's nothing left for the owner to act on, so this must not become an owner ping.
+    if (!result.matched && result.reason === 'closed') {
+      await sendWhatsApp(from, "Thanks for getting back to us! That assignment has already been closed, but we'll be in touch when the next match comes up 😊")
+        .catch(err => console.warn('Failed to ack reply on a closed assignment:', err.message));
+      return;
+    }
     // Couldn't tie it to a contact — hand it to the owner rather than dropping it.
     if (!result.matched) {
       await forwardUnmatchedReply(from, inbound.reply, body);

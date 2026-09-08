@@ -3064,7 +3064,9 @@ async function handleCallbackQuery(
         { chat_id: chatId, message_id: callbackQuery.message?.message_id }
       ).catch(() => {});
       if (!result.matched) {
-        await alertUnmatchedOutreachTap(tutor, assignmentId, 'yes', Assignment);
+        // A tap on a closed/filled assignment is expected noise, not something the owner needs:
+        // alert only when the reply genuinely can't be placed.
+        if (result.reason !== 'closed') await alertUnmatchedOutreachTap(tutor, assignmentId, 'yes', Assignment);
         return await safeSend(bot, chatId, "👍 Thanks! This assignment may already be filled, but we've noted you.");
       }
       // The interest is already recorded and already counts toward the target — the rate is
@@ -3083,7 +3085,7 @@ async function handleCallbackQuery(
       }
       const result = await recordTutorReplyByTutorId(tutor._id, 'no', assignmentId);
       if (!result.matched) {
-        await alertUnmatchedOutreachTap(tutor, assignmentId, 'no', Assignment);
+        if (result.reason !== 'closed') await alertUnmatchedOutreachTap(tutor, assignmentId, 'no', Assignment);
         await bot.editMessageReplyMarkup(
           { inline_keyboard: [] },
           { chat_id: chatId, message_id: callbackQuery.message?.message_id }

@@ -1,5 +1,5 @@
 import { describe, test, expect } from '@jest/globals';
-import { responseLatencyMins } from './recordTutorReply.js';
+import { responseLatencyMins, replyableAssignmentMatch } from './recordTutorReply.js';
 
 const sent = new Date('2026-07-17T10:00:00Z');
 const mins = (n) => new Date(sent.getTime() + n * 60 * 1000);
@@ -33,5 +33,22 @@ describe('responseLatencyMins', () => {
 
   test('returns null for an unparseable date rather than NaN', () => {
     expect(responseLatencyMins(sent, new Date('nonsense'))).toBeNull();
+  });
+});
+
+describe('replyableAssignmentMatch', () => {
+  test('only matches assignments that are still Open', () => {
+    expect(replyableAssignmentMatch().status).toBe('Open');
+  });
+
+  test('accepts a reply in any outreach state that can still act on one', () => {
+    expect(replyableAssignmentMatch()['outreach.status'].$in.sort())
+      .toEqual(['Active', 'Exhausted', 'Fulfilled', 'Holding']);
+  });
+
+  test('returns a fresh object so a caller spreading it cannot mutate the shared gate', () => {
+    const a = replyableAssignmentMatch();
+    a.status = 'Closed';
+    expect(replyableAssignmentMatch().status).toBe('Open');
   });
 });
