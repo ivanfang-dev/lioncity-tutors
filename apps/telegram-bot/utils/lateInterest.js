@@ -16,8 +16,12 @@ const TUTOR_SELECT =
 // weakest tutor already on it — the only case worth interrupting the owner for.
 export function lateInterestOutcome(candidate, shortlisted) {
   const others = shortlisted.filter(s => String(s.tutorId) !== String(candidate.tutorId));
+  // Nothing left to beat: the released shortlist is spent (every name parent-rejected, or none
+  // could be built). Being stronger than nobody isn't a reason to interrupt the owner — defaulting
+  // to true here is what announced 0-1-year tutors as beating the shortlist. Bench them instead;
+  // the interest is still recorded and still shows in the console.
   if (others.length === 0) {
-    return { stronger: true, weakest: null, wouldRank: 1 };
+    return { stronger: false, weakest: null, wouldRank: 1 };
   }
   const weakest = others.reduce((lo, s) => (s.score < lo.score ? s : lo));
   const wouldRank = others.filter(s => s.score >= candidate.score).length + 1;
@@ -63,14 +67,13 @@ export async function handleLateInterest(assignment, contact) {
 
   const outcome = lateInterestOutcome(candidate, scored);
   if (!outcome.stronger) {
-    console.log(`Late interest from ${candidate.tutorName} on ${assignment._id}: below shortlist, held as bench`);
+    console.log(`Late interest from ${candidate.tutorName} on ${assignment._id}: not stronger than the live shortlist, held as bench`);
     return { alerted: false, stronger: false };
   }
 
   const reason = shortlistReason(candidateTutor, assignment, contact.quotedRate ?? null);
-  const beats = outcome.weakest
-    ? `Outranks #${outcome.weakest.shortlistRank} ${escapeMd(outcome.weakest.tutorName)} — would sit at #${outcome.wouldRank}.`
-    : 'No one is on the shortlist yet.';
+  const beats =
+    `Outranks #${outcome.weakest.shortlistRank} ${escapeMd(outcome.weakest.tutorName)} — would sit at #${outcome.wouldRank}.`;
 
   const rows = [[{
     text: `➕ Add ${candidate.tutorName} to shortlist`,

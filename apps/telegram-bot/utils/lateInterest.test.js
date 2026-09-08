@@ -31,9 +31,20 @@ describe('lateInterestOutcome', () => {
     expect(out.stronger).toBe(false);
   });
 
-  test('with no shortlist to compare against, the candidate is always worth surfacing', () => {
+  // Reaching here with an empty shortlist means the released one is spent — every name rejected,
+  // or none could be built. Defaulting to "stronger" there announced a 0-1-year tutor as beating
+  // the shortlist, because there was no shortlist left to lose to.
+  test('with no shortlist to compare against, nobody counts as stronger', () => {
     const out = lateInterestOutcome({ tutorId: 'd', tutorName: 'Dan', score: 0.1 }, []);
-    expect(out).toMatchObject({ stronger: true, weakest: null, wouldRank: 1 });
+    expect(out).toMatchObject({ stronger: false, weakest: null, wouldRank: 1 });
+  });
+
+  test('a shortlist holding only the candidate\'s own row is still nothing to beat', () => {
+    const out = lateInterestOutcome(
+      { tutorId: 'c', tutorName: 'Cara', score: 0.60 },
+      [{ tutorId: 'c', tutorName: 'Cara', shortlistRank: 1, score: 0.60 }]
+    );
+    expect(out.stronger).toBe(false);
   });
 
   test('ignores the candidate\'s own row if it somehow appears in the shortlist', () => {
