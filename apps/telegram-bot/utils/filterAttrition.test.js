@@ -126,6 +126,29 @@ describe('buildFilterStages with an explicit subjects[]', () => {
       .toEqual(parsed.$or);
   });
 
+  test('a widened region survives a multi-subject query instead of being overwritten', () => {
+    // Both stages want `$or`. Spreading one over the other silently dropped the region filter,
+    // so a widened multi-subject assignment matched tutors anywhere in Singapore.
+    const { stages } = buildFilterStages({ ...multi, matchRegions: ['north'] });
+    const query = stages.at(-1).query;
+    expect(query.$or).toBeUndefined();
+    expect(query.$and).toEqual([
+      { $or: [{ 'locations.central': true }, { 'locations.north': true }] },
+      { $or: [
+        { 'teachingLevels.primary.mathematics': true },
+        { 'teachingLevels.primary.science': true },
+      ] },
+    ]);
+  });
+
+  test('a widened region is untouched when the subject needs no $or', () => {
+    const { stages } = buildFilterStages({ ...multi, subjects: ['Science'], matchRegions: ['north'] });
+    const query = stages.at(-1).query;
+    expect(query.$or).toEqual([{ 'locations.central': true }, { 'locations.north': true }]);
+    expect(query['teachingLevels.primary.science']).toBe(true);
+    expect(query.$and).toBeUndefined();
+  });
+
   test('is ignored for an ordinary single-subject assignment', () => {
     const { stages, requestedFields } = buildFilterStages({ ...assignment, subjects: ['Science'] });
     expect(stages.at(-1).query['teachingLevels.secondary.mathematics']).toBe(true);

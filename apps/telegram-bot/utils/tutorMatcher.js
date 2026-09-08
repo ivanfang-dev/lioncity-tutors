@@ -26,6 +26,24 @@ function subjectToFieldName(subject) {
   ).join('');
 }
 
+// Add one filter's clause to a cumulative query. Spreading is not enough: widened regions and a
+// multi-subject request both produce `$or`, and the second would silently overwrite the first —
+// dropping that filter entirely. A repeated key folds into `$and`, where both still have to hold.
+function mergeClause(query, clause) {
+  const merged = { ...query };
+  for (const [key, value] of Object.entries(clause)) {
+    if (!(key in merged)) {
+      merged[key] = value;
+    } else if (key === '$and') {
+      merged.$and = [...merged.$and, ...value];
+    } else {
+      merged.$and = [...(merged.$and || []), { [key]: merged[key] }, { [key]: value }];
+      delete merged[key];
+    }
+  }
+  return merged;
+}
+
 // "Teaches any of these subjects at this level", as a Mongo clause. One field collapses to a plain
 // equality so a one-subject query looks the same however the subject was chosen.
 function subjectFilter(fields, levelCategory) {
@@ -583,7 +601,7 @@ function buildFilterStages(assignment) {
   // `soft` stages express a parent PREFERENCE rather than a hard constraint: when the strict pool
   // is too thin to work with, runMatch drops them and penalises the mismatches in scoring instead.
   const add = (filter, clause, soft = false) => {
-    query = { ...query, ...clause };
+    query = mergeClause(query, clause);
     stages.push({ filter, query, soft });
   };
 
