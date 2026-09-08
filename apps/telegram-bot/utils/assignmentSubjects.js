@@ -86,27 +86,40 @@ export function subjectModePrompt(picked) {
     + 'on its own, so they fill independently._';
 }
 
-// The title for one sibling of a split request. "P4 Maths and Science" split into Maths and Science
-// should read "P4 Maths" and "P4 Science" — the owner's own wording, with the other subjects taken
-// out, not the canonical name bolted on the end.
+// The title for one sibling of a split request, in the owner's own wording. "P4 Maths and Science"
+// becomes "P4 Maths" and "P4 Science" — the other subjects taken out, not the canonical name bolted
+// on the end. A title naming only one picked subject has it swapped for this sibling's, so "P4 Maths
+// tuition" split across two tutors never leaves a Science assignment titled "Maths". Only a title
+// naming none of them falls back to appending.
 //
-// Only narrows when the title names at least two of the picked subjects. Otherwise there is nothing
-// to remove and every sibling would end up with the same title, so the subject is appended instead —
-// the title travels alone as {{1}} in the WhatsApp template, and a Science assignment titled
-// "P4 Maths and Science" reads like it covers both.
+// This matters because the title travels alone as {{1}} in the WhatsApp template: it is often all a
+// tutor reads before deciding.
 export function siblingTitle(title, subject, picked) {
   const mentioned = subjectMentions(title).filter(m => picked.includes(m.subject));
+  const mine = mentioned.find(m => m.subject === subject);
   const others = mentioned.filter(m => m.subject !== subject);
-  if (mentioned.length - others.length < 1 || others.length < 1) {
-    return `${title} (${subject})`;
+  const tidy = t => t.replace(/\s+/g, ' ').trim();
+
+  // Names this subject and others too: drop the others, keeping the owner's own wording for this one.
+  if (mine && others.length > 0) {
+    let narrowed = title;
+    for (const other of others) narrowed = removeSubjectPhrase(narrowed, other.text);
+    if (tidy(narrowed)) return tidy(narrowed);
   }
 
-  let narrowed = title;
-  for (const other of others) {
-    narrowed = removeSubjectPhrase(narrowed, other.text);
+  // Names this subject and no other picked one — it already reads correctly.
+  if (mine) return title;
+
+  // Names other picked subjects but not this one: put this subject where the first of them was,
+  // so splitting "P4 Maths tuition" doesn't leave a Science assignment titled "Maths".
+  if (others.length > 0) {
+    let swapped = title.replace(aliasRegex(others[0].text), subject);
+    for (const other of others.slice(1)) swapped = removeSubjectPhrase(swapped, other.text);
+    if (tidy(swapped)) return tidy(swapped);
   }
-  const tidied = narrowed.replace(/\s+/g, ' ').trim();
-  return tidied.length > 0 ? tidied : `${title} (${subject})`;
+
+  // Names none of them: nothing to narrow or swap, and the siblings would otherwise share a title.
+  return `${title} (${subject})`;
 }
 
 // Cut one subject out of a title, taking the word that joins it to its neighbour with it — so

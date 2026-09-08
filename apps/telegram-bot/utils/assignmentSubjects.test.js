@@ -232,10 +232,19 @@ describe('siblingTitle', () => {
       .toBe('P4 tuition at Bishan (Mathematics)');
   });
 
-  test('falls back to appending when the title names only one of them', () => {
-    // Narrowing would leave both siblings with the same title, which is the thing to avoid.
-    expect(siblingTitle('P4 Maths tuition', 'Mathematics', both)).toBe('P4 Maths tuition (Mathematics)');
-    expect(siblingTitle('P4 Maths tuition', 'Science', both)).toBe('P4 Maths tuition (Science)');
+  test('swaps in its own subject when the title names a different one', () => {
+    // A Science assignment must never stay titled "Maths".
+    expect(siblingTitle('P4 Maths tuition', 'Mathematics', both)).toBe('P4 Maths tuition');
+    expect(siblingTitle('P4 Maths tuition', 'Science', both)).toBe('P4 Science tuition');
+  });
+
+  test('swaps one in and removes the rest when the title names several others', () => {
+    const three = ['Mathematics', 'Science', 'English Language'];
+    expect(siblingTitle('P4 Maths and Science', 'English Language', three)).toBe('P4 English Language');
+  });
+
+  test('leaves a title that already names only this subject alone', () => {
+    expect(siblingTitle('P4 Maths at Bishan', 'Mathematics', both)).toBe('P4 Maths at Bishan');
   });
 
   test('does not mistake a substring for a subject', () => {
