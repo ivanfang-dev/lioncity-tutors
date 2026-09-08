@@ -1,4 +1,8 @@
-import { EDUCATION_LEVELS, getSubjectsForLevel, RATE_MAPPINGS } from '../../../packages/shared/index.js';
+import { EDUCATION_LEVELS, getSubjectsForLevel, RATE_MAPPINGS, LEVEL_SUBJECT_MAPPINGS } from '../../../packages/shared/index.js';
+import {
+  toggleSubjectPick, buildSubjectPickerKeyboard, subjectPickerPrompt, formatSubject,
+  MIN_PICKED_SUBJECTS,
+} from '../utils/assignmentSubjects.js';
 import { generatePhoneVariations } from '../../../packages/shared/utils/phoneUtils.js';
 import { recordApplicationInterest } from '../../../packages/shared/utils/applicationInterest.js';
 import { TIME_SLOTS, formatTimeSlots } from '../../../packages/shared/utils/timeSlots.js';
@@ -1323,8 +1327,14 @@ function createInlineKeyboard(options, callbackPrefix, columns = 2) {
   
   // Add cancel button
   keyboard.push([{ text: '❌ Cancel', callback_data: 'admin_panel' }]);
-  
+
   return keyboard;
+}
+
+// The pickable subjects for the level being created — the special categories getSubjectsForLevel
+// appends are what got us to the pick step, so they aren't options within it.
+function subjectsForLevel(session) {
+  return LEVEL_SUBJECT_MAPPINGS[session.assignmentData?.level] || [];
 }
 
 // Handle assignment creation steps
@@ -1494,6 +1504,49 @@ async function handleAssignmentCallbackQuery(
     } else if (data.startsWith('select_subject_')) {
       const subject = decodeURIComponent(data.replace('select_subject_', ''));
       session.assignmentData.subject = subject;
+
+      // "Multiple Subjects" alone tells matching nothing, so ask which ones before moving on.
+      if (subject === 'Multiple Subjects') {
+        session.assignmentData.subjects = [];
+        session.currentStep = 'subjects';
+        return await bot.editMessageText(subjectPickerPrompt([]), {
+          chat_id: chatId,
+          message_id: callbackQuery.message.message_id,
+          parse_mode: 'Markdown',
+          reply_markup: {
+            inline_keyboard: buildSubjectPickerKeyboard(subjectsForLevel(session), [])
+          }
+        });
+      }
+
+      session.currentStep = 'location';
+
+      await bot.editMessageText('🎯 *Creating New Assignment*\n\nStep 4 of 11: Select the location:', {
+        chat_id: chatId,
+        message_id: callbackQuery.message.message_id,
+        parse_mode: 'Markdown',
+        reply_markup: {
+          inline_keyboard: createInlineKeyboard(SINGAPORE_LOCATIONS, 'select_location', 2)
+        }
+      });
+
+    } else if (data.startsWith('pick_subj_')) {
+      const levelSubjects = subjectsForLevel(session);
+      const subject = levelSubjects[Number(data.replace('pick_subj_', ''))];
+      if (!subject) return;
+      const picked = toggleSubjectPick(session.assignmentData.subjects || [], subject);
+      session.assignmentData.subjects = picked;
+
+      await bot.editMessageText(subjectPickerPrompt(picked), {
+        chat_id: chatId,
+        message_id: callbackQuery.message.message_id,
+        parse_mode: 'Markdown',
+        reply_markup: { inline_keyboard: buildSubjectPickerKeyboard(levelSubjects, picked) }
+      });
+
+    } else if (data === 'confirm_subjects') {
+      // The Done button only exists above the minimum, but a stale keyboard could still send this.
+      if ((session.assignmentData.subjects || []).length < MIN_PICKED_SUBJECTS) return;
       session.currentStep = 'location';
 
       await bot.editMessageText('🎯 *Creating New Assignment*\n\nStep 4 of 11: Select the location:', {
@@ -1679,7 +1732,7 @@ async function handleAssignmentCallbackQuery(
 function formatAssignmentPreview(assignment) {
   let msg = `*🎯 ${escapeMd(assignment.title)}*\n\n`;
   msg += `*📚 Level:* ${escapeMd(assignment.level)}\n`;
-  msg += `*📖 Subject:* ${escapeMd(assignment.subject)}\n`;
+  msg += `*📖 Subject:* ${escapeMd(formatSubject(assignment))}\n`;
   msg += `*📍 Location:* ${escapeMd(assignment.location)}\n`;
   msg += `*📅 Frequency:* ${escapeMd(assignment.frequency)}\n`;
   msg += `*💰 Rate:* ${escapeMd(assignment.rate)}\n`;
