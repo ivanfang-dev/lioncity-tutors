@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import { waitUntil } from '@vercel/functions';
 import { Assignment, Tutor, Placement, Meta } from '../../../packages/shared/server-exports.js';
-import { escalateAssignment, remindNonResponders } from '../utils/tutorNotifier.js';
+import { escalateAssignment, remindNonResponders, hasFreshTutors } from '../utils/tutorNotifier.js';
 import { shortlistScore, shortlistReason, buildFeatureSnapshot } from '../utils/tutorMatcher.js';
 import { recordRecommendation } from '../utils/recordRecommendation.js';
 import { holdTransition } from '../utils/recordTutorReply.js';
@@ -82,6 +82,17 @@ export function parentSilenceAction(assignment, now = new Date(), {
   return null;
 }
 
+// The interested-tutor line on a give-up alert. Reporting interestedCount() overstated it badly:
+// after a silence re-pitch every shortlisted tutor carries parentRejectedAt, so "ran out of tutors
+// (11 interested)" meant 2 still live and 9 the parent had already passed on.
+export function interestSummary(assignment) {
+  const viable = assignment.viableInterestedCount();
+  const passed = assignment.interestedCount() - viable;
+  return passed
+    ? `${viable} interested, ${passed} already passed on by the parent`
+    : `${viable} interested`;
+}
+
 // An "Open in console" keyboard for alerts that carry no other buttons, or undefined when no
 // console URL is configured (notifyOwner then sends a plain message).
 function opsKeyboard(assignmentId) {
@@ -136,7 +147,7 @@ async function processAssignment(assignment, now, expectedInterestRate, excludeT
       { $set: { 'outreach.status': 'Exhausted' } }
     );
     await notifyOwner(
-      `⏰ *Outreach timed out*\n*${escapeMd(assignment.title)}* got ${assignment.interestedCount()} interested tutor(s) ` +
+      `⏰ *Outreach timed out*\n*${escapeMd(assignment.title)}* got ${interestSummary(assignment)} ` +
       `in ${Math.round(MAX_DURATION_MS / 3600000)}h.\nPlease follow up manually.`,
       opsKeyboard(assignment._id)
     );
@@ -173,7 +184,7 @@ async function processAssignment(assignment, now, expectedInterestRate, excludeT
     await Assignment.updateOne({ _id: assignment._id }, { $set: { 'outreach.status': 'Exhausted' } });
     await notifyOwner(
       `📭 *Ran out of tutors*\n*${escapeMd(assignment.title)}* has no more matching tutors to contact ` +
-      `(${assignment.interestedCount()} interested).\nPlease follow up manually.`,
+      `(${interestSummary(assignment)}).\nPlease follow up manually.`,
       opsKeyboard(assignment._id)
     );
   } else {
@@ -359,7 +370,7 @@ async function releaseHoldingShortlists(now) {
 // Ping the owner about a parent who's gone quiet on a released shortlist: a nudge (24h) carries
 // a drafted reminder behind a wa.me button, a flag (48h) just marks it for manual follow-up.
 // Both re-show the outcome-capture buttons so the owner can still record the result from here.
-async function alertOwnerParentSilent(assignment, kind) {
+async function alertOwnerParentSilent(assignment, kind, { repitch = true } = {}) {
   const shortlisted = shortlistedContacts(assignment)
     .map(c => ({ tutorId: c.tutorId, tutorName: c.tutorName, shortlistRank: c.shortlistRank }));
 
@@ -373,11 +384,18 @@ async function alertOwnerParentSilent(assignment, kind) {
       if (btn) rows.push([btn]);
       else text += `\n\n📋 Open [WhatsApp](${waMeLink(assignment.parentContact)}) with ${assignment.parentContact} and paste:\n\n${draft}`;
     }
-  } else {
+  } else if (repitch) {
     text =
       `🚩 *Parent silent ~48h* on *${escapeMd(assignment.title)}* — treating it as a pass and searching again.\n` +
       `Fresh tutors are being messaged now; you'll get a new shortlist when enough say yes.\n` +
       `The current profiles still count — record a pick below if the parent comes back.`;
+  } else {
+    // Nothing new to offer, so the shortlist stays exactly as sent. This is the last word on the
+    // assignment — no further nagging, and no follow-up "ran out of tutors" a minute later.
+    text =
+      `🚩 *Parent silent ~48h* on *${escapeMd(assignment.title)}* — and there are no fresh tutors left to search.\n` +
+      `Keeping the shortlist as sent; nothing more will be messaged automatically.\n` +
+      `Record a pick below if the parent comes back, or follow up manually.`;
   }
   if (assignment.parentContact && shortlisted.length) {
     rows.push(...buildOutcomeButtons(assignment._id, shortlisted));
@@ -403,21 +421,25 @@ async function nudgeSilentParents(now) {
     const action = parentSilenceAction(assignment, now);
     if (!action) continue;
     try {
+      // A parent who never answered is a soft pass: retire this shortlist and go find new tutors,
+      // because a fresh name is a reason to reply and a re-pitch of the same three is not. That
+      // only holds if there ARE fresh names — with the pool dry, rejecting strips the only tutors
+      // we have, the resumed wave immediately gives up, and the owner gets "ran out of tutors"
+      // seconds later on an assignment whose real problem is that nobody has replied to them.
+      const repitch = action === 'flag' ? await hasFreshTutors(assignment) : false;
       // Record the gate FIRST so a slow owner-alert can't cause a double-nudge on the next tick.
       const field = action === 'nudge' ? 'outreach.parentNudgedAt' : 'outreach.parentSilenceEscalatedAt';
       await Assignment.updateOne({ _id: assignment._id }, { $set: { [field]: now } });
-      await alertOwnerParentSilent(assignment, action);
-      // A parent who never answered is a soft pass: retire this shortlist and go find new tutors,
-      // because a fresh name is a reason to reply and a re-pitch of the same three is not. Alert
-      // first so the owner reads it against the shortlist they were sent.
-      if (action === 'flag') {
+      // Alert before the reject so the owner reads it against the shortlist they were sent.
+      await alertOwnerParentSilent(assignment, action, { repitch });
+      if (repitch) {
         const res = await recordParentReject({ assignmentId: assignment._id, reason: 'silence' });
         if (res.ok) {
           await resumeOutreach(res.assignment, { botUsername: BOT_USERNAME })
             .catch(err => console.error(`Silence resume wave failed for ${assignment._id}:`, err.message));
         }
       }
-      console.log(`Parent-silence ${action} for ${assignment._id}`);
+      console.log(`Parent-silence ${action} for ${assignment._id}${action === 'flag' && !repitch ? ' (holding shortlist — no fresh tutors)' : ''}`);
     } catch (err) {
       console.error(`Parent silence follow-up failed for ${assignment._id}:`, err.message);
     }

@@ -241,10 +241,9 @@ async function notifyMatchedTutors(assignment, botUsername) {
   }
 }
 
-// Waves 2+ — message the next-best matching tutors we haven't contacted yet. Uses the
-// deterministic quality ranking (no extra AI call per wave). Returns { exhausted } when
-// the matching pool has no fresh tutors left to try.
-async function escalateAssignment(assignment, botUsername, { waveSize = 6, excludeTutorIds = null } = {}) {
+// The next-best matching tutors we haven't contacted yet, re-ranked 1..N. Uses the deterministic
+// quality ranking (no extra AI call per wave).
+async function freshTutorsForWave(assignment, { excludeTutorIds = null } = {}) {
   // Exposure caps (Phase 10 step 4): the tick passes the set of tutors already holding ≥2 unresolved
   // offers, held out of this wave. Computed once per tick by the caller. Siblings are per-assignment,
   // so they're resolved here and unioned in rather than asked of every caller.
@@ -256,9 +255,22 @@ async function escalateAssignment(assignment, botUsername, { waveSize = 6, exclu
   const contacted = new Set(assignment.contactedTutorIds());
   // Re-rank the not-yet-contacted tutors 1..N — the escalation decision only ever chooses among
   // these, so ranks relative to the fresh pool are what the decision log should record.
-  const fresh = scored
+  return scored
     .filter(s => !contacted.has(s.tutor._id?.toString()))
     .map((s, i) => ({ ...s, rank: i + 1 }));
+}
+
+// Is there anyone new left to message? Asks the same question a wave asks, without sending —
+// so a caller can decide whether searching again is worth giving up what it already has.
+async function hasFreshTutors(assignment) {
+  const fresh = await freshTutorsForWave(assignment);
+  return fresh.length > 0;
+}
+
+// Waves 2+ — message the next-best matching tutors we haven't contacted yet. Returns
+// { exhausted } when the matching pool has no fresh tutors left to try.
+async function escalateAssignment(assignment, botUsername, { waveSize = 6, excludeTutorIds = null } = {}) {
+  const fresh = await freshTutorsForWave(assignment, { excludeTutorIds });
 
   if (fresh.length === 0) {
     return { exhausted: true, sent: 0, failed: 0 };
@@ -344,4 +356,4 @@ async function remindNonResponders(assignment, botUsername, { maxReminders = 1, 
   return { remindedNone: false, sent, failed, reminded: batch.length };
 }
 
-export { notifyMatchedTutors, escalateAssignment, remindNonResponders };
+export { notifyMatchedTutors, escalateAssignment, remindNonResponders, hasFreshTutors };
