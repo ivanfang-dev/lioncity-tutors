@@ -1,5 +1,6 @@
 import { GoogleGenAI } from '@google/genai';
 import { getLevelCategory } from './tutorMatcher.js';
+import { formatSubject } from './assignmentSubjects.js';
 
 // The single transport seam for every PARENT-facing message. Parents are never auto-messaged
 // (see roadmap Repo facts): the bot owns timing, drafting, and outcome capture; the owner is
@@ -76,11 +77,14 @@ function placementRecord(tutor) {
 function subjectEvidence(tutor, assignment) {
   const claims = (tutor.profileFeatures?.subjectsClaimed || []).filter(c => c?.evidence);
   if (claims.length === 0) return null;
-  const subject = (assignment?.subject || '').toLowerCase();
+  // A multi-subject assignment stores the category "Multiple Subjects", which overlaps no real
+  // subject — so match on the subjects it named, falling back to the stored one.
+  const subjects = (assignment?.subjects?.length ? assignment.subjects : [assignment?.subject])
+    .filter(Boolean).map(s => s.toLowerCase());
   const level = (assignment?.level || '').toLowerCase();
   const overlaps = (a, b) => a && b && (a.includes(b) || b.includes(a));
   const hit =
-    claims.find(c => overlaps(subject, (c.subject || '').toLowerCase())) ||
+    claims.find(c => subjects.some(s => overlaps(s, (c.subject || '').toLowerCase()))) ||
     claims.find(c => overlaps(level, (c.level || '').toLowerCase()));
   return hit ? hit.evidence.trim() : null;
 }
@@ -127,7 +131,7 @@ async function llmShortlist(assignment, tutors) {
         `   Highest education: ${t.highestEducation || 'Not stated'}`,
         `   School(s): ${[t.currentSchool, t.previousSchools].filter(Boolean).join(', ') || 'Not stated'}`,
         `   Record with our agency: ${placementRecord(t) || 'No placements yet'}`,
-        `   Evidence for ${assignment.subject}: ${subjectEvidence(t, assignment) || 'None extracted'}`,
+        `   Evidence for ${formatSubject(assignment)}: ${subjectEvidence(t, assignment) || 'None extracted'}`,
         `   Introduction: ${(t.introduction || 'None').slice(0, INTRO_CHAR_LIMIT)}`,
         `   Teaching experience: ${(t.teachingExperience || 'None').slice(0, EXPERIENCE_CHAR_LIMIT)}`,
         `   Track record: ${(t.trackRecord || 'None').slice(0, TRACK_RECORD_CHAR_LIMIT)}`,
@@ -136,7 +140,7 @@ async function llmShortlist(assignment, tutors) {
 
     const prompt = `You are a tuition agency coordinator in Singapore writing a WhatsApp message to a PARENT who requested a tutor. Present the shortlisted tutors so the parent can choose.
 
-Assignment: ${assignment.title} | Level: ${assignment.level} | Subject: ${assignment.subject} | Location: ${assignment.location}
+Assignment: ${assignment.title} | Level: ${assignment.level} | Subject: ${formatSubject(assignment)} | Location: ${assignment.location}
 
 Shortlisted tutors:
 ${profiles}

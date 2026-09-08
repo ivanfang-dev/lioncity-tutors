@@ -130,3 +130,50 @@ describe('draftParentMessage without an API key falls back deterministically', (
     expect(msg.toLowerCase()).toContain('do our very best'); // stays no-pressure
   });
 });
+
+// A multi-subject assignment stores "Multiple Subjects" as its subject, which can never overlap a
+// tutor's claimed "Mathematics" — so evidence selection used to fall through to matching on level
+// alone and show whichever claim happened to be listed first.
+describe('evidence for a multi-subject assignment', () => {
+  const tutor = {
+    fullName: 'Wei Ming',
+    tutorType: 'Full-time Tutor',
+    yearsOfExperience: '3-5 years',
+    hourlyRate: { primary: '$40/hr' },
+    profileFeatures: { subjectsClaimed: [
+      { subject: 'Chinese', level: 'Primary', evidence: 'P4 Chinese oral from C to A' },
+      { subject: 'Mathematics', level: 'Primary', evidence: 'P5 Maths band 3 to band 1' },
+      { subject: 'Science', level: 'Primary', evidence: 'P6 Science AL5 to AL2' },
+    ] },
+  };
+  const multi = {
+    title: 'P4 Maths and Science', level: 'Primary 4',
+    subject: 'Multiple Subjects', subjects: ['Mathematics', 'Science'],
+  };
+
+  test('argues one of the subjects the parent actually asked for', () => {
+    const msg = deterministicShortlist(multi, [tutor]);
+    expect(msg).toContain('P5 Maths band 3 to band 1');
+    expect(msg).not.toContain('Chinese');
+  });
+
+  test('picks a requested subject over an unrequested one listed first', () => {
+    const reordered = { ...tutor, profileFeatures: { subjectsClaimed: [
+      { subject: 'Chinese', level: 'Primary', evidence: 'P4 Chinese oral from C to A' },
+      { subject: 'Science', level: 'Primary', evidence: 'P6 Science AL5 to AL2' },
+    ] } };
+    expect(deterministicShortlist(multi, [reordered])).toContain('P6 Science AL5 to AL2');
+  });
+
+  test('still falls back to the level when no claim names a requested subject', () => {
+    const offSubject = { ...tutor, profileFeatures: { subjectsClaimed: [
+      { subject: 'Chinese', level: 'Primary', evidence: 'P4 Chinese oral from C to A' },
+    ] } };
+    expect(deterministicShortlist(multi, [offSubject])).toContain('P4 Chinese oral from C to A');
+  });
+
+  test('a single-subject assignment is unaffected', () => {
+    const single = { title: 'P4 Maths', level: 'Primary 4', subject: 'Mathematics' };
+    expect(deterministicShortlist(single, [tutor])).toContain('P5 Maths band 3 to band 1');
+  });
+});
