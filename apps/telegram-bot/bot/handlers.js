@@ -1232,10 +1232,11 @@ async function startAssignmentCreation(bot, chatId, userSessions) {
     state: ApplicationStates.CREATING_ASSIGNMENT,
     assignmentData: {},
     currentStep: 'title',
+    stepHistory: [],
     pendingRate: userSessions[chatId]?.pendingRate || null  // Preserve pendingRate
   };
   
-  await renderAssignmentStep(bot, chatId, userSessions[chatId], 'title');
+  await advanceAssignmentStep(bot, chatId, userSessions[chatId], 'title');
 }
 
 function parseNaturalDate(text) {
@@ -1320,6 +1321,18 @@ const ASSIGNMENT_STEPS = [
 ];
 
 const cancelOnly = [[{ text: '❌ Cancel', callback_data: 'admin_panel' }]];
+
+// Back sits beside Cancel on the row Cancel already occupies, so no step grows taller. Omitted on
+// the first step, where there is nothing behind it.
+function withBackButton(keyboard, session) {
+  if ((session.stepHistory || []).length < 2) return keyboard;
+  const rows = keyboard.map(row => [...row]);
+  const last = rows[rows.length - 1];
+  const cancel = last?.findIndex(b => b.callback_data === 'admin_panel');
+  const back = { text: '◀️ Back', callback_data: 'assignment_back' };
+  if (cancel >= 0) last.splice(cancel, 0, back); else rows.push([back]);
+  return rows;
+}
 
 function assignmentStepView(step, session) {
   const data = session.assignmentData || {};
@@ -1424,8 +1437,34 @@ function assignmentStepView(step, session) {
 
 // Move forward to a step. Separate from renderAssignmentStep, which also redraws the step you are
 // already on when a toggle changes it — only a real move belongs in the back history.
+//
+// Each entry snapshots the answers AS THE STEP WAS SHOWN, before it was answered. Going back
+// restores that snapshot, so the step you land on is genuinely unanswered — half-ticked keyboards
+// and stale rates can't survive a Back. It also handles the branches for free: the stack records
+// the route actually taken, so backing out of Multiple Subjects returns to the subject list rather
+// than to whatever a fixed step order would have guessed.
 async function advanceAssignmentStep(bot, chatId, session, step, messageId = null) {
+  session.stepHistory = session.stepHistory || [];
+  session.stepHistory.push({
+    step,
+    data: structuredClone(session.assignmentData || {}),
+    waitingForCustomRate: !!session.waitingForCustomRate,
+  });
   await renderAssignmentStep(bot, chatId, session, step, messageId);
+}
+
+// Step back to the previous screen. The top of the stack is the step being left, so drop it and
+// restore the one beneath. Returns false when there's nothing to go back to.
+async function goBackAssignmentStep(bot, chatId, session, messageId = null) {
+  const history = session.stepHistory || [];
+  if (history.length < 2) return false;
+
+  history.pop();
+  const previous = history[history.length - 1];
+  session.assignmentData = structuredClone(previous.data);
+  session.waitingForCustomRate = previous.waitingForCustomRate;
+  await renderAssignmentStep(bot, chatId, session, previous.step, messageId);
+  return true;
 }
 
 // Show a step. Edits the message in place when one is given (a tap, where replacing the keyboard
@@ -1436,7 +1475,10 @@ async function renderAssignmentStep(bot, chatId, session, step, messageId = null
   if (!view) return;
   session.currentStep = step;
 
-  const options = { parse_mode: 'Markdown', reply_markup: { inline_keyboard: view.keyboard } };
+  const options = {
+    parse_mode: 'Markdown',
+    reply_markup: { inline_keyboard: withBackButton(view.keyboard, session) },
+  };
   if (messageId) {
     await bot.editMessageText(view.text, { chat_id: chatId, message_id: messageId, ...options });
   } else {
@@ -1576,6 +1618,7 @@ async function handleAssignmentStep(bot, chatId, text, userSessions, Assignment)
     userSessions[chatId].state = ApplicationStates.IDLE;
     delete userSessions[chatId].assignmentData;
     delete userSessions[chatId].currentStep;
+    delete userSessions[chatId].stepHistory;
   }
 }
 
@@ -1595,7 +1638,13 @@ async function handleAssignmentCallbackQuery(
   }
   
   try {
-    if (data.startsWith('select_level_')) {
+    if (data === 'assignment_back') {
+      if (!await goBackAssignmentStep(bot, chatId, session, callbackQuery.message.message_id)) {
+        await ack({ text: 'Nothing to go back to.' });
+        return;
+      }
+
+    } else if (data.startsWith('select_level_')) {
       const level = decodeURIComponent(data.replace('select_level_', ''));
       session.assignmentData.level = level;
       await advanceAssignmentStep(bot, chatId, session, 'subject', callbackQuery.message.message_id);
@@ -1849,6 +1898,7 @@ async function confirmPostAssignment(
     delete userSessions[chatId].assignmentData;
     delete userSessions[chatId].currentStep;
     delete userSessions[chatId].waitingForCustomRate;
+    delete userSessions[chatId].stepHistory;
 
     // Confirm immediately — WhatsApp notifications run in the background
     const confirmRows = [];
@@ -4817,6 +4867,9 @@ export {
   startAssignmentCreation,
   handleAssignmentStep,
   handleAssignmentCallbackQuery,
+  assignmentStepView,
+  goBackAssignmentStep,
+  advanceAssignmentStep,
   postAssignmentToChannel,
   handleApplication,
   handleStartParameter,
