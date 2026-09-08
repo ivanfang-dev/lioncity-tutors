@@ -6,6 +6,7 @@ import {
   formatSubject,
   MIN_PICKED_SUBJECTS,
   buildAssignmentDrafts,
+  siblingTitle,
   subjectModeKeyboard,
   subjectModePrompt,
 } from './assignmentSubjects.js';
@@ -146,9 +147,9 @@ describe('buildAssignmentDrafts', () => {
     }
   });
 
-  test('titles name their subject, so the channel posts are tellable apart', () => {
+  test('each sibling keeps the title, narrowed to its own subject', () => {
     expect(buildAssignmentDrafts({ ...base, subjectMode: 'split' }, ids()).map(d => d.title))
-      .toEqual(['P4 Maths and Science (Mathematics)', 'P4 Maths and Science (Science)']);
+      .toEqual(['P4 Maths', 'P4 Science']);
   });
 
   test('siblings share one group id, and it is theirs alone', () => {
@@ -197,5 +198,52 @@ describe('subjectModeKeyboard', () => {
 describe('subjectModePrompt', () => {
   test('names the subjects the choice is about', () => {
     expect(subjectModePrompt(['Mathematics', 'Science'])).toContain('Mathematics, Science');
+  });
+});
+
+describe('siblingTitle', () => {
+  const both = ['Mathematics', 'Science'];
+
+  test('drops the other subject and the word joining them', () => {
+    expect(siblingTitle('P4 Maths and Science', 'Mathematics', both)).toBe('P4 Maths');
+    expect(siblingTitle('P4 Maths and Science', 'Science', both)).toBe('P4 Science');
+  });
+
+  test('keeps the owner\'s own wording rather than the canonical name', () => {
+    expect(siblingTitle('P4 Maths and Sci', 'Mathematics', both)).toBe('P4 Maths');
+    expect(siblingTitle('P4 Math & Science', 'Science', both)).toBe('P4 Science');
+  });
+
+  test('keeps whatever else the title says', () => {
+    expect(siblingTitle('Urgent P4 Maths and Science at Bishan', 'Science', both))
+      .toBe('Urgent P4 Science at Bishan');
+  });
+
+  test('handles slashes and commas as joiners', () => {
+    expect(siblingTitle('P4 Maths/Science', 'Science', both)).toBe('P4 Science');
+    expect(siblingTitle('P5 Maths, Science and English', 'Science',
+      ['Mathematics', 'Science', 'English Language'])).toBe('P5 Science');
+    expect(siblingTitle('P5 Maths, Science and English', 'English Language',
+      ['Mathematics', 'Science', 'English Language'])).toBe('P5 English');
+  });
+
+  test('falls back to appending when the title names no subjects', () => {
+    expect(siblingTitle('P4 tuition at Bishan', 'Mathematics', both))
+      .toBe('P4 tuition at Bishan (Mathematics)');
+  });
+
+  test('falls back to appending when the title names only one of them', () => {
+    // Narrowing would leave both siblings with the same title, which is the thing to avoid.
+    expect(siblingTitle('P4 Maths tuition', 'Mathematics', both)).toBe('P4 Maths tuition (Mathematics)');
+    expect(siblingTitle('P4 Maths tuition', 'Science', both)).toBe('P4 Maths tuition (Science)');
+  });
+
+  test('does not mistake a substring for a subject', () => {
+    // "Math" inside "Mathematics" must not be matched separately.
+    expect(siblingTitle('P4 Mathematics and Science', 'Science', both)).toBe('P4 Science');
+  });
+
+  test('tidies up the whitespace it leaves behind', () => {
+    expect(siblingTitle('P4  Maths  and  Science', 'Science', both)).toBe('P4 Science');
   });
 });

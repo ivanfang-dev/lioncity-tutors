@@ -1,3 +1,5 @@
+import { subjectMentions, aliasRegex } from './subjectAliases.js';
+
 // The "Multiple Subjects" pick step of the assignment wizard, kept pure so it can be tested without
 // a bot. The owner ticks the subjects the parent actually asked for; matching reads that list
 // directly (tutorMatcher.resolveSubjects) instead of regex-parsing the assignment title.
@@ -62,8 +64,7 @@ export function buildAssignmentDrafts(assignmentData, makeGroupId = () => crypto
   return subjects.map(subject => ({
     ...rest,
     subject,
-    // Named per subject so the channel posts, and the owner's own list, are tellable apart.
-    title: `${rest.title} (${subject})`,
+    title: siblingTitle(rest.title, subject, subjects),
     siblingGroupId,
   }));
 }
@@ -83,4 +84,40 @@ export function subjectModePrompt(picked) {
     + `*Subjects:* ${picked.join(', ')}\n\n`
     + '_One tutor prioritises tutors who teach all of them. Separate tutors posts each subject '
     + 'on its own, so they fill independently._';
+}
+
+// The title for one sibling of a split request. "P4 Maths and Science" split into Maths and Science
+// should read "P4 Maths" and "P4 Science" — the owner's own wording, with the other subjects taken
+// out, not the canonical name bolted on the end.
+//
+// Only narrows when the title names at least two of the picked subjects. Otherwise there is nothing
+// to remove and every sibling would end up with the same title, so the subject is appended instead —
+// the title travels alone as {{1}} in the WhatsApp template, and a Science assignment titled
+// "P4 Maths and Science" reads like it covers both.
+export function siblingTitle(title, subject, picked) {
+  const mentioned = subjectMentions(title).filter(m => picked.includes(m.subject));
+  const others = mentioned.filter(m => m.subject !== subject);
+  if (mentioned.length - others.length < 1 || others.length < 1) {
+    return `${title} (${subject})`;
+  }
+
+  let narrowed = title;
+  for (const other of others) {
+    narrowed = removeSubjectPhrase(narrowed, other.text);
+  }
+  const tidied = narrowed.replace(/\s+/g, ' ').trim();
+  return tidied.length > 0 ? tidied : `${title} (${subject})`;
+}
+
+// Cut one subject out of a title, taking the word that joins it to its neighbour with it — so
+// "Maths and Science" loses " and Science", not just "Science". Tries the joiner on each side
+// before falling back to the bare word.
+function removeSubjectPhrase(title, text) {
+  const word = aliasRegex(text).source;
+  const joiner = '\\s*(?:and|&|\\+|,|/)\\s*';
+  for (const pattern of [`${joiner}${word}`, `${word}${joiner}`, word]) {
+    const regex = new RegExp(pattern, 'i');
+    if (regex.test(title)) return title.replace(regex, ' ');
+  }
+  return title;
 }
