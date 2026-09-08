@@ -26,6 +26,13 @@ function subjectToFieldName(subject) {
   ).join('');
 }
 
+// "Teaches any of these subjects at this level", as a Mongo clause. One field collapses to a plain
+// equality so a one-subject query looks the same however the subject was chosen.
+function subjectFilter(fields, levelCategory) {
+  const clause = f => ({ [`teachingLevels.${levelCategory}.${f}`]: true });
+  return fields.length === 1 ? clause(fields[0]) : { $or: fields.map(clause) };
+}
+
 // Maps assignment tutor type preference to possible DB values (mixed formats from website + telegram)
 const TUTOR_TYPE_MAP = {
   'Part-time': ['Part-time Tutor', 'Parttime', 'Undergraduate'],
@@ -453,6 +460,20 @@ function coverageFactor(tutor, requestedFields, levelCategory) {
 // for a single subject (coverage is then a no-op); empty for the "any subject" fallback.
 function resolveSubjects(assignment, levelCategory) {
   if (SPECIAL_SUBJECTS.has(assignment.subject)) {
+    // `subjects` is the wizard's multi-select — an exact list, so it wins over parsing the title.
+    // Absent on every assignment predating it, which is why the title fallback below stays.
+    const picked = [...new Set((assignment.subjects || []).map(s => subjectToFieldName(s)).filter(Boolean))];
+    if (picked.length > 0) {
+      return {
+        subjectQuery: subjectFilter(picked, levelCategory),
+        requestedFields: picked,
+      };
+    }
+    // A non-empty list that maps to nothing is a data error, not a reason to widen to every tutor.
+    if (assignment.subjects?.length > 0) {
+      console.log('Could not map any picked subject:', assignment.subjects);
+      return null;
+    }
     // Try to parse subjects from the assignment title
     const fields = parseSubjectsFromTitle(assignment.title || '');
     if (fields.length > 0) {

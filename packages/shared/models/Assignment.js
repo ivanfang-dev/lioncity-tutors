@@ -31,7 +31,24 @@ const assignmentSchema = new mongoose.Schema({
     required: true,
     enum: SUBJECTS
   },
-  
+
+  // The exact subjects behind a "Multiple Subjects" request, from the wizard's multi-select.
+  // Matching reads this instead of regex-parsing the title (resolveSubjects). Absent on
+  // single-subject assignments and on everything predating the picker.
+  subjects: [{
+    type: String,
+    enum: SUBJECTS
+  }],
+
+  // Set when one parent request was split into one assignment per subject because they were happy
+  // with separate tutors. Siblings share the id; each carries a single real `subject`, so they are
+  // ordinary assignments everywhere else.
+  siblingGroupId: {
+    type: String,
+    trim: true
+  },
+
+
   // Location and Schedule
   location: {
     type: String,

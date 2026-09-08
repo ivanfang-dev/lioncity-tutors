@@ -79,6 +79,60 @@ describe('buildFilterStages', () => {
   });
 });
 
+// An explicit `subjects[]` (the wizard's multi-select) is the authoritative list. Before it existed,
+// a "Multiple Subjects" assignment could only be matched by regex-parsing its free-text title.
+describe('buildFilterStages with an explicit subjects[]', () => {
+  const multi = {
+    level: 'Primary 5',
+    subject: 'Multiple Subjects',
+    // Deliberately misleading: proves the ticked list wins over the title.
+    title: 'P5 English tuition',
+    location: 'Bishan',
+    rate: '$40/hr',
+    subjects: ['Mathematics', 'Science'],
+  };
+
+  test('drives the subject filter off the ticked list, not the title', () => {
+    const { stages, unmappable } = buildFilterStages(multi);
+    expect(unmappable).toBeNull();
+    expect(stages.at(-1).query.$or).toEqual([
+      { 'teachingLevels.primary.mathematics': true },
+      { 'teachingLevels.primary.science': true },
+    ]);
+    expect(stages.at(-1).query).not.toHaveProperty('teachingLevels.primary.englishLanguage');
+  });
+
+  test('reports every ticked subject as a requested field, so coverage scoring sees them', () => {
+    expect(buildFilterStages(multi).requestedFields).toEqual(['mathematics', 'science']);
+  });
+
+  test('a single ticked subject collapses to a plain equality filter', () => {
+    const { stages, requestedFields } = buildFilterStages({ ...multi, subjects: ['Science'] });
+    expect(stages.at(-1).query['teachingLevels.primary.science']).toBe(true);
+    expect(stages.at(-1).query.$or).toBeUndefined();
+    expect(requestedFields).toEqual(['science']);
+  });
+
+  test('is unmappable when no ticked subject maps to a tutor field', () => {
+    expect(buildFilterStages({ ...multi, subjects: ['???'] }))
+      .toMatchObject({ unmappable: 'subject', stages: [] });
+  });
+
+  test('falls back to title parsing when the list is absent or empty', () => {
+    const parsed = { $or: [{ 'teachingLevels.primary.englishLanguage': true }] };
+    expect(buildFilterStages({ ...multi, subjects: undefined }).stages.at(-1).query.$or)
+      .toEqual(parsed.$or);
+    expect(buildFilterStages({ ...multi, subjects: [] }).stages.at(-1).query.$or)
+      .toEqual(parsed.$or);
+  });
+
+  test('is ignored for an ordinary single-subject assignment', () => {
+    const { stages, requestedFields } = buildFilterStages({ ...assignment, subjects: ['Science'] });
+    expect(stages.at(-1).query['teachingLevels.secondary.mathematics']).toBe(true);
+    expect(requestedFields).toEqual(['mathematics']);
+  });
+});
+
 describe('applyJsFilters', () => {
   test('counts what the budget filter removed', () => {
     const candidates = [
