@@ -1,5 +1,6 @@
 import { formatTimeSlots } from '../../../packages/shared/utils/timeSlots.js';
 import { escapeMd } from './markdown.js';
+import { formatSubject } from './assignmentSubjects.js';
 
 // Formats an assignment for the public Telegram channel post. Shared by the bot (initial
 // post) and the auto-close job (re-render on close), so the layout stays identical.
@@ -11,7 +12,7 @@ export function formatAssignmentForChannel(assignment) {
   // the whole post — which would leave the assignment Open but never published to the channel.
   let msg = `🎯 *Title:* ${escapeMd(assignment.title)}\n\n`;
   msg += `📚 *Level:* ${escapeMd(assignment.level)}\n`;
-  msg += `📖 *Subject:* ${escapeMd(assignment.subject)}\n`;
+  msg += `📖 *Subject:* ${escapeMd(formatSubject(assignment))}\n`;
   msg += `📍 *Location:* ${escapeMd(assignment.location)}\n`;
   msg += `📅 *Frequency:* ${escapeMd(assignment.frequency)}\n`;
   msg += `💰 *Rate:* ${escapeMd(assignment.rate)}\n`;

@@ -10,6 +10,7 @@ import { sendWhatsAppTemplate } from './whatsappSender.js';
 import { sendAssignmentDM } from './telegramOutreach.js';
 import { computeWaveSize, trailingInterestRate } from './waveSizing.js';
 import { loadCappedTutorIds, siblingContactedTutorIds } from './exposureCaps.js';
+import { formatSubject } from './assignmentSubjects.js';
 import { notifyOwner, opsButtonRow } from './ownerAlert.js';
 
 // The interested-tutor target an assignment aims for before holding (mirrors escalation-tick and
@@ -65,13 +66,13 @@ async function recordWaveContacts(assignmentId, contacts) {
 // {{5}} merges optional timing into frequency so the param is never empty (Meta rejects blank
 // params) and stays single-line. Description is intentionally dropped — it can be long/multi-
 // line, which templates can't carry; tutors get it in full when they apply via Telegram.
-function buildAssignmentParams(assignment) {
+export function buildAssignmentParams(assignment) {
   const timing = formatTimeSlots(assignment.preferredTimeSlots);
   const frequency = timing ? `${assignment.frequency}, ${timing}` : assignment.frequency;
   return [
     assignment.title,     // {{1}}
     assignment.level,     // {{2}}
-    assignment.subject,   // {{3}}
+    formatSubject(assignment), // {{3}} — the real subjects, not the wizard's category
     assignment.location,  // {{4}}
     frequency,            // {{5}}
     assignment.rate       // {{6}}

@@ -217,7 +217,7 @@ function formatTutorProfileSummary(tutor) {
 function formatAssignment(assignment) {
   let msg = `*🎯 ${escapeMd(assignment.title) || 'Assignment'}*\n\n`;
   msg += `*Level:* ${escapeMd(assignment.level)}\n`;
-  msg += `*Subject:* ${escapeMd(assignment.subject)}\n`;
+  msg += `*Subject:* ${escapeMd(formatSubject(assignment))}\n`;
   msg += `*Location:* ${escapeMd(assignment.location)}\n`;
   msg += `*Frequency:* ${escapeMd(assignment.frequency)}\n`;
   msg += `*Rate:* ${escapeMd(assignment.rate)}\n`;  
@@ -2238,7 +2238,7 @@ async function viewAssignments(bot, chatId, page = 0, Assignment) {
     assignments.forEach((assignment, index) => {
       message += `*${index + 1}. ${escapeMd(assignment.title) || 'Assignment'}*\n`;
       message += `📚 Level: ${escapeMd(assignment.level)}\n`;
-      message += `📖 Subject: ${escapeMd(assignment.subject)}\n`;
+      message += `📖 Subject: ${escapeMd(formatSubject(assignment))}\n`;
       message += `📍 Location: ${escapeMd(assignment.location)}\n`;
       message += `📅 Frequency: ${escapeMd(assignment.frequency)}\n`;
       message += `💰 Rate: ${escapeMd(assignment.rate)}\n`;
@@ -2335,7 +2335,7 @@ async function viewMyApplications(bot, chatId, userSessions, Assignment) {
 
       message += `*${index + 1}. ${escapeMd(assignment.title) || 'Assignment'}*\n`;
       message += `📚 Level: ${escapeMd(assignment.level)}\n`;
-      message += `📖 Subject: ${escapeMd(assignment.subject)}\n`;
+      message += `📖 Subject: ${escapeMd(formatSubject(assignment))}\n`;
       message += `📍 Location: ${escapeMd(assignment.location)}\n`;
       message += `💰 Rate: ${escapeMd(assignment.rate)}\n`;
       message += `📅 Applied: ${new Date(myApplication.appliedAt).toLocaleDateString('en-SG')}\n`;
@@ -2375,7 +2375,7 @@ async function adminViewAllApplications(bot, chatId, Assignment) {
     
     assignments.forEach((assignment, index) => {
       message += `*${index + 1}. ${escapeMd(assignment.title) || 'Assignment'}*\n`;
-      message += `📚 ${escapeMd(assignment.level)} - ${escapeMd(assignment.subject)}\n`;
+      message += `📚 ${escapeMd(assignment.level)} - ${escapeMd(formatSubject(assignment))}\n`;
       message += `📍 ${escapeMd(assignment.location)}\n`;
       message += `👥 Applications: ${assignment.applicants.length}\n`;
       
@@ -4567,7 +4567,7 @@ async function adminManageAssignments(bot, chatId, Assignment) {
     
     assignments.forEach((assignment, index) => {
       message += `*${index + 1}. ${escapeMd(assignment.title) || 'Assignment'}*\n`;
-      message += `📚 ${escapeMd(assignment.level)} - ${escapeMd(assignment.subject)}\n`;
+      message += `📚 ${escapeMd(assignment.level)} - ${escapeMd(formatSubject(assignment))}\n`;
       message += `🔄 Status: ${assignment.status}\n`;
       message += `👥 Applications: ${assignment.applicants ? assignment.applicants.length : 0}\n\n`;
       
@@ -4603,7 +4603,7 @@ async function editAssignment(bot, chatId, assignmentId, Assignment) {
     let message = `✏️ *Edit Assignment*\n\n`;
     message += `*Title:* ${escapeMd(assignment.title) || 'Assignment'}\n`;
     message += `*Level:* ${escapeMd(assignment.level)}\n`;
-    message += `*Subject:* ${escapeMd(assignment.subject)}\n`;
+    message += `*Subject:* ${escapeMd(formatSubject(assignment))}\n`;
     message += `*Current Status:* ${assignment.status}\n`;
     message += `*Applications:* ${assignment.applicants ? assignment.applicants.length : 0}\n`;
     if (assignment.outreach?.status) {

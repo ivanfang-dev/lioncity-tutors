@@ -1,5 +1,6 @@
 import { formatTimeSlots } from '../../../packages/shared/utils/timeSlots.js';
 import { escapeMd } from './markdown.js';
+import { formatSubject } from './assignmentSubjects.js';
 
 // Outbound cold-outreach DM to a tutor over Telegram — the FREE alternative to a billable
 // WhatsApp template. Mirrors whatsappSender.js: a single fetch choke point that THROWS on
@@ -13,14 +14,14 @@ const TELEGRAM_API = 'https://api.telegram.org';
 // Format the assignment for a tutor-facing DM. Unlike the WhatsApp template — 6 rigid,
 // single-line params with the description dropped — a Telegram DM has no such limits, so we
 // include the full description: the extra context that makes a tutor more likely to say yes.
-function formatAssignmentDM(assignment) {
+export function formatAssignmentDM(assignment) {
   const timing = formatTimeSlots(assignment.preferredTimeSlots);
   const frequency = timing ? `${assignment.frequency}, ${timing}` : assignment.frequency;
 
   let msg = `*🎯 New Assignment Match*\n\n`;
   msg += `*${escapeMd(assignment.title || 'Assignment')}*\n\n`;
   msg += `*Level:* ${escapeMd(assignment.level)}\n`;
-  msg += `*Subject:* ${escapeMd(assignment.subject)}\n`;
+  msg += `*Subject:* ${escapeMd(formatSubject(assignment))}\n`;
   msg += `*Location:* ${escapeMd(assignment.location)}\n`;
   msg += `*Frequency:* ${escapeMd(frequency)}\n`;
   msg += `*Rate:* ${escapeMd(assignment.rate)}\n`;
