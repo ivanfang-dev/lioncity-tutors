@@ -149,6 +149,42 @@ describe('buildFilterStages with an explicit subjects[]', () => {
     expect(query.$and).toBeUndefined();
   });
 
+  test('adds a soft allSubjects stage requiring every ticked subject', () => {
+    const { stages } = buildFilterStages(multi);
+    expect(stages.map(s => s.filter))
+      .toEqual(['contactable', 'active', 'region', 'subject', 'allSubjects']);
+    const all = stages.at(-1);
+    expect(all.soft).toBe(true);
+    expect(all.query['teachingLevels.primary.mathematics']).toBe(true);
+    expect(all.query['teachingLevels.primary.science']).toBe(true);
+  });
+
+  test('no allSubjects stage for a single subject — there is nothing to cover', () => {
+    expect(buildFilterStages({ ...multi, subjects: ['Science'] }).stages.map(s => s.filter))
+      .not.toContain('allSubjects');
+    expect(buildFilterStages(assignment).stages.map(s => s.filter))
+      .not.toContain('allSubjects');
+  });
+
+  test('no allSubjects stage when the subjects were only guessed from the title', () => {
+    // Parsing "Maths and Science" out of a title says nothing about whether the parent wanted
+    // one tutor for both. Only the wizard's explicit pick means that.
+    const { stages, requestedFields } = buildFilterStages({
+      ...multi, subjects: undefined, title: 'P5 Maths and Science',
+    });
+    expect(requestedFields).toHaveLength(2);
+    expect(stages.map(s => s.filter)).not.toContain('allSubjects');
+  });
+
+  test('allSubjects sits before the parent preferences, so those relax first', () => {
+    const { stages } = buildFilterStages({
+      ...multi, preferredGender: 'Female', preferredTutorTypes: ['Full-time'],
+    });
+    const names = stages.map(s => s.filter);
+    expect(names.indexOf('allSubjects')).toBeLessThan(names.indexOf('tutorType'));
+    expect(names.indexOf('tutorType')).toBeLessThan(names.indexOf('gender'));
+  });
+
   test('is ignored for an ordinary single-subject assignment', () => {
     const { stages, requestedFields } = buildFilterStages({ ...assignment, subjects: ['Science'] });
     expect(stages.at(-1).query['teachingLevels.secondary.mathematics']).toBe(true);

@@ -44,6 +44,15 @@ function mergeClause(query, clause) {
   return merged;
 }
 
+// The cumulative query with some filters left out. Each stage's `query` snapshot only expresses
+// dropping a suffix of the chain, and staged relaxation needs to drop one from the middle — so
+// rebuild from the clauses rather than reaching for a snapshot.
+function queryWithout(stages, dropped) {
+  return stages
+    .filter(st => !dropped.includes(st.filter))
+    .reduce((q, st) => mergeClause(q, st.clause), {});
+}
+
 // "Teaches any of these subjects at this level", as a Mongo clause. One field collapses to a plain
 // equality so a one-subject query looks the same however the subject was chosen.
 function subjectFilter(fields, levelCategory) {
@@ -485,6 +494,7 @@ function resolveSubjects(assignment, levelCategory) {
       return {
         subjectQuery: subjectFilter(picked, levelCategory),
         requestedFields: picked,
+        explicit: true,
       };
     }
     // A non-empty list that maps to nothing is a data error, not a reason to widen to every tutor.
@@ -594,7 +604,7 @@ function buildFilterStages(assignment) {
 
   const resolved = resolveSubjects(assignment, levelCategory);
   if (!resolved) return { ...empty, unmappable: 'subject' };
-  const { subjectQuery, requestedFields } = resolved;
+  const { subjectQuery, requestedFields, explicit } = resolved;
 
   const stages = [];
   let query = {};
@@ -602,7 +612,7 @@ function buildFilterStages(assignment) {
   // is too thin to work with, runMatch drops them and penalises the mismatches in scoring instead.
   const add = (filter, clause, soft = false) => {
     query = mergeClause(query, clause);
-    stages.push({ filter, query, soft });
+    stages.push({ filter, clause, query, soft });
   };
 
   // $nin with null also excludes docs missing the field entirely, so no $exists needed.
@@ -621,6 +631,16 @@ function buildFilterStages(assignment) {
     ? { $or: regions.map(r => ({ [`locations.${r}`]: true })) }
     : { [`locations.${region}`]: true });
   add('subject', subjectQuery);
+
+  // The parent asked for ONE tutor covering every subject, so require all of them — but softly: a
+  // pool that small often can't fill a wave, and runMatch drops this first, leaving the `subject`
+  // OR above and letting coverageFactor rank the all-rounders back to the top. Only an explicit
+  // pick means this; subjects merely parsed out of a title say nothing about wanting one tutor.
+  if (explicit && requestedFields.length > 1) {
+    add('allSubjects', Object.fromEntries(
+      requestedFields.map(f => [`teachingLevels.${levelCategory}.${f}`, true])
+    ), true);
+  }
 
   if (assignment.preferredTutorTypes?.length > 0) {
     const allowedTypes = assignment.preferredTutorTypes.flatMap(t => TUTOR_TYPE_MAP[t] || []);
@@ -727,20 +747,21 @@ async function runMatch(assignment, poolSize, { withStats = false, model = Tutor
 
   let { docs: candidates, kept, stages: jsStages } = await fetchPool(fetchQuery);
 
-  // Too few exact matches to reach the interested target — refetch without the soft preferences
-  // (gender, tutor type) so there's a real pool to work with. The mismatches aren't hidden: they
-  // rank below every exact match via preferenceFactor, and `relaxed` tells the caller what gave.
+  // Too few exact matches to reach the interested target — refetch without the soft filters so
+  // there's a real pool to work with. Dropped from the END of the chain one at a time, stopping as
+  // soon as the pool is workable, so we give up the least the parent asked for: gender, then tutor
+  // type, then "one tutor for every subject". The mismatches aren't hidden — they rank below every
+  // exact match via preferenceFactor and coverageFactor, and `relaxed` tells the caller what gave.
+  // The extra queries only run on a pool already too thin to send.
   const softFilters = stages.filter(st => st.soft).map(st => st.filter);
   let relaxed = [];
-  if (kept.length < RELAX_POOL_MIN && softFilters.length > 0) {
-    const lastHard = [...stages].reverse().find(st => !st.soft);
-    const relaxedQuery = excludeIds.length
-      ? { ...lastHard.query, _id: { $nin: excludeIds } }
-      : lastHard.query;
-    const wider = await fetchPool(relaxedQuery);
+  for (let i = softFilters.length - 1; i >= 0 && kept.length < RELAX_POOL_MIN; i--) {
+    const dropping = softFilters.slice(i);
+    const base = queryWithout(stages, dropping);
+    const wider = await fetchPool(excludeIds.length ? { ...base, _id: { $nin: excludeIds } } : base);
     if (wider.kept.length > kept.length) {
       ({ docs: candidates, kept, stages: jsStages } = wider);
-      relaxed = softFilters;
+      relaxed = dropping;
     }
   }
 

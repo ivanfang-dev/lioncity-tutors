@@ -113,3 +113,103 @@ describe('soft-preference relaxation when the pool is too thin', () => {
     expect(relaxed).toEqual([]);
   });
 });
+
+// --- "One tutor for every subject" (soft AND) -------------------------------
+// A multi-subject request where the parent wants ONE tutor filters on tutors who cover all of
+// them, but that pool can be tiny — so it relaxes to "any of them" rather than sending nothing.
+
+const get = (doc, path) => path.split('.').reduce((o, k) => (o == null ? undefined : o[k]), doc);
+
+// Enough of a Mongo matcher for the clauses buildFilterStages actually emits.
+function matchesQuery(doc, query) {
+  return Object.entries(query).every(([key, cond]) => {
+    if (key === '$or') return cond.some(c => matchesQuery(doc, c));
+    if (key === '$and') return cond.every(c => matchesQuery(doc, c));
+    const value = get(doc, key);
+    if (cond && typeof cond === 'object' && !Array.isArray(cond)) {
+      if ('$in' in cond) return cond.$in.includes(value);
+      if ('$nin' in cond) return !cond.$nin.includes(value);
+    }
+    if (cond === null) return value == null;
+    return value === cond;
+  });
+}
+
+function queryingModel(docs) {
+  return {
+    countDocuments: async () => docs.length,
+    find: (query) => {
+      const hits = docs.filter(d => matchesQuery(d, query));
+      const chain = { select: () => chain, sort: () => chain, limit: () => chain, lean: async () => hits };
+      return chain;
+    },
+  };
+}
+
+describe('allSubjects relaxation when too few tutors cover everything', () => {
+  const multi = {
+    level: 'Primary 5', subject: 'Multiple Subjects', title: 'P5 Maths and Science',
+    location: 'Bishan', rate: '$40/hr',
+    subjects: ['Mathematics', 'Science'],
+  };
+
+  const primaryTutor = (id, { science, gender }) => ({
+    _id: id, fullName: id, gender,
+    contactNumber: '81234567',
+    locations: { central: true },
+    yearsOfExperience: '3-5 years',
+    hourlyRate: { primary: '$35/hr' },
+    tutorType: 'Full-time Tutor',
+    teachingLevels: { primary: { mathematics: true, science } },
+    responseStats: { contacted: 10, responded: 8 },
+  });
+
+  const both = (n, gender) => Array.from({ length: n }, (_, i) => primaryTutor(`b${gender || ''}${i}`, { science: true, gender }));
+  const mathOnly = (n) => Array.from({ length: n }, (_, i) => primaryTutor(`m${i}`, { science: false }));
+
+  test('a healthy all-covering pool is used as-is, with nothing relaxed', async () => {
+    const model = queryingModel([...both(12), ...mathOnly(12)]);
+    const { scored, relaxed } = await findMatchingTutorsForWave(multi, 40, { model });
+    expect(relaxed).toEqual([]);
+    expect(scored).toHaveLength(12);
+    expect(scored.every(s => s.tutor.teachingLevels.primary.science)).toBe(true);
+  });
+
+  test('a thin all-covering pool falls back to tutors who cover any of the subjects', async () => {
+    const model = queryingModel([...both(2), ...mathOnly(12)]);
+    const { scored, relaxed } = await findMatchingTutorsForWave(multi, 40, { model });
+    expect(relaxed).toEqual(['allSubjects']);
+    expect(scored.length).toBeGreaterThan(2);
+  });
+
+  test('relaxed-in partial-coverage tutors rank below the ones who cover everything', async () => {
+    const model = queryingModel([...both(2), ...mathOnly(12)]);
+    const { scored } = await findMatchingTutorsForWave(multi, 40, { model });
+    expect(scored.slice(0, 2).every(s => s.tutor.teachingLevels.primary.science)).toBe(true);
+  });
+
+  test('a stated gender preference is given up before the one-tutor requirement', async () => {
+    // 2 female all-rounders is too thin; 14 all-rounders is not. Dropping gender is enough,
+    // so the parent still gets one tutor for both subjects.
+    const model = queryingModel([...both(2, 'Female'), ...both(12, 'Male'), ...mathOnly(12)]);
+    const { scored, relaxed } = await findMatchingTutorsForWave(
+      { ...multi, preferredGender: 'Female' }, 40, { model }
+    );
+    expect(relaxed).toEqual(['gender']);
+    expect(scored.every(s => s.tutor.teachingLevels.primary.science)).toBe(true);
+  });
+
+  test('both are given up when dropping the gender preference is still not enough', async () => {
+    const model = queryingModel([...both(2, 'Female'), ...mathOnly(12)]);
+    const { relaxed } = await findMatchingTutorsForWave(
+      { ...multi, preferredGender: 'Female' }, 40, { model }
+    );
+    expect(relaxed).toEqual(['allSubjects', 'gender']);
+  });
+
+  test('nothing to relax when the subjects were only guessed from the title', async () => {
+    const model = queryingModel([...both(1), ...mathOnly(12)]);
+    const { relaxed } = await findMatchingTutorsForWave({ ...multi, subjects: undefined }, 40, { model });
+    expect(relaxed).toEqual([]);
+  });
+});
