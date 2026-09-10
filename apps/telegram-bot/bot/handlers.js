@@ -1624,6 +1624,22 @@ async function handleAssignmentStep(bot, chatId, text, userSessions, Assignment)
 
 // `ack` is handleCallbackQuery's answer-once helper, passed in so the parent's finally-block
 // and this function can't both answer the same query. Defaults to answering directly, for a
+// Every callback the wizard's keyboards emit. handleCallbackQuery routes on this, so a branch added
+// below without an entry here never reaches the wizard at all — the tap falls through to the
+// "not yet implemented" catch-all. It lives next to the handler for that reason: the two are one
+// unit, and splitting them across 2000 lines is what let the subject picker ship unreachable.
+// `admin_panel` is deliberately absent — cancelling is the whole bot's, not the wizard's.
+const ASSIGNMENT_WIZARD_CALLBACKS = [
+  'select_level_', 'select_subject_', 'pick_subj_', 'confirm_subjects',
+  'subject_mode_one', 'subject_mode_split', 'select_location_', 'toggle_tutor_pref_',
+  'confirm_tutor_types', 'select_rate_', 'toggle_assignment_slot_',
+  'confirm_assignment_slots', 'set_assignment_gender_', 'assignment_back',
+];
+
+function isAssignmentWizardCallback(data) {
+  return ASSIGNMENT_WIZARD_CALLBACKS.some(prefix => data === prefix || data.startsWith(prefix));
+}
+
 // caller that doesn't have one.
 async function handleAssignmentCallbackQuery(
   bot, callbackQuery, userSessions,
@@ -3707,7 +3723,7 @@ async function handleCallbackQuery(
       return await startAssignmentCreation(bot, chatId, userSessions);
     }
 
-    if (data.startsWith('select_level_') || data.startsWith('select_subject_') || data.startsWith('select_location_') || data.startsWith('toggle_tutor_pref_') || data === 'confirm_tutor_types' || data.startsWith('select_rate_') || data.startsWith('toggle_assignment_slot_') || data === 'confirm_assignment_slots' || data.startsWith('set_assignment_gender_')) {
+    if (isAssignmentWizardCallback(data)) {
       return await handleAssignmentCallbackQuery(bot, callbackQuery, userSessions, ack);
     }
 
@@ -4907,6 +4923,7 @@ export {
   startAssignmentCreation,
   handleAssignmentStep,
   handleAssignmentCallbackQuery,
+  isAssignmentWizardCallback,
   assignmentStepView,
   goBackAssignmentStep,
   advanceAssignmentStep,
