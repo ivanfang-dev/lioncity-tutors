@@ -959,6 +959,25 @@ function getHourlyRatesMenu(tutor) {
 
 const ITEMS_PER_PAGE = 5;
 
+// Previous/Next for a paged list, omitted at the ends. `prefix` is the callback the view routes on.
+function paginationRow(page, totalPages, prefix) {
+  const row = [];
+  if (page > 0) row.push({ text: '⬅️ Previous', callback_data: `${prefix}${page - 1}` });
+  if (page < totalPages - 1) row.push({ text: 'Next ➡️', callback_data: `${prefix}${page + 1}` });
+  return row;
+}
+
+// Telegram rejects a sendMessage longer than this outright, and safeSend rethrows — so a list that
+// outgrows it doesn't truncate, it fails with a generic error. Any view that renders one row per
+// record has to be paged against this, not just sorted.
+const TELEGRAM_MESSAGE_LIMIT = 4096;
+
+// Applications are bulkier per row than assignments (each carries its applicants), so they page
+// smaller. Paging alone isn't enough: the applicant list inside each one is unbounded too — 26 on
+// one assignment in real data — so the overview shows a few and links to the rest.
+const APPLICATIONS_PER_PAGE = 3;
+const APPLICANTS_PREVIEWED = 3;
+
 // Send rate input prompt message
 async function sendRateInputPrompt(bot, chatId) {
   await safeSend(bot, chatId, 
@@ -2319,7 +2338,7 @@ async function viewAssignments(bot, chatId, page = 0, Assignment) {
 
 // View user's applications
 // View user's applications (robust version)
-async function viewMyApplications(bot, chatId, userSessions, Assignment) {
+async function viewMyApplications(bot, chatId, userSessions, Assignment, page = 0) {
   try {
     // Safely get session
     const session = userSessions[chatId];
@@ -2342,9 +2361,15 @@ async function viewMyApplications(bot, chatId, userSessions, Assignment) {
     const tutorId = session.tutorId;
 
     // Find assignments where this tutor has applied
-    const assignments = await Assignment.find({
-      'applicants.tutorId': tutorId
-    }).sort({ createdAt: -1 });
+    const query = { 'applicants.tutorId': tutorId };
+    const total = await Assignment.countDocuments(query);
+    const totalPages = Math.max(1, Math.ceil(total / ITEMS_PER_PAGE));
+    const current = Math.min(Math.max(page, 0), totalPages - 1);
+
+    const assignments = await Assignment.find(query)
+      .sort({ createdAt: -1 })
+      .skip(current * ITEMS_PER_PAGE)
+      .limit(ITEMS_PER_PAGE);
 
     if (!assignments.length) {
       return await safeSend(
@@ -2363,7 +2388,7 @@ async function viewMyApplications(bot, chatId, userSessions, Assignment) {
     }
 
     // Build the applications message
-    let message = `📋 *My Applications*\n\n`;
+    let message = `📋 *My Applications* — Page ${current + 1} of ${totalPages}\n\n`;
 
     assignments.forEach((assignment, index) => {
       const myApplication = assignment.applicants.find(
@@ -2373,7 +2398,7 @@ async function viewMyApplications(bot, chatId, userSessions, Assignment) {
       // If for some reason myApplication is missing, skip it safely
       if (!myApplication) return;
 
-      message += `*${index + 1}. ${escapeMd(assignment.title) || 'Assignment'}*\n`;
+      message += `*${current * ITEMS_PER_PAGE + index + 1}. ${escapeMd(assignment.title) || 'Assignment'}*\n`;
       message += `📚 Level: ${escapeMd(assignment.level)}\n`;
       message += `📖 Subject: ${escapeMd(formatSubject(assignment))}\n`;
       message += `📍 Location: ${escapeMd(assignment.location)}\n`;
@@ -2382,12 +2407,12 @@ async function viewMyApplications(bot, chatId, userSessions, Assignment) {
       message += `🔄 Status: ${myApplication.status}\n\n`;
     });
 
-    await safeSend(bot, chatId, message, {
-      parse_mode: 'Markdown',
-      reply_markup: {
-        inline_keyboard: [[{ text: '🏠 Back to Main Menu', callback_data: 'main_menu' }]]
-      }
-    });
+    const rows = [];
+    const pager = paginationRow(current, totalPages, 'my_apps_page_');
+    if (pager.length > 0) rows.push(pager);
+    rows.push([{ text: '🏠 Back to Main Menu', callback_data: 'main_menu' }]);
+
+    await safeSend(bot, chatId, message, { parse_mode: 'Markdown', reply_markup: { inline_keyboard: rows } });
 
   } catch (error) {
     console.error('Error viewing applications:', error);
@@ -2396,12 +2421,18 @@ async function viewMyApplications(bot, chatId, userSessions, Assignment) {
 }
 
 // Admin view all applications
-async function adminViewAllApplications(bot, chatId, Assignment) {
+async function adminViewAllApplications(bot, chatId, Assignment, page = 0) {
   try {
-    const assignments = await Assignment.find({
-      'applicants': { $exists: true, $not: { $size: 0 } }
-    }).sort({ createdAt: -1 });
-    
+    const query = { 'applicants': { $exists: true, $not: { $size: 0 } } };
+    const total = await Assignment.countDocuments(query);
+    const totalPages = Math.max(1, Math.ceil(total / APPLICATIONS_PER_PAGE));
+    const current = Math.min(Math.max(page, 0), totalPages - 1);
+
+    const assignments = await Assignment.find(query)
+      .sort({ createdAt: -1 })
+      .skip(current * APPLICATIONS_PER_PAGE)
+      .limit(APPLICATIONS_PER_PAGE);
+
     if (assignments.length === 0) {
       await safeSend(bot, chatId, '📋 No applications found.', {
         reply_markup: {
@@ -2411,33 +2442,36 @@ async function adminViewAllApplications(bot, chatId, Assignment) {
       return;
     }
     
-    let message = `📊 *All Applications*\n\n`;
-    
+    let message = `📊 *All Applications* — Page ${current + 1} of ${totalPages}\n\n`;
+    const buttons = [];
+
     assignments.forEach((assignment, index) => {
-      message += `*${index + 1}. ${escapeMd(assignment.title) || 'Assignment'}*\n`;
+      message += `*${current * APPLICATIONS_PER_PAGE + index + 1}. ${escapeMd(assignment.title) || 'Assignment'}*\n`;
       message += `📚 ${escapeMd(assignment.level)} - ${escapeMd(formatSubject(assignment))}\n`;
       message += `📍 ${escapeMd(assignment.location)}\n`;
       message += `👥 Applications: ${assignment.applicants.length}\n`;
       
-      assignment.applicants.forEach((app, appIndex) => {
-        message += `  ${appIndex + 1}. Status: ${app.status}\n`;
-        message += `     Contact: ${escapeMd(app.contactDetails)}\n`;
-        message += `     Applied: ${app.appliedAt.toLocaleDateString('en-SG')}\n`;
-        if (app.notes) {
-          message += `     Notes: ${escapeMd(app.notes)}\n`;
-        }
+      assignment.applicants.slice(0, APPLICANTS_PREVIEWED).forEach((app, appIndex) => {
+        message += `  ${appIndex + 1}. ${app.status} — ${escapeMd(app.contactDetails)}`;
+        message += app.appliedAt ? `, ${app.appliedAt.toLocaleDateString('en-SG')}\n` : '\n';
       });
-      
+      const hidden = assignment.applicants.length - APPLICANTS_PREVIEWED;
+      if (hidden > 0) message += `  …and ${hidden} more\n`;
+
       message += '\n';
+      buttons.push([{
+        text: `👥 Applications for ${current * APPLICATIONS_PER_PAGE + index + 1}`,
+        callback_data: `view_applications_${assignment._id}`,
+      }]);
     });
     
-    await safeSend(bot, chatId, message, {
-      parse_mode: 'Markdown',
-      reply_markup: {
-        inline_keyboard: [[{ text: '🔙 Back to Admin Panel', callback_data: 'admin_panel' }]]
-      }
-    });
-    
+    const pager = paginationRow(current, totalPages, 'admin_apps_page_');
+    if (pager.length > 0) buttons.push(pager);
+    buttons.push([{ text: '🔙 Back to Admin Panel', callback_data: 'admin_panel' }]);
+    const rows = buttons;
+
+    await safeSend(bot, chatId, message, { parse_mode: 'Markdown', reply_markup: { inline_keyboard: rows } });
+
   } catch (error) {
     console.error('Error viewing all applications:', error);
     await safeSend(bot, chatId, '❌ An error occurred while loading applications. Please try again.');
@@ -3738,11 +3772,21 @@ async function handleCallbackQuery(
     }
 
     if (data === 'view_applications') {
-      return await viewMyApplications(bot, chatId, userSessions, Assignment);
+      return await viewMyApplications(bot, chatId, userSessions, Assignment, 0);
+    }
+
+    if (data.startsWith('my_apps_page_')) {
+      return await viewMyApplications(bot, chatId, userSessions, Assignment,
+        parseInt(data.replace('my_apps_page_', ''), 10) || 0);
     }
 
     if (data === 'admin_view_all_applications') {
-      return await adminViewAllApplications(bot, chatId, Assignment);
+      return await adminViewAllApplications(bot, chatId, Assignment, 0);
+    }
+
+    if (data.startsWith('admin_apps_page_')) {
+      return await adminViewAllApplications(bot, chatId, Assignment,
+        parseInt(data.replace('admin_apps_page_', ''), 10) || 0);
     }
 
     if (data === 'admin_manage_assignments') {
@@ -4924,6 +4968,7 @@ export {
   handleAssignmentStep,
   handleAssignmentCallbackQuery,
   isAssignmentWizardCallback,
+  TELEGRAM_MESSAGE_LIMIT,
   assignmentStepView,
   goBackAssignmentStep,
   advanceAssignmentStep,
