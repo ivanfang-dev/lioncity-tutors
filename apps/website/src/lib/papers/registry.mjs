@@ -1,10 +1,11 @@
-import { testPapers } from '@/data/testPapers.mjs';
-import { paperKeyOf } from '@/lib/downloadKeys.mjs';
+// Relative, not aliased: next.config.mjs imports this to generate the redirect
+// map, and it runs in plain node where the `@/` webpack alias does not exist.
+import { testPapers } from '../../data/testPapers.mjs';
+import { paperKeyOf } from '../downloadKeys.mjs';
 
-// One indexable page per paper. The library groups papers by level, subject and
-// exam, but the shelf itself is a single URL — nothing in it can rank for the
-// school-and-year queries people actually type ("nanyang p6 english 2024 sa2").
-// This registry derives that structure from the data we already ship.
+// Structure for the paper library, derived from the data we already ship: every
+// paper gets a level, subject, exam, year and school parsed out of its title,
+// and `getPaperGroups()` below folds those into the pages we actually publish.
 
 const LEVEL_LABELS = {
   primary: 'Primary',
@@ -154,23 +155,88 @@ export function getAllPapers() {
   return cached;
 }
 
-export function getPaperBySlug(level, slug) {
-  return getAllPapers().find((p) => p.level === level && p.slug === slug) ?? null;
+// ── Groups ───────────────────────────────────────────────────────────────────
+// One page per paper gave 196 URLs that differed from each other by a school
+// name swapped five times — 98.2% identical, and Google left them all in
+// "Discovered – currently not indexed". Grouping on subject x exam x year gives
+// 37 pages that differ structurally: different subject, exam, year, school list
+// and count. It is also the shape freetestpaper.com ranks with.
+
+/** Papers that belong together on one page: same subject, same exam, same year. */
+function groupKeyFor(paper) {
+  return `${paper.level}|${paper.subject}|${paper.examLabel}|${paper.year}`;
 }
 
-let byKey;
+function buildGroups() {
+  const byGroup = new Map();
+  for (const paper of getAllPapers()) {
+    const key = groupKeyFor(paper);
+    if (!byGroup.has(key)) byGroup.set(key, []);
+    byGroup.get(key).push(paper);
+  }
 
-/** Lets the library rows link to a paper's own page without re-deriving slugs. */
-export function getPaperUrlByKey(paperKey) {
+  return [...byGroup.values()].map((papers) => {
+    const [first] = papers;
+    const slug = `${kebab(first.shortSubject)}-${first.year}-${kebab(first.examLabel)}`;
+    // Schools repeat when one school set both a paper and its solutions.
+    const schools = [...new Set(papers.map((p) => p.school).filter(Boolean))];
+    const heading = `${first.shortSubject} ${first.year} ${first.examLabel} Papers`;
+
+    return {
+      slug,
+      url: `/free-test-papers/${first.level}/${slug}`,
+      level: first.level,
+      levelLabel: first.levelLabel,
+      subject: first.subject,
+      shortSubject: first.shortSubject,
+      examKey: first.examKey,
+      examLabel: first.examLabel,
+      year: first.year,
+      heading,
+      schools,
+      papers,
+      description:
+        `${papers.length} free ${first.subject} ${first.year} ${first.examLabel} ` +
+        `paper${papers.length === 1 ? '' : 's'} from ${schools.length} Singapore ` +
+        `school${schools.length === 1 ? '' : 's'} — ${schools.slice(0, 4).join(', ')}` +
+        `${schools.length > 4 ? ' and more' : ''}. Free to download.`,
+    };
+  });
+}
+
+let cachedGroups;
+
+export function getPaperGroups() {
+  if (!cachedGroups) cachedGroups = buildGroups();
+  return cachedGroups;
+}
+
+export function getGroupBySlug(level, slug) {
+  return getPaperGroups().find((g) => g.level === level && g.slug === slug) ?? null;
+}
+
+let groupUrlByPaperKey;
+
+/** Where a single paper now lives: its group's page. */
+export function getGroupUrlByPaperKey(paperKey) {
   if (!paperKey) return null;
-  if (!byKey) byKey = new Map(getAllPapers().map((p) => [p.paperKey, p.url]));
-  return byKey.get(paperKey) ?? null;
+  if (!groupUrlByPaperKey) {
+    groupUrlByPaperKey = new Map();
+    for (const group of getPaperGroups()) {
+      for (const paper of group.papers) groupUrlByPaperKey.set(paper.paperKey, group.url);
+    }
+  }
+  return groupUrlByPaperKey.get(paperKey) ?? null;
 }
 
-/** Siblings from the same shelf first, then the same subject, capped at `limit`. */
-export function getRelatedPapers(paper, limit = 6) {
-  const all = getAllPapers().filter((p) => p.slug !== paper.slug);
-  const sameShelf = all.filter((p) => p.subject === paper.subject && p.examKey === paper.examKey);
-  const sameSubject = all.filter((p) => p.subject === paper.subject && p.examKey !== paper.examKey);
-  return [...sameShelf, ...sameSubject].slice(0, limit);
+/**
+ * The retired per-paper URLs, each pointing at the group that replaced it.
+ * Generated rather than hand-written so it cannot drift from the data.
+ */
+export function getRetiredPaperRedirects() {
+  return getPaperGroups().flatMap((group) =>
+    group.papers
+      .filter((paper) => paper.url !== group.url)
+      .map((paper) => ({ source: paper.url, destination: group.url, permanent: true })),
+  );
 }

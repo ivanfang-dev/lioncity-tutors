@@ -13,7 +13,7 @@ import { Download, BookOpen, GraduationCap, Atom, FileText, Search, Clock } from
 import { testPapers } from "../../data/testPapers.mjs";
 import { LEVEL_TINTS } from "@/lib/levelTints";
 import { paperKeyOf } from "@/lib/downloadKeys.mjs";
-import { getPaperUrlByKey } from "@/lib/papers/registry.mjs";
+import { getGroupUrlByPaperKey } from "@/lib/papers/registry.mjs";
 import { gaEvent } from "@/utils/analytics";
 import { paperStats } from "./stats";
 
@@ -50,9 +50,9 @@ const ComingSoonCard = ({ examType, tint }) => (
 const PaperListItem = ({ paper, onDownloadClick, tint }) => {
   const { perPaper } = React.useContext(DownloadCounts);
   const downloads = perPaper[paperKeyOf(paper)] ?? 0;
-  // The title links to the paper's own page, which is what Google can crawl —
-  // the download itself stays gated behind the lead form either way.
-  const paperUrl = getPaperUrlByKey(paperKeyOf(paper));
+  // The title links to the group page the paper now lives on, which is what
+  // Google can crawl — the download stays gated behind the lead form either way.
+  const paperUrl = getGroupUrlByPaperKey(paperKeyOf(paper));
 
   return (
     <li className={`flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 sm:gap-4 p-4 rounded-lg border border-gray-200 bg-white hover:shadow-md transition-all duration-200 ${tint.rowHover}`}>

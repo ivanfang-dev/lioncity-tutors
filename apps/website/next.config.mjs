@@ -1,3 +1,5 @@
+import { getRetiredPaperRedirects } from './src/lib/papers/registry.mjs';
+
 export default {
     // Next serves WebP only by default. AVIF is typically 20-30% smaller again,
     // and every hero on the site is already a WebP source.
@@ -6,6 +8,10 @@ export default {
     },
     async redirects() {
       return [
+        // The 196 per-paper URLs retired in September 2026, each pointing at the
+        // subject/exam/year group that replaced it. Generated from the registry
+        // rather than listed by hand, so they cannot drift from testPapers.mjs.
+        ...getRetiredPaperRedirects(),
         // Moved out of /blog/ when the how-to-study series got its own path.
         {
           source: '/blog/how-to-study-history-o-level',

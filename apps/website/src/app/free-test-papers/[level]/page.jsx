@@ -4,13 +4,13 @@ import { ArrowLeft, ArrowRight, FileText } from 'lucide-react';
 import GuideSchema from '@/components/seo/GuideSchema';
 import { GuideCTA, ICON_STROKE } from '@/components/guide';
 import { MATCH_TIME } from '@/data/promises';
-import { getAllPapers } from '@/lib/papers/registry.mjs';
+import { getAllPapers, getPaperGroups } from '@/lib/papers/registry.mjs';
 
 const SITE_URL = 'https://www.lioncitytutors.com';
 
-// The library groups papers into tabs, and an inactive tab renders nothing —
-// so 91 of the 196 papers never reach the served HTML. These level indexes are
-// the flat, fully-linked version, and the only crawl path that reaches them all.
+// The library renders papers inside tabs, and an inactive tab is not in the
+// HTML, so most papers never reach a crawler from the shelf. These level indexes
+// are the flat version, and the crawl path to every group page.
 const LEVELS = {
   primary: {
     label: 'Primary',
@@ -59,14 +59,16 @@ export default async function LevelIndexPage({ params }) {
   if (!meta) notFound();
 
   const papers = getAllPapers().filter((p) => p.level === level);
+  const groups = getPaperGroups().filter((g) => g.level === level);
 
-  // Subject → exam → papers, so the page mirrors how the shelf is organised.
+  // Subject → the group pages under it, newest year first.
   const bySubject = new Map();
-  for (const paper of papers) {
-    if (!bySubject.has(paper.subject)) bySubject.set(paper.subject, new Map());
-    const exams = bySubject.get(paper.subject);
-    if (!exams.has(paper.examLabel)) exams.set(paper.examLabel, []);
-    exams.get(paper.examLabel).push(paper);
+  for (const group of groups) {
+    if (!bySubject.has(group.subject)) bySubject.set(group.subject, []);
+    bySubject.get(group.subject).push(group);
+  }
+  for (const list of bySubject.values()) {
+    list.sort((a, b) => b.year - a.year || a.examLabel.localeCompare(b.examLabel));
   }
 
   return (
@@ -81,7 +83,7 @@ export default async function LevelIndexPage({ params }) {
           url: `/free-test-papers/${level}`,
           name: meta.title,
           description: meta.blurb,
-          items: papers.map((p) => ({ name: p.title, url: p.url })),
+          items: groups.map((g) => ({ name: g.heading, url: g.url })),
         }}
       />
 
@@ -106,38 +108,37 @@ export default async function LevelIndexPage({ params }) {
           </header>
 
           <div className="space-y-10">
-            {[...bySubject.entries()].map(([subject, exams]) => (
-              <section key={subject} className="space-y-4">
-                <h2 className="text-xl font-bold text-gray-900">{subject}</h2>
-                {[...exams.entries()].map(([examLabel, items]) => (
-                  <div key={examLabel} className="space-y-2">
-                    <h3 className="flex items-center gap-1.5 text-sm font-semibold uppercase tracking-wide text-gray-500">
-                      <FileText className="h-3.5 w-3.5" strokeWidth={ICON_STROKE} aria-hidden="true" />
-                      {examLabel}
-                    </h3>
-                    <ul className="space-y-2">
-                      {items.map((paper) => (
-                        <li key={paper.slug}>
-                          <Link
-                            href={paper.url}
-                            className="group flex min-h-11 items-center justify-between gap-3 rounded-xl border border-gray-200 bg-white px-4 py-3 transition-colors hover:border-[#0474BA]"
-                          >
-                            <span className="text-sm font-medium text-gray-800">
-                              {paper.school} {paper.year}
-                              {paper.isSolutions ? ' — Worked solutions' : ''}
-                              {paper.hasAnswers && !paper.isSolutions ? ' — with answers' : ''}
-                            </span>
-                            <ArrowRight
-                              className="h-4 w-4 flex-shrink-0 text-[#0474BA] transition-transform group-hover:translate-x-0.5"
-                              strokeWidth={ICON_STROKE}
-                              aria-hidden="true"
-                            />
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
+            {[...bySubject.entries()].map(([subject, subjectGroups]) => (
+              <section key={subject} className="space-y-3">
+                <h2 className="flex items-center gap-1.5 text-xl font-bold text-gray-900">
+                  <FileText className="h-4 w-4 text-primary" strokeWidth={ICON_STROKE} aria-hidden="true" />
+                  {subject}
+                </h2>
+                <ul className="space-y-2">
+                  {subjectGroups.map((group) => (
+                    <li key={group.slug}>
+                      <Link
+                        href={group.url}
+                        className="group flex min-h-11 items-center justify-between gap-3 rounded-xl border border-gray-200 bg-white px-4 py-3 transition-colors hover:border-primary"
+                      >
+                        <span className="text-sm font-medium text-gray-800">
+                          {group.year} {group.examLabel}
+                          <span className="text-gray-600">
+                            {' '}&middot; <span className="tabular-nums">{group.papers.length}</span>{' '}
+                            {group.papers.length === 1 ? 'paper' : 'papers'} from{' '}
+                            <span className="tabular-nums">{group.schools.length}</span>{' '}
+                            {group.schools.length === 1 ? 'school' : 'schools'}
+                          </span>
+                        </span>
+                        <ArrowRight
+                          className="h-4 w-4 flex-shrink-0 text-primary transition-transform group-hover:translate-x-0.5"
+                          strokeWidth={ICON_STROKE}
+                          aria-hidden="true"
+                        />
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
               </section>
             ))}
           </div>
