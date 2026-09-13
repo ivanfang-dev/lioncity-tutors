@@ -1,5 +1,5 @@
 import { describe, test, expect } from '@jest/globals';
-import { placementRate } from './parentOutcome.js';
+import { placementRate, pickUpdate } from './parentOutcome.js';
 
 const tutorDoc = { hourlyRate: { jc: '$70-90/hr', secondary: '$50-60/hr' } };
 const jcAssignment = { level: 'Junior College 1', rate: '$60-80/hr' };
@@ -39,5 +39,36 @@ describe('placementRate', () => {
   test('does not throw on missing arguments', () => {
     expect(placementRate(null, null, null)).toBeUndefined();
     expect(placementRate({}, null, {})).toBeUndefined();
+  });
+});
+
+describe('pickUpdate', () => {
+  const tutorOid = 'tutor-oid';
+  const now = new Date('2026-09-12T10:00:00Z');
+
+  test('fills the assignment and stops outreach either way', () => {
+    for (const onContact of [true, false]) {
+      const { update } = pickUpdate({ tutorOid, now, onContact });
+      expect(update.$set).toMatchObject({
+        status: 'Filled',
+        matchedTutorId: tutorOid,
+        filledAt: now,
+        'outreach.status': 'Fulfilled',
+      });
+    }
+  });
+
+  test('stamps the pick on the contact row when the tutor came through outreach', () => {
+    const { update, options } = pickUpdate({ tutorOid, now, onContact: true });
+    expect(update.$set['outreach.contacts.$[c].parentPickedAt']).toBe(now);
+    expect(options.arrayFilters).toEqual([{ 'c.tutorId': tutorOid }]);
+  });
+
+  // A tutor the owner placed personally has no contact row, so there is nothing to stamp and no
+  // filter to address one with.
+  test('touches no contact row, and passes no array filter, for an off-list tutor', () => {
+    const { update, options } = pickUpdate({ tutorOid, now, onContact: false });
+    expect(Object.keys(update.$set).some(k => k.startsWith('outreach.contacts'))).toBe(false);
+    expect(options.arrayFilters).toBeUndefined();
   });
 });

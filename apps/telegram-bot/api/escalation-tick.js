@@ -284,7 +284,7 @@ async function releaseOneShortlist(assignment) {
 }
 
 // Outcome-capture buttons for a released shortlist: one "Picked #N" per ranked tutor, plus
-// "Rejected all" and "No reply yet". Reused by the release alert AND the 24h silence nudge so
+// "Placed someone else", "Rejected all" and "No reply yet". Reused by the release alert AND the 24h silence nudge so
 // both record through the same handlers (setwinner_/rejectall_/parentnoreply_ in handlers.js
 // — one source of truth). `shortlisted` = [{ tutorId, tutorName, shortlistRank }].
 function buildOutcomeButtons(assignmentId, shortlisted) {
@@ -295,6 +295,8 @@ function buildOutcomeButtons(assignmentId, shortlisted) {
       text: `✅ Parent picked #${s.shortlistRank} — ${s.tutorName || 'Tutor'}`,
       callback_data: `setwinner_${assignmentId}_${s.tutorId}`
     }]));
+  // A tutor the owner found personally — never on this shortlist, so no "Picked #N" row for them.
+  rows.push([{ text: '✅ Placed someone else', callback_data: `otherpick_${assignmentId}` }]);
   rows.push([{ text: '❌ Parent rejected all', callback_data: `rejectall_${assignmentId}` }]);
   rows.push([{ text: '🕓 No reply yet', callback_data: `parentnoreply_${assignmentId}` }]);
   return rows;

@@ -59,7 +59,24 @@ export function placementRate(contact, tutorDoc, assignment) {
     || assignment?.rate;
 }
 
-export async function recordParentPick({ assignmentId, tutorId }) {
+// The Filled write for a pick. `onContact` is whether the tutor has an outreach row to stamp —
+// an off-list tutor doesn't, so the stamp and the filter that addresses it go together or not at all.
+export function pickUpdate({ tutorOid, now, onContact }) {
+  const $set = {
+    status: 'Filled',
+    matchedTutorId: tutorOid,
+    filledAt: now,
+    'outreach.status': 'Fulfilled',
+  };
+  if (!onContact) return { update: { $set }, options: {} };
+  $set['outreach.contacts.$[c].parentPickedAt'] = now;
+  return { update: { $set }, options: { arrayFilters: [{ 'c.tutorId': tutorOid }] } };
+}
+
+// `offList` admits a registered tutor who never came through outreach (the owner placed them
+// personally). Without it the candidate guard stays on, so a stale button can't record a pick
+// against a tutor this assignment never contacted.
+export async function recordParentPick({ assignmentId, tutorId, offList = false }) {
   if (!mongoose.isValidObjectId(assignmentId) || !mongoose.isValidObjectId(tutorId)) {
     return { ok: false, error: 'invalid_id' };
   }
@@ -67,31 +84,27 @@ export async function recordParentPick({ assignmentId, tutorId }) {
   if (!assignment) return { ok: false, error: 'assignment_not_found' };
 
   const contact = (assignment.outreach?.contacts || []).find(c => c.tutorId?.toString() === String(tutorId));
-  if (!contact) return { ok: false, error: 'tutor_not_a_candidate' };
+  if (!contact && !offList) return { ok: false, error: 'tutor_not_a_candidate' };
+
+  const tutorOid = new mongoose.Types.ObjectId(String(tutorId));
+  // Off-list, the tutor doc is the only source of a name — and proof the id is a real tutor.
+  const offListTutor = contact
+    ? null
+    : await Tutor.findById(tutorOid).select('fullName hourlyRate').lean();
+  if (!contact && !offListTutor) return { ok: false, error: 'tutor_not_found' };
 
   const now = new Date();
-  const tutorOid = new mongoose.Types.ObjectId(String(tutorId));
-
-  await Assignment.updateOne(
-    { _id: assignment._id },
-    { $set: {
-      status: 'Filled',
-      matchedTutorId: tutorOid,
-      filledAt: now,
-      'outreach.status': 'Fulfilled',
-      'outreach.contacts.$[c].parentPickedAt': now,
-    } },
-    { arrayFilters: [{ 'c.tutorId': tutorOid }] }
-  );
+  const { update, options } = pickUpdate({ tutorOid, now, onContact: Boolean(contact) });
+  await Assignment.updateOne({ _id: assignment._id }, update, options);
   assignment.status = 'Filled'; // for the channel re-render below
 
   // The Placement is the ground-truth match row the day-30 check-in (Phase 5) and future ranking
   // work train against. Best-effort: losing it must not block marking the assignment Filled.
   try {
     // The profile rate is only read when no rate was captured — see placementRate.
-    const tutorDoc = contact.quotedRate != null
+    const tutorDoc = offListTutor || (contact.quotedRate != null
       ? null
-      : await Tutor.findById(tutorOid).select('hourlyRate').lean();
+      : await Tutor.findById(tutorOid).select('hourlyRate').lean());
     const agreedRate = placementRate(contact, tutorDoc, assignment);
     await Placement.updateOne(
       { assignmentId: assignment._id, tutorId: tutorOid },
@@ -104,7 +117,7 @@ export async function recordParentPick({ assignmentId, tutorId }) {
 
   await closeChannelPostAsFilled(assignment);
 
-  return { ok: true, assignment, tutorName: contact.tutorName || 'the tutor' };
+  return { ok: true, assignment, tutorName: contact?.tutorName || offListTutor?.fullName || 'the tutor' };
 }
 
 // The parent passed on the whole shortlist. Records the reason on every shortlisted contact and

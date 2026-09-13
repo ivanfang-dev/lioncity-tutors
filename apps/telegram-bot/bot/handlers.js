@@ -23,6 +23,7 @@ import { getTutorNameByNumber } from '../utils/tutorLookup.js';
 import { SINGAPORE_LOCATIONS } from '../utils/locations.js';
 import { draftParentMessage, buildWaMeButton } from '../utils/parentMessage.js';
 import { recordParentPick, recordParentReject, resumeOutreach } from '../utils/parentOutcome.js';
+import { otherPickPrompt, parseOtherPickTag, tutorNameSearch, otherPickButton } from '../utils/otherPick.js';
 import { recordCheckInWell, recordCheckInEnded, recordCheckInEndReason, recordCheckInNoReply } from '../utils/checkInOutcome.js';
 import { checkInRatingRows } from '../utils/checkInButtons.js';
 import { notifyOwner, opsButtonRow } from '../utils/ownerAlert.js';
@@ -3548,14 +3549,14 @@ async function handleCallbackQuery(
       // Candidates = interested tutors the parent hasn't already been told we're dropping.
       const candidates = (assignment.outreach?.contacts || [])
         .filter(c => c.status === 'Interested' && !c.parentRejectedAt && c.tutorId);
-      if (candidates.length === 0) {
-        return await ack({ text: 'No interested tutors to choose from yet.' });
-      }
+      // No early return when nobody said yes: that's exactly when the owner placed someone
+      // personally, so the off-list option has to stay reachable.
       await ack();
       const pickButtons = candidates.map(c => ([{
         text: `✅ ${c.tutorName || 'Tutor'}`,
         callback_data: `setwinner_${assignmentId}_${c.tutorId}`
       }]));
+      pickButtons.push([{ text: '✅ Someone else — search by name', callback_data: `otherpick_${assignmentId}` }]);
       pickButtons.push([{ text: '🔙 Cancel', callback_data: `edit_assignment_${assignmentId}` }]);
       await safeSend(bot, chatId,
         `Which tutor did the parent choose for *${escapeMd(assignment.title)}*?\nThis marks the assignment *Filled* and stops outreach.`,
@@ -3585,6 +3586,53 @@ async function handleCallbackQuery(
             reply_markup: { inline_keyboard: [[{ text: '🔙 Back to Manage Assignments', callback_data: 'admin_manage_assignments' }]] } });
       } catch (err) {
         console.error('Failed to mark assignment filled:', err.message);
+        await ack({ text: 'Something went wrong — try again.' });
+      }
+      return;
+    }
+
+    // Placed someone who never came through outreach: ask for a name. force_reply opens the reply
+    // box, and the prompt carries the assignment id, so the answer needs no session (otherPick.js).
+    if (data.startsWith('otherpick_')) {
+      if (!isAdmin(userId, ADMIN_USERS)) {
+        return await ack({ text: 'Not authorized.' });
+      }
+      const assignmentId = data.replace('otherpick_', '');
+      const assignment = await Assignment.findById(assignmentId).select('title').lean();
+      if (!assignment) {
+        return await ack({ text: 'Assignment not found.' });
+      }
+      await ack();
+      await safeSend(bot, chatId, otherPickPrompt(assignment), {
+        reply_markup: { force_reply: true, input_field_placeholder: 'Tutor name' }
+      });
+      return;
+    }
+
+    // Commit an off-list pick from the name-search results. Same recorder as setwinner_, with the
+    // candidate guard lifted — so Filled, the Placement and the day-30 check-in all land the same.
+    if (data.startsWith('setother_')) {
+      if (!isAdmin(userId, ADMIN_USERS)) {
+        return await ack({ text: 'Not authorized.' });
+      }
+      const [assignmentId, tutorId] = data.replace('setother_', '').split('_');
+      try {
+        const result = await recordParentPick({ assignmentId, tutorId, offList: true });
+        if (!result.ok) {
+          return await ack({
+            text: result.error === 'assignment_not_found' ? 'Assignment not found.' : 'That tutor could not be found.'
+          });
+        }
+        await bot.editMessageReplyMarkup(
+          { inline_keyboard: [] },
+          { chat_id: chatId, message_id: callbackQuery.message?.message_id }
+        ).catch(() => {});
+        await ack({ text: '✅ Marked filled' });
+        await safeSend(bot, chatId,
+          `✅ *${escapeMd(result.assignment.title)}* marked *Filled* — ${escapeMd(result.tutorName)} will take it. Outreach stopped and the assignment is closed.`,
+          { parse_mode: 'Markdown' });
+      } catch (err) {
+        console.error('Failed to mark assignment filled (off-list):', err.message);
         await ack({ text: 'Something went wrong — try again.' });
       }
       return;
@@ -4499,6 +4547,43 @@ async function handleMessage(bot, chatId, userId, text, message, Tutor, Assignme
         await safeSend(bot, chatId, `❌ Couldn't send — the tutor's 24h reply window may have closed.\n(${err.message})`);
       }
       return;
+    }
+  }
+
+  // Owner replying to a "Who did you place?" prompt (otherpick_). The assignment id rides in the
+  // prompt text, so this works across cold starts. Shows up to 5 matching tutors to tap.
+  const pickAssignmentId = isUserAdmin && !text.startsWith('/')
+    ? parseOtherPickTag(message.reply_to_message?.text)
+    : null;
+  if (pickAssignmentId) {
+    const nameQuery = tutorNameSearch(text);
+    if (!nameQuery) {
+      return await safeSend(bot, chatId, 'Send at least 2 letters of their name.', {
+        reply_markup: { force_reply: true, input_field_placeholder: 'Tutor name' }
+      });
+    }
+    try {
+      const tutors = await Tutor.find({ fullName: nameQuery })
+        .select('fullName yearsOfExperience tutorType')
+        .sort({ fullName: 1 })
+        .limit(6)
+        .lean();
+      if (tutors.length === 0) {
+        return await safeSend(bot, chatId,
+          `No registered tutor matches "${text.trim()}". Try another spelling:\n(pick:${pickAssignmentId})`,
+          { reply_markup: { force_reply: true, input_field_placeholder: 'Tutor name' } });
+      }
+      // Six fetched so we can tell "exactly five" from "more than five" without a count query.
+      const shown = tutors.slice(0, 5);
+      const more = tutors.length > shown.length
+        ? `\nMore than 5 match — reply to this with more of the name to narrow it:\n(pick:${pickAssignmentId})`
+        : '';
+      return await safeSend(bot, chatId, `Which one did you place?${more}`, {
+        reply_markup: { inline_keyboard: shown.map(t => [otherPickButton(pickAssignmentId, t)]) }
+      });
+    } catch (err) {
+      console.error('Off-list tutor search failed:', err.message);
+      return await safeSend(bot, chatId, '❌ Search failed — try again.');
     }
   }
 
