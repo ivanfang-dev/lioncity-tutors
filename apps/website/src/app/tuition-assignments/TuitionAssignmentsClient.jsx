@@ -303,9 +303,6 @@ const AssignmentCard = memo(({ assignment, isSelected, isExpanded, onSelect, onT
                   <div className="text-sm sm:text-base font-semibold text-emerald-600">
                     {assignment.rate && assignment.rate !== 'Tutor to propose' ? `${assignment.rate}` : 'Negotiate'}
                   </div>
-                  <span className="text-xs text-slate-400 font-mono">
-                    #{assignment._id.slice(-6)}
-                  </span>
                 </div>
                 
                 {/* Level and subject badges */}
@@ -691,13 +688,6 @@ export default function TuitionAssignmentsClient({ initialAssignments }) {
           <header className="mb-10 text-center">
             <h1 className="page-title text-primary mb-3">Tuition Assignments in Singapore</h1>
             <p className="text-lg text-slate-500 max-w-3xl mx-auto">Browse open tuition assignments across Singapore. New assignments are posted as parents request tutors, so the list changes through the week.</p>
-            <div className="mt-6 flex items-center justify-center space-x-2 text-slate-600">
-                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                <span className="font-semibold">{filteredAssignments.length}</span>
-                <span>of</span>
-                <span className="font-semibold">{allAssignments.length}</span>
-                <span>verified assignments available</span>
-            </div>
           </header>
           <section className="bg-white/70 backdrop-blur-sm rounded-2xl shadow-lg border border-slate-200 p-6 mb-8">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
