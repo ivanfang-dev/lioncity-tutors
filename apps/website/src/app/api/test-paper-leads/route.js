@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import mongoose from 'mongoose';
 import { dbConnect } from '@/lib/mongoose';
 import { presignDownload } from '@/lib/r2.mjs';
+import { queueParentNurture } from '@/lib/senderNurture.mjs';
 import { isKnownFileKey, isKnownPaperKey, downloadFilename } from '@/lib/downloadKeys.mjs';
 
 const testPaperLeadSchema = new mongoose.Schema({
@@ -9,6 +10,8 @@ const testPaperLeadSchema = new mongoose.Schema({
   phone: { type: String, required: true },
   // Null on leads captured before the gate asked.
   role: { type: String, enum: ['parent', 'student'], default: null },
+  // Level buckets already pushed to Sender.net, so each is sent once.
+  nurtureGroups: [String],
   downloads: [{
     subject: String,
     year: String,
@@ -60,6 +63,8 @@ export async function POST(request) {
       lead = new TestPaperLead({ email, phone, role, downloads: [download] });
       await lead.save();
     }
+
+    queueParentNurture(TestPaperLead, lead, { level, subject });
 
     let downloadUrl;
     if (fileKey) {

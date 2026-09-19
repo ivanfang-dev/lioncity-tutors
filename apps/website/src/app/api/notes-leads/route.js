@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import mongoose from 'mongoose';
 import { dbConnect } from '@/lib/mongoose';
 import { presignDownload } from '@/lib/r2.mjs';
+import { queueParentNurture } from '@/lib/senderNurture.mjs';
 import { isKnownFileKey, downloadFilename } from '@/lib/downloadKeys.mjs';
 
 // /free-notes has always posted here, but the route did not exist: every notes
@@ -12,6 +13,8 @@ const notesLeadSchema = new mongoose.Schema({
   phone: { type: String, required: true },
   // Null on leads captured before the gate asked.
   role: { type: String, enum: ['parent', 'student'], default: null },
+  // Level buckets already pushed to Sender.net, so each is sent once.
+  nurtureGroups: [String],
   downloads: [{
     subject: String,
     year: String,
@@ -56,6 +59,8 @@ export async function POST(request) {
       });
       await lead.save();
     }
+
+    queueParentNurture(NotesLead, lead, { level, subject });
 
     let downloadUrl;
     if (fileKey) {
