@@ -19,8 +19,10 @@ function fakeSender(routes) {
     const path = url.replace('https://api.sender.net/v2', '');
     calls.push({ method, path, body: body ? JSON.parse(body) : undefined });
     const handler = routes[`${method} ${path.split('?')[0]}`];
-    const json = handler ? handler(path) : {};
-    return { ok: true, status: 200, json: async () => json };
+    const out = handler ? handler(path) : {};
+    const status = out?.status ?? 200;
+    const json = out?.status ? out.body : out;
+    return { ok: status < 400, status, json: async () => json };
   };
   return { calls, fetchImpl };
 }
@@ -28,7 +30,7 @@ function fakeSender(routes) {
 test('creates a new subscriber in the existing level group', async () => {
   const { calls, fetchImpl } = fakeSender({
     'GET /groups': () => ({ data: [{ id: 'g-pri', title: 'Parents · Primary' }], links: {} }),
-    'POST /subscribers/groups/g-pri': () => ({ success: true, message: { subscribers_added_to_group: [], non_existing_subscribers: ['mum@gmail.com'] } }),
+    'GET /subscribers/mum%40gmail.com': () => ({ status: 404, body: { message: 'subscriber not found', success: false } }),
   });
   const sender = createSender({ token: 't', fetchImpl });
   const bucket = await sender.addParent({ email: 'Mum@Gmail.com ', level: 'Primary School', subject: 'Science' });
@@ -41,16 +43,19 @@ test('creates a new subscriber in the existing level group', async () => {
     fields: { '{{level}}': 'Primary', '{{top_subject}}': 'Science' },
   });
   assert.ok(!calls.some((c) => c.method === 'POST' && c.path === '/groups'), 'no group created');
+  assert.ok(!calls.some((c) => c.path.startsWith('/subscribers/groups/')), 'add-to-group 400s for new emails');
 });
 
 test('existing subscriber is added to the group and patched without re-triggering', async () => {
   const { calls, fetchImpl } = fakeSender({
     'GET /groups': () => ({ data: [{ id: 'g-jc', title: 'Parents · JC' }], links: {} }),
-    'POST /subscribers/groups/g-jc': () => ({ success: true, message: { subscribers_added_to_group: ['dad@gmail.com'], non_existing_subscribers: [] } }),
+    'GET /subscribers/dad%40gmail.com': () => ({ data: { email: 'dad@gmail.com' } }),
+    'POST /subscribers/groups/g-jc': () => ({ success: true, message: { subscribers_added_to_group: ['dad@gmail.com'] } }),
   });
   const sender = createSender({ token: 't', fetchImpl });
   await sender.addParent({ email: 'dad@gmail.com', level: 'Junior College (A-Level)' });
 
+  assert.deepEqual(calls.find((c) => c.path === '/subscribers/groups/g-jc').body, { subscribers: ['dad@gmail.com'] });
   const patch = calls.find((c) => c.method === 'PATCH');
   assert.equal(patch.path, '/subscribers/dad%40gmail.com');
   assert.equal(patch.body.trigger_automation, false);
@@ -61,7 +66,8 @@ test('creates the level group on first use and caches it', async () => {
   const { calls, fetchImpl } = fakeSender({
     'GET /groups': () => ({ data: [], links: {} }),
     'POST /groups': () => ({ data: { id: 'g-sec' } }),
-    'POST /subscribers/groups/g-sec': () => ({ data: { non_existing_subscribers: [] } }),
+    'GET /subscribers/a1%40gmail.com': () => ({ status: 404, body: {} }),
+    'GET /subscribers/a2%40gmail.com': () => ({ status: 404, body: {} }),
   });
   const sender = createSender({ token: 't', fetchImpl });
   await sender.addParent({ email: 'a1@gmail.com', level: 'O-Level' });

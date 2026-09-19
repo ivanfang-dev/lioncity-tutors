@@ -36,7 +36,7 @@ export function skipReason(email) {
 export function createSender({ token = process.env.SENDER_API_TOKEN, fetchImpl = fetch } = {}) {
   const groupIds = new Map();
 
-  async function call(path, { method = 'GET', body } = {}) {
+  async function call(path, { method = 'GET', body, allow404 = false } = {}) {
     const res = await fetchImpl(`${API}${path}`, {
       method,
       headers: {
@@ -47,6 +47,7 @@ export function createSender({ token = process.env.SENDER_API_TOKEN, fetchImpl =
       body: body ? JSON.stringify(body) : undefined,
     });
     const json = await res.json().catch(() => null);
+    if (res.status === 404 && allow404) return null;
     if (!res.ok) {
       const detail = json?.message || JSON.stringify(json)?.slice(0, 200) || '';
       throw new Error(`${method} ${path} → HTTP ${res.status} ${detail}`);
@@ -80,18 +81,15 @@ export function createSender({ token = process.env.SENDER_API_TOKEN, fetchImpl =
     const fields = { '{{level}}': bucket };
     if (subject) fields['{{top_subject}}'] = subject;
 
-    const res = await call(`/subscribers/groups/${id}`, { method: 'POST', body: { subscribers: [address] } });
-    // Documented under `message`; read the other spots too. Anyone not confirmed added is new.
-    const body = res?.message ?? res?.data ?? res ?? {};
-    const added = (body.subscribers_added_to_group || []).map((e) => String(e).toLowerCase());
-    if (!added.includes(address)) {
+    // Add-to-group 400s for unknown emails, so look the subscriber up first.
+    const path = `/subscribers/${encodeURIComponent(address)}`;
+    const existing = await call(path, { allow404: true });
+    if (!existing) {
       await call('/subscribers', { method: 'POST', body: { email: address, groups: [id], fields } });
     } else {
-      // Already a subscriber and now in the group; refresh fields without re-triggering.
-      await call(`/subscribers/${encodeURIComponent(address)}`, {
-        method: 'PATCH',
-        body: { fields, trigger_automation: false },
-      });
+      await call(`/subscribers/groups/${id}`, { method: 'POST', body: { subscribers: [address] } });
+      // Refresh fields without re-triggering automations.
+      await call(path, { method: 'PATCH', body: { fields, trigger_automation: false } });
     }
     return bucket;
   }
