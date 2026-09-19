@@ -32,7 +32,7 @@ export const TUITION_ASSIGNMENTS_FAQS = [
   {
     question: 'How much commission does LionCity Tutors take?',
     answer:
-      'For a long-term assignment the commission is a one-time amount equal to the first two weeks of lessons, collected from the client rather than deducted from you. Short-term assignments of 11 weeks or less are charged at 25% of lesson fees, capped by lesson count. Our tutor terms set out both in full.',
+      'For a long-term assignment the commission is a one-time amount equal to the first two weeks of lessons, and you bear it, not the parent. The parent pays those first two weeks’ fees to us instead of to you, so there is nothing for you to transfer, and from the third week they pay you directly. Short-term assignments of 11 weeks or less are charged at 25% of lesson fees, capped by lesson count. Our tutor terms set out both in full.',
   },
   {
     question: 'What happens after I apply for an assignment?',

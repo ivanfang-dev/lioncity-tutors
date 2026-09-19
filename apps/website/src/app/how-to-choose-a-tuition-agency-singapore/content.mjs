@@ -112,7 +112,7 @@ export const AGENCY_FAQS = [
   {
     question: 'Do I pay the agency or the tutor?',
     answer:
-      "You pay the tutor directly, at the hourly rate agreed before lessons start. LionCity Tutors doesn't add a fee on top or take a cut of what you pay the tutor.",
+      "You pay the tutor's hourly rate, agreed before lessons start, and nothing on top. The first two weeks' fees are paid to LionCity Tutors as the tutor's commission; from the third week you pay the tutor directly.",
   },
   {
     question: "What happens if my child doesn't get along with the tutor?",

@@ -36,8 +36,8 @@ const EDGE = [
   },
   {
     stat: '$0',
-    label: 'paid to the agency, ever',
-    body: 'Parents pay the tutor directly at the agreed rate. There is no commission, no placement fee and no markup on the hourly rate.',
+    label: 'agency fee for parents',
+    body: 'Parents pay only the tutor’s agreed hourly rate. There is no placement fee and no markup; the tutor bears our commission, out of their first two weeks of fees.',
   },
 ];
 
