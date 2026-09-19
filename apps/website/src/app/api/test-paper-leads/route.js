@@ -7,6 +7,8 @@ import { isKnownFileKey, isKnownPaperKey, downloadFilename } from '@/lib/downloa
 const testPaperLeadSchema = new mongoose.Schema({
   email: { type: String, required: true },
   phone: { type: String, required: true },
+  // Null on leads captured before the gate asked.
+  role: { type: String, enum: ['parent', 'student'], default: null },
   downloads: [{
     subject: String,
     year: String,
@@ -22,12 +24,13 @@ const TestPaperLead = mongoose.models.TestPaperLead || mongoose.model('TestPaper
 
 const EMAIL_RE = /^\S+@\S+\.\S+$/;
 const PHONE_RE = /^\d{8,}$/;
+const ROLES = new Set(['parent', 'student']);
 
 export async function POST(request) {
   await dbConnect();
   try {
     const data = await request.json();
-    const { email, phone, subject, year, level, fileKey, paperKey, paperTitle } = data;
+    const { email, phone, role: rawRole, subject, year, level, fileKey, paperKey, paperTitle } = data;
 
     if (!EMAIL_RE.test(email || '') || !PHONE_RE.test((phone || '').replace(/\s/g, ''))) {
       return NextResponse.json({ success: false, error: 'Invalid email or phone.' }, { status: 400 });
@@ -45,12 +48,16 @@ export async function POST(request) {
       paperTitle,
     };
 
+    // Older cached pages post no role; keep whatever the lead already has.
+    const role = ROLES.has(rawRole) ? rawRole : undefined;
+
     let lead = await TestPaperLead.findOne({ email });
     if (lead) {
       lead.downloads.push(download);
+      if (role) lead.role = role;
       await lead.save();
     } else {
-      lead = new TestPaperLead({ email, phone, downloads: [download] });
+      lead = new TestPaperLead({ email, phone, role, downloads: [download] });
       await lead.save();
     }
 

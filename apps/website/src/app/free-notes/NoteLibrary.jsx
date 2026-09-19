@@ -6,6 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import LeadRoleField, { ROLE_REQUIRED, downloadToast } from "@/components/LeadRoleField";
 import {
   Dialog,
   DialogContent,
@@ -189,8 +190,8 @@ const LevelSection = ({ id, title, heading, icon, notes, onDownloadClick, search
  * schema are server-rendered in page.jsx.
  */
 export default function NoteLibrary() {
-  const [formData, setFormData] = useState({ email: "", phone: "" });
-  const [formErrors, setFormErrors] = useState({ email: "", phone: "" });
+  const [formData, setFormData] = useState({ email: "", phone: "", role: "" });
+  const [formErrors, setFormErrors] = useState({ email: "", phone: "", role: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedNote, setSelectedNote] = useState(null);
   const [noteInfo, setNoteInfo] = useState(null);
@@ -201,8 +202,9 @@ export default function NoteLibrary() {
   useEffect(() => {
     const savedEmail = localStorage.getItem("email");
     const savedPhone = localStorage.getItem("phone");
-    if (savedEmail || savedPhone) {
-      setFormData({ email: savedEmail || "", phone: savedPhone || "" });
+    const savedRole = localStorage.getItem("role");
+    if (savedEmail || savedPhone || savedRole) {
+      setFormData({ email: savedEmail || "", phone: savedPhone || "", role: savedRole || "" });
     }
   }, []);
 
@@ -232,6 +234,7 @@ export default function NoteLibrary() {
     } else if (!/^\d{8,}$/.test(formData.phone.replace(/\s/g, ""))) {
       errors.phone = "Enter a valid phone number (at least 8 digits).";
     }
+    if (!formData.role) errors.role = ROLE_REQUIRED;
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
   };
@@ -246,6 +249,7 @@ export default function NoteLibrary() {
     setIsSubmitting(true);
     localStorage.setItem("email", formData.email);
     localStorage.setItem("phone", formData.phone);
+    localStorage.setItem("role", formData.role);
 
     try {
       const { level, subject, year } = noteAnalytics(noteInfo, selectedNote.title);
@@ -258,6 +262,7 @@ export default function NoteLibrary() {
         body: JSON.stringify({
           email: formData.email,
           phone: formData.phone,
+          role: formData.role,
           subject,
           year,
           level,
@@ -270,10 +275,7 @@ export default function NoteLibrary() {
       }
       const result = await response.json().catch(() => ({}));
 
-      toast.success('Thank you! Your download will begin shortly.', {
-        description: "Check your email for additional study resources.",
-        duration: 5000,
-      });
+      downloadToast(formData.role);
 
       setShowModal(false);
       setFormErrors({});
@@ -448,6 +450,14 @@ export default function NoteLibrary() {
                 {formErrors.phone}
               </p>}
             </div>
+            <LeadRoleField
+              value={formData.role}
+              onChange={(role) => {
+                setFormData((prev) => ({ ...prev, role }));
+                setFormErrors((prev) => ({ ...prev, role: undefined }));
+              }}
+              error={formErrors.role}
+            />
             <Button
               type="submit"
               className="w-full h-12 bg-primary hover:bg-[#035C93] text-white font-semibold text-base transition-colors duration-200"

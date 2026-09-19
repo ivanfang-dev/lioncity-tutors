@@ -10,6 +10,8 @@ import { isKnownFileKey, downloadFilename } from '@/lib/downloadKeys.mjs';
 const notesLeadSchema = new mongoose.Schema({
   email: { type: String, required: true },
   phone: { type: String, required: true },
+  // Null on leads captured before the gate asked.
+  role: { type: String, enum: ['parent', 'student'], default: null },
   downloads: [{
     subject: String,
     year: String,
@@ -22,12 +24,13 @@ const NotesLead = mongoose.models.NotesLead || mongoose.model('NotesLead', notes
 
 const EMAIL_RE = /^\S+@\S+\.\S+$/;
 const PHONE_RE = /^\d{8,}$/;
+const ROLES = new Set(['parent', 'student']);
 
 export async function POST(request) {
   await dbConnect();
   try {
     const data = await request.json();
-    const { email, phone, subject, year, level, fileKey } = data;
+    const { email, phone, role: rawRole, subject, year, level, fileKey } = data;
 
     if (!EMAIL_RE.test(email || '') || !PHONE_RE.test((phone || '').replace(/\s/g, ''))) {
       return NextResponse.json({ success: false, error: 'Invalid email or phone.' }, { status: 400 });
@@ -36,14 +39,19 @@ export async function POST(request) {
       return NextResponse.json({ success: false, error: 'Unknown file.' }, { status: 400 });
     }
 
+    // Older cached pages post no role; keep whatever the lead already has.
+    const role = ROLES.has(rawRole) ? rawRole : undefined;
+
     let lead = await NotesLead.findOne({ email });
     if (lead) {
       lead.downloads.push({ subject, year, level });
+      if (role) lead.role = role;
       await lead.save();
     } else {
       lead = new NotesLead({
         email,
         phone,
+        role,
         downloads: [{ subject, year, level }]
       });
       await lead.save();

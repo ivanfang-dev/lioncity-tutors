@@ -8,6 +8,7 @@ import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription,
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
+import LeadRoleField, { ROLE_REQUIRED, downloadToast } from "@/components/LeadRoleField";
 import { Download, FileText, Loader2 } from "lucide-react";
 import { gaEvent } from "@/utils/analytics";
 
@@ -16,14 +17,15 @@ import { gaEvent } from "@/utils/analytics";
 // same shape the shelf uses, and the same lead is still recorded per paper.
 export default function GroupDownload({ group }) {
   const [selected, setSelected] = useState(null);
-  const [formData, setFormData] = useState({ email: "", phone: "" });
+  const [formData, setFormData] = useState({ email: "", phone: "", role: "" });
   const [formErrors, setFormErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     const email = localStorage.getItem("email");
     const phone = localStorage.getItem("phone");
-    if (email || phone) setFormData({ email: email || "", phone: phone || "" });
+    const role = localStorage.getItem("role");
+    if (email || phone || role) setFormData({ email: email || "", phone: phone || "", role: role || "" });
   }, []);
 
   const validate = () => {
@@ -38,6 +40,7 @@ export default function GroupDownload({ group }) {
     } else if (!/^\d{8,}$/.test(formData.phone.replace(/\s/g, ""))) {
       errors.phone = "Enter a valid phone number (at least 8 digits).";
     }
+    if (!formData.role) errors.role = ROLE_REQUIRED;
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
   };
@@ -52,6 +55,7 @@ export default function GroupDownload({ group }) {
     setIsSubmitting(true);
     localStorage.setItem("email", formData.email);
     localStorage.setItem("phone", formData.phone);
+    localStorage.setItem("role", formData.role);
 
     try {
       const response = await fetch("/api/test-paper-leads", {
@@ -60,6 +64,7 @@ export default function GroupDownload({ group }) {
         body: JSON.stringify({
           email: formData.email,
           phone: formData.phone,
+          role: formData.role,
           level: group.levelLabel,
           subject: group.subject,
           paperTitle: selected.title,
@@ -78,10 +83,7 @@ export default function GroupDownload({ group }) {
         level: group.levelLabel,
       });
 
-      toast.success("Thank you! Your download will begin shortly.", {
-        description: "Check your email for additional study resources.",
-        duration: 5000,
-      });
+      downloadToast(formData.role);
 
       setSelected(null);
       setFormErrors({});
@@ -176,6 +178,15 @@ export default function GroupDownload({ group }) {
                 <p id="phone-error" className="mt-1.5 text-sm text-error-text">{formErrors.phone}</p>
               )}
             </div>
+
+            <LeadRoleField
+              value={formData.role}
+              onChange={(role) => {
+                setFormData((prev) => ({ ...prev, role }));
+                setFormErrors((prev) => ({ ...prev, role: undefined }));
+              }}
+              error={formErrors.role}
+            />
 
             <Button
               type="submit"
