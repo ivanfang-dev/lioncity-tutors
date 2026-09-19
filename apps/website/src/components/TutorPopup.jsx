@@ -33,7 +33,7 @@ export const PREFILL_KEY = "tutorRequestPrefill";
 const MIN_DWELL_MS = 8000;
 
 const BENEFITS = [
-  "Free for parents — you pay the tutor directly",
+  "Free for parents — you pay only the tutor’s rate",
   `Matching profiles within ${MATCH_TIME}`,
   "No obligation — decide once you have seen them"
 ];

@@ -212,7 +212,7 @@ export default function EconomicsTuition() {
             <Card className="border-l-4 border-l-purple-500 shadow-lg hover:shadow-xl transition-shadow duration-200">
               <CardContent className="p-6">
                 <h3 className="font-bold text-lg text-purple-700">Completely Free Service</h3>
-                <p className="text-gray-600 mt-2">No agency fees or hidden charges. You only pay for economics tuition lessons directly to your chosen tutor – we handle everything else at no cost.</p>
+                <p className="text-gray-600 mt-2">No agency fees or hidden charges. You pay only your tutor’s rate for the lessons; the first two weeks’ fees are paid through us, then you pay the tutor directly.</p>
               </CardContent>
             </Card>
           </div>

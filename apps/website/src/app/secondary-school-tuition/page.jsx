@@ -299,7 +299,7 @@ export default function SecondarySchoolTuition() {
             <li><strong>A first lesson checks the fit.</strong> If it is not right, tell us and we will match someone else at no cost.</li>
           </ol>
           <p className="text-gray-700">
-            Parents pay the tutor directly, at the tutor&apos;s rate. There is no agency fee at any point.
+            Parents pay only the tutor&apos;s rate. The first two weeks&apos; fees are paid through us as the tutor&apos;s commission, then parents pay the tutor directly. There is no agency fee at any point.
           </p>
         </section>
 

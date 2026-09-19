@@ -210,7 +210,7 @@ export default function MatchTimelineSection() {
             than a second row of cards. */}
         <dl className="mt-16 md:mt-20 grid gap-px overflow-hidden rounded-xl border border-border bg-border sm:grid-cols-3">
           {[
-            ['No agency fee', 'You pay the tutor directly. We never charge the family.'],
+            ['No agency fee', 'You pay only the tutor’s rate. We never charge the family on top.'],
             ['Vetted before you see them', 'Every tutor is interviewed and reference-checked before we send a profile.'],
             ['Not the right fit?', 'Tell us and we send more. Rematching costs you nothing.']
           ].map(([term, description]) => (

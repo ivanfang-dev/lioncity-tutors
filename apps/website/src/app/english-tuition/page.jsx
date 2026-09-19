@@ -365,7 +365,7 @@ export default function EnglishTuitionPage() {
             <AdvantageCard
               icon="🚀"
               title="Fast & Free Service"
-              description="Our matching service is 100% free. You only pay for the lessons conducted, directly to the tutor."
+              description="Our matching service is 100% free. You pay only the tutor’s rate for lessons conducted, with nothing on top."
             />
           </div>
         </section>
