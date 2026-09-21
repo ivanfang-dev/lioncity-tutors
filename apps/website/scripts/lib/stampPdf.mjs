@@ -3,7 +3,7 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { PDFDocument } from "pdf-lib";
+import { PDFDocument, degrees } from "pdf-lib";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ASSETS_DIR = path.join(__dirname, "..", "assets");
@@ -23,6 +23,20 @@ async function getCoverBytes() {
   return cachedCoverBytes;
 }
 
+// drawImage ignores the page's /Rotate, so scanned pages (usually 90/270) put the
+// banner down a side edge. Place it where the rotation lands it on the visible top.
+function bannerPlacement(rotation, width, height, aspect) {
+  const rot = ((rotation % 360) + 360) % 360;
+  const sideways = rot === 90 || rot === 270;
+  const visibleWidth = sideways ? height : width;
+  const thickness = visibleWidth * aspect;
+  const box = { width: visibleWidth, height: thickness, rotate: degrees(rot) };
+  if (rot === 90) return { ...box, x: thickness, y: 0 };
+  if (rot === 180) return { ...box, x: width, y: thickness };
+  if (rot === 270) return { ...box, x: width - thickness, y: height };
+  return { ...box, x: 0, y: height - thickness };
+}
+
 /**
  * @param {Buffer|Uint8Array} inputBytes - original PDF
  * @returns {Promise<Buffer>} stamped PDF (cover page prepended, banner on every page)
@@ -38,14 +52,8 @@ export async function stampPdfBuffer(inputBytes) {
   const bannerAspect = bannerImage.height / bannerImage.width;
 
   for (const page of srcDoc.getPages()) {
-    const { width } = page.getSize();
-    const bannerHeight = width * bannerAspect;
-    page.drawImage(bannerImage, {
-      x: 0,
-      y: page.getHeight() - bannerHeight,
-      width,
-      height: bannerHeight,
-    });
+    const { width, height } = page.getSize();
+    page.drawImage(bannerImage, bannerPlacement(page.getRotation().angle, width, height, bannerAspect));
   }
 
   const [coverPage] = await srcDoc.copyPages(coverDoc, [0]);
