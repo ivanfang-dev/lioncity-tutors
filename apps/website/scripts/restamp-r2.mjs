@@ -2,9 +2,11 @@
 // Pages with a /Rotate flag were stamped in unrotated space before the fix in
 // lib/stampPdf.mjs, so the banner needs redrawing from the original source PDF.
 //
-// Self-detecting and idempotent: reads each live object from R2, and only
-// re-stamps the ones that still have rotated pages. Source URLs come from the
+// Re-stamps every key you point it at, from the source URL recorded in the
 // scrape-result-*.json files, so keys are reused exactly — nothing is orphaned.
+// Scope a run with --only; without it, every recorded key is redone. Rerunning
+// is safe but not free: a correct page keeps its /Rotate flag, so there is no
+// way to tell a fixed file from a broken one without rendering it.
 //
 // Usage:
 //   node --env-file=.env scripts/restamp-r2.mjs [--dry-run] [--only=<key prefix>]
@@ -42,37 +44,31 @@ for (const name of await readdir(__dirname)) {
 const keys = [...sources.keys()].filter((k) => k.startsWith(only)).sort();
 console.log(`${keys.length} key(s) with a recorded source URL${only ? ` under ${only}` : ""}\n`);
 
-// page 1 is the inserted cover; a rotated page below it means the old stamp
-async function rotatedPageCount(bytes) {
-  const doc = await PDFDocument.load(bytes, { ignoreEncryption: true });
-  return doc.getPages().slice(1).filter((p) => ((p.getRotation().angle % 360) + 360) % 360 !== 0).length;
+async function pageCount(bytes) {
+  return (await PDFDocument.load(bytes, { ignoreEncryption: true })).getPageCount();
 }
 
-let fixed = 0, skipped = 0, failed = 0;
+let fixed = 0, failed = 0;
 for (const key of keys) {
   try {
-    const live = await client.fetch(objectUrl(key));
-    if (!live.ok) throw new Error(`R2 GET ${live.status}`);
-    const rotated = await rotatedPageCount(await live.arrayBuffer());
-    if (rotated === 0) {
-      skipped++;
-      continue;
-    }
-
     if (dryRun) {
-      console.log(`[dry-run] would re-stamp ${key} (${rotated} rotated pages) <- ${sources.get(key)}`);
+      console.log(`[dry-run] would re-stamp ${key} <- ${sources.get(key)}`);
       fixed++;
       continue;
     }
 
     const srcRes = await fetch(sources.get(key), { headers: UA });
     if (!srcRes.ok) throw new Error(`source download ${srcRes.status}`);
-    const stamped = await stampPdfBuffer(Buffer.from(await srcRes.arrayBuffer()));
-    if ((await rotatedPageCount(stamped)) === 0) throw new Error("re-stamp did not clear rotation — aborting this key");
+    const srcBytes = Buffer.from(await srcRes.arrayBuffer());
+    const stamped = await stampPdfBuffer(srcBytes);
+    // the only cheap invariant worth asserting: cover page prepended, nothing dropped
+    const expected = (await pageCount(srcBytes)) + 1;
+    const got = await pageCount(stamped);
+    if (got !== expected) throw new Error(`stamped page count ${got}, expected ${expected} — not uploading`);
 
     const put = await client.fetch(objectUrl(key), { method: "PUT", body: stamped, headers: { "Content-Type": "application/pdf" } });
     if (!put.ok) throw new Error(`upload ${put.status} ${await put.text()}`);
-    console.log(`re-stamped ${key} (${rotated} pages, ${(stamped.length / 1024).toFixed(0)}KB)`);
+    console.log(`re-stamped ${key} (${got} pages, ${(stamped.length / 1024).toFixed(0)}KB)`);
     fixed++;
   } catch (err) {
     console.error(`FAILED ${key}: ${err.message}`);
@@ -80,5 +76,5 @@ for (const key of keys) {
   }
 }
 
-console.log(`\n${dryRun ? "would re-stamp" : "re-stamped"} ${fixed} | already correct ${skipped} | failed ${failed}`);
+console.log(`\n${dryRun ? "would re-stamp" : "re-stamped"} ${fixed} | failed ${failed}`);
 if (failed) process.exit(1);
