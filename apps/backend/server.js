@@ -94,7 +94,11 @@ const contactSchema = new mongoose.Schema({
     custom: { type: Boolean, default: false },
     customAmount: { type: String }
   },
-  
+
+  // Tutor fit: 'No preference' | 'Female tutor' | 'Male tutor', and 'Yes' | 'No'.
+  genderPreference: { type: String },
+  bilingualRequired: { type: String },
+
   // Additional preferences
   preferences: { type: String }
 }, { timestamps: true }); // timestamps will auto add createdAt and updatedAt fields
@@ -147,6 +151,8 @@ async function notifyTelegramNewRequest(contact) {
     `🔄 *Frequency:* ${frequency}`,
     `🕐 *Preferred Time:* ${contact.preferredTime || '-'}`,
     `🎓 *Tutor Type:* ${tutorTypes.length ? tutorTypes.join(', ') : 'Any'}`,
+    `👤 *Tutor Gender:* ${contact.genderPreference || 'No preference'}`,
+    `🗣 *Bilingual:* ${contact.bilingualRequired || 'No'}`,
     `💰 *Budget:* ${budget}`,
     contact.preferences ? `\n📝 *Notes:* ${contact.preferences}` : '',
   ].filter(Boolean).join('\n');
