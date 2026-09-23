@@ -10,6 +10,8 @@ import { Assignment, Tutor } from '../../packages/shared/server-exports.js';
 import { normalizePhone, generatePhoneVariations } from '../../packages/shared/utils/phoneUtils.js';
 import { recordApplicationInterest } from '../../packages/shared/utils/applicationInterest.js';
 import { checkLateApplication } from '../telegram-bot/utils/lateInterest.js';
+import { notifyOwner } from '../telegram-bot/utils/ownerAlert.js';
+import { escapeMd } from '../telegram-bot/utils/markdown.js';
 
 
 // ES modules don't have __dirname, so we need to create it
@@ -18,7 +20,7 @@ const __dirname = path.dirname(__filename);
 
 dotenv.config();
 
-// The bot's owner alerts (reused below for late applicants) read BOT_TOKEN and
+// The shared owner alerts (new requests, late applicants) read BOT_TOKEN and
 // WHATSAPP_ALERT_CHAT_ID; this backend's env names the same bot and chat differently.
 process.env.BOT_TOKEN ??= process.env.TELEGRAM_BOT_TOKEN;
 process.env.WHATSAPP_ALERT_CHAT_ID ??= process.env.TELEGRAM_NOTIFY_CHAT_ID;
@@ -125,9 +127,8 @@ app.get("/keep-alive", (req, res) => {
 
 // Send Telegram notification for new tutor requests
 async function notifyTelegramNewRequest(contact) {
-  const botToken = process.env.TELEGRAM_BOT_TOKEN;
-  const chatId = process.env.TELEGRAM_NOTIFY_CHAT_ID;
-  if (!botToken || !chatId) return;
+  // Parent-typed values are escaped so a stray _ or * can't make Telegram reject the alert.
+  const md = escapeMd;
 
   const tutorTypes = [];
   if (contact.tutorType?.partTime) tutorTypes.push('Part-Time');
@@ -137,41 +138,34 @@ async function notifyTelegramNewRequest(contact) {
   const duration = contact.customDuration || contact.lessonDuration || '-';
   const frequency = contact.customFrequency || contact.lessonFrequency || '-';
   const budget = contact.budget?.custom
-    ? `Custom: $${contact.budget.customAmount || '?'}`
+    ? `Custom: $${md(contact.budget.customAmount || '?')}`
     : 'Market Rate';
 
   // List each subject on its own line when several were requested; otherwise keep the
   // single-line format.
   const levelSubjectLine = contact.levelSubjects?.length > 1
-    ? `📚 *Level/Subjects:*\n` + contact.levelSubjects.map((s, i) => `   ${i + 1}. ${s}`).join('\n')
-    : `📚 *Level/Subject:* ${contact.levelSubjects?.[0] || contact.level}`;
+    ? `📚 *Level/Subjects:*\n` + contact.levelSubjects.map((s, i) => `   ${i + 1}. ${md(s)}`).join('\n')
+    : `📚 *Level/Subject:* ${md(contact.levelSubjects?.[0] || contact.level)}`;
 
   const text = [
     `🆕 *New Tutor Request*`,
     ``,
-    `👤 *Name:* ${contact.name}`,
-    `📱 *Mobile:* ${contact.mobile}`,
+    `👤 *Name:* ${md(contact.name)}`,
+    `📱 *Mobile:* ${md(contact.mobile)}`,
     levelSubjectLine,
-    `📍 *Location:* ${contact.location || '-'}`,
-    `⏱ *Duration:* ${duration}`,
-    `🔄 *Frequency:* ${frequency}`,
-    `🕐 *Preferred Time:* ${contact.preferredTime || '-'}`,
+    `📍 *Location:* ${md(contact.location || '-')}`,
+    `⏱ *Duration:* ${md(duration)}`,
+    `🔄 *Frequency:* ${md(frequency)}`,
+    `🕐 *Preferred Time:* ${md(contact.preferredTime || '-')}`,
     `🎓 *Tutor Type:* ${tutorTypes.length ? tutorTypes.join(', ') : 'Any'}`,
-    `👤 *Tutor Gender:* ${contact.genderPreference || 'No preference'}`,
-    `🗣 *Bilingual:* ${contact.bilingualRequired || 'No'}`,
+    `👤 *Tutor Gender:* ${md(contact.genderPreference || 'No preference')}`,
+    `🗣 *Bilingual:* ${md(contact.bilingualRequired || 'No')}`,
     `💰 *Budget:* ${budget}`,
-    contact.preferences ? `\n📝 *Notes:* ${contact.preferences}` : '',
+    contact.preferences ? `\n📝 *Notes:* ${md(contact.preferences)}` : '',
   ].filter(Boolean).join('\n');
 
-  try {
-    await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ chat_id: chatId, text, parse_mode: 'Markdown' }),
-    });
-  } catch (err) {
-    console.error('Failed to send Telegram notification:', err);
-  }
+  // notifyOwner logs a rejected send and retries it as plain text.
+  await notifyOwner(text);
 }
 
 // Contact form endpoint
