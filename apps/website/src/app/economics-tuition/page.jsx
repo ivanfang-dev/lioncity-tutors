@@ -205,8 +205,8 @@ export default function EconomicsTuition() {
             </Card>
             <Card className="border-l-4 border-l-blue-500 shadow-lg hover:shadow-xl transition-shadow duration-200">
               <CardContent className="p-6">
-                <h3 className="font-bold text-lg text-blue-700">Fast Tutor Matching (Within 24h)</h3>
-                <p className="text-gray-600 mt-2">Submit an economics tuition request and we'll match you with suitable qualified tutors in under a day, so your child can start improving immediately.</p>
+                <h3 className="font-bold text-lg text-blue-700">Fast tutor matching (usually {MATCH_TIME})</h3>
+                <p className="text-gray-600 mt-2">Submit an economics tuition request and we&apos;ll hand-match you with suitable tutors, usually within {MATCH_TIME}, so your child can start without waiting on a queue.</p>
               </CardContent>
             </Card>
             <Card className="border-l-4 border-l-purple-500 shadow-lg hover:shadow-xl transition-shadow duration-200">
