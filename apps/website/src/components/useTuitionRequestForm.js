@@ -79,6 +79,8 @@ export const DEFAULT_REQUEST_FORM_STATE = {
 // Pages pass only what they prefill, e.g. { levelSubjects: ['PSLE Math'] }.
 const useTuitionRequestForm = (overrides) => {
     const [initialFormData] = useState(() => ({ ...DEFAULT_REQUEST_FORM_STATE, ...overrides }));
+    // Identifies this page's preset, so a draft saved on another page can't replace it.
+    const [presetKey] = useState(() => JSON.stringify(overrides || {}));
     const [currentStep, setCurrentStep] = useState(1);
     const [formData, setFormData] = useState(initialFormData);
     const [errors, setErrors] = useState({});
@@ -96,27 +98,31 @@ const useTuitionRequestForm = (overrides) => {
                     parsed.levelSubjects = parsed.level ? [parsed.level] : [''];
                 }
                 delete parsed.level;
+                const { _preset, ...draft } = parsed;
                 // Merged onto the defaults, not swapped in: a draft saved before a
-                // field existed would otherwise come back missing that field.
-                setFormData({ ...initialFormData, ...parsed });
+                // field existed would otherwise come back missing that field. A draft
+                // from another page keeps its details but not its preset subject.
+                const pagePreset = _preset === presetKey ? {} : JSON.parse(presetKey);
+                setFormData({ ...initialFormData, ...draft, ...pagePreset });
             } catch (error) {
                 console.error('Failed to parse form draft:', error);
                 // If parsing fails, remove the corrupted data
                 safeLocalStorage.removeItem(STORAGE_KEY);
             }
         }
-    }, [initialFormData]);
+    }, [initialFormData, presetKey]);
 
-    // Save form data to localStorage on changes (only if not submitted)
+    // Save form data to localStorage on changes (only if not submitted). An untouched
+    // form isn't saved, so merely visiting a page never creates a draft.
     useEffect(() => {
-        if (!status.submitted) {
+        if (!status.submitted && formData !== initialFormData) {
             try {
-                safeLocalStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
+                safeLocalStorage.setItem(STORAGE_KEY, JSON.stringify({ ...formData, _preset: presetKey }));
             } catch (error) {
                 console.error('Failed to save form draft:', error);
             }
         }
-    }, [formData, status.submitted]);
+    }, [formData, status.submitted, initialFormData, presetKey]);
 
     const nextStep = () => {
         const newErrors = validateStep(currentStep, formData);
