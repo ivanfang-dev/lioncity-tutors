@@ -39,6 +39,17 @@ export function nextShortlistRank(contacts) {
   return ranks.length ? Math.max(...ranks) + 1 : 1;
 }
 
+// After an application is mirrored into outreach: if the shortlist already went out, score the
+// applicant against it. Shared by the bot and the website's apply route.
+export async function checkLateApplication(Assignment, assignmentId, tutorId) {
+  const fresh = await Assignment.findById(assignmentId);
+  if (fresh?.outreach?.status !== 'Fulfilled') return { alerted: false, stronger: false };
+  const contact = (fresh.outreach.contacts || [])
+    .find(c => c.tutorId?.toString() === tutorId.toString());
+  if (!contact) return { alerted: false, stronger: false };
+  return handleLateInterest(fresh, contact);
+}
+
 // Score a late candidate against the released shortlist and alert the owner if they beat it.
 // Best-effort: the interest is already recorded, so any failure here costs an alert, not the reply.
 export async function handleLateInterest(assignment, contact) {

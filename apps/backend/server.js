@@ -9,6 +9,7 @@ import { fileURLToPath } from 'url';
 import { Assignment, Tutor } from '../../packages/shared/server-exports.js';
 import { normalizePhone, generatePhoneVariations } from '../../packages/shared/utils/phoneUtils.js';
 import { recordApplicationInterest } from '../../packages/shared/utils/applicationInterest.js';
+import { checkLateApplication } from '../telegram-bot/utils/lateInterest.js';
 
 
 // ES modules don't have __dirname, so we need to create it
@@ -16,6 +17,11 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 dotenv.config();
+
+// The bot's owner alerts (reused below for late applicants) read BOT_TOKEN and
+// WHATSAPP_ALERT_CHAT_ID; this backend's env names the same bot and chat differently.
+process.env.BOT_TOKEN ??= process.env.TELEGRAM_BOT_TOKEN;
+process.env.WHATSAPP_ALERT_CHAT_ID ??= process.env.TELEGRAM_NOTIFY_CHAT_ID;
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -283,6 +289,7 @@ app.post('/api/assignments/apply', async (req, res) => {
 
     let successCount = 0;
     const errors = [];
+    const closed = [];
 
     for (const assignmentId of assignmentIds) {
       try {
@@ -292,7 +299,14 @@ app.post('/api/assignments/apply', async (req, res) => {
         });
 
         if (existingApplication) {
-          continue; 
+          continue;
+        }
+
+        // Old ?apply= email links can point at filled assignments.
+        const current = await Assignment.findById(assignmentId).select('status').lean();
+        if (current?.status !== 'Open') {
+          closed.push(assignmentId);
+          continue;
         }
 
         const newApplicant = {
@@ -308,6 +322,7 @@ app.post('/api/assignments/apply', async (req, res) => {
         const result = await Assignment.updateOne(
           { 
             _id: assignmentId,
+            status: 'Open',
             'applicants.tutorId': { $ne: tutor._id } // Double-check to prevent duplicates
           },
           { 
@@ -320,6 +335,8 @@ app.post('/api/assignments/apply', async (req, res) => {
           // Mirror the application into outreach so it counts toward the interested target and
           // gets ranked into the shortlist. Best-effort — never fails the application itself.
           await recordApplicationInterest(Assignment, assignmentId, tutor, { rate: newApplicant.rate })
+            // Applied after the shortlist went out — alert the owner if they beat it.
+            .then(() => checkLateApplication(Assignment, assignmentId, tutor._id))
             .catch(err => console.warn(`Failed to mirror application ${assignmentId} into outreach:`, err.message));
           console.log(`✅ Successfully applied to assignment ${assignmentId} with rate: ${newApplicant.rate}`);
         } else {
@@ -336,11 +353,19 @@ app.post('/api/assignments/apply', async (req, res) => {
         success: true, 
         message: `Successfully applied to ${successCount} new assignment(s).`,
         appliedCount: successCount,
+        closedCount: closed.length || undefined,
         errors: errors.length > 0 ? errors : undefined
       });
+    } else if (closed.length > 0) {
+      res.status(200).json({
+        success: true,
+        message: 'The selected assignment(s) are no longer open.',
+        appliedCount: 0,
+        closedCount: closed.length
+      });
     } else {
-      res.status(200).json({ 
-        success: true, 
+      res.status(200).json({
+        success: true,
         message: 'You have already applied for the selected assignment(s).',
         appliedCount: 0
       });

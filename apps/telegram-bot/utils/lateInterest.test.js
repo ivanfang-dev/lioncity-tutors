@@ -1,5 +1,5 @@
 import { describe, test, expect } from '@jest/globals';
-import { lateInterestOutcome, nextShortlistRank } from './lateInterest.js';
+import { lateInterestOutcome, nextShortlistRank, checkLateApplication } from './lateInterest.js';
 
 const shortlist = [
   { tutorId: 'a', tutorName: 'Amy', shortlistRank: 1, score: 0.90 },
@@ -96,5 +96,26 @@ describe('nextShortlistRank', () => {
   test('handles a missing contacts array', () => {
     expect(nextShortlistRank(undefined)).toBe(1);
     expect(nextShortlistRank([])).toBe(1);
+  });
+});
+
+describe('checkLateApplication', () => {
+  const modelReturning = (doc) => ({ findById: async () => doc });
+
+  test('does nothing while outreach is still running', async () => {
+    const assignment = { outreach: { status: 'Active', contacts: [{ tutorId: 't1' }] } };
+    expect(await checkLateApplication(modelReturning(assignment), 'a1', 't1'))
+      .toEqual({ alerted: false, stronger: false });
+  });
+
+  test('does nothing when the applicant has no outreach contact', async () => {
+    const assignment = { outreach: { status: 'Fulfilled', contacts: [{ tutorId: 'other' }] } };
+    expect(await checkLateApplication(modelReturning(assignment), 'a1', 't1'))
+      .toEqual({ alerted: false, stronger: false });
+  });
+
+  test('does nothing when the assignment is gone', async () => {
+    expect(await checkLateApplication(modelReturning(null), 'a1', 't1'))
+      .toEqual({ alerted: false, stronger: false });
   });
 });

@@ -27,7 +27,7 @@ import { otherPickPrompt, parseOtherPickTag, tutorNameSearch, otherPickButton } 
 import { recordCheckInWell, recordCheckInEnded, recordCheckInEndReason, recordCheckInNoReply } from '../utils/checkInOutcome.js';
 import { checkInRatingRows } from '../utils/checkInButtons.js';
 import { notifyOwner, opsButtonRow } from '../utils/ownerAlert.js';
-import { handleLateInterest, nextShortlistRank } from '../utils/lateInterest.js';
+import { checkLateApplication, nextShortlistRank } from '../utils/lateInterest.js';
 import { applyRecovery } from '../utils/recovery.js';
 import { waitUntil } from '@vercel/functions';
 
@@ -2216,15 +2216,9 @@ async function handleApplication(bot, chatId, userId, assignmentId, Assignment, 
     // Mirror the application into outreach so it counts toward the interested target and gets
     // ranked into the shortlist. Best-effort: a failure here must not lose a recorded application.
     await recordApplicationInterest(Assignment, assignmentId, tutor, { rate: applicationData.rate })
-      .then(async () => {
-        // Applied after the shortlist went out — score them against it so a strong late
-        // applicant still reaches the owner.
-        const fresh = await Assignment.findById(assignmentId);
-        if (fresh?.outreach?.status !== 'Fulfilled') return;
-        const contact = (fresh.outreach.contacts || [])
-          .find(c => c.tutorId?.toString() === tutor._id.toString());
-        if (contact) await handleLateInterest(fresh, contact);
-      })
+      // Applied after the shortlist went out — score them against it so a strong late
+      // applicant still reaches the owner.
+      .then(() => checkLateApplication(Assignment, assignmentId, tutor._id))
       .catch(err => console.warn('Failed to mirror application into outreach:', err.message));
 
     // Clear session data after successful submission
