@@ -4484,12 +4484,19 @@ async function handleMessage(bot, chatId, userId, text, message, Tutor, Assignme
     userSessions[chatId] = { state: ApplicationStates.IDLE };
   }
 
-  const session = userSessions[chatId];
+  let session = userSessions[chatId];
   // Every branch below reads state as a string (including session.state.startsWith), and this
   // function isn't wrapped in a try/catch — a session left without one would throw straight out
   // to the webhook as a 500, which Telegram then retries. Normalise once, here.
   if (typeof session.state !== 'string') {
     session.state = ApplicationStates.IDLE;
+  }
+  // After a cold start, re-link a known tutor by Telegram id so their reply (e.g. a rate) isn't
+  // sent to /start.
+  if (!session.tutorId && session.state !== ApplicationStates.AWAITING_CONTACT) {
+    const restored = await ensureTutorSession(chatId, userId, Tutor, userSessions)
+      .catch(err => { console.warn('Failed to restore tutor session:', err.message); return null; });
+    if (restored) session = restored;
   }
   // Same reason as handleCallbackQuery: an inbound message is proof the tutor is here, so it
   // must count as activity before handleRateInput checks whether the session went idle.
