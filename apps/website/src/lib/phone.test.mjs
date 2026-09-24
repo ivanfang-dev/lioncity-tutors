@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { normalizeSgMobile, isSgMobile, formatSgMobile } from './phone.mjs';
+import { normalizeSgMobile, isSgMobile, formatSgMobile, normalizeLeadPhone } from './phone.mjs';
 
 test('normalizeSgMobile', async (t) => {
   await t.test('accepts the format the placeholder demonstrates', () => {
@@ -71,5 +71,22 @@ test('formatSgMobile', async (t) => {
 
   await t.test('returns null rather than echoing an invalid number', () => {
     assert.equal(formatSgMobile('12345678'), null);
+  });
+});
+
+test('normalizeLeadPhone', async (t) => {
+  await t.test('reduces any written Singapore mobile to 8 digits', () => {
+    assert.equal(normalizeLeadPhone('+65 9123 4567'), '91234567');
+    assert.equal(normalizeLeadPhone('9123-4567'), '91234567');
+  });
+
+  await t.test('keeps overseas numbers the gate always accepted', () => {
+    assert.equal(normalizeLeadPhone('+60 12-345 6789'), '60123456789');
+  });
+
+  await t.test('rejects fewer than 8 digits and non-strings', () => {
+    assert.equal(normalizeLeadPhone('1234 567'), null);
+    assert.equal(normalizeLeadPhone(''), null);
+    assert.equal(normalizeLeadPhone(undefined), null);
   });
 });

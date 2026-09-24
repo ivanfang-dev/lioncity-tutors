@@ -18,6 +18,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Download, BookOpen, GraduationCap, Atom, FileText, Search, Clock } from "lucide-react";
 import { notesData } from "../../data/notesData.mjs";
 import { LEVEL_TINTS } from "@/lib/levelTints";
+import { normalizeLeadPhone } from "@/lib/phone.mjs";
 
 // Counted from the data rather than typed into the copy, so the page can never
 // claim more notes than it hosts.
@@ -231,7 +232,7 @@ export default function NoteLibrary() {
     }
     if (!formData.phone) {
       errors.phone = "Phone number is required.";
-    } else if (!/^\d{8,}$/.test(formData.phone.replace(/\s/g, ""))) {
+    } else if (!normalizeLeadPhone(formData.phone)) {
       errors.phone = "Enter a valid phone number (at least 8 digits).";
     }
     if (!formData.role) errors.role = ROLE_REQUIRED;
@@ -260,8 +261,8 @@ export default function NoteLibrary() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          email: formData.email,
-          phone: formData.phone,
+          email: formData.email.trim().toLowerCase(),
+          phone: normalizeLeadPhone(formData.phone),
           role: formData.role,
           subject,
           year,

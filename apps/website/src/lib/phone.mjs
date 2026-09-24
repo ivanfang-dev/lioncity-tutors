@@ -65,3 +65,14 @@ export function formatSgMobile(raw) {
   const local = normalizeSgMobile(raw);
   return local ? `${local.slice(0, 4)} ${local.slice(4)}` : null;
 }
+
+/**
+ * Phone for the download gates, which also take overseas numbers: a Singapore
+ * mobile becomes its bare 8 digits, anything else must have at least 8 digits.
+ */
+export function normalizeLeadPhone(raw) {
+  const local = normalizeSgMobile(raw);
+  if (local) return local;
+  const digits = typeof raw === 'string' ? raw.replace(/\D/g, '') : '';
+  return digits.length >= 8 ? digits : null;
+}

@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import LeadRoleField, { ROLE_REQUIRED, downloadToast } from "@/components/LeadRoleField";
 import { Download, FileText, Loader2 } from "lucide-react";
 import { gaEvent } from "@/utils/analytics";
+import { normalizeLeadPhone } from "@/lib/phone.mjs";
 
 // A group page holds up to 19 papers, so the gate cannot be an inline form per
 // row. One dialog serves all of them, prefilled from the last download — the
@@ -37,7 +38,7 @@ export default function GroupDownload({ group }) {
     }
     if (!formData.phone) {
       errors.phone = "Phone number is required.";
-    } else if (!/^\d{8,}$/.test(formData.phone.replace(/\s/g, ""))) {
+    } else if (!normalizeLeadPhone(formData.phone)) {
       errors.phone = "Enter a valid phone number (at least 8 digits).";
     }
     if (!formData.role) errors.role = ROLE_REQUIRED;
@@ -62,8 +63,8 @@ export default function GroupDownload({ group }) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          email: formData.email,
-          phone: formData.phone,
+          email: formData.email.trim().toLowerCase(),
+          phone: normalizeLeadPhone(formData.phone),
           role: formData.role,
           level: group.levelLabel,
           subject: group.subject,

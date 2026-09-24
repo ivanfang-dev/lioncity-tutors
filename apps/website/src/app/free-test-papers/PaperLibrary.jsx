@@ -17,6 +17,7 @@ import { paperKeyOf } from "@/lib/downloadKeys.mjs";
 import { getGroupUrlByPaperKey } from "@/lib/papers/registry.mjs";
 import { gaEvent } from "@/utils/analytics";
 import { paperStats } from "./stats";
+import { normalizeLeadPhone } from "@/lib/phone.mjs";
 
 // Counts reach the rows through context rather than four levels of props.
 // Below this many downloads a figure reads as "nobody wants this", so we show none.
@@ -363,7 +364,7 @@ export default function PaperLibrary({ counts = { perPaper: {}, perSubject: {}, 
     }
     if (!formData.phone) {
       errors.phone = "Phone number is required.";
-    } else if (!/^\d{8,}$/.test(formData.phone.replace(/\s/g, ""))) {
+    } else if (!normalizeLeadPhone(formData.phone)) {
       errors.phone = "Enter a valid phone number (at least 8 digits).";
     }
     if (!formData.role) errors.role = ROLE_REQUIRED;
@@ -388,8 +389,8 @@ export default function PaperLibrary({ counts = { perPaper: {}, perSubject: {}, 
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          email: formData.email,
-          phone: formData.phone,
+          email: formData.email.trim().toLowerCase(),
+          phone: normalizeLeadPhone(formData.phone),
           role: formData.role,
           level: paperInfo.level,
           subject: paperInfo.subject,
