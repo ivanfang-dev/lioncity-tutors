@@ -1,5 +1,6 @@
 import { MATCH_TIME } from '@/data/promises';
-import { rangeFor } from '../tuition-rates/rates.mjs';
+import { rangeFor, bandFor, priceLabel, TUTOR_TYPES, RATES_REVIEWED } from '../tuition-rates/rates.mjs';
+import Reviews from "@/components/Reviews";
 import React from "react";
 import Link from 'next/link';
 import Image from 'next/image';
@@ -320,32 +321,33 @@ export default function EnglishTuitionPage() {
           </p>
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
+              <caption className="sr-only">LionCity Tutors hourly rates by level and tutor type</caption>
               <thead>
                 <tr>
-                  <th className="p-4 border-b-2 border-blue-200 font-semibold text-blue-800">Level</th>
-                  <th className="p-4 border-b-2 border-blue-200 font-semibold text-blue-800">Part-Time Tutors</th>
-                  <th className="p-4 border-b-2 border-blue-200 font-semibold text-blue-800">Full-Time Tutors / MOE Teachers</th>
+                  <th scope="col" className="p-4 border-b-2 border-blue-200 font-semibold text-blue-800">Level</th>
+                  {TUTOR_TYPES.map((type) => (
+                    <th key={type} scope="col" className="p-4 border-b-2 border-blue-200 font-semibold text-blue-800">{type}</th>
+                  ))}
                 </tr>
               </thead>
               <tbody>
-                <tr className="hover:bg-blue-50">
-                  <td className="p-4 border-b border-gray-200">Primary School</td>
-                  <td className="p-4 border-b border-gray-200">$30 - $45 / hr</td>
-                  <td className="p-4 border-b border-gray-200">$45 - $65 / hr</td>
-                </tr>
-                <tr className="hover:bg-blue-50">
-                  <td className="p-4 border-b border-gray-200">Secondary School</td>
-                  <td className="p-4 border-b border-gray-200">$35 - $50 / hr</td>
-                  <td className="p-4 border-b border-gray-200">$50 - $80 / hr</td>
-                </tr>
-                <tr className="hover:bg-blue-50">
-                  <td className="p-4 border-b border-gray-200">Junior College (JC)</td>
-                  <td className="p-4 border-b border-gray-200">$50 - $70 / hr</td>
-                  <td className="p-4 border-b border-gray-200">$70 - $120 / hr</td>
-                </tr>
+                {['primary', 'secondary', 'jc'].map((id) => {
+                  const band = bandFor(id);
+                  return (
+                    <tr key={id} className="hover:bg-blue-50">
+                      <th scope="row" className="p-4 border-b border-gray-200 font-normal">{band.level}</th>
+                      {band.rates.map((row) => (
+                        <td key={row.type} className="p-4 border-b border-gray-200 tabular-nums">{priceLabel(row)} / hr</td>
+                      ))}
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
+          <p className="text-sm text-gray-500 text-center mt-4">
+            LionCity Tutors&apos; own rates, reviewed {RATES_REVIEWED}.
+          </p>
         </section>
 
         {/* Section 5: Why Parents Trust Us */}
@@ -369,6 +371,8 @@ export default function EnglishTuitionPage() {
             />
           </div>
         </section>
+
+        <Reviews />
 
         {/* Section 6: FAQ. Rendered open, not in an accordion: the FAQPage
             markup claims these answers are on the page, and a Radix accordion
