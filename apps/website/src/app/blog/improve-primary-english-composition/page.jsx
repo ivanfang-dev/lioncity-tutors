@@ -59,7 +59,7 @@ export default function ImproveEnglishComposition() {
             5 Signs Your Child is Struggling with English Composition (and How to Help)
           </h1>
           <p className="text-md text-gray-500 mt-4">
-            Updated May 3, 2026
+            Updated August 5, 2026
           </p>
         </header>
 

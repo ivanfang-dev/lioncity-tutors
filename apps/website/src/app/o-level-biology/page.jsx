@@ -18,7 +18,7 @@ const articleSchema = {
     },
   },
   'datePublished': '2026-02-05',
-  'dateModified': '2026-08-11',
+  'dateModified': '2026-08-29',
 };
 
 export const metadata = {

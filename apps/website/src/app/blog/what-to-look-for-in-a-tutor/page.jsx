@@ -44,7 +44,7 @@ export default function WhatToLookForInATutor() {
     />
     <main className="px-4 py-12 max-w-3xl mx-auto">
       <h1 className="page-title text-primary mb-4">What to Look for in a Private Tutor in Singapore</h1>
-      <p className="text-sm text-gray-500 mb-8">Updated May 12, 2026 • 6 min read</p>
+      <p className="text-sm text-gray-500 mb-8">Updated August 5, 2026 • 6 min read</p>
 
       <p className="mb-8 text-gray-700">
         Choosing between agencies rather than tutors? Read{' '}

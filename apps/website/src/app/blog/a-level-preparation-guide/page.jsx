@@ -31,7 +31,7 @@ export default function ALevelPreparationPage() {
           description:
             'The official 2026 A-Level timetable, the revised H2 science syllabuses and a JC1-to-JC2 revision plan for Singapore students.',
           datePublished: '2026-01-10',
-          dateModified: '2026-07-28',
+          dateModified: '2026-08-29',
         }}
         faqs={A_LEVEL_FAQS}
       />

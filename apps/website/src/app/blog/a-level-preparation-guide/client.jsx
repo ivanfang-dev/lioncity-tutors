@@ -361,7 +361,7 @@ Preferred days & timing: `;
               <GuideHeader
                 title="A-Level Preparation Guide 2026: H1 & H2 Study Plan"
                 author="By the LionCity Tutors JC Team"
-                meta="Updated August 1, 2026 · 16 min read"
+                meta="Updated August 29, 2026 · 16 min read"
                 imageSrc="/jc-tuition_optimized.webp"
                 imageAlt="A JC tutor working through a concept with a student ahead of the A-Level exams."
               />
