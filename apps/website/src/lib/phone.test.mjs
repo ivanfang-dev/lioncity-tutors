@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { normalizeSgMobile, isSgMobile, formatSgMobile, normalizeLeadPhone } from './phone.mjs';
+import { normalizePhone, generatePhoneVariations } from '@lioncity/shared/utils/phoneUtils.js';
 
 test('normalizeSgMobile', async (t) => {
   await t.test('accepts the format the placeholder demonstrates', () => {
@@ -89,4 +90,29 @@ test('normalizeLeadPhone', async (t) => {
     assert.equal(normalizeLeadPhone(''), null);
     assert.equal(normalizeLeadPhone(undefined), null);
   });
+});
+
+// The bot matches tutor replies with the shared normalizePhone, so every number the site
+// accepts must reduce to the same 8 digits on both sides.
+test('site parsing agrees with the shared matcher', async (t) => {
+  const numbers = ['61234567', '80000001', '91234567', '98765432', '65123456'];
+  const formats = [
+    (n) => n,
+    (n) => `+65${n}`,
+    (n) => `+65 ${n.slice(0, 4)} ${n.slice(4)}`,
+    (n) => `0065 ${n}`,
+    (n) => `065-${n.slice(0, 4)}-${n.slice(4)}`,
+    (n) => `(+65) ${n.slice(0, 4)}.${n.slice(4)}`,
+    (n) => `${n.slice(0, 4)} ${n.slice(4)}`,
+  ];
+  for (const n of numbers) {
+    await t.test(n, () => {
+      for (const format of formats) {
+        const raw = format(n);
+        assert.equal(normalizeSgMobile(raw), n, raw);
+        assert.equal(normalizePhone(raw), n, raw);
+        assert.ok(generatePhoneVariations(normalizeSgMobile(raw)).includes(n), raw);
+      }
+    });
+  }
 });
