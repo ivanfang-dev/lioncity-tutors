@@ -19,6 +19,7 @@ import {
 
 // Import components
 import RateInputModal from '../../components/RateInputModal.jsx';
+import { BACKEND_URL } from '@/lib/backend';
 
 // --- Custom Hooks ---
 const useDebounce = (value, delay) => {
@@ -611,9 +612,8 @@ export default function TuitionAssignmentsClient({ initialAssignments }) {
   const handleApplyClick = () => selectedAssignments.length > 0 && setShowVerificationModal(true);
 
   const handleVerifyAndSubmit = async (identifier) => {
-    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:4000';
     try {
-      const verifyResponse = await fetch(`${backendUrl}/api/tutors/verify`, {
+      const verifyResponse = await fetch(`${BACKEND_URL}/api/tutors/verify`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ identifier }),
@@ -636,11 +636,10 @@ export default function TuitionAssignmentsClient({ initialAssignments }) {
   };
 
   const handleRateSubmission = async (rates) => {
-    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:4000';
     setIsSubmittingApplication(true);
     
     try {
-      const applyResponse = await fetch(`${backendUrl}/api/assignments/apply`, {
+      const applyResponse = await fetch(`${BACKEND_URL}/api/assignments/apply`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 

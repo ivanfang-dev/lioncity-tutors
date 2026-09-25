@@ -1,6 +1,7 @@
 "use client";
 
 import { normalizeSgMobile } from '@/lib/phone';
+import { BACKEND_URL } from '@/lib/backend';
 import React, { useState } from 'react';
 import { FaTelegram } from "react-icons/fa";
 
@@ -457,7 +458,7 @@ export default function RegisterAsTutor() {
     setStatus({ submitting: true, submitted: false, error: null });
 
     try {
-      const response = await fetch('https://tuition-backend-afud.onrender.com/api/registerfortutor', {
+      const response = await fetch(`${BACKEND_URL}/api/registerfortutor`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

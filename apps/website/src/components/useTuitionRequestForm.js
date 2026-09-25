@@ -4,6 +4,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { normalizeSgMobile } from '@/lib/phone';
+import { BACKEND_URL } from '@/lib/backend';
 
 // Safe localStorage wrapper with error handling
 const safeLocalStorage = {
@@ -216,7 +217,7 @@ const useTuitionRequestForm = (overrides) => {
                     customAmount: formData.budget?.customAmount || ''
                 }
             };
-            const response = await fetch('https://tuition-backend-afud.onrender.com/api/requestfortutor', {
+            const response = await fetch(`${BACKEND_URL}/api/requestfortutor`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)

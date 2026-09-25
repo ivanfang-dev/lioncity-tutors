@@ -1,4 +1,5 @@
 import { Suspense } from 'react';
+import { BACKEND_URL } from '@/lib/backend';
 import Link from 'next/link';
 import { HelpCircle } from 'lucide-react';
 import GuideSchema from '@/components/seo/GuideSchema';
@@ -10,9 +11,8 @@ import { DEFAULT_OG_IMAGE } from '@/lib/seo/openGraph';
 // Helper function to fetch data on the server
 async function getAssignments() {
   try {
-    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:4000';
     // Using fetch with revalidation for fresh data (cache for 5 minutes)
-    const response = await fetch(`${backendUrl}/api/assignments`, {
+    const response = await fetch(`${BACKEND_URL}/api/assignments`, {
       next: { revalidate: 300 }
     });
     if (!response.ok) {
