@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 import { Assignment, Tutor } from '../../../packages/shared/server-exports.js';
 import { shortlistedContacts } from '../../../packages/shared/utils/outreachState.js';
 import { draftParentMessage, buildWaMeButton, waMeLink } from '../utils/parentMessage.js';
+import { connectToDatabase } from '../utils/db.js';
 
 // Drafts a parent-facing message for the ops console and returns it as a ready-to-open wa.me deep
 // link. Reuses draftParentMessage — the same transport seam the Telegram alerts use — so the owner
@@ -33,11 +34,7 @@ export default async function handler(req, res) {
     if (!mongoose.isValidObjectId(assignmentId)) return res.status(400).json({ error: 'invalid_id' });
     if (!KINDS.includes(kind)) return res.status(400).json({ error: 'invalid_kind', allowed: KINDS });
 
-    if (mongoose.connection.readyState !== 1) {
-      await mongoose.connect(process.env.MONGODB_URI, {
-        maxPoolSize: 10, serverSelectionTimeoutMS: 5000, socketTimeoutMS: 45000,
-      });
-    }
+    await connectToDatabase();
 
     const assignment = await Assignment.findById(assignmentId).lean();
     if (!assignment) return res.status(404).json({ error: 'assignment_not_found' });

@@ -1,5 +1,5 @@
-import mongoose from 'mongoose';
 import { recordCheckInWell, recordCheckInEnded, recordCheckInEndReason, recordCheckInNoReply } from '../utils/checkInOutcome.js';
+import { connectToDatabase } from '../utils/db.js';
 
 // Lets the ops console record a day-30 check-in outcome through the SAME recorder the Telegram
 // buttons use (utils/checkInOutcome.js) — the console never writes Placement state itself, so the
@@ -9,17 +9,6 @@ import { recordCheckInWell, recordCheckInEnded, recordCheckInEndReason, recordCh
 //      { outcome: 'ended',   placementId, endReason? }      → ended (+ optional verbatim reason,
 //                                                              recorded in one shot for the console)
 //      { outcome: 'noreply', placementId }                  → owner marks it no-reply
-
-let isConnected = false;
-async function connectToDatabase() {
-  if (isConnected) return;
-  await mongoose.connect(process.env.MONGODB_URI, {
-    maxPoolSize: 10,
-    serverSelectionTimeoutMS: 5000,
-    socketTimeoutMS: 45000,
-  });
-  isConnected = true;
-}
 
 // Map recorder error codes to HTTP: a bad id/rating is the caller's fault, a missing placement 404.
 const ERROR_STATUS = {

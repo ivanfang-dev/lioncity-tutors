@@ -1,20 +1,6 @@
-import mongoose from 'mongoose';
 import { Assignment, Tutor } from '../../../packages/shared/server-exports.js';
 import { generatePhoneVariations, normalizePhone } from '../../../packages/shared/utils/phoneUtils.js';
-
-// Own connection guard: the free-text forward path in whatsapp-webhook.js doesn't run
-// recordTutorReply, so no connection exists there. Mongoose's default connection is a global
-// singleton, so this second guarded connect is harmless and reuses the same socket when warm.
-let isConnected = false;
-async function connectToDatabase() {
-  if (isConnected) return;
-  await mongoose.connect(process.env.MONGODB_URI, {
-    maxPoolSize: 10,
-    serverSelectionTimeoutMS: 5000,
-    socketTimeoutMS: 45000,
-  });
-  isConnected = true;
-}
+import { connectToDatabase } from './db.js';
 
 // Best-effort: resolve a tutor's display name from their WhatsApp number (wa_id, e.g.
 // "6598477178"). Returns fullName, or null when the number isn't a known tutor OR the

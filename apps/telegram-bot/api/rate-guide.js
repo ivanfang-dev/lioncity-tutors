@@ -1,5 +1,5 @@
 import { rateGuide } from '../utils/tutorMatcher.js';
-import mongoose from 'mongoose';
+import { connectToDatabase } from '../utils/db.js';
 
 // The typical asking rate for a level (roadmap Phase 8) — the read-only guidance shown beside the
 // website request form's budget field. Aggregate only (p25/p50/p75 of tutor floors): no tutor
@@ -26,11 +26,7 @@ export default async function handler(req, res) {
     const { level, location, type } = req.query;
     if (!level) return res.status(400).json({ error: 'level_required' });
 
-    if (mongoose.connection.readyState !== 1) {
-      await mongoose.connect(process.env.MONGODB_URI, {
-        maxPoolSize: 10, serverSelectionTimeoutMS: 5000, socketTimeoutMS: 45000,
-      });
-    }
+    await connectToDatabase();
 
     const guide = await rateGuide({ level, location, type });
     if (!guide.ok) return res.status(200).json({ typical: null, sampleSize: 0 });

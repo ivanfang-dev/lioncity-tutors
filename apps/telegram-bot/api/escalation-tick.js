@@ -1,4 +1,3 @@
-import mongoose from 'mongoose';
 import { waitUntil } from '@vercel/functions';
 import { Assignment, Tutor, Placement, Meta } from '../../../packages/shared/server-exports.js';
 import { escalateAssignment, remindNonResponders, hasFreshTutors } from '../utils/tutorNotifier.js';
@@ -18,6 +17,7 @@ import { notifyOwner, opsButtonRow } from '../utils/ownerAlert.js';
 import { formatAssignmentForChannel } from '../utils/channelFormat.js';
 import { escapeMd } from '../utils/markdown.js';
 import { shortlistDecided, shortlistedContacts } from '../../../packages/shared/utils/outreachState.js';
+import { connectToDatabase } from '../utils/db.js';
 
 // Give the background sends (which run after the response) room to finish.
 export const maxDuration = 60;
@@ -97,17 +97,6 @@ export function interestSummary(assignment) {
 function opsKeyboard(assignmentId) {
   const row = opsButtonRow(assignmentId);
   return row ? { inline_keyboard: [row] } : undefined;
-}
-
-let isConnected = false;
-async function connectToDatabase() {
-  if (isConnected) return;
-  await mongoose.connect(process.env.MONGODB_URI, {
-    maxPoolSize: 10,
-    serverSelectionTimeoutMS: 5000,
-    socketTimeoutMS: 45000
-  });
-  isConnected = true;
 }
 
 // Send the next wave (or close out) for one already-claimed assignment.

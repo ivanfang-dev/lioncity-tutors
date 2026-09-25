@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 import { waitUntil } from '@vercel/functions';
 import { applyRecovery } from '../utils/recovery.js';
 import { resumeOutreach } from '../utils/parentOutcome.js';
+import { connectToDatabase } from '../utils/db.js';
 
 // Console v2 recovery (roadmap deferred item): the ops console's one-tap "widen / raise ceiling /
 // relax type & retry" on a stalled assignment posts here. Applies the change + resets outreach, then
@@ -23,11 +24,7 @@ export default async function handler(req, res) {
     const { assignmentId, action, amount } = req.body || {};
     if (!mongoose.isValidObjectId(assignmentId)) return res.status(400).json({ error: 'invalid_id' });
 
-    if (mongoose.connection.readyState !== 1) {
-      await mongoose.connect(process.env.MONGODB_URI, {
-        maxPoolSize: 10, serverSelectionTimeoutMS: 5000, socketTimeoutMS: 45000,
-      });
-    }
+    await connectToDatabase();
 
     const result = await applyRecovery({ assignmentId, action, amount });
     if (!result.ok) {

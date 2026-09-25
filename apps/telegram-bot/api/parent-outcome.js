@@ -1,8 +1,8 @@
-import mongoose from 'mongoose';
 import { waitUntil } from '@vercel/functions';
 import { recordParentPick, recordParentReject, resumeOutreach, REJECT_REASONS } from '../utils/parentOutcome.js';
 import { notifyOwner } from '../utils/ownerAlert.js';
 import { escapeMd } from '../utils/markdown.js';
+import { connectToDatabase } from '../utils/db.js';
 
 // Lets the ops console record a parent outcome through the SAME recorder the Telegram buttons use
 // (utils/parentOutcome.js) — the console never writes outreach state itself, so the two surfaces
@@ -16,17 +16,6 @@ import { escapeMd } from '../utils/markdown.js';
 export const maxDuration = 60;
 
 const BOT_USERNAME = process.env.BOT_USERNAME;
-
-let isConnected = false;
-async function connectToDatabase() {
-  if (isConnected) return;
-  await mongoose.connect(process.env.MONGODB_URI, {
-    maxPoolSize: 10,
-    serverSelectionTimeoutMS: 5000,
-    socketTimeoutMS: 45000,
-  });
-  isConnected = true;
-}
 
 // Map the recorder's error codes to HTTP: a bad id/reason is the caller's fault, a missing
 // assignment is a 404. Anything else surfaces as a 500 from the try/catch below.

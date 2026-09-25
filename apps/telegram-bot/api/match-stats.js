@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import { Assignment } from '../../../packages/shared/server-exports.js';
 import { findMatchingTutorsWithStats } from '../utils/tutorMatcher.js';
+import { connectToDatabase } from '../utils/db.js';
 
 // Explains why an assignment's matching pool is thin: the per-filter attrition funnel behind the
 // ops console's "pool smaller than wave" diagnosis. Read-only.
@@ -27,11 +28,7 @@ export default async function handler(req, res) {
     const { assignmentId } = req.query;
     if (!mongoose.isValidObjectId(assignmentId)) return res.status(400).json({ error: 'invalid_id' });
 
-    if (mongoose.connection.readyState !== 1) {
-      await mongoose.connect(process.env.MONGODB_URI, {
-        maxPoolSize: 10, serverSelectionTimeoutMS: 5000, socketTimeoutMS: 45000,
-      });
-    }
+    await connectToDatabase();
 
     const assignment = await Assignment.findById(assignmentId).lean();
     if (!assignment) return res.status(404).json({ error: 'assignment_not_found' });

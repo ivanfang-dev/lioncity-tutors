@@ -1,6 +1,6 @@
 import TelegramBot from 'node-telegram-bot-api';
-import mongoose from 'mongoose';
 import { Assignment, Tutor } from '../../../packages/shared/server-exports.js';
+import { connectToDatabase } from '../utils/db.js';
 
 // Wave-1 tutor notification + outreach recording runs as a waitUntil background task
 // after this webhook responds. Give it room to finish (sends + the Mongo write that
@@ -8,31 +8,12 @@ import { Assignment, Tutor } from '../../../packages/shared/server-exports.js';
 export const maxDuration = 60;
 
 let bot = null;
-let isConnected = false;
 let handlers = null;
 
 const userSessions = {};
 const ADMIN_USERS = process.env.ADMIN_USERS?.split(',').map(id => id.trim()) || [];
 const CHANNEL_ID = process.env.CHANNEL_ID;
 const BOT_USERNAME = process.env.BOT_USERNAME;
-
-// DB connection
-async function connectToDatabase() {
-  if (!isConnected) {
-    try {
-      await mongoose.connect(process.env.MONGODB_URI, {
-        maxPoolSize: 10,
-        serverSelectionTimeoutMS: 5000,
-        socketTimeoutMS: 45000
-      });
-      isConnected = true;
-      console.log('✅ MongoDB connected (Vercel)');
-    } catch (error) {
-      console.error('❌ MongoDB connection failed:', error);
-      throw error;
-    }
-  }
-}
 
 // Bot init with better error handling
 function getBot() {

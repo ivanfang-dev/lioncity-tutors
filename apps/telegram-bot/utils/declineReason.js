@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 import { Assignment, Tutor } from '../../../packages/shared/server-exports.js';
 import { buildRatePrompt } from './rateCapture.js';
 import { normalizePhone } from '../../../packages/shared/utils/phoneUtils.js';
+import { connectToDatabase } from './db.js';
 
 // Why a tutor said no. Every "No" used to be thrown-away signal; this is the only place we
 // learn the reason, and it's what tells us whether a pool is failing on money, distance, or
@@ -54,17 +55,6 @@ export function parseListReplyId(id) {
   const [reason, assignmentId] = String(id ?? '').split(':');
   if (!isDeclineReason(reason) || !assignmentId) return null;
   return { reason, assignmentId };
-}
-
-let isConnected = false;
-async function connectToDatabase() {
-  if (isConnected) return;
-  await mongoose.connect(process.env.MONGODB_URI, {
-    maxPoolSize: 10,
-    serverSelectionTimeoutMS: 5000,
-    socketTimeoutMS: 45000
-  });
-  isConnected = true;
 }
 
 // Record the reason against the contact we just flipped to Declined, and apply its two side

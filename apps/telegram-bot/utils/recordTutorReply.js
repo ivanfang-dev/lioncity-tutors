@@ -5,6 +5,7 @@ import { notifyOwner, opsButtonRow } from './ownerAlert.js';
 import { escapeMd } from './markdown.js';
 import { buildRatePrompt } from './rateCapture.js';
 import { handleLateInterest } from './lateInterest.js';
+import { connectToDatabase } from './db.js';
 
 // Shared core for recording a tutor's Yes/No reply, used by the WhatsApp webhook
 // and the Telegram bot handlers so matching + owner alerts stay in one place.
@@ -55,17 +56,6 @@ export function responseLatencyMins(sentAt, respondedAt) {
   const ms = new Date(respondedAt).getTime() - new Date(sentAt).getTime();
   if (!Number.isFinite(ms)) return null;
   return Math.max(0, Math.round(ms / 60000));
-}
-
-let isConnected = false;
-async function connectToDatabase() {
-  if (isConnected) return;
-  await mongoose.connect(process.env.MONGODB_URI, {
-    maxPoolSize: 10,
-    serverSelectionTimeoutMS: 5000,
-    socketTimeoutMS: 45000
-  });
-  isConnected = true;
 }
 
 // Wall-clock HH:MM in Singapore time — the owner's timezone — for the hold-window message.

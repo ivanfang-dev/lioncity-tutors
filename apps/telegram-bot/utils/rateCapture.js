@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 import { Assignment } from '../../../packages/shared/server-exports.js';
 import RateValidator from '../../../packages/shared/utils/RateValidator.js';
 import { normalizePhone } from '../../../packages/shared/utils/phoneUtils.js';
+import { connectToDatabase } from './db.js';
 
 // Rate capture: every tutor who says yes is asked what they'd charge FOR THIS ASSIGNMENT, and
 // the answer is stored on the outreach contact as quotedRate. Profile rates go stale (tutors
@@ -66,20 +67,6 @@ export function selectPendingRateContact(contacts, { phone, tutorId } = {}) {
   return pending.reduce((latest, c) =>
     new Date(c.rateRequestedAt) > new Date(latest.rateRequestedAt) ? c : latest
   );
-}
-
-// Same local connection guard the other entry points use (recordTutorReply, escalation-tick,
-// tutorLookup…). Not refactored into a shared helper here — that's seven call sites and not
-// this phase's job.
-let isConnected = false;
-async function connectToDatabase() {
-  if (isConnected) return;
-  await mongoose.connect(process.env.MONGODB_URI, {
-    maxPoolSize: 10,
-    serverSelectionTimeoutMS: 5000,
-    socketTimeoutMS: 45000
-  });
-  isConnected = true;
 }
 
 // Land an inbound rate against whichever contact we most recently asked. Called by BOTH
