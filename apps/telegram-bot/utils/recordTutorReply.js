@@ -6,10 +6,8 @@ import { escapeMd } from './markdown.js';
 import { buildRatePrompt } from './rateCapture.js';
 import { handleLateInterest } from './lateInterest.js';
 
-// Shared core for recording a tutor's Yes/No reply, used by both the legacy
-// /api/whatsapp-reply endpoint (VM-forwarded) and the new /api/whatsapp-webhook
-// (Meta Cloud API). Keeping the matching + owner-alert logic in one place means the
-// two entry points can never drift apart.
+// Shared core for recording a tutor's Yes/No reply, used by the WhatsApp webhook
+// and the Telegram bot handlers so matching + owner alerts stay in one place.
 
 // Stop sending new waves once this many tutors have replied "Yes". Deliberately larger than the
 // shortlist we relay, so the parent gets the best of a pool rather than the fastest repliers.

@@ -2,7 +2,7 @@
 // end-to-end with a SINGLE phone number.
 //
 // The trick: both outreach contacts are stored under YOUR number, so one "Yes" reply
-// flips them BOTH to Interested (whatsapp-reply marks every contact matching the phone) —
+// flips them BOTH to Interested (a reply marks every contact matching the phone) —
 // giving interestedCount = N without needing N real phones. Each contact points at a
 // different real tutor, so the shortlist still shows N distinct profiles. parentContact
 // is also your number, so the relayed shortlist comes back to you.

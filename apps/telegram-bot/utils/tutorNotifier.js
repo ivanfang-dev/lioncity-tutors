@@ -48,7 +48,7 @@ async function recordWaveContacts(assignmentId, contacts) {
       { $set: { 'outreach.startedAt': now } }
     );
     // Bump each messaged tutor's contacted count — the denominator of their
-    // responsiveness score. (responded is incremented when they reply, in whatsapp-reply.)
+    // responsiveness score. (responded is incremented when they reply, in recordTutorReply.)
     const tutorIds = contacts.map(c => c.tutorId).filter(Boolean);
     if (tutorIds.length > 0) {
       await Tutor.updateMany({ _id: { $in: tutorIds } }, { $inc: { 'responseStats.contacted': 1 } });
@@ -123,8 +123,7 @@ async function sendToTutor(tutor, assignment, params) {
 }
 
 // Message every tutor in `batch` and record the successful sends as part of `wave`.
-// Sends sequentially — whatsapp-web.js uses a single Chrome process and concurrent
-// sendMessage calls queue CDP commands on the same browser, causing protocol timeouts.
+// Sends sequentially.
 async function sendWaveToTutors(assignment, batch, wave, botUsername) {
   const params = buildAssignmentParams(assignment);
 

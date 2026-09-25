@@ -1,7 +1,6 @@
 import { describe, test, expect } from '@jest/globals';
 import { classifyInbound } from './whatsapp-webhook.js';
 import { parseRateReply } from '../utils/rateCapture.js';
-import { readFileSync, existsSync } from 'node:fs';
 
 const text = (body) => ({ type: 'text', text: { body } });
 const button = (t) => ({ type: 'button', button: { text: t } });
@@ -112,22 +111,5 @@ describe('parse-order precedence', () => {
   test('prose containing a number is neither a rate nor a reply — it goes to the owner', () => {
     expect(parseRateReply('I can do 45 if the timing changes')).toBeNull();
     expect(classifyInbound(text('I can do 45 if the timing changes')).kind).toBe('text');
-  });
-});
-
-// The dormant whatsapp-web.js VM service carries its own copy of the decline pattern — it
-// deploys standalone and cannot import from here. This is the only thing that will notice if
-// the two drift, which matters because the copy is what runs if the VM is ever switched back on.
-describe('legacy VM parser stays in step', () => {
-  const servicePath = new URL('../whatsapp-service/index.js', import.meta.url);
-
-  test('whatsapp-service uses the same NEGATED_AVAILABILITY pattern', () => {
-    if (!existsSync(servicePath)) return; // service deleted — nothing to keep in step
-    const src = readFileSync(servicePath, 'utf8');
-    const vmPattern = src.match(/const NEGATED_AVAILABILITY =\s*(\/.*\/);/)?.[1];
-    const ourPattern = readFileSync(new URL('./whatsapp-webhook.js', import.meta.url), 'utf8')
-      .match(/const NEGATED_AVAILABILITY =\s*(\/.*\/);/)?.[1];
-    expect(vmPattern).toBeDefined();
-    expect(vmPattern).toBe(ourPattern);
   });
 });

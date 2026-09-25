@@ -6,9 +6,8 @@ import { recordQuotedRate } from '../utils/rateCapture.js';
 import { declineReasonListRows, parseListReplyId, recordDeclineReason } from '../utils/declineReason.js';
 
 // Meta Cloud API webhook. GET = the one-time verification handshake; POST = inbound events
-// (tutor replies + delivery statuses). Replaces the whatsapp-web.js message handler and the
-// VM→/api/whatsapp-reply forwarding hop. Meta gives us the sender's real number (wa_id)
-// directly, so the old @lid contact-resolution dance is gone.
+// (tutor replies + delivery statuses). Meta gives us the sender's real number (wa_id)
+// directly, so no contact resolution is needed.
 const VERIFY_TOKEN = process.env.WHATSAPP_WEBHOOK_VERIFY_TOKEN;
 
 // Lowercase, and fold contractions so one negation list also covers isn't / can't / don't.
