@@ -24,9 +24,9 @@ export const metadata = {
     url: 'https://www.lioncitytutors.com',
     images: [
       {
-        url: '/final.png',
-        width: 800,
-        height: 600,
+        url: '/og-home.jpg',
+        width: 1200,
+        height: 750,
         alt: 'LionCity Tutors',
       },
     ],

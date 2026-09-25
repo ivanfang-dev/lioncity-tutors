@@ -11,7 +11,7 @@ export const metadata = {
     url: 'https://www.lioncitytutors.com/about-us',
     title: 'About LionCity Tutors — How the Matching Works',
     description: `A Singapore tuition agency built around one promise: a hand-matched, vetted tutor within ${MATCH_TIME}, with no agency fee for parents.`,
-    images: [{ url: 'https://www.lioncitytutors.com/final.png', alt: 'LionCity Tutors' }],
+    images: [{ url: 'https://www.lioncitytutors.com/og-home.jpg', width: 1200, height: 750, alt: 'LionCity Tutors' }],
   },
   robots: 'index, follow',
 };

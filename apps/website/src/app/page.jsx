@@ -36,7 +36,9 @@ export const metadata = {
     description: `Hand-matched, vetted tutors for PSLE, O-Level & A-Level, usually within ${MATCH_TIME}. Free for parents — no agency fee, ever.`,
     images: [
       {
-        url: 'https://www.lioncitytutors.com/final.png',
+        url: 'https://www.lioncitytutors.com/og-home.jpg',
+        width: 1200,
+        height: 750,
         alt: 'LionCity Tutors',
       },
     ],
@@ -45,7 +47,7 @@ export const metadata = {
     card: 'summary_large_image',
     title: `Singapore Tuition Agency — Tutor Matched in ${MATCH_HOURS} Hours`,
     description: `Hand-matched, vetted tutors for PSLE, O-Level & A-Level in ${MATCH_TIME}. Free for parents.`,
-    images: ['https://www.lioncitytutors.com/final.png'],
+    images: ['https://www.lioncitytutors.com/og-home.jpg'],
   },
   robots: 'index, follow',
   language: 'English',
