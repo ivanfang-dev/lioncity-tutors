@@ -5,7 +5,6 @@
  * Usage: node scripts/getEmailHTML.js
  */
 
-import fetch from 'node-fetch';
 import fs from 'fs';
 
 async function getEmailHTML() {
