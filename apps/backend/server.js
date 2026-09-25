@@ -4,8 +4,6 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
-import path from 'path';
-import { fileURLToPath } from 'url';
 import { Assignment, Tutor } from '../../packages/shared/server-exports.js';
 import { normalizePhone, generatePhoneVariations } from '../../packages/shared/utils/phoneUtils.js';
 import { recordApplicationInterest } from '../../packages/shared/utils/applicationInterest.js';
@@ -14,9 +12,6 @@ import { notifyOwner } from '../telegram-bot/utils/ownerAlert.js';
 import { escapeMd } from '../telegram-bot/utils/markdown.js';
 
 
-// ES modules don't have __dirname, so we need to create it
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 dotenv.config();
 
@@ -51,7 +46,6 @@ app.use(cors({
   origin: [
     'http://localhost:3000',
     'http://localhost:3001',
-    'http://localhost:5173', 
     'https://www.lioncitytutors.com',
     'https://lioncitytutors.com',
     'http://www.lioncitytutors.com',
@@ -64,8 +58,6 @@ app.use(cors({
 
 app.use(express.json());
 
-// Serve static files from public directory
-app.use('/public', express.static(path.join(__dirname, 'public')));
 
 mongoose.connect(process.env.MONGODB_URI)
 .then(() => console.log('Connected to MongoDB Atlas'))
@@ -497,15 +489,6 @@ app.get('/api/email/latest-assignments', async (req, res) => {
 
 
 
-if (process.env.NODE_ENV === 'production') {
-  // Serve any static files
-  app.use(express.static(path.join(__dirname, 'my-tuition-site/dist'))); // Adjust path if needed
-  
-  // Handle React routing, return all requests to React app
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'my-tuition-site/dist', 'index.html'));
-  });
-}
 
 // Start server
 app.listen(PORT, () => {
