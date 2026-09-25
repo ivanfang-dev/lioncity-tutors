@@ -1,6 +1,6 @@
 .env
 node_modules
-.
-..
-
 .vercel
+
+# Written by scripts/getEmailHTML.js
+latest-email.html
