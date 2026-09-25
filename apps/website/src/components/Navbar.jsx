@@ -5,7 +5,6 @@ import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
 import Image from "next/image";
 import Dropdown from "./Dropdown";
-import AnimatedBadge from "./AnimatedBadge";
 import { subjects, levels, resources, forParents, forTutors } from "../data/navigation";
 
 // Below this the bar always stays: the reader has not started reading yet.

@@ -1,8 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { motion, useReducedMotion } from 'framer-motion';
-import { DURATION, EASE_STANDARD } from '@/lib/motion';
 
 /**
  * The persistent mobile path to the request form.
@@ -42,7 +40,6 @@ export default function MobileCTABar({
   label = 'Request tutors',
   showAfterPx = SHOW_AFTER_PX,
 }) {
-  const prefersReducedMotion = useReducedMotion();
   const [pastHero, setPastHero] = useState(false);
   const [formInView, setFormInView] = useState(false);
 
@@ -77,18 +74,15 @@ export default function MobileCTABar({
     };
   }, [isVisible]);
 
-  // No AnimatePresence, for the same reason as TutorPopup and BackToTop: an exit
+  // No exit animation, for the same reason as TutorPopup and BackToTop: an exit
   // animation keeps this mounted while it fades, and a fixed full-width bar that
   // fails to unmount swallows every tap across the bottom of the screen with
   // nothing visible to blame it on.
   if (!isVisible) return null;
 
   return (
-    <motion.div
-      initial={{ opacity: 1, y: 0 }}
-      animate={prefersReducedMotion ? undefined : { opacity: [0, 1], y: [16, 0] }}
-      transition={{ duration: DURATION.base, ease: EASE_STANDARD }}
-      className="fixed inset-x-0 bottom-0 z-40 lg:hidden border-t border-gray-200 bg-white/95 backdrop-blur-md px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] shadow-[0_-4px_16px_rgba(0,0,0,0.06)]"
+    <div
+      className="rise-in fixed inset-x-0 bottom-0 z-40 lg:hidden border-t border-gray-200 bg-white/95 backdrop-blur-md px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] shadow-[0_-4px_16px_rgba(0,0,0,0.06)]"
     >
       <div className="mx-auto flex max-w-md items-center gap-3">
         {/* 18.7px/700 is the smallest label brand orange can carry at AA — white
@@ -122,6 +116,6 @@ export default function MobileCTABar({
           </svg>
         </a>
       </div>
-    </motion.div>
+    </div>
   );
 }

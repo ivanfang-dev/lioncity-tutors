@@ -496,6 +496,29 @@ a:focus-visible {
   }
 }
 
+/* Floating chrome entrances (BackToTop, MobileCTABar) — DURATION.base / EASE_STANDARD */
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+}
+
+@keyframes rise-in-pop {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.8);
+  }
+}
+
+.rise-in {
+  animation: rise-in 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.rise-in-pop {
+  animation: rise-in-pop 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 /* Mobile Navigation Animations */
 @keyframes slideDown {
   from {
