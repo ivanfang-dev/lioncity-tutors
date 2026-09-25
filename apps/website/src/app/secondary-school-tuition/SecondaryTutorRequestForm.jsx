@@ -12,8 +12,8 @@ import { CheckCircle } from "lucide-react";
  * component. Everything above it on the page is static content that should be
  * server-rendered rather than shipped as JS — see the note in layout.jsx.
  */
-export default function SecondaryTutorRequestForm() {
-  const form = useTuitionRequestForm();
+export default function SecondaryTutorRequestForm({ levelSubjects }) {
+  const form = useTuitionRequestForm(levelSubjects ? { levelSubjects } : undefined);
   const { currentStep, status, handleSubmit, resetForm } = form;
 
   return (

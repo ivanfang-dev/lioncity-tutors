@@ -12,3 +12,5 @@ export { default as GuideCTA } from './GuideCTA';
 export { default as RelatedGuides } from './RelatedGuides';
 export { default as ExamTimetable } from './ExamTimetable';
 export { ICON_STROKE } from './constants';
+// Client components stay out of this barrel (import them by path): re-exporting one
+// here ships it to every page that imports the barrel.
