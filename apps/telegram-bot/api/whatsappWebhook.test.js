@@ -73,6 +73,31 @@ describe('classifyInbound', () => {
     expect(classifyInbound(button('Yes, interested'))).toEqual({ kind: 'reply', reply: 'yes' });
   });
 
+  // A yes with a condition used to be read as a decline, because the negation check runs first.
+  test('reads a reply that is both yes and no as mixed, keeping the text', () => {
+    for (const body of [
+      'Yes, but not free on weekdays',
+      'Yes but not available on Monday',
+      'Interested! not free on Tues though',
+      "Ok, but I'm not free after 8pm",
+      'no problem, keen',
+    ]) {
+      expect(classifyInbound(text(body))).toEqual({ kind: 'mixed', body });
+    }
+  });
+
+  test('a plain decline is still a no, not mixed', () => {
+    for (const body of ['Not interested', 'no, not interested', 'Not interested, ok thanks', 'Nope, not keen']) {
+      expect(classifyInbound(text(body))).toEqual({ kind: 'reply', reply: 'no' });
+    }
+  });
+
+  // The confirm buttons sent after a mixed reply must come back as a yes/no.
+  test('reads the confirm buttons sent after a mixed reply', () => {
+    expect(classifyInbound(buttonReply('Yes, interested'))).toEqual({ kind: 'reply', reply: 'yes' });
+    expect(classifyInbound(buttonReply('Not available'))).toEqual({ kind: 'reply', reply: 'no' });
+  });
+
   test('passes anything else through as free text for the owner', () => {
     expect(classifyInbound(text('is this still open?'))).toEqual({ kind: 'text', body: 'is this still open?' });
   });

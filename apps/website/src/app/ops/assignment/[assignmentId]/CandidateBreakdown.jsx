@@ -66,6 +66,12 @@ export default function CandidateBreakdown({ contacts, tutorsById, level }) {
                 Tutor profile no longer available.
               </p>
             )}
+
+            {contact.replyNote && (
+              <p className="mt-1.5 text-xs text-[var(--color-text-secondary)]">
+                📝 “{contact.replyNote}”
+              </p>
+            )}
           </li>
         );
       })}

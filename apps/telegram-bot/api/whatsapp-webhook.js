@@ -1,5 +1,5 @@
-import { recordTutorReply } from '../utils/recordTutorReply.js';
-import { sendWhatsApp, sendWhatsAppList } from '../utils/whatsappSender.js';
+import { recordTutorReply, recordReplyNote } from '../utils/recordTutorReply.js';
+import { sendWhatsApp, sendWhatsAppList, sendWhatsAppButtons } from '../utils/whatsappSender.js';
 import { notifyOwner } from '../utils/ownerAlert.js';
 import { getRecentOutreachForNumber, getTutorNameByNumber } from '../utils/tutorLookup.js';
 import { recordQuotedRate } from '../utils/rateCapture.js';
@@ -38,13 +38,21 @@ function parseButton(label) {
   return null;
 }
 
+// A yes signal. Tested on the text with negated phrases removed, so "not interested" isn't one.
+const AFFIRMATIVE = /^(?:y(?:es|ep|eah|a|up)?|ok(?:ay)?)\b|\b(?:interested|keen)\b/;
+
 // Fallback for tutors who type instead of tapping (mirrors the old parseReply). Deliberately
 // keyword-shallow: anything it isn't sure about must fall through to the owner, which is a
 // visible non-failure, rather than being guessed at and silently recorded as the wrong answer.
 function parseText(body) {
   if (!body) return null;
   const t = normalizeInbound(body);
-  if (NEGATED_AVAILABILITY.test(t)) return 'no';
+  const negated = NEGATED_AVAILABILITY.test(t);
+  const leadingNo = /^n(o|ope|ah)?\b/.test(t);
+  const affirmative = AFFIRMATIVE.test(t.replace(new RegExp(NEGATED_AVAILABILITY.source, 'g'), ' ').trim());
+  // Both a yes and a no ("Yes, but not free on weekdays"): don't guess — the tutor confirms by tap.
+  if ((negated || leadingNo) && affirmative) return 'mixed';
+  if (negated) return 'no';
   if (/^y(es|ep|eah|a|up)?\b/.test(t) || t === 'ok' || t === 'okay' || t.includes('interested')) return 'yes';
   if (/^n(o|ope|ah)?\b/.test(t)) return 'no';
   return null;
@@ -73,6 +81,7 @@ export function classifyInbound(msg) {
   }
   if (msg?.type === 'text' && msg.text?.body) {
     const reply = parseText(msg.text.body);
+    if (reply === 'mixed') return { kind: 'mixed', body: msg.text.body };
     return reply ? { kind: 'reply', reply } : { kind: 'text', body: msg.text.body };
   }
   return { kind: 'unknown' };
@@ -111,6 +120,23 @@ async function askDeclineReason(to, assignmentId) {
     });
   } catch (err) {
     console.warn('Failed to send decline-reason list:', err.message);
+  }
+}
+
+// A mixed reply ("Yes, but not free on weekdays"): the note is saved, now ask for a tap. The
+// titles must stay parseable by parseButton, which is how the tap gets recorded.
+async function askToConfirm(to, assignmentTitle) {
+  const which = assignmentTitle ? ` (${assignmentTitle})` : '';
+  try {
+    await sendWhatsAppButtons(to, {
+      body: `Thanks, we've noted that! Just to confirm, are you interested in this assignment${which}?`,
+      buttons: [
+        { id: 'confirm_yes', title: 'Yes, interested' },
+        { id: 'confirm_no', title: 'Not available' },
+      ],
+    });
+  } catch (err) {
+    console.warn('Failed to send confirm buttons:', err.message);
   }
 }
 
@@ -165,6 +191,8 @@ async function forwardUnmatchedReply(from, reply, body) {
 //      would otherwise be read as something else entirely.
 //   2. REASON. A decline-reason list tap.
 //   3. YES/NO. Button payloads, then typed intent.
+//      A typed reply that is both yes and no is kept as a note and answered with Yes/No
+//      buttons instead, so the tutor's tap decides it.
 //   4. FORWARD. Anything left goes to the owner's Telegram as a question.
 //
 // The combined "yes but $50" case is deliberately not special-cased: no pending request exists
@@ -199,6 +227,21 @@ async function handleInbound(from, msg) {
     } else if (result.matched && inbound.reason === 'inactive') {
       await sendWhatsApp(from, "Got it — we'll stop sending you assignments. Message us any time to start again.")
         .catch(() => {});
+    }
+    return;
+  }
+
+  // (3a) Both yes and no in one message. Keep the text as a note, then have the tutor tap to
+  // decide; the tap comes back as a normal (3) reply.
+  if (inbound.kind === 'mixed') {
+    const result = await recordReplyNote(from, inbound.body);
+    if (result.matched) {
+      await askToConfirm(from, result.assignmentTitle);
+    } else if (result.reason === 'closed') {
+      await sendWhatsApp(from, "Thanks for getting back to us! That assignment has already been closed, but we'll be in touch when the next match comes up 😊")
+        .catch(err => console.warn('Failed to ack reply on a closed assignment:', err.message));
+    } else {
+      await forwardTutorMessage(from, inbound.body);
     }
     return;
   }

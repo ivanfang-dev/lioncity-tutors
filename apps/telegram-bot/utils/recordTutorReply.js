@@ -67,7 +67,7 @@ function formatSgTime(date) {
 
 // Ping the owner when a tutor says yes — the signal they act on to reach the parent fast.
 // `revived` marks a yes on an outreach that had already given up, so the alert says so.
-async function alertOwnerInterested(assignment, tutorName, interestedCount, { revived = false } = {}) {
+async function alertOwnerInterested(assignment, tutorName, interestedCount, { revived = false, note = '' } = {}) {
   const holding = assignment.outreach?.status === 'Holding';
 
   // Offer a one-tap relay only when we can act on it: the assignment has a parent number to
@@ -110,6 +110,7 @@ async function alertOwnerInterested(assignment, tutorName, interestedCount, { re
     `✅ *Tutor interested*\n` +
     `*${escapeMd(tutorName) || 'A tutor'}* said YES to *${escapeMd(assignment.title)}*\n` +
     `(${interestedCount}/${INTERESTED_TARGET} interested)` +
+    (note ? `\n📝 They wrote: "${escapeMd(note)}"` : '') +
     (assignment.parentContact ? '' : `\n\n⚠️ No parent contact on this assignment — relay unavailable.`) +
     statusLine,
     replyMarkup
@@ -181,6 +182,40 @@ export async function recordTutorReply(phone, reply) {
   // the decision; any row with this phone belongs to the same tutor.
   const contact = assignment.outreach.contacts.find(c => c.phone === norm);
   return finalizeReply(assignment, contact, decision, reply);
+}
+
+// Keep a mixed reply's text on the contact its follow-up tap will be recorded against, without
+// deciding yes or no. Same filter and sort as recordTutorReply, so both land on the same row.
+export const REPLY_NOTE_MAX = 500;
+export async function recordReplyNote(phone, note) {
+  const text = String(note ?? '').trim().slice(0, REPLY_NOTE_MAX);
+  if (!phone || !text) return { matched: false, error: 'phone and note required' };
+
+  await connectToDatabase();
+  const norm = normalizePhone(phone);
+
+  const assignment = await Assignment.findOneAndUpdate(
+    {
+      ...replyableAssignmentMatch(),
+      'outreach.contacts': { $elemMatch: { phone: norm, status: 'Sent' } }
+    },
+    { $set: { 'outreach.contacts.$[c].replyNote': text } },
+    {
+      new: true,
+      sort: { 'outreach.lastWaveAt': -1 },
+      arrayFilters: [{ 'c.phone': norm, 'c.status': 'Sent' }],
+      projection: { title: 1 }
+    }
+  );
+
+  if (!assignment) {
+    const onDead = await Assignment.exists({
+      status: { $ne: 'Open' },
+      'outreach.contacts': { $elemMatch: { phone: norm, status: 'Sent' } }
+    });
+    return { matched: false, reason: onDead ? 'closed' : 'unknown' };
+  }
+  return { matched: true, assignmentId: assignment._id.toString(), assignmentTitle: assignment.title || '' };
 }
 
 // Shared tail for both reply recorders (WhatsApp phone-matched and Telegram tutorId-matched):
@@ -268,7 +303,7 @@ async function finalizeReply(assignment, contact, decision, reply) {
 
   // handleLateInterest owns the alert for a post-shortlist yes.
   if (decision === 'Interested' && !late) {
-    await alertOwnerInterested(assignment, tutorName, interestedCount, { revived });
+    await alertOwnerInterested(assignment, tutorName, interestedCount, { revived, note: contact?.replyNote });
   }
 
   return {

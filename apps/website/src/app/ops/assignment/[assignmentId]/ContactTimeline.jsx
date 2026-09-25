@@ -66,6 +66,12 @@ export default function ContactTimeline({ contacts }) {
               </span>
             </div>
 
+            {contact.replyNote && (
+              <p className="mt-1.5 text-xs text-[var(--color-text-secondary)]">
+                📝 “{contact.replyNote}”
+              </p>
+            )}
+
             {(contact.parentPickedAt || contact.parentRejectedAt) && (
               <p className="mt-1.5 text-xs text-[var(--color-text-secondary)]">
                 {contact.parentPickedAt

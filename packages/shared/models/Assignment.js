@@ -267,7 +267,10 @@ const assignmentSchema = new mongoose.Schema({
       // it answers. It deliberately does not live in the in-memory userSessions map: Vercel
       // cold-starts between the prompt and the reply would drop it, and WhatsApp has no
       // session concept at all. See docs/superpowers/specs/2026-07-16-tutor-rate-capture-design.md.
-      rateRequestedAt: { type: Date }
+      rateRequestedAt: { type: Date },
+      // What the tutor typed when their reply was both yes and no ("Yes, but not free on
+      // weekdays"). Their button tap decides the status; this keeps the condition.
+      replyNote: { type: String }
     }]
   },
 

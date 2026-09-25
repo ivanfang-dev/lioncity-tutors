@@ -80,6 +80,20 @@ export async function sendWhatsAppList(phoneNumber, { body, buttonText, sectionT
   });
 }
 
+// Interactive reply-button send (up to 3 buttons, title ≤20 chars). Free-form, so only inside
+// the 24h window. Taps come back as interactive.button_reply with the button's title.
+export async function sendWhatsAppButtons(phoneNumber, { body, buttons }) {
+  await postMessage({
+    to: toWaId(phoneNumber),
+    type: 'interactive',
+    interactive: {
+      type: 'button',
+      body: { text: body },
+      action: { buttons: buttons.map(({ id, title }) => ({ type: 'reply', reply: { id, title } })) }
+    }
+  });
+}
+
 // Approved-template send — the only way to reach a tutor OUTSIDE the 24h window, which is
 // every cold outreach. `params` fill the body's {{1}}, {{2}}… in positional order; each must
 // be a non-empty, single-line string (Meta rejects empty params, newlines, tabs, or 4+

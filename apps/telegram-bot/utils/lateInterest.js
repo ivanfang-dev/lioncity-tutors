@@ -96,6 +96,7 @@ export async function handleLateInterest(assignment, contact) {
   await notifyOwner(
     `⭐ *Stronger tutor available* — *${escapeMd(assignment.title)}*\n` +
     `*${escapeMd(candidate.tutorName)}* said yes after the shortlist went out.\n` +
+    (contact.replyNote ? `    📝 They wrote: "${escapeMd(contact.replyNote)}"\n` : '') +
     `    ${escapeMd(reason)}\n\n${beats}`,
     { inline_keyboard: rows }
   );
