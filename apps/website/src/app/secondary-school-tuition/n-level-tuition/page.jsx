@@ -1,24 +1,12 @@
-"use client";
-
 import { MATCH_TIME } from '@/data/promises';
-import React, { useRef } from "react";
 import Link from 'next/link';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { TuitionRequestSteps } from "@/components/FormSteps";
-import FormStepper from "@/components/FormStepper";
-import useTuitionRequestForm from "@/components/useTuitionRequestForm";
-import FormBenefits from "@/components/FormBenefits";
-import { CheckCircle } from "lucide-react";
 import GuideSchema from "@/components/seo/GuideSchema";
 import { RelatedGuides } from "@/components/guide";
-
-// Validation logic for form steps
+import LevelRequestForm from '@/components/LevelRequestForm';
 
 export default function NLevelTuition() {
-  const formRef = useRef(null);
-  const form = useTuitionRequestForm({ levelSubjects: ['N-Level'] });
-  const { currentStep, status, handleSubmit, resetForm } = form;
 
   return (
     <>
@@ -44,39 +32,10 @@ export default function NLevelTuition() {
         </section>
 
         {/* Tutor Request Form Section */}
-        <section ref={formRef} className="bg-gradient-to-br from-blue-50 to-sky-50 p-8 rounded-2xl shadow-lg">
+        <section id="request-form" className="bg-gradient-to-br from-blue-50 to-sky-50 p-8 rounded-2xl shadow-lg">
           <div className="max-w-4xl mx-auto">
             <h2 className="section-title text-primary text-center mb-4">Request an N-Level Tutor</h2>
-
-            <FormBenefits />
-
-            <div className="bg-white rounded-xl shadow-lg p-8">
-              {status.submitted ? (
-                <div className="text-center py-10">
-                  <CheckCircle className="text-primary w-16 h-16 mx-auto mb-4" />
-                  <h2 className="text-2xl font-semibold mb-2 text-gray-900">Thank you!</h2>
-                  <p className="text-gray-600 mb-4">Our team will be in touch with suitable tutor profiles shortly via WhatsApp.</p>
-                  <Button
-                    onClick={resetForm}
-                    className="h-auto text-[18.7px] font-bold bg-accent-fill text-white px-6 py-2 rounded-full hover:bg-accent-fill-hover transition-colors"
-                  >
-                    Submit Another Request
-                  </Button>
-                </div>
-              ) : (
-                <form id="mainForm" onSubmit={handleSubmit}>
-                  {/* --- Progress Bar --- */}
-                  <FormStepper currentStep={currentStep} />
-                  {status.error && (
-                    <div className="bg-red-100 text-red-800 p-4 rounded-md mb-6">
-                      <p className="font-semibold">Submission Error</p>
-                      <p className="text-sm">{status.error}</p>
-                    </div>
-                  )}
-                  {/* --- Conditional Step Rendering (with errors prop) --- */}
-                  <TuitionRequestSteps form={form} />                </form>
-              )}
-            </div>
+            <LevelRequestForm levelSubjects={['N-Level']} />
           </div>
         </section>
 
@@ -347,11 +306,11 @@ export default function NLevelTuition() {
                 Experience the difference with our handpicked tutors. We'll match you within {MATCH_TIME}.
             </p>
             <div className="pt-4">
-                <Button 
-                    onClick={() => formRef.current?.scrollIntoView({ behavior: 'smooth' })}
+                <Button
+                    asChild
                     className="h-auto text-[18.7px] font-bold max-w-full whitespace-normal px-6 sm:px-10 py-3 sm:py-4 bg-accent-fill text-white hover:bg-accent-fill-hover rounded-full shadow-lg transform hover:scale-105 transition-all duration-200"
                 >
-                    Get an N-Level Tutor Now
+                    <a href="#request-form">Get an N-Level Tutor Now</a>
                 </Button>
             </div>
         </section>

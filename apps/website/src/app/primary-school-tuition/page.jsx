@@ -1,24 +1,13 @@
-"use client";
-
 import { MATCH_TIME } from '@/data/promises';
-import React, { useRef } from "react";
-import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { TuitionRequestSteps } from "@/components/FormSteps";
-import FormStepper from "@/components/FormStepper";
-import useTuitionRequestForm from "@/components/useTuitionRequestForm";
-import FormBenefits from "@/components/FormBenefits";
-import { CheckCircle } from "lucide-react";
 import GuideSchema from '@/components/seo/GuideSchema';
 import Reviews from "@/components/Reviews";
 import { RelatedGuides } from '@/components/guide';
+import LevelRequestForm from '@/components/LevelRequestForm';
 
 export default function PrimarySchoolTuition() {
-  const formRef = useRef(null);
-  const form = useTuitionRequestForm();
-  const { currentStep, status, handleSubmit, resetForm } = form;
 
   return (
     <>
@@ -55,37 +44,10 @@ export default function PrimarySchoolTuition() {
         </section>
         
         {/* Tutor Request Form Section */}
-        <section ref={formRef} className="bg-gradient-to-br from-blue-50 to-sky-50 p-8 rounded-2xl shadow-lg">
+        <section id="request-form" className="bg-gradient-to-br from-blue-50 to-sky-50 p-8 rounded-2xl shadow-lg">
           <div className="max-w-4xl mx-auto">
             <h2 className="section-title text-primary text-center mb-4">Request a Primary School Tutor</h2>
-            <FormBenefits />
-            <div className="bg-white rounded-xl shadow-lg p-8">
-              {status.submitted ? (
-                <div className="text-center py-10">
-                  <CheckCircle className="text-primary w-16 h-16 mx-auto mb-4" />
-                  <h2 className="text-2xl font-semibold mb-2 text-gray-900">Thank you!</h2>
-                  <p className="text-gray-600 mb-4">Our team will be in touch with suitable tutor profiles shortly via WhatsApp.</p>
-                  <Button
-                    onClick={resetForm}
-                    className="h-auto text-[18.7px] font-bold bg-accent-fill text-white px-6 py-2 rounded-full hover:bg-accent-fill-hover transition-colors"
-                  >
-                    Submit Another Request
-                  </Button>
-                </div>
-              ) : (
-                <form id="mainForm" onSubmit={handleSubmit}>
-                  <FormStepper currentStep={currentStep} />
-                  {status.error && (
-                    <div className="bg-red-100 text-red-800 p-4 rounded-md mb-6">
-                      <p className="font-semibold">Submission Error</p>
-                      <p className="text-sm">{status.error}</p>
-                    </div>
-                  )}
-                  {/* Pass the corrected props to all steps */}
-                  <TuitionRequestSteps form={form} />
-                </form>
-              )}
-            </div>
+            <LevelRequestForm />
           </div>
         </section>
 
@@ -343,10 +305,10 @@ export default function PrimarySchoolTuition() {
           </p>
           <div className="inline-block">
             <Button
-              onClick={() => formRef.current?.scrollIntoView({ behavior: 'smooth' })}
+              asChild
               className="h-auto text-[18.7px] font-bold max-w-full whitespace-normal px-6 py-3.5 sm:px-8 sm:py-4 bg-accent-fill text-white hover:bg-accent-fill-hover rounded-full shadow-lg transform hover:scale-105 transition-all duration-200"
             >
-              Request a PSLE Tutor Now
+              <a href="#request-form">Request a PSLE Tutor Now</a>
             </Button>
           </div>
           <p className="text-sm text-white/60 mt-4">Improved grades • Expert tutors • Proven results</p>

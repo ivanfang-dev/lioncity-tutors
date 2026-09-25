@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import GuideSchema from '@/components/seo/GuideSchema';
 import { RelatedGuides } from '@/components/guide';
-import SecondaryTutorRequestForm from '../SecondaryTutorRequestForm';
+import LevelRequestForm from '@/components/LevelRequestForm';
 
 export default function OLevelTuition() {
     return (
@@ -33,7 +33,7 @@ export default function OLevelTuition() {
         <section id="request-form" className="bg-gradient-to-br from-blue-50 to-sky-50 p-8 rounded-2xl shadow-lg">
           <div className="max-w-4xl mx-auto">
             <h2 className="section-title text-primary text-center mb-4">Request an O-Level Tutor</h2>
-            <SecondaryTutorRequestForm levelSubjects={['O-Level']} />
+            <LevelRequestForm levelSubjects={['O-Level']} />
           </div>
         </section>
   

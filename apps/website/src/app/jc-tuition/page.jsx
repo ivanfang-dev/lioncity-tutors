@@ -1,24 +1,14 @@
-"use client";
-
 import { MATCH_TIME } from '@/data/promises';
-import React, { useState, useRef } from "react";
 import Image from 'next/image';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { TuitionRequestSteps } from "@/components/FormSteps";
-import FormStepper from "@/components/FormStepper";
-import useTuitionRequestForm from "@/components/useTuitionRequestForm";
-import FormBenefits from "@/components/FormBenefits";
-import { CheckCircle } from "lucide-react"; // Imported for consistency in the success message
 import GuideSchema from '@/components/seo/GuideSchema';
 import Reviews from "@/components/Reviews";
 import { RelatedGuides } from '@/components/guide';
+import LevelRequestForm from '@/components/LevelRequestForm';
+import StreamTabs from './StreamTabs';
 
 export default function JCTuition() {
-  const formRef = useRef(null);
-  const [activeStream, setActiveStream] = useState('science');
-  const form = useTuitionRequestForm({ levelSubjects: ['JC Level'] });
-  const { currentStep, status, handleSubmit, resetForm } = form;
 
   return (
     <>
@@ -56,37 +46,10 @@ export default function JCTuition() {
         </section>
 
         {/* Tutor Request Form Section */}
-        <section ref={formRef} className="bg-gradient-to-br from-blue-50 to-sky-50 p-8 rounded-2xl shadow-lg">
+        <section id="request-form" className="bg-gradient-to-br from-blue-50 to-sky-50 p-8 rounded-2xl shadow-lg">
           <div className="max-w-4xl mx-auto">
             <h2 className="section-title text-primary text-center mb-4">Request a JC Tutor</h2>
-            <FormBenefits />
-            <div className="bg-white rounded-xl shadow-lg p-8">
-              {status.submitted ? (
-                <div className="text-center py-10">
-                  <CheckCircle className="text-primary w-16 h-16 mx-auto mb-4" />
-                  <h2 className="text-2xl font-semibold mb-2 text-gray-900">Thank you!</h2>
-                  <p className="text-gray-600 mb-4">Our team will be in touch with suitable tutor profiles shortly via WhatsApp.</p>
-                  <button
-                    onClick={resetForm}
-                    className="text-[18.7px] font-bold bg-accent-fill text-white px-6 py-2 rounded-full hover:bg-accent-fill-hover transition-colors"
-                  >
-                    Submit Another Request
-                  </button>
-                </div>
-              ) : (
-                <form id="mainForm" onSubmit={handleSubmit}>
-                  {/* --- Progress Bar --- */}
-                  <FormStepper currentStep={currentStep} />
-                  {status.error && (
-                    <div className="bg-red-100 text-red-800 p-4 rounded-md mb-6">
-                      <p className="font-semibold">Submission Error</p>
-                      <p className="text-sm">{status.error}</p>
-                    </div>
-                  )}
-                  {/* --- Conditional Step Rendering (Now passing errors prop) --- */}
-                  <TuitionRequestSteps form={form} />                </form>
-              )}
-            </div>
+            <LevelRequestForm levelSubjects={['JC Level']} />
           </div>
         </section>
 
@@ -150,34 +113,8 @@ export default function JCTuition() {
         <section>
           <h2 className="section-title text-primary mb-8 text-center">Comprehensive A-Level Subjects Coverage</h2>
          
-          {/* Stream Tabs */}
-          <div className="flex justify-center mb-8">
-            <div className="inline-flex rounded-lg border border-gray-200 p-1 bg-gray-50">
-              <button 
-                className={`px-4 py-2 rounded-md font-medium transition-colors ${
-                  activeStream === 'science' 
-                    ? 'bg-primary text-white' 
-                    : 'text-gray-600 hover:bg-gray-100'
-                }`}
-                onClick={() => setActiveStream('science')}
-              >
-                Science Stream
-              </button>
-              <button 
-                className={`px-4 py-2 rounded-md font-medium transition-colors ${
-                  activeStream === 'arts' 
-                    ? 'bg-primary text-white' 
-                    : 'text-gray-600 hover:bg-gray-100'
-                }`}
-                onClick={() => setActiveStream('arts')}
-              >
-                Arts Stream
-              </button>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {activeStream === 'science' ? (
+          <StreamTabs
+            science={
               <>
                 {/* H2 Mathematics */}
                 <Card className="border-t-4 border-t-emerald-500 shadow-lg">
@@ -568,7 +505,8 @@ export default function JCTuition() {
                   </CardContent>
                 </Card>
               </>
-            ) : (
+            }
+            arts={
               <>
                 {/* H2 Art */}
                 <Card className="border-t-4 border-t-emerald-500 shadow-lg">
@@ -940,8 +878,8 @@ export default function JCTuition() {
                 </Card>
 
               </>
-            )}
-          </div>
+            }
+          />
         </section>
 
         {/* Section 5: A-Level Study Guides */}
@@ -1037,10 +975,10 @@ export default function JCTuition() {
                 Experience the difference with our handpicked tutors. We&apos;ll match you within {MATCH_TIME}.
             </p>
             <Button
-                onClick={() => formRef.current?.scrollIntoView({ behavior: 'smooth' })}
+                asChild
                 className="h-auto text-[18.7px] font-bold max-w-full whitespace-normal px-6 py-3.5 sm:px-10 sm:py-4 bg-accent-fill text-white hover:bg-accent-fill-hover rounded-full shadow-lg transform hover:scale-105 transition-all duration-200"
             >
-                Request a JC Tutor Now
+                <a href="#request-form">Request a JC Tutor Now</a>
             </Button>
         </section>
       </div>

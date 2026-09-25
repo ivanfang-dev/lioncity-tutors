@@ -7,12 +7,9 @@ import useTuitionRequestForm from "@/components/useTuitionRequestForm";
 import FormBenefits from "@/components/FormBenefits";
 import { CheckCircle } from "lucide-react";
 
-/**
- * The request form, split out of page.jsx so the page itself can be a server
- * component. Everything above it on the page is static content that should be
- * server-rendered rather than shipped as JS — see the note in layout.jsx.
- */
-export default function SecondaryTutorRequestForm({ levelSubjects }) {
+// The tutor request form for the level pages (primary, secondary, O/N-Level, JC) —
+// the only interactive part, so those pages can stay server components.
+export default function LevelRequestForm({ levelSubjects }) {
   const form = useTuitionRequestForm(levelSubjects ? { levelSubjects } : undefined);
   const { currentStep, status, handleSubmit, resetForm } = form;
 

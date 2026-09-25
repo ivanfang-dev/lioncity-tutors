@@ -3,7 +3,7 @@ import Image from 'next/image';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import GuideSchema from "@/components/seo/GuideSchema";
-import SecondaryTutorRequestForm from './SecondaryTutorRequestForm';
+import LevelRequestForm from '@/components/LevelRequestForm';
 import { MATCH_TIME } from '@/data/promises';
 import { RATE_CARD, RATES_REVIEWED } from '../tuition-rates/rates.mjs';
 import {
@@ -323,7 +323,7 @@ export default function SecondarySchoolTuition() {
             <p className="text-gray-600 text-center mb-8 max-w-2xl mx-auto">
               Tell us the subject and the level it is taken at, and we will match a tutor — fast, free, and with no obligation.
             </p>
-            <SecondaryTutorRequestForm />
+            <LevelRequestForm />
           </div>
         </section>
       </div>
