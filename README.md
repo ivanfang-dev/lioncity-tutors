@@ -113,7 +113,6 @@ From the repo root you can use workspace-aware scripts defined in `package.json`
 
 - `npm run dev:website` — run Next.js website in dev mode (runs `apps/website` `dev` script)
 - `npm run dev:backend` — run Express backend in dev mode (runs `apps/backend` `dev` script)
-- `npm run dev:bot` — run telegram bot (if configured)
 - `npm run dev:all` — runs website + backend concurrently (requires `concurrently`)
 - `npm run build` — builds the website workspace (`apps/website`)
 - `npm run start:backend` — start backend (production-like)
