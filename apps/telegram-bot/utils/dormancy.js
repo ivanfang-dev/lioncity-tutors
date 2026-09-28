@@ -1,10 +1,10 @@
 import { Tutor } from '../../../packages/shared/server-exports.js';
 import { sendReactivationDM } from './telegramOutreach.js';
 
-// Dormancy auto-pause + reactivation (roadmap Phase 10, step 3). Tutors we've messaged many times
+// Dormancy auto-pause + reactivation. Tutors we've messaged many times
 // without a reply, and who haven't shown any confirmed activity in months, are almost certainly no
 // longer tutoring — they pollute pools and waste WhatsApp sends. Auto-pause them (pausedAt is a hard
-// matching filter, Phase 4), and if they're Telegram-linked give them ONE free tap to come back.
+// matching filter), and if they're Telegram-linked give them ONE free tap to come back.
 
 const DORMANT_MISS_THRESHOLD = Number(process.env.DORMANT_MISS_THRESHOLD) || 8;   // contacted − responded
 const DORMANT_DAYS = Number(process.env.DORMANT_DAYS) || 60;                      // since last confirmed active

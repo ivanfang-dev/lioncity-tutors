@@ -1,6 +1,6 @@
-// One-off / repeatable backfill: run write-time LLM profile extraction (roadmap Phase 9) over tutors
+// One-off / repeatable backfill: run write-time LLM profile extraction over tutors
 // that don't yet have profileFeatures at the CURRENT model version. Populates the same field the
-// registration/edit path writes, so ranking (Step B) can read a stored qualityGrade instead of
+// registration/edit path writes, so ranking can read a stored qualityGrade instead of
 // re-running Gemini at query time.
 //
 // Safe by default: DRY RUN — prints WHO would be extracted and how many, and makes NO Gemini calls

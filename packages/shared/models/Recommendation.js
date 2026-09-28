@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-// A decision-time snapshot of what the ranking system knew and chose (roadmap Phase 6). One doc is
+// A decision-time snapshot of what the ranking system knew and chose. One doc is
 // written each time we pick tutors to contact — wave 1, an escalation wave, or the shortlist release
 // — recording the candidate set, their scores, the component breakdown behind each score, and which
 // of them we actually contacted. This collection is the future training set: outcomes (did they
@@ -22,7 +22,7 @@ const recommendationSchema = new mongoose.Schema({
     score: { type: Number },       // the score this decision ranked on
     contacted: { type: Boolean },  // did this candidate actually get messaged in this wave/release?
     // The scoring components behind `score`, captured so an analysis can see WHY a tutor ranked
-    // where they did. qualityGrade is null until Phase 9 (write-time LLM profile extraction).
+    // where they did. qualityGrade is null until LLM extraction grades the tutor.
     featureSnapshot: {
       experienceRank: { type: Number },
       commitmentScore: { type: Number },

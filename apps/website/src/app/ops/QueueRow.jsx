@@ -3,7 +3,7 @@ import OutcomeButtons from './OutcomeButtons';
 import RecoveryButtons from './RecoveryButtons';
 
 // Outreach-stall rows where the fix is looser matching criteria (widen / raise ceiling / relax type)
-// rather than a parent message. Recovery buttons show on these (Console v2).
+// rather than a parent message. Recovery buttons show on these.
 const RECOVERABLE = new Set(['outreach_exhausted', 'pool_too_small', 'no_replies']);
 
 // One row of the "Needs you" queue: what's wrong, and the tap that fixes it. Mobile-first — the

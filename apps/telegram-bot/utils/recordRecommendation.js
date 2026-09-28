@@ -1,7 +1,7 @@
 import { Recommendation } from '../../../packages/shared/server-exports.js';
 import { POLICY_VERSION } from './tutorMatcher.js';
 
-// Writes one Recommendation decision-log doc (roadmap Phase 6). Write-only and BEST-EFFORT: an
+// Writes one Recommendation decision-log doc. Write-only and BEST-EFFORT: an
 // insert failure must never block or delay outreach — the whole point is a passive audit trail, so
 // it swallows every error with a log (same discipline as recordWaveContacts). Callers await it
 // AFTER the wave/relay has gone out, so even the await can't delay a tutor being messaged.

@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import CheckInButtons from './CheckInButtons';
 
-// One row of the day-30 check-in queue (roadmap Phase 5): who was placed, how long ago, a one-tap
+// One row of the day-30 check-in queue: who was placed, how long ago, a one-tap
 // wa.me to ask the parent how it's going, and the recording buttons. Mobile-first, matching QueueRow
 // — the owner finishes the job with their thumb. The wa.me draft is fetched at tap time through the
 // existing relay redirect (kind=checkin), so the console stays fast and the message text still comes

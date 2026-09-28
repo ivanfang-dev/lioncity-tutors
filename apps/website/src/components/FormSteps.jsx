@@ -225,7 +225,7 @@ const TUTOR_TYPES = [
 
 export const Step3 = ({ prevStep, formData, handleChange, status }) => {
   const [openInfo, setOpenInfo] = useState(null);
-  // Read-only budget guidance (roadmap Phase 8): the typical rate tutors ask for the chosen level,
+  // Read-only budget guidance: the typical rate tutors ask for the chosen level,
   // fetched from the bot's aggregate rate-guide. Informational only — it never gates the budget the
   // parent can enter. Silent when the level is unrecognized or data is sparse (typical stays null).
   const [rateHint, setRateHint] = useState(null);

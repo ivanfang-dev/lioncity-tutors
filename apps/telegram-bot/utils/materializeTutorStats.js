@@ -1,6 +1,6 @@
 import { Assignment, Tutor, Placement, Meta } from '../../../packages/shared/server-exports.js';
 
-// Materialized tutor.stats (roadmap Phase 7): a daily recompute of each tutor's performance from the
+// Materialized tutor.stats: a daily recompute of each tutor's performance from the
 // event sources (outreach.contacts + placements) into a cache that ranking and the ops console can
 // read cheaply. Events stay the source of truth; nothing here is incremented live. There's no cron
 // on Vercel Hobby, so the escalation tick calls runTutorStatsMaterialization() every tick and a

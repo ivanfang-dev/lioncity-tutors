@@ -1,6 +1,6 @@
 import { Assignment } from '../../../packages/shared/server-exports.js';
 
-// Adaptive wave sizing (roadmap Phase 10, step 2). Instead of a fixed 6-per-wave, size each wave to
+// Adaptive wave sizing. Instead of a fixed 6-per-wave, size each wave to
 // the replies still needed and how often a contacted tutor actually says yes — small waves when
 // interest runs hot, bigger ones when it's cold, so we hit the interested target without over- or
 // under-messaging (and burning WhatsApp spend).

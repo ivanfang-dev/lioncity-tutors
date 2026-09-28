@@ -1,5 +1,5 @@
-// Numeric parsing for the free-text rate strings that live on both sides of the platform (roadmap
-// Phase 7). Rates are typed by humans — "$40-60/hr", "50", "$45 (PT), $60 (FT)" — and were regex-
+// Numeric parsing for the free-text rate strings that live on both sides of the platform.
+// Rates are typed by humans — "$40-60/hr", "50", "$45 (PT), $60 (FT)" — and were regex-
 // parsed on every query. This derives the numeric fields (tutor.rateNumeric, assignment.budgetNumeric)
 // ONCE at write time so matching can read numbers instead of re-parsing text. Shared so the model
 // hook, the intake flows, and the backfill scripts all derive identically.

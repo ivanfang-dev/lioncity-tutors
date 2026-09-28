@@ -1,8 +1,6 @@
 import { getLevelCategory } from '@lioncity/shared/utils/levelCategory.js';
 
-// The inputs behind each interested tutor's score, shown raw. Phase 6 adds the recorded component
-// breakdown (and with it, bars); until the decision log exists, the honest thing is to show the
-// fields the score is computed FROM rather than invent a visualisation of numbers we didn't store.
+// The inputs behind each interested tutor's score, shown raw.
 
 export default function CandidateBreakdown({ contacts, tutorsById, level }) {
   const candidates = contacts

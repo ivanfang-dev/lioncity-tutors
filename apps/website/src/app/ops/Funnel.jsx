@@ -1,5 +1,5 @@
 // The outreach funnel as text: contacted 14 → replied 6 → interested 4 → shown 3. Deliberately
-// not a chart (roadmap: no charts in v1) — four numbers read faster than any graphic at this size,
+// not a chart — four numbers read faster than any graphic at this size,
 // and the drop between them is the whole story.
 export default function Funnel({ funnel }) {
   const steps = [

@@ -23,8 +23,7 @@ import { connectToDatabase } from '../utils/db.js';
 export const maxDuration = 60;
 
 const WAVE_INTERVAL_MS = Number(process.env.OUTREACH_WAVE_INTERVAL_MS) || 60 * 30 * 1000; // 30mins
-// Wave size is now adaptive (Phase 10 step 2 — see computeWaveSize/trailingInterestRate), no longer a
-// fixed per-wave constant.
+// Wave size is adaptive — see computeWaveSize/trailingInterestRate.
 const MAX_DURATION_MS = Number(process.env.OUTREACH_MAX_DURATION_MS) || 4 * 60 * 60 * 1000; // 4h
 const INTERESTED_TARGET = Number(process.env.OUTREACH_INTERESTED_TARGET) || 6;
 // Max reminder pings a single non-responder can receive once the fresh pool is dry,
@@ -55,7 +54,7 @@ const PARENT_NUDGE_AFTER_MS = Number(process.env.PARENT_NUDGE_AFTER_MS) || 24 * 
 const PARENT_FLAG_AFTER_MS = Number(process.env.PARENT_FLAG_AFTER_MS) || 48 * 60 * 60 * 1000; // 48h
 const MAX_NUDGE_PER_TICK = Number(process.env.OUTREACH_MAX_NUDGE_PER_TICK) || 5;
 
-// Day-30 check-in (Phase 5): how many owner pings (first + re-ping) one tick may send, bounded like
+// Day-30 check-in: how many owner pings (first + re-ping) one tick may send, bounded like
 // the other fan-outs so a backlog of due placements can't blow the function's time budget.
 const MAX_CHECKIN_PER_TICK = Number(process.env.OUTREACH_MAX_CHECKIN_PER_TICK) || 5;
 
@@ -142,7 +141,7 @@ async function processAssignment(assignment, now, expectedInterestRate, excludeT
     return;
   }
 
-  // Adaptive wave sizing (Phase 10 step 2): size the wave to the replies still needed and the
+  // Adaptive wave sizing: size the wave to the replies still needed and the
   // trailing interest rate (clamped [4,12]), instead of a fixed per-wave count.
   const remainingNeeded = INTERESTED_TARGET - viable;
   const waveSize = computeWaveSize(remainingNeeded, expectedInterestRate);
@@ -256,7 +255,7 @@ async function releaseOneShortlist(assignment) {
 
   await alertOwnerShortlistReady(assignment, ranked);
 
-  // Log the shortlist decision (Phase 6): the whole viable pool with per-tutor score + features, and
+  // Log the shortlist decision: the whole viable pool with per-tutor score + features, and
   // which ones were actually shortlisted to the parent. After the relay, best-effort — never blocks.
   const shortlistedIds = new Set(ranked.map(r => r.tutor._id.toString()));
   await recordRecommendation({
@@ -313,7 +312,7 @@ async function alertOwnerShortlistReady(assignment, ranked) {
     // Draft the parent-facing message and offer it as a one-tap "open WhatsApp with the draft
     // pre-filled" button. Best-effort: any drafting failure falls back to a template inside
     // draftParentMessage; a too-long draft returns no button, so we paste it into the body.
-    // Attach each tutor's quoted rate (Phase 4) onto the drafting view-model so the parent
+    // Attach each tutor's quoted rate onto the drafting view-model so the parent
     // message quotes what the tutor will actually charge for this assignment, not their profile.
     const draft = await draftParentMessage('shortlist', {
       assignment,
@@ -468,7 +467,7 @@ async function alertOwnerCheckIn(placement, kind) {
   await notifyOwner(text, { inline_keyboard: rows }, { disableWebPagePreview: true });
 }
 
-// Drive the day-30 check-in cadence (Phase 5). Three steps, each bounded per tick:
+// Drive the day-30 check-in cadence. Three steps, each bounded per tick:
 //   1. First ping   — active placements 28d+ old, never pinged.
 //   2. Re-ping once — pinged 3d+ ago with still no recorded outcome.
 //   3. Give up      — re-pinged 3d+ ago and still silent: append a 'no_reply' checkIn so the
@@ -636,8 +635,8 @@ export default async function handler(req, res) {
     // claimed assignments, then auto-close stale ones. Slow work goes after the response.
     waitUntil((async () => {
       // Computed once per tick and shared across every claimed assignment (only when a wave may go
-      // out): the trailing interest rate for adaptive wave sizing (Phase 10 step 2) and the set of
-      // exposure-capped tutors held out of new waves (Phase 10 step 4).
+      // out): the trailing interest rate for adaptive wave sizing and the set of
+      // exposure-capped tutors held out of new waves.
       const expectedInterestRate = claimed.length ? await trailingInterestRate() : null;
       const cappedTutorIds = claimed.length ? await loadCappedTutorIds() : null;
       for (const assignment of claimed) {
@@ -661,7 +660,7 @@ export default async function handler(req, res) {
       } catch (err) {
         console.error('Parent silence follow-up failed:', err.message);
       }
-      // Day-30 check-ins on placements: ping the owner, re-ping once, then give up (Phase 5).
+      // Day-30 check-ins on placements: ping the owner, re-ping once, then give up.
       try {
         await runDay30CheckIns(now);
       } catch (err) {
@@ -672,14 +671,14 @@ export default async function handler(req, res) {
       } catch (err) {
         console.error('Auto-close failed:', err.message);
       }
-      // Recompute the materialized tutor.stats cache — self-guarded to run at most once per day
-      // (Phase 7). Best-effort: it logs and swallows its own errors, so it can't break the tick.
+      // Recompute the materialized tutor.stats cache — self-guarded to run at most once per day.
+      // Best-effort: it logs and swallows its own errors, so it can't break the tick.
       try {
         await runTutorStatsMaterialization(now);
       } catch (err) {
         console.error('Tutor-stats materialization failed:', err.message);
       }
-      // Grade a small batch of new/stale tutor profiles via LLM extraction (Phase 9). Self-guarded
+      // Grade a small batch of new/stale tutor profiles via LLM extraction. Self-guarded
       // (Meta doc) to run at most every ~10 min, bounded to a few Gemini calls, and in this
       // post-response block so it never delays the tick. Best-effort — logs and swallows its own errors.
       try {

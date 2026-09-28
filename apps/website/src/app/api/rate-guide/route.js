@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { fetchRateGuide } from '@/lib/ops/botApi';
 
-// Public proxy for the bot's rate-guide endpoint (roadmap Phase 8). The request-tutor form is
+// Public proxy for the bot's rate-guide endpoint. The request-tutor form is
 // parent-facing and unauthenticated, so this route is intentionally open — but it forwards only the
 // aggregate percentile summary (no tutor identities), and the shared bot key stays server-side here
 // (the browser only ever sees this same-origin route, never BOT_API_URL/WHATSAPP_API_KEY).

@@ -1,5 +1,5 @@
 import { DEFAULT_OG_IMAGE } from '@/lib/seo/openGraph';
-// Phase 1 title formula: front-loaded, under 60 characters.
+// Title: front-loaded, under 60 characters.
 const TITLE = 'How to Choose a Tuition Agency in Singapore | LionCity';
 const DESCRIPTION =
   'Agency, tuition centre or independent tutor — what each costs, how agencies charge, and the warning signs to check before you commit. No agency fee here.';

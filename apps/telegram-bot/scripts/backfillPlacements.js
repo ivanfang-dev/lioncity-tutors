@@ -1,5 +1,5 @@
 // One-off backfill: create a Placement row for every historical assignment that has a
-// matchedTutorId but no Placement yet (roadmap Phase 5). These predate the Phase 2 pick flow that
+// matchedTutorId but no Placement yet. These predate the pick flow that
 // writes placements at pick time, so they have no ground-truth match record. Backfilled rows are
 // created with status 'unknown' and NO check-in — they're too stale to ping a parent about, and the
 // day-30 tick only ever pings status 'active' placements, so these will never generate an owner ping.
@@ -11,7 +11,7 @@
 //   node --env-file=.env scripts/backfillPlacements.js --apply    # actually write
 //
 // Idempotent: the Placement upsert is keyed on (assignmentId, tutorId) and uses $setOnInsert, so a
-// re-run never touches an existing row (a real Phase 2 placement, or a prior backfill).
+// re-run never touches an existing row (a real placement, or a prior backfill).
 
 import mongoose from 'mongoose';
 import { Assignment, Tutor, Placement } from '../../../packages/shared/server-exports.js';
@@ -34,13 +34,13 @@ const assignments = await Assignment.find({ matchedTutorId: { $exists: true, $ne
 
 console.log(`\nFound ${assignments.length} assignment(s) with a matchedTutorId.`);
 
-// Which of those already have a Placement (Phase 2 rows, or a prior backfill) — skip them.
+// Which of those already have a Placement (real rows, or a prior backfill) — skip them.
 const existing = await Placement.find({
   assignmentId: { $in: assignments.map(a => a._id) },
 }).select('assignmentId tutorId').lean();
 const existingKeys = new Set(existing.map(p => `${p.assignmentId}_${p.tutorId}`));
 
-// Resolve the placed tutors' rates in one query so agreedRate mirrors what Phase 2 would have stored
+// Resolve the placed tutors' rates in one query so agreedRate mirrors what the pick flow stores
 // (the tutor's asking rate for the level, else the assignment's posted rate).
 const tutorIds = [...new Set(assignments.map(a => String(a.matchedTutorId)))];
 const tutors = await Tutor.find({ _id: { $in: tutorIds } }).select('hourlyRate').lean();

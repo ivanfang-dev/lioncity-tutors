@@ -89,10 +89,10 @@ export async function sendAssignmentDM(tutor, assignment) {
   });
 }
 
-// One FREE profile-improvement nudge (roadmap Phase 9 follow-on): a tutor with a weak extracted
+// One FREE profile-improvement nudge: a tutor with a weak extracted
 // profile (qualityGrade ≤ 2) gets a single Telegram DM suggesting they add concrete results. The
 // button routes into the existing track-record edit flow ('edit_track_record'), which on save
-// re-extracts their profile (Phase 9) — so acting on the nudge can lift their ranking automatically.
+// re-extracts their profile — so acting on the nudge can lift their ranking automatically.
 // Telegram-only, no WhatsApp spend. Throws on failure so the caller can log it.
 export async function sendProfileNudgeDM(tutor) {
   if (!tutor.telegramId) throw new Error('tutor has no telegramId');
@@ -106,7 +106,7 @@ export async function sendProfileNudgeDM(tutor) {
   });
 }
 
-// One FREE reactivation DM to a tutor we've auto-paused for dormancy (roadmap Phase 10 step 3): many
+// One FREE reactivation DM to a tutor we've auto-paused for dormancy: many
 // unanswered messages and no confirmed activity in months. One tap ('reactivate', handled in
 // handlers.js) clears pausedAt and puts them back in the pool. Telegram-only — no WhatsApp spend.
 // Throws if the DM can't be delivered so the caller can log it; the pause itself still stands.

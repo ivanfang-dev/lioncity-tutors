@@ -1,5 +1,5 @@
-// One-off backfill: populate assignment.budgetNumeric from the existing free-text rate (roadmap
-// Phase 7), so matching reads numbers instead of regex-parsing text. Going forward the Assignment
+// One-off backfill: populate assignment.budgetNumeric from the existing free-text rate,
+// so matching reads numbers instead of regex-parsing text. Going forward the Assignment
 // pre-save hook keeps it in sync; this catches assignments created before it.
 //
 // Safe by default: DRY RUN — prints what it WOULD write. Add --apply to write.

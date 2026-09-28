@@ -122,7 +122,7 @@ export const LOCATION_TO_REGION = Object.fromEntries(
 );
 
 // Geographic adjacency between tutor-regions, for the ops console's "widen to adjacent regions and
-// retry" recovery (roadmap deferred item). No maps API — a static table over the coarse region
+// retry" recovery. No maps API — a static table over the coarse region
 // buckets. Central touches everything; 'online' is location-agnostic and has no neighbours (widening
 // an online assignment is meaningless). Kept symmetric so widening is predictable.
 export const REGION_ADJACENCY = {

@@ -3,7 +3,7 @@
 import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 
-// Console v2 recovery (roadmap deferred item): one-tap fixes for a stalled assignment — widen to
+// Recovery: one-tap fixes for a stalled assignment — widen to
 // adjacent regions, raise the budget ceiling, or drop the tutor-type restriction — each of which
 // resets outreach and fires a fresh wave. Posts to /api/ops/recover (same secret-side proxy pattern
 // as OutcomeButtons). Client-side so the owner sees the tap land and a success/error line.

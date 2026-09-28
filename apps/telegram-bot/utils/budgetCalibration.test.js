@@ -10,7 +10,7 @@ const assignment = {
   rate: '$50/hr',
 };
 
-// A tutor whose asking floor for the level is `floor` (via rateNumeric, the Phase 7 numeric mirror).
+// A tutor whose asking floor for the level is `floor` (via rateNumeric).
 function tutor(floor, overrides = {}) {
   return {
     _id: 'x',

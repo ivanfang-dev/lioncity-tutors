@@ -265,7 +265,7 @@ const initialFormData = {
   nationalityOther: '',
   race: '',
   nricLast4: '',
-  // Home postal code / district (roadmap Phase 7): collected for later travel-time matching between
+  // Home postal code / district: collected for later travel-time matching between
   // tutor and assignment. Optional, not used for matching yet.
   postalDistrict: '',
 

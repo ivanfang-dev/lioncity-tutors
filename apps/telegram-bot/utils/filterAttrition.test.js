@@ -340,7 +340,7 @@ describe('findMatchingTutorsWithStats', () => {
   });
 });
 
-// Phase 4: tutors who told us they've stopped tutoring (decline reason 'inactive' → pausedAt)
+// Tutors who told us they've stopped tutoring (decline reason 'inactive' → pausedAt)
 // must never be matched or messaged again until they re-engage.
 describe('pausedAt hard filter', () => {
   const stageFilters = (a = assignment) => buildFilterStages(a).stages.map(s => s.filter);

@@ -80,7 +80,7 @@ export async function recordDeclineReason({ phone, tutorId, assignmentId, reason
 
   const set = { 'outreach.contacts.$[c].declineReason': reason };
   // "Too low" plus a number is the single most actionable decline we get: it says exactly how
-  // far off the budget was (Phase 8's raw material) and is sometimes a placement the owner can
+  // far off the budget was and is sometimes a placement the owner can
   // take back to the parent. The contact stays Declined and still doesn't count toward the
   // interested target — we're buying information, not converting a no into a yes.
   const wantsRate = reason === 'rate';

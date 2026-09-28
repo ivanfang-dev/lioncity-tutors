@@ -2,7 +2,7 @@ import { Assignment } from '../../../packages/shared/server-exports.js';
 import { resolveBudget } from './tutorMatcher.js';
 import { LOCATION_TO_REGION, adjacentRegions } from './locations.js';
 
-// Console v2 recovery actions (roadmap deferred item). One-tap fixes for an assignment whose
+// Recovery actions. One-tap fixes for an assignment whose
 // outreach stalled — widen to adjacent regions, raise the budget ceiling, or drop the tutor-type
 // restriction — each of which also RESETS outreach so a fresh wave goes out against the new
 // criteria. Pure DB mutation here (atomic $set, never .save() — legacy assignments would fail

@@ -1,8 +1,8 @@
-// Deep link from an alert into the ops console (roadmap Phase 3). Telegram is the interrupt
+// Deep link from an alert into the ops console. Telegram is the interrupt
 // surface; the console is the workspace — the link is the hop between them, and it's the whole
 // mobile flow: ping → tap → console → wa.me → outcome.
 //
-// Points at the assignment's drill-down rather than the queue anchor the roadmap sketched: the
+// Points at the assignment's drill-down rather than the queue anchor: the
 // drill-down always exists, whereas a queue row only exists while the assignment needs action, so
 // alerts on healthy assignments (a tutor said yes) would land on a dead fragment. Middleware
 // carries the path through login, so a cold phone still arrives in the right place.

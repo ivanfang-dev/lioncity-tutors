@@ -1,7 +1,7 @@
 import { describe, test, expect } from '@jest/globals';
 import { findMatchingTutorsScored } from './tutorMatcher.js';
 
-// Phase 10 step 4: a small boost for unproven-but-decent newcomers (0 lifetime placements, decent
+// A small boost for unproven-but-decent newcomers (0 lifetime placements, decent
 // profile), and exposure-capped tutors excluded from the fetch. Assignment maps to secondary/central.
 const assignment = {
   level: 'Secondary 3', subject: 'Mathematics', title: 'Sec 3 Maths', location: 'Bishan', rate: '$50/hr',

@@ -30,7 +30,7 @@ describe('numericRates (shared)', () => {
   });
 });
 
-describe('numeric-preferred budget path (Phase 7)', () => {
+describe('numeric-preferred budget path', () => {
   test('resolveBudget prefers budgetNumeric over parsing rate text', () => {
     const assignment = { rate: '$40-50/hr', budgetNumeric: { default: 80 } };
     expect(resolveBudget(assignment).bands).toEqual({ default: 80 });

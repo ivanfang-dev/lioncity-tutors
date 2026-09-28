@@ -212,16 +212,15 @@ async function notifyMatchedTutors(assignment, botUsername) {
       return { sent: 0, failed: 0 };
     }
 
-    // Adaptive wave sizing (Phase 10 step 2): size wave 1 to the full interested target and the
-    // trailing interest rate, instead of a fixed 8. Clamped to [4, 12].
+    // Size wave 1 to the full interested target and the trailing interest rate, clamped to [4, 12].
     const waveSize = computeWaveSize(INTERESTED_TARGET, await trailingInterestRate());
     const tutors = scored.slice(0, waveSize).map(s => s.tutor);
     console.log(`Notifying ${tutors.length} top-ranked tutors for assignment ${assignment._id} (deterministic, waveSize ${waveSize})`);
 
     const { sent, failed } = await sendWaveToTutors(assignment, tutors, 1, botUsername);
 
-    // Log what the ranker knew and chose (Phase 6). After the wave, so this can't delay outreach;
-    // best-effort so a failure can't break it. `contacted` = the top 8 we actually messaged.
+    // Log what the ranker knew and chose. After the wave, so this can't delay outreach;
+    // best-effort so a failure can't break it. `contacted` = the tutors we actually messaged.
     await recordRecommendation({
       assignmentId: assignment._id,
       trigger: 'wave1',
@@ -238,7 +237,7 @@ async function notifyMatchedTutors(assignment, botUsername) {
 // The next-best matching tutors we haven't contacted yet, re-ranked 1..N. Uses the deterministic
 // quality ranking (no extra AI call per wave).
 async function freshTutorsForWave(assignment, { excludeTutorIds = null } = {}) {
-  // Exposure caps (Phase 10 step 4): the tick passes the set of tutors already holding ≥2 unresolved
+  // Exposure caps: the tick passes the set of tutors already holding ≥2 unresolved
   // offers, held out of this wave. Computed once per tick by the caller. Siblings are per-assignment,
   // so they're resolved here and unioned in rather than asked of every caller.
   const excluded = new Set([
@@ -274,7 +273,7 @@ async function escalateAssignment(assignment, botUsername, { waveSize = 6, exclu
   const batch = fresh.slice(0, waveSize);
   const { sent, failed } = await sendWaveToTutors(assignment, batch.map(s => s.tutor), wave, botUsername);
 
-  // Log the escalation decision (Phase 6). After the wave, best-effort. `contacted` = this batch.
+  // Log the escalation decision. After the wave, best-effort. `contacted` = this batch.
   await recordRecommendation({
     assignmentId: assignment._id,
     trigger: 'escalation',

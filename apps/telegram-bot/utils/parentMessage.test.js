@@ -54,7 +54,7 @@ describe('deterministicShortlist (guaranteed fallback)', () => {
 
   test('shows the rate a tutor quoted for this assignment, not their stale profile rate', () => {
     // Alice's profile says $45, but she quoted $55 for this specific assignment. The parent
-    // must see $55 — quoting the stale profile rate is exactly the failure Phase 4 fixes.
+    // must see $55 — quoting the stale profile rate is the bug.
     const withQuote = deterministicShortlist(assignment, [{ ...tutors[0], quotedRate: 55 }]);
     expect(withQuote).toContain('$55/hr');
     expect(withQuote).not.toContain('$45/hr');
@@ -121,7 +121,7 @@ describe('draftParentMessage without an API key falls back deterministically', (
     expect((await draftParentMessage('expectation', { assignment })).toLowerCase()).toContain('6 hours');
   });
 
-  test('budget kind quotes the typical range and the suggested rate (Phase 8)', async () => {
+  test('budget kind quotes the typical range and the suggested rate', async () => {
     const calib = { typical: { p25: 35, p50: 45, p75: 55 }, suggested: 60 };
     const msg = await draftParentMessage('budget', { assignment, calib });
     expect(msg).toContain('$35–$55/hr');

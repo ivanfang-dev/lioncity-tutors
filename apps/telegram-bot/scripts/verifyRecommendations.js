@@ -1,4 +1,4 @@
-// Read-only inspector for the Recommendation decision log (roadmap Phase 6). Prints the latest
+// Read-only inspector for the Recommendation decision log. Prints the latest
 // recommendation docs for an assignment — one per decision (wave1 / escalation / shortlist) — with
 // each candidate's rank, score, whether we contacted them, and the feature breakdown behind the
 // score. Use it to confirm the three write points fire and record sane snapshots.

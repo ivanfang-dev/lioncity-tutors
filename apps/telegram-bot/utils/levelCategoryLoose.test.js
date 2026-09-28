@@ -1,7 +1,7 @@
 import { describe, test, expect } from '@jest/globals';
 import { getLevelCategory, getLevelCategoryLoose } from '../../../packages/shared/utils/levelCategory.js';
 
-// getLevelCategoryLoose backs the website rate hint (roadmap Phase 8): parents type levels in SG
+// getLevelCategoryLoose backs the website rate hint: parents type levels in SG
 // shorthand, and the strict getLevelCategory (which the matcher uses on canonical dropdown values)
 // only recognizes the full words. These cover the shorthand it must additionally accept.
 describe('getLevelCategoryLoose', () => {

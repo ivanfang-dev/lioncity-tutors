@@ -9,7 +9,7 @@ import { connectToDatabase } from '../utils/db.js';
 // sends identical text whichever surface they act from, and a future switch to Cloud API templates
 // still touches only parentMessage.js.
 //
-// Parents are never messaged from here (roadmap Repo facts): this returns a link the OWNER taps to
+// Parents are never messaged from here: this returns a link the OWNER taps to
 // open WhatsApp with the draft pre-filled. The bot owns timing and drafting; the owner is the
 // transport.
 //

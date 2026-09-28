@@ -4,7 +4,7 @@ import { DEFAULT_OG_IMAGE } from '@/lib/seo/openGraph';
 
 const region = regionFor('tuition-tampines-bedok');
 
-// Phase 1 title formula: front-loaded, under 60 characters.
+// Title: front-loaded, under 60 characters.
 const TITLE = 'Tuition in Tampines & Bedok 2026 | LionCity Tutors';
 const DESCRIPTION =
   `${region.tutorCount} tutors cover Tampines, Bedok, Pasir Ris, Simei and Marine Parade. We hand-match primary, secondary and JC tutors within ${MATCH_TIME} — no agency fee for parents.`;

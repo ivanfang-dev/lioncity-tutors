@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import { Placement } from '../../../packages/shared/server-exports.js';
 
-// The single recorder for every day-30 check-in outcome (roadmap Phase 5). Channel-agnostic on
+// The single recorder for every day-30 check-in outcome. Channel-agnostic on
 // purpose — the owner records from Telegram buttons (bot/handlers.js) AND from the ops console
 // (api/checkin-outcome.js), and both MUST land identical state. This module owns the Placement
 // state transitions; callers own how they report back to whoever tapped.
@@ -29,7 +29,7 @@ export function checkInAction(placement, now = new Date(), {
   if (!placement) return null;
   // Any recorded outcome ends the cadence — a placement with a checkIn has been answered (or
   // already given up on). Only 'active' placements are ever pinged (a backfilled 'unknown' row is
-  // too stale to chase — roadmap Phase 5).
+  // too stale to chase).
   if ((placement.checkIns?.length || 0) > 0) return null;
   if (placement.status !== 'active') return null;
 

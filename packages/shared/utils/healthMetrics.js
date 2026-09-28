@@ -1,4 +1,4 @@
-// Weekly health metrics (roadmap deferred item) — the numbers behind the ops console's health tab.
+// Weekly health metrics — the numbers behind the ops console's health tab.
 // Pure functions over already-loaded data, so the math is testable without a DB and the page just
 // renders what it's handed. Each returns its SAMPLE SIZE alongside the value: a rate over three
 // data points is noise, and the UI should be able to say so rather than print a confident "100%".

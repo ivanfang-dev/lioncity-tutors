@@ -54,7 +54,7 @@ export async function loadTutorsByIds(tutorIds) {
   return new Map(tutors.map(t => [t._id.toString(), t]));
 }
 
-// Day-30 check-in queue (roadmap Phase 5). A placement "needs you" once it's ~30 days old and no
+// Day-30 check-in queue. A placement "needs you" once it's ~30 days old and no
 // outcome has been recorded yet — the tick has (or will have) pinged the owner on Telegram; this is
 // the console's copy of that work. The 28-day cutoff mirrors CHECKIN_DUE_MS in the bot's
 // checkInOutcome.js (the console can't import bot code — it talks to the bot over HTTP only). A row
@@ -99,7 +99,7 @@ export async function loadCheckInQueue(now = Date.now()) {
   }));
 }
 
-// Data for the weekly health metrics tab (roadmap deferred item). A bounded recent slice of
+// Data for the weekly health metrics tab. A bounded recent slice of
 // assignments (contacts included — that's where the funnel/channel/timing signals live), all
 // placements (few), and the tutor dormancy counts. The metric math itself is pure
 // (@lioncity/shared healthMetrics) and runs on this in the page.

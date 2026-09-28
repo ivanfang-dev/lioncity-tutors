@@ -1,4 +1,4 @@
-// Inline-keyboard rows for the day-30 check-in recording flow (roadmap Phase 5), kept in one place
+// Inline-keyboard rows for the day-30 check-in recording flow, kept in one place
 // so the tick's owner ping (api/escalation-tick.js) and any re-show land the exact same callbacks.
 // Callback grammar (parsed in bot/handlers.js):
 //   ciwell_<placementId>            → parent says going well → asks for a 1–5 rating

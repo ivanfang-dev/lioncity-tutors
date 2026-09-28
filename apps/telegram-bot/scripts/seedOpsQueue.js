@@ -1,4 +1,4 @@
-// Seeds one throwaway assignment per "Needs you" row type so the ops console (Phase 3) can be
+// Seeds one throwaway assignment per "Needs you" row type so the ops console can be
 // walked end-to-end: every queue row, its diagnosis, its wa.me button and its outcome buttons.
 // Seeded assignments are titled with a marker so --cleanup removes exactly them.
 //
@@ -50,7 +50,7 @@ if (arg === '--cleanup') {
   const seeded = await Assignment.find({ title: new RegExp(`^\\${MARKER}`) }).select('_id').lean();
   const ids = seeded.map(a => a._id);
   // Placements first: recording a test "Parent picked" creates one, and deleting only the
-  // assignments would strand it — Placement is the ground-truth table Phase 5 and every future
+  // assignments would strand it — Placement is the ground-truth table the check-ins and every
   // ranking measurement read, so a fake row there quietly poisons real analysis.
   const placements = await Placement.deleteMany({ assignmentId: { $in: ids } });
   const { deletedCount } = await Assignment.deleteMany({ _id: { $in: ids } });

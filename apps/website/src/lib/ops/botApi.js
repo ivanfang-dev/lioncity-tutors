@@ -41,7 +41,7 @@ export async function recordOutcome({ outcome, assignmentId, tutorId, reason }) 
   return response.json();
 }
 
-// Console v2 recovery (roadmap deferred item): apply a one-tap fix to a stalled assignment and fire
+// Recovery: apply a one-tap fix to a stalled assignment and fire
 // a retry wave. `action`: 'widen_region' | 'raise_ceiling' (optional amount) | 'relax_type'.
 export async function recoverAssignment({ assignmentId, action, amount }) {
   const response = await fetch(botUrl('/api/recover'), {
@@ -54,7 +54,7 @@ export async function recoverAssignment({ assignmentId, action, amount }) {
   return response.json();
 }
 
-// Record a day-30 check-in outcome (roadmap Phase 5) through the same recorder the Telegram buttons
+// Record a day-30 check-in outcome through the same recorder the Telegram buttons
 // use. `outcome`: 'well' (optional rating) | 'ended' (optional endReason) | 'noreply'.
 export async function recordCheckIn({ outcome, placementId, rating, endReason }) {
   const response = await fetch(botUrl('/api/checkin-outcome'), {
@@ -78,7 +78,7 @@ export async function fetchParentDraft({ assignmentId, kind }) {
   return response.json();
 }
 
-// The typical asking rate for a level (roadmap Phase 8) — aggregate p25/p50/p75 of tutor floors,
+// The typical asking rate for a level — aggregate p25/p50/p75 of tutor floors,
 // no PII. Powers the read-only rate hint on the public request-tutor form (through a public proxy
 // route, since parents aren't authed). Computed on the bot so it can't drift from matching.
 export async function fetchRateGuide({ level, location, type }) {

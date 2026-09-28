@@ -1,7 +1,7 @@
 import { rateGuide } from '../utils/tutorMatcher.js';
 import { connectToDatabase } from '../utils/db.js';
 
-// The typical asking rate for a level (roadmap Phase 8) — the read-only guidance shown beside the
+// The typical asking rate for a level — the read-only guidance shown beside the
 // website request form's budget field. Aggregate only (p25/p50/p75 of tutor floors): no tutor
 // identities, no PII, so it's safe to surface to a parent-facing page (via the website's own proxy
 // route, which keeps this endpoint's shared key server-side).

@@ -1,9 +1,9 @@
 import { Tutor } from '../../../packages/shared/server-exports.js';
 import { sendProfileNudgeDM } from './telegramOutreach.js';
 
-// Profile-improvement nudges (roadmap Phase 9 follow-on). A tutor with a weak extracted profile
+// Profile-improvement nudges. A tutor with a weak extracted profile
 // (qualityGrade ≤ 2) usually just presents themselves badly, not teaches badly — so nudge them ONCE
-// on Telegram to add concrete results. Editing their track record re-extracts the profile (Phase 9),
+// on Telegram to add concrete results. Editing their track record re-extracts the profile,
 // which can lift their grade and ranking automatically. Telegram-linked tutors only; no WhatsApp spend.
 
 const NUDGE_GRADE_MAX = Number(process.env.PROFILE_NUDGE_GRADE_MAX) || 2;

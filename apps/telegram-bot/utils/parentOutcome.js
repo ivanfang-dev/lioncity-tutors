@@ -12,7 +12,7 @@ import { formatAssignmentForChannel } from './channelFormat.js';
 //
 // Every write is a targeted updateOne/$set — never .save() on a loaded Assignment: legacy docs
 // carry subject/level values outside the current enums and full-document saves re-validate and
-// throw (see the roadmap's Repo facts).
+// throw.
 
 // Reasons the OWNER can pick from when recording an explicit rejection.
 export const REJECT_REASONS = ['rate', 'profiles', 'timing', 'other'];
@@ -98,7 +98,7 @@ export async function recordParentPick({ assignmentId, tutorId, offList = false 
   await Assignment.updateOne({ _id: assignment._id }, update, options);
   assignment.status = 'Filled'; // for the channel re-render below
 
-  // The Placement is the ground-truth match row the day-30 check-in (Phase 5) and future ranking
+  // The Placement is the ground-truth match row the day-30 check-in and future ranking
   // work train against. Best-effort: losing it must not block marking the assignment Filled.
   try {
     // The profile rate is only read when no rate was captured — see placementRate.

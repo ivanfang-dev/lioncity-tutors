@@ -301,7 +301,7 @@ export default function TuitionRatesPage() {
             </p>
             {/* hubLimit={5}: tuition-rates now belongs to 5 hubs (4 exam hubs +
                 find-a-tutor) — the default cap of 4 would silently drop one of
-                the existing prep-guide links Phase 1 built. */}
+                the existing prep-guide links. */}
             <RelatedGuides slug={SLUG} heading="Plan the year around the exam" hubLimit={5} />
           </div>
         </main>

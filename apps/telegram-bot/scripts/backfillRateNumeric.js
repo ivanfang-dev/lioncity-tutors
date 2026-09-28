@@ -1,5 +1,5 @@
-// One-off backfill: populate tutor.rateNumeric from the existing free-text hourlyRate strings
-// (roadmap Phase 7), so matching reads numbers instead of regex-parsing text. Going forward the
+// One-off backfill: populate tutor.rateNumeric from the existing free-text hourlyRate strings,
+// so matching reads numbers instead of regex-parsing text. Going forward the
 // Tutor pre-save hook keeps rateNumeric in sync; this catches every tutor registered before it.
 //
 // Safe by default: DRY RUN — prints what it WOULD write. Add --apply to write.

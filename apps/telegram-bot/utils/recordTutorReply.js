@@ -45,7 +45,7 @@ export function holdTransition(currentStatus, viableInterestedCount, now = new D
   return null;
 }
 
-// How long the tutor took to reply, in whole minutes — the per-contact number Phase 7's
+// How long the tutor took to reply, in whole minutes — the per-contact number
 // medianResponseMins aggregates and the responsiveness factor already scores on. Returns null
 // rather than NaN/garbage when either end is missing (legacy contacts predate sentAt) so the
 // field is simply absent instead of poisoning later averages. Clock skew between the Vercel
@@ -293,7 +293,7 @@ async function finalizeReply(assignment, contact, decision, reply) {
   }
 
   // Credit the tutor for responding (Yes OR No both count — they're reachable) and stamp their
-  // freshness (Phase 7 lastConfirmedActiveAt — a reply is positive proof they're active).
+  // freshness (lastConfirmedActiveAt — a reply is positive proof they're active).
   if (tutorId) {
     await Tutor.updateOne(
       { _id: tutorId },

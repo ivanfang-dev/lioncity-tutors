@@ -72,7 +72,7 @@ const assignmentSchema = new mongoose.Schema({
     trim: true
   },
 
-  // Numeric mirror of `rate` (roadmap Phase 7): the spending CEILING per tutor-type band, derived
+  // Numeric mirror of `rate`: the spending CEILING per tutor-type band, derived
   // from the free-text rate at creation (deriveBudgetNumeric) so matching reads numbers instead of
   // regex-parsing text every query. Matching prefers this when present, falls back to parsing `rate`
   // for legacy assignments (which are never re-saved). Any band may be absent.
@@ -83,7 +83,7 @@ const assignmentSchema = new mongoose.Schema({
     default: { type: Number },
   },
 
-  // Postal district (roadmap Phase 7): data collection for later travel-time scoring, NOT a matching
+  // Postal district: data collection for later travel-time scoring, NOT a matching
   // filter yet (matching stays region-based). Captured on new intake; legacy assignments stay blank.
   postalDistrict: {
     type: String,
@@ -105,7 +105,7 @@ const assignmentSchema = new mongoose.Schema({
   },
 
   // Extra tutor-regions to match beyond the one implied by `location` — set by the ops console's
-  // "widen to adjacent regions and retry" recovery (roadmap deferred item). Absent/empty = match the
+  // "widen to adjacent regions and retry" recovery. Absent/empty = match the
   // single base region as before. The matcher ORs these into the region filter (buildFilterStages).
   matchRegions: [{ type: String }],
 
@@ -195,11 +195,11 @@ const assignmentSchema = new mongoose.Schema({
     holdUntil: { type: Date },
     // When the ranked shortlist alert (drafted parent message + outcome buttons) was handed
     // to the owner. Starts the parent-silence clock: no pick/reject within 24h → owner nudge,
-    // 48h → flagged for the exception queue (Phase 2 silence follow-up).
+    // 48h → flagged for the exception queue.
     shortlistReleasedAt: { type: Date },
     // Gate the 24h silence nudge to once (the tick would otherwise re-ping every run).
     parentNudgedAt: { type: Date },
-    // Set at 48h of parent silence — flagged for the ops exception queue (Phase 3); stops
+    // Set at 48h of parent silence — flagged for the ops exception queue; stops
     // further nagging. Presence = "needs manual follow-up".
     parentSilenceEscalatedAt: { type: Date },
     contacts: [{
@@ -234,7 +234,7 @@ const assignmentSchema = new mongoose.Schema({
       // assignment that filled before the shortlist re-rank existed.
       shortlistRank: { type: Number },
       // Set when the parent PICKED this tutor — the winning contact of the shortlist. Paired
-      // with the assignment's matchedTutorId/filledAt and a Placement doc (Phase 2).
+      // with the assignment's matchedTutorId/filledAt and a Placement doc.
       parentPickedAt: { type: Date },
       // Set when the parent has passed on this tutor ("find more tutors"). Such a contact
       // no longer counts toward the interested target (see viableInterestedCount), so a
@@ -249,7 +249,7 @@ const assignmentSchema = new mongoose.Schema({
       // by OUTREACH_MAX_REMINDERS so a quiet tutor isn't nagged indefinitely.
       reminderCount: { type: Number, default: 0 },
       // How long the tutor took to reply (respondedAt − sentAt, whole minutes). Absent on
-      // legacy contacts and on anyone who never replied. Feeds Phase 7's medianResponseMins.
+      // legacy contacts and on anyone who never replied. Feeds stats.medianResponseMins.
       responseLatencyMins: { type: Number },
       // Why the tutor said no, captured on a reason button/list tap right after the ❌.
       // Best-effort — the Declined status is already recorded whether or not they answer.
@@ -258,7 +258,7 @@ const assignmentSchema = new mongoose.Schema({
       // The rate this tutor named FOR THIS ASSIGNMENT, at reply time. Not a "counter-offer":
       // every yes is asked for one, because profile rates go stale and posted rates are often
       // ranges ("$40-60/hr") that a bare Yes doesn't resolve. Also captured on a rate-decline
-      // (contact stays Declined but we learn how far off the budget was — Phase 8). Absent =
+      // (contact stays Declined but we learn how far off the budget was). Absent =
       // the tutor never answered the prompt; the shortlist falls back to their profile rate,
       // flagged unconfirmed. Interest is the signal, this is enrichment — never a gate.
       quotedRate: { type: Number },
@@ -297,7 +297,7 @@ assignmentSchema.pre('save', function(next) {
   // Update timestamp
   this.updatedAt = new Date();
 
-  // Derive budgetNumeric from the free-text rate (roadmap Phase 7) so matching reads numbers instead
+  // Derive budgetNumeric from the free-text rate so matching reads numbers instead
   // of re-parsing text. On the creation flow (Telegram draft → post, both .save()) this populates it
   // at creation; recomputed whenever `rate` changes. Legacy assignments are only ever touched via
   // updateOne (which skips this hook), so they never re-validate and simply stay without it.

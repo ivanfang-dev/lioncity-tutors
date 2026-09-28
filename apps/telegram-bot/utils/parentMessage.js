@@ -2,8 +2,8 @@ import { GoogleGenAI } from '@google/genai';
 import { getLevelCategory } from './tutorMatcher.js';
 import { formatSubject } from './assignmentSubjects.js';
 
-// The single transport seam for every PARENT-facing message. Parents are never auto-messaged
-// (see roadmap Repo facts): the bot owns timing, drafting, and outcome capture; the owner is
+// The single transport seam for every PARENT-facing message. Parents are never auto-messaged:
+// the bot owns timing, drafting, and outcome capture; the owner is
 // the transport. `draftParentMessage` writes the text; `buildWaMeButton` packages it into a
 // one-tap "open WhatsApp with the draft pre-filled" deep link the owner forwards themselves.
 // Keeping both here means a future switch to Cloud API templates touches only this file.
@@ -45,7 +45,7 @@ export function buildWaMeButton(phone, text, label = 'Send via WhatsApp') {
 }
 
 // The rate to show the parent for this tutor. A quotedRate — what the tutor said they'd charge
-// for THIS assignment (Phase 4) — wins over the profile rate, which is a stale guess and often
+// for THIS assignment — wins over the profile rate, which is a stale guess and often
 // a range the parent can't act on. Falls back to the per-level profile rate (then secondary).
 // quotedRate is a transient number the caller attaches to the tutor view-model, not a stored
 // tutor field.
@@ -183,7 +183,7 @@ function expectationMessage(assignment) {
   return `Hi! Thanks for your request for a ${assignment.title} tutor — we're searching our tutor network now and will send you a shortlist of suitable profiles, usually within about 6 hours. We'll be in touch shortly! 😊`;
 }
 
-// Parent-forwardable budget-renegotiation blurb (Phase 8). The owner forwards this when intake
+// Parent-forwardable budget-renegotiation blurb. The owner forwards this when intake
 // calibration shows the posted budget is thin for the level — it quotes the typical market range
 // and a suggested rate warmly, with zero pressure (parents can always keep their budget). Only
 // meaningful when `calib.suggested` is set; the caller gates on that before drafting.
@@ -197,7 +197,7 @@ function budgetMessage(assignment, calib) {
   return `Hi! Quick note on your ${assignment.title} tutor search — most experienced tutors for ${assignment.level} in your area charge ${range}.${suggestLine} but we'll do our very best whatever budget you're comfortable with. Just let us know how you'd like to proceed! 😊`;
 }
 
-// Deterministic day-30 check-in (Phase 5) — the owner forwards this to ask whether tuition is
+// Deterministic day-30 check-in — the owner forwards this to ask whether tuition is
 // still going well. Names the tutor when we have it ("with Jane") so it reads as a personal
 // follow-up rather than a form. The rating we capture is on the owner's recording buttons, not
 // asked of the parent here — parents answer in prose, the owner grades it.
@@ -210,8 +210,8 @@ function checkInMessage(assignment, tutorName) {
 //   'shortlist'   → payload { assignment, tutors } (LLM with deterministic fallback)
 //   'nudge'       → payload { assignment }
 //   'expectation' → payload { assignment }
-//   'checkin'     → payload { assignment, tutorName } (day-30 check-in, Phase 5)
-//   'budget'      → payload { assignment, calib } (intake budget renegotiation, Phase 8)
+//   'checkin'     → payload { assignment, tutorName } (day-30 check-in)
+//   'budget'      → payload { assignment, calib } (intake budget renegotiation)
 export async function draftParentMessage(kind, payload = {}) {
   const { assignment, tutors, tutorName, calib } = payload;
   switch (kind) {

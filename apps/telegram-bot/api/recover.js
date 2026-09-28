@@ -4,7 +4,7 @@ import { applyRecovery } from '../utils/recovery.js';
 import { resumeOutreach } from '../utils/parentOutcome.js';
 import { connectToDatabase } from '../utils/db.js';
 
-// Console v2 recovery (roadmap deferred item): the ops console's one-tap "widen / raise ceiling /
+// Recovery: the ops console's one-tap "widen / raise ceiling /
 // relax type & retry" on a stalled assignment posts here. Applies the change + resets outreach, then
 // fires a fresh wave in the background against the new criteria — the same escalateAssignment path
 // the tick uses, so the retry can't drift from normal outreach.

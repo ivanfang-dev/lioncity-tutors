@@ -1,7 +1,7 @@
 import { describe, test, expect } from '@jest/globals';
 import { validateExtraction, parseJson, hasExtractableText, RESPONSE_SCHEMA } from './profileExtractor.js';
 
-// The extractor stores NOTHING on a malformed response (roadmap Phase 9), so these strict-validation
+// The extractor stores NOTHING on a malformed response, so these strict-validation
 // tests are the guard that a bad Gemini reply can never reach ranking.
 const valid = {
   qualityGrade: 4,

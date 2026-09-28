@@ -31,10 +31,10 @@ const tutorSchema = new mongoose.Schema({
   // active, so every pre-existing tutor is unaffected.
   pausedAt: { type: Date, default: null },
   // Last time we had positive proof this tutor is active: any Telegram interaction with the bot
-  // (handleContact) or any outreach reply, Yes or No (both reply recorders). Feeds Phase 10 dormancy
+  // (handleContact) or any outreach reply, Yes or No (both reply recorders). Feeds dormancy
   // detection. Distinct from responseStats (lifetime counts) — this is a freshness timestamp.
   lastConfirmedActiveAt: { type: Date, default: null },
-  // Postal district (roadmap Phase 7): data collection for later travel-time scoring, NOT a matching
+  // Postal district: data collection for later travel-time scoring, NOT a matching
   // filter yet (matching stays region-based). Captured on new intake; legacy tutors stay blank.
   postalDistrict: { type: String, trim: true },
   // Tutoring Preferences
@@ -316,7 +316,7 @@ const tutorSchema = new mongoose.Schema({
     professional: String,
   },
 
-  // Numeric mirror of hourlyRate (roadmap Phase 7), derived from the free-text strings above so
+  // Numeric mirror of hourlyRate, derived from the free-text strings above so
   // matching reads numbers instead of regex-parsing text on every query. Populated by the pre-save
   // hook below (registration + profile rate edits) and by a one-off backfill; matching prefers it
   // when present and falls back to parsing hourlyRate for legacy docs. Per-level { min, max }.
@@ -355,7 +355,7 @@ const tutorSchema = new mongoose.Schema({
     responded: { type: Number, default: 0 }
   },
 
-  // Materialized performance stats (roadmap Phase 7), recomputed daily from the event sources
+  // Materialized performance stats, recomputed daily from the event sources
   // (outreach.contacts + placements) inside the escalation tick. A CACHE for ranking and the ops
   // console — events remain the source of truth; nothing here is incremented live. Absent until the
   // first materialization run touches this tutor.
@@ -375,11 +375,11 @@ const tutorSchema = new mongoose.Schema({
     computedAt: { type: Date },
   },
 
-  // Write-time LLM profile extraction (roadmap Phase 9): a structured, deterministic read of the
+  // Write-time LLM profile extraction: a structured, deterministic read of the
   // free-text profile fields (introduction / teachingExperience / trackRecord), produced ONCE by a
   // Gemini call at registration/edit time instead of re-read on every assignment at query time.
   //   qualityGrade    — 1–5 holistic profile quality; replaces the gameable commitmentScore in
-  //                     ranking (Phase 9 Step B) when present, falling back to it otherwise.
+  //                     ranking when present, falling back to it otherwise.
   //   qualityReason   — one-line justification, surfaced in owner alerts / the ops console.
   //   subjectsClaimed — subjects the profile actually evidences teaching, with the supporting text.
   //   seniority       — coarse experience band, independent of the self-reported yearsOfExperience.
@@ -401,7 +401,7 @@ const tutorSchema = new mongoose.Schema({
     redFlags: [{ type: String }],
   },
 
-  // Profile-improvement nudge (roadmap Phase 9 follow-on): when we sent this tutor the ONE Telegram
+  // Profile-improvement nudge: when we sent this tutor the ONE Telegram
   // DM suggesting they add concrete results to a weak profile (qualityGrade ≤ 2). Top-level, NOT
   // inside profileFeatures, so a later re-extraction (which overwrites profileFeatures) can't wipe it
   // and re-trigger the nudge. Absent = never nudged.
@@ -411,7 +411,7 @@ const tutorSchema = new mongoose.Schema({
   formType: String
 }, { timestamps: true });
 
-// Keep rateNumeric in sync with hourlyRate on every save (roadmap Phase 7): tutor registration
+// Keep rateNumeric in sync with hourlyRate on every save: tutor registration
 // (backend new Tutor().save()) and profile rate edits (tutor.save()) both flow through here, so the
 // numeric fields are populated going forward without touching each call site. Recomputed whenever
 // hourlyRate changed (or on a brand-new doc); a no-op otherwise. Pure derivation — never introduces

@@ -80,8 +80,8 @@ if (contacts.length === 0) {
 }
 console.log('');
 
-// Placements (Phase 2) — the ground-truth match rows created when the parent picks a tutor —
-// plus the day-30 check-in state (Phase 5): the ping lifecycle and any recorded outcomes.
+// Placements — the ground-truth match rows created when the parent picks a tutor —
+// plus the day-30 check-in state: the ping lifecycle and any recorded outcomes.
 const placements = await Placement.find({ assignmentId: a._id }).lean();
 if (placements.length > 0) {
   console.log(`   Placements (${placements.length}):`);

@@ -1,7 +1,7 @@
 import { GoogleGenAI, Type } from '@google/genai';
 import { Tutor, Meta } from '../../../packages/shared/server-exports.js';
 
-// Write-time LLM profile extraction (roadmap Phase 9). ONE Gemini call turns a tutor's free-text
+// Write-time LLM profile extraction. ONE Gemini call turns a tutor's free-text
 // profile (introduction / teachingExperience / trackRecord) into a structured, deterministic record
 // stored on the tutor — so ranking reads a stored grade instead of re-reading 40 profiles through
 // Gemini on every assignment. Runs at registration/edit time and via the backfill; never at query
@@ -193,7 +193,7 @@ export async function extractProfileFeatures(tutor) {
 }
 
 // Extract + persist for one tutor with a targeted updateOne ($set profileFeatures) — NEVER .save(),
-// so legacy out-of-enum profile fields aren't re-validated (roadmap Repo facts). Best-effort: returns
+// so legacy out-of-enum profile fields aren't re-validated. Best-effort: returns
 // the stored features, or null when nothing was extracted/written. `model` injectable for tests.
 export async function runExtractionForTutor(tutor, { model = Tutor } = {}) {
   const features = await extractProfileFeatures(tutor);
@@ -202,7 +202,7 @@ export async function runExtractionForTutor(tutor, { model = Tutor } = {}) {
   return features;
 }
 
-// --- Tick-driven extraction sweep (roadmap Phase 9 registration wiring) -----
+// --- Tick-driven extraction sweep ------------------------------------------
 // New tutors register in the separate backend, which has no Gemini — so there's no write-time hook
 // there. Instead the escalation tick (the repo's substitute for cron on Vercel Hobby) sweeps a small
 // batch of not-yet-extracted tutors each run, newest first, so a fresh registration is graded within
@@ -213,7 +213,7 @@ const SWEEP_INTERVAL_MS = Number(process.env.PROFILE_SWEEP_INTERVAL_MS) || 10 * 
 const SWEEP_BATCH = Number(process.env.PROFILE_SWEEP_BATCH) || 3; // Gemini calls per run — bounds tick cost
 
 // Run at most one bounded batch per SWEEP_INTERVAL_MS. The Meta-doc guard is claimed atomically (a
-// due-or-absent filter + upsert), exactly like the Phase 7 stats materialization, so overlapping
+// due-or-absent filter + upsert), exactly like the tutor.stats materialization, so overlapping
 // ticks can't both run it. Best-effort: logs and swallows so it can never break the tick. `model`
 // injectable for tests.
 export async function runProfileExtractionSweep(now = new Date(), { model = Tutor, meta = Meta } = {}) {

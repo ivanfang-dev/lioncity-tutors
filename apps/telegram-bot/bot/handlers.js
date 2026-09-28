@@ -1104,7 +1104,7 @@ async function handleContact(bot, chatId, userId, contact, Tutor, userSessions, 
     // re-linking is the strongest "I'm active again" signal we get, and without this a paused
     // tutor would be excluded from matching forever with no way back.
     // Targeted update (not tutor.save()) to avoid re-validating legacy profile fields. Always stamp
-    // lastConfirmedActiveAt (Phase 7): sharing their contact is positive proof the tutor is active,
+    // lastConfirmedActiveAt: sharing their contact is positive proof the tutor is active,
     // and it's the broadest "interacted with the bot" signal we have. The telegram/pause fields only
     // change when needed, but the activity timestamp updates every time.
     await Tutor.updateOne(
@@ -1845,7 +1845,7 @@ function formatAssignmentPreview(assignment) {
 // problem, not a price one — raising the rate won't help, so we name the real bottleneck instead.
 const CALIB_THIN_POOL = 6;
 
-// Human phrasing for the attrition funnel's dominant filter (roadmap Phase 3/8), for the "thin pool"
+// Human phrasing for the attrition funnel's dominant filter, for the "thin pool"
 // line of the budget check. Owner-facing, so it names what to widen.
 const CALIB_FILTER_LABEL = {
   region: 'in this region',
@@ -1859,7 +1859,7 @@ const CALIB_FILTER_LABEL = {
 };
 
 // Compose the owner-facing "budget check" for the creation confirmation from a budgetCalibration()
-// result (roadmap Phase 8). Purely informational — returns null when there's nothing worth showing
+// result. Purely informational — returns null when there's nothing worth showing
 // (assignment unmappable, or neither a pool count nor a typical range could be computed), so the
 // caller simply skips it and never blocks posting.
 function formatBudgetCalibration(calib, assignment) {
@@ -1946,7 +1946,7 @@ async function confirmPostAssignment(
       reply_markup: { inline_keyboard: confirmRows }
     });
 
-    // Intake budget calibration (roadmap Phase 8): before outreach begins, tell the owner how many
+    // Intake budget calibration: before outreach begins, tell the owner how many
     // tutors this assignment can afford at its rate, the typical market range, and what raising the
     // budget would unlock — so an unfillable rate is caught at creation, not diagnosed 4h later.
     // Purely informational: it NEVER blocks posting (the assignment is already Open above), and any
@@ -2616,7 +2616,7 @@ async function handleEmailEdit(bot, chatId, text, userSessions, Tutor) {
   }
 }
 
-// After a tutor edits a profile TEXT field, re-run LLM extraction (Phase 9) so their qualityGrade
+// After a tutor edits a profile TEXT field, re-run LLM extraction so their qualityGrade
 // reflects the new text — the write-time hook for edits (the tick sweep covers registrations). Runs
 // in the background via waitUntil so it never delays the edit confirmation. On failure we invalidate
 // the stored modelVersion so the sweep re-tries, rather than leaving a grade derived from the old text.
@@ -3076,7 +3076,7 @@ async function handleCallbackQuery(
     // Telegram outreach quick-reply: tutor tapped "✅ Interested" on an assignment DM. We know
     // who tapped from their Telegram id (= telegramId), so no session is needed — record it
     // straight against the outreach contact, mirroring the WhatsApp Yes path.
-    // Dormant tutor tapped "keep me listed" on their reactivation DM (Phase 10 step 3). Clear the
+    // Dormant tutor tapped "keep me listed" on their reactivation DM. Clear the
     // auto-pause and re-confirm activity so they re-enter the matching pool immediately — same clear
     // as sharing their contact (handleContact). Resolved by the sender's telegramId, so no id rides
     // in the callback data. updateOne, not save(), to avoid re-validating a legacy profile.
@@ -3710,7 +3710,7 @@ async function handleCallbackQuery(
       return await ack({ text: "Noted — I'll remind you if it stays quiet." });
     }
 
-    // ── Day-30 check-in recording (Phase 5) ────────────────────────────────────────────────────
+    // ── Day-30 check-in recording ──────────────────────────────────────────────────────────────
     // The tick pings the owner about a placement; these buttons record the parent's answer through
     // the shared recorder (checkInOutcome.js), the same path the ops console uses. Recorders own
     // the Placement writes; the handler only reports back.
@@ -4594,7 +4594,7 @@ async function handleMessage(bot, chatId, userId, text, message, Tutor, Assignme
     return await handleStart(bot, chatId, userId, Tutor, userSessions, startParam);
   }
 
-  // Owner is typing the parent's stated reason a day-30 placement ended (Phase 5), captured after
+  // Owner is typing the parent's stated reason a day-30 placement ended, captured after
   // an "It ended" tap set session.endReason. Placed before the tutorId gate below because the owner
   // isn't necessarily a registered tutor. /skip abandons the capture; the ended outcome is already
   // saved either way, so this only attaches the verbatim reason.

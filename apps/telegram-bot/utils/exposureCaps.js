@@ -1,6 +1,6 @@
 import { Assignment } from '../../../packages/shared/server-exports.js';
 
-// Exposure caps (roadmap Phase 10, step 4). A tutor already sitting on several unresolved offers is
+// Exposure caps. A tutor already sitting on several unresolved offers is
 // the worst candidate for one more — they're likely about to take a placement, and piling on
 // spreads them thin and wastes sends. So a tutor with too many open offers is held out of NEW waves
 // (not the shortlist re-rank — those tutors already replied) until some of theirs resolve.

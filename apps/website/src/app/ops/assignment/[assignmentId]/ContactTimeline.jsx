@@ -14,8 +14,7 @@ const STATUS_LABEL = {
   Sent: 'No reply yet',
 };
 
-// Reply speed, computed from the contact's own timestamps. Phase 4 will store this on the contact
-// (responseLatencyMins); until then the two dates are the only source.
+// Reply speed, computed from the contact's own timestamps (older contacts lack responseLatencyMins).
 function latency(contact) {
   if (!contact.respondedAt || !contact.sentAt) return null;
   const mins = Math.round((new Date(contact.respondedAt) - new Date(contact.sentAt)) / 60000);

@@ -2,7 +2,7 @@ import OpsHeader from '../OpsHeader';
 import { loadHealthMetricsData } from '@/lib/ops/data';
 import { computeHealthMetrics } from '@lioncity/shared/utils/healthMetrics.js';
 
-// Weekly health metrics tab (roadmap deferred item). Read-only snapshot of how the pipeline is
+// Weekly health metrics tab. Read-only snapshot of how the pipeline is
 // doing. Every tile shows its sample size — a rate over a handful of data points is noise, and the
 // tile says so ("n=2") rather than printing a confident percent. Placement/survival numbers stay
 // blank until that data accrues (placements are only just being recorded), which is honest, not broken.
