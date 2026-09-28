@@ -1992,7 +1992,7 @@ async function confirmPostAssignment(
     if (notify) {
       waitUntil(
         notifyMatchedTutors(savedAssignment, botUsername).then(result => {
-          console.log(`WhatsApp notifications done: ${result.sent} sent, ${result.failed} failed, AI used: ${result.aiUsed}`);
+          console.log(`WhatsApp notifications done: ${result.sent} sent, ${result.failed} failed`);
         }).catch(err => {
           console.error('Tutor notification error:', err);
         })

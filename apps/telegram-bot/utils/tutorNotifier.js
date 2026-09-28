@@ -1,7 +1,5 @@
 import { findMatchingTutorsForWave, findMatchingTutorsWithStats } from './tutorMatcher.js';
 import { poolShortfallReport, ACTION_LABELS } from './poolDiagnosis.js';
-// Wave 1 takes the deterministic top of the ranking directly — the query-time Gemini re-rank was
-// retired once the ranking started reading each tutor's extracted qualityGrade.
 import { recordRecommendation, candidatesFromScored } from './recordRecommendation.js';
 import { Assignment, Tutor } from '../../../packages/shared/server-exports.js';
 import { normalizePhone } from '../../../packages/shared/utils/phoneUtils.js';
@@ -192,10 +190,8 @@ async function alertThinPool(assignment, poolSize, relaxed) {
 // Wave 1 — fired immediately when an assignment is posted.
 async function notifyMatchedTutors(assignment, botUsername) {
   try {
-    // Pull the top 40 quality-ranked matches (with their score breakdown for the decision log). The
-    // ranking now folds in each tutor's extracted qualityGrade, so wave 1 takes its top 8 directly —
-    // no query-time Gemini re-rank (removed an API call, a failure mode, and ~5s from wave 1).
-    // Exposure caps (Phase 10 step 4): exclude tutors already holding ≥2 unresolved offers, plus
+    // Pull the top 40 quality-ranked matches (with their score breakdown for the decision log).
+    // Exposure caps: exclude tutors already holding ≥2 unresolved offers, plus
     // anyone already contacted on a sibling — the other subjects of a split request are the same
     // family, and messaging one tutor about each is how a cap gets spent on a single parent.
     const excludeTutorIds = new Set([
@@ -213,7 +209,7 @@ async function notifyMatchedTutors(assignment, botUsername) {
 
     if (scored.length === 0) {
       console.log(`No matching tutors found for assignment ${assignment._id}`);
-      return { sent: 0, failed: 0, aiUsed: false, aiError: null };
+      return { sent: 0, failed: 0 };
     }
 
     // Adaptive wave sizing (Phase 10 step 2): size wave 1 to the full interested target and the
@@ -232,11 +228,10 @@ async function notifyMatchedTutors(assignment, botUsername) {
       candidates: candidatesFromScored(scored, tutors.map(t => t._id)),
     });
 
-    // aiUsed/aiError kept in the shape for callers that log them; always false now (re-rank retired).
-    return { sent, failed, aiUsed: false, aiError: null };
+    return { sent, failed };
   } catch (error) {
     console.error('Error notifying matched tutors:', error);
-    return { sent: 0, failed: 0, aiUsed: false, aiError: null };
+    return { sent: 0, failed: 0 };
   }
 }
 

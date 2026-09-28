@@ -83,9 +83,8 @@ function parseSubjectsFromTitle(title) {
   return [...matched];
 }
 
-// --- Candidate quality ranking (pre-AI) ------------------------------------
-// A cheap deterministic score that narrows the matched pool to the strongest
-// `poolSize` tutors BEFORE the (paid, slower) AI re-ranker looks at them.
+// --- Candidate quality ranking ---------------------------------------------
+// A deterministic score that orders the matched pool; outreach takes the top `poolSize`.
 //
 // Weights — tuned to how the agency actually reaches out. Tune freely:
 //   • Budget is enforced first as a hard filter (over-budget tutors are dropped —
@@ -223,7 +222,7 @@ function parseBudget(rateText) {
   return { bands, overallMax };
 }
 
-// The budget bands for an assignment, PREFERRING the precomputed numeric fields (roadmap Phase 7)
+// The budget bands for an assignment, PREFERRING the precomputed numeric fields
 // and falling back to parsing the free-text rate for legacy assignments (never re-saved, so they
 // have no budgetNumeric). Shape matches parseBudget's return so every downstream caller is unchanged.
 function resolveBudget(assignment) {
@@ -253,7 +252,7 @@ function ceilingForTutor(tutor, budget) {
 }
 
 // The tutor's own asking rate for this level (lower bound of any range = the least they'd accept).
-// Prefers the precomputed numeric mirror (roadmap Phase 7), falling back to parsing the free-text
+// Prefers the precomputed numeric mirror, falling back to parsing the free-text
 // hourlyRate for legacy tutors without rateNumeric. null when they never filled it in for this level.
 function tutorFloorRate(tutor, levelCategory) {
   const numeric = tutor.rateNumeric?.[levelCategory];
@@ -266,7 +265,7 @@ function tutorFloorRate(tutor, levelCategory) {
 // (1 = comfortably cheap, very likely to say yes; 0.5 = right at the ceiling).
 // Unknowns get the benefit of the doubt so we never silently drop a good tutor.
 //
-// quotedRate, when the tutor named one FOR THIS ASSIGNMENT (Phase 4), replaces the profile
+// quotedRate, when the tutor named one FOR THIS ASSIGNMENT, replaces the profile
 // floor entirely: it's the rate they'll actually take here, so it beats the stale profile
 // guess — the whole reason we ask. Falls back to the profile floor when absent (every
 // candidate-query call, and any interested tutor who ignored the rate prompt).
@@ -320,32 +319,27 @@ function responsivenessFactor(tutor) {
 // by ranker version. v4 adds education, school prestige and placement track record to the blend.
 const POLICY_VERSION = '2026.08-v4';
 
-// Newcomer boost (Phase 10 step 4): a small multiplier for tutors with zero lifetime placements and
+// Newcomer boost: a small multiplier for tutors with zero lifetime placements and
 // a decent profile, so unproven-but-promising supply gets wave exposure before it churns out.
 const NEWCOMER_BOOST = 1.08;
 const NEWCOMER_QUALITY_MIN = 0.6; // "decent profile": qualitySignal ≥ this (grade ≥ 3, or equiv commitment)
 
 // Blended 0..1 quality score for ordering the affordable pool, then scaled down for tutors who
 // chronically ignore outreach — PLUS the component breakdown behind it. Internal: returns
-// { score, components } so the Recommendation log (Phase 6) can record WHY a tutor ranked where they
+// { score, components } so the Recommendation log can record WHY a tutor ranked where they
 // did without re-deriving it. `coverageFactor` is applied by the caller (it needs requestedFields),
 // so it is not part of `components` here — runMatch/buildFeatureSnapshot fold it in.
-// The profile-quality term in every quality blend (Phase 9 Step B): a tutor's extracted
-// qualityGrade/5 (holistic, evidence-based) when present, else commitmentScore (length-based and
-// gameable) as the fallback for tutors not yet extracted. One helper so scoreTutorComponents and
-// shortlistScore stay in lockstep — the roadmap's "replace commitmentScore with qualityGrade".
+// The profile-quality term in every quality blend: the extracted qualityGrade/5 when present, else
+// commitmentScore for tutors not yet extracted. Shared so scoreTutorComponents and shortlistScore agree.
 function qualitySignal(tutor) {
   const grade = tutor.profileFeatures?.qualityGrade;
   return grade != null ? grade / 5 : commitmentScore(tutor);
 }
 
-function scoreTutorComponents(tutor, fit, { useQualityGrade = true } = {}) {
+function scoreTutorComponents(tutor, fit) {
   const experienceRank = EXPERIENCE_RANK[tutor.yearsOfExperience] || 0; // 0..5
   const commitment = commitmentScore(tutor);
-  // Phase 9 Step B: qualitySignal now drives the quality term in production (useQualityGrade defaults
-  // true). The flag remains so the comparison script can still reproduce the pre-swap commitment-only
-  // ranking (useQualityGrade:false) for retrospective audits.
-  const qualityTerm = useQualityGrade ? qualitySignal(tutor) : commitment;
+  const qualityTerm = qualitySignal(tutor);
   const responsiveness = responsivenessFactor(tutor);
   const education = educationTier(tutor);
   const prestige = prestigeSignal(tutor);
@@ -357,9 +351,8 @@ function scoreTutorComponents(tutor, fit, { useQualityGrade = true } = {}) {
     WEIGHTS.budget * fit.comfort +
     WEIGHTS.prestige * prestige +
     WEIGHTS.trackRecord * track;
-  // Phase 10 step 4: give unproven-but-decent newcomers (0 lifetime placements, decent profile) a
-  // small lift so they surface in waves before churning. stats.placed is the materialized count
-  // (Phase 7); absent → treated as 0 (a never-placed tutor).
+  // Give unproven-but-decent newcomers a small lift so they surface in waves before churning.
+  // stats.placed is the materialized count; absent → treated as 0.
   const isNewcomer = (tutor.stats?.placed || 0) === 0 && qualitySignal(tutor) >= NEWCOMER_QUALITY_MIN;
   const boost = isNewcomer ? NEWCOMER_BOOST : 1;
   return {
@@ -376,16 +369,15 @@ function scoreTutorComponents(tutor, fit, { useQualityGrade = true } = {}) {
   };
 }
 
-// Public scorer — unchanged signature and return (a number). Every existing caller keeps working;
-// only the internal breakdown is new.
+// Public scorer: just the number.
 function scoreTutor(tutor, fit) {
   return scoreTutorComponents(tutor, fit).score;
 }
 
-// The full feature snapshot for one tutor against an assignment, as the Recommendation log stores it
-// (Phase 6). Self-contained (resolves the budget + subjects itself), so the shortlist write point —
+// The full feature snapshot for one tutor against an assignment, as the Recommendation log stores it.
+// Self-contained (resolves the budget + subjects itself), so the shortlist write point —
 // which scores with shortlistScore, not the matching path — can build an identical-shaped snapshot.
-// `qualityGrade` is null until Phase 9 populates it from write-time LLM extraction.
+// `qualityGrade` is null until write-time LLM extraction has graded the tutor.
 function buildFeatureSnapshot(tutor, assignment, quotedRate = null) {
   const levelCategory = getLevelCategory(assignment.level);
   const budget = resolveBudget(assignment);
@@ -395,7 +387,7 @@ function buildFeatureSnapshot(tutor, assignment, quotedRate = null) {
   return {
     ...components,
     coverageFactor: coverageFactor(tutor, requestedFields, levelCategory),
-    qualityGrade: tutor.profileFeatures?.qualityGrade ?? null, // Phase 9: real grade, was hardcoded null
+    qualityGrade: tutor.profileFeatures?.qualityGrade ?? null,
   };
 }
 
@@ -469,7 +461,7 @@ function resolveSubjects(assignment, levelCategory) {
 // Quality score for RE-RANKING the interested pool into a parent-facing shortlist. Same
 // blend as scoreTutor (experience, commitment, budget comfort, coverage) but deliberately
 // WITHOUT responsivenessFactor: these tutors have already replied, so penalising slower
-// repliers here would be a pure quality loss (roadmap Phase 1). Pure + synchronous so the
+// repliers here would be a pure quality loss. Pure + synchronous so the
 // escalation-tick release path can call it per interested contact.
 function shortlistScore(tutor, assignment, quotedRate = null) {
   const levelCategory = getLevelCategory(assignment.level);
@@ -491,7 +483,7 @@ function shortlistScore(tutor, assignment, quotedRate = null) {
 // type, and the tutor's rate against the budget that applies to them. Pure and synchronous,
 // mirrors the dimensions shortlistScore actually weighs.
 //
-// When the tutor quoted a rate for this assignment (Phase 4), it's shown as "quoted $X/h" and
+// When the tutor quoted a rate for this assignment, it's shown as "quoted $X/h" and
 // used for the over-budget flag — it's the number that matters, and seeing it (vs the posted
 // budget) before relaying is the point. Falls back to the profile "asks $X/h" when absent.
 function shortlistReason(tutor, assignment, quotedRate = null) {
@@ -632,12 +624,12 @@ const CANDIDATE_FIELDS =
   'stats';                                  // stats.placed drives the newcomer boost + track record
 
 // Find the best `poolSize` tutors matching the assignment's level+subject, location, and tutor
-// type — quality-ranked, ready to hand to the AI re-ranker.
+// type, quality-ranked.
 //
 // `withStats` turns on the attrition funnel (see findMatchingTutorsWithStats) at the cost of one
 // countDocuments per DB-side filter, so it stays OFF for outreach and is opted into by the ops
 // console's diagnosis. `model` is injectable for tests.
-async function runMatch(assignment, poolSize, { withStats = false, model = Tutor, useQualityGrade = true, excludeTutorIds = null } = {}) {
+async function runMatch(assignment, poolSize, { withStats = false, model = Tutor, excludeTutorIds = null } = {}) {
   const { unmappable, stages, requestedFields, levelCategory } = buildFilterStages(assignment);
 
   if (unmappable) {
@@ -649,7 +641,7 @@ async function runMatch(assignment, poolSize, { withStats = false, model = Tutor
 
   const query = stages[stages.length - 1].query;
 
-  // Exposure caps (Phase 10 step 4): hold tutors already sitting on ≥2 unresolved offers out of new
+  // Exposure caps: hold tutors already sitting on ≥2 unresolved offers out of new
   // waves. Applied to the FETCH only, not the attrition funnel — the funnel describes the matching
   // pool, while this is a wave-time throttle. Empty/absent set → no change to the query.
   const excludeIds = excludeTutorIds ? [...excludeTutorIds] : [];
@@ -700,7 +692,7 @@ async function runMatch(assignment, poolSize, { withStats = false, model = Tutor
 
   const ranked = kept
     .map(({ tutor, fit }) => {
-      const { score, components } = scoreTutorComponents(tutor, fit, { useQualityGrade });
+      const { score, components } = scoreTutorComponents(tutor, fit);
       const cov = coverageFactor(tutor, requestedFields, levelCategory);
       const pref = preferenceFactor(tutor, assignment);
       return {
@@ -712,8 +704,8 @@ async function runMatch(assignment, poolSize, { withStats = false, model = Tutor
     .sort((a, b) => b.score - a.score);
 
   // The scored pool (top `poolSize`), carrying rank + score + feature breakdown for the
-  // Recommendation decision log (Phase 6). `tutors` is the same list flattened, for callers that
-  // only need the docs (the AI re-ranker, escalation's fresh-filter).
+  // Recommendation decision log. `tutors` is the same list flattened, for callers that
+  // only need the docs.
   const scored = ranked.slice(0, poolSize).map((r, i) => ({
     tutor: r.tutor, rank: i + 1, score: r.score, components: r.components,
   }));
@@ -746,7 +738,7 @@ async function findMatchingTutors(assignment, poolSize = 40) {
 }
 
 // Same deterministic match, but returning the SCORED pool: [{ tutor, rank, score, components }],
-// best-first. Powers the Recommendation decision log (Phase 6) at the wave-1 and escalation write
+// best-first. Powers the Recommendation decision log at the wave-1 and escalation write
 // points — they need the ranks/scores/features, not just the tutor docs. `components` already folds
 // in coverageFactor and a null qualityGrade, matching Recommendation.featureSnapshot.
 async function findMatchingTutorsScored(assignment, poolSize = 40, options = {}) {
@@ -763,7 +755,7 @@ async function findMatchingTutorsForWave(assignment, poolSize = 40, options = {}
 
 // The stats mode: the same match, plus a per-filter attrition funnel explaining how a large tutor
 // collection narrowed to a small pool. Powers the ops console's "pool smaller than wave" row
-// (roadmap Phase 3) and, later, intake budget calibration (Phase 8).
+// and intake budget calibration.
 //
 // Returns { tutors, stats } where stats is
 //   { unmappable, stages: [{ filter, before, after, removed }], matched, fetchTruncated, dominantFilter }.
@@ -771,10 +763,10 @@ async function findMatchingTutorsWithStats(assignment, poolSize = 40, options = 
   return runMatch(assignment, poolSize, { ...options, withStats: true });
 }
 
-// --- Intake budget calibration (roadmap Phase 8) ---------------------------
+// --- Intake budget calibration ---------------------------------------------
 // Before outreach starts, tell the owner whether an assignment is postable at its rate: how many
 // tutors it can afford now, the typical rate for this level/region, and what raising the budget
-// would unlock. Informational ONLY — it never blocks posting (see roadmap "No blocking behavior").
+// would unlock. Informational ONLY — it never blocks posting.
 
 // Round UP to the nearest $5 — the granularity parents and tutors actually think in, so a suggested
 // rate reads as a real number ($45) rather than an interpolated one ($43.75).
@@ -887,7 +879,7 @@ async function budgetCalibration(assignment, options = {}) {
 }
 
 // The typical asking rate for a level (optionally narrowed by region and tutor type), as p25/p50/p75
-// of tutor floors — the read-only "hint" beside the website form's budget field (roadmap Phase 8).
+// of tutor floors — the read-only "hint" beside the website form's budget field.
 // Lighter than budgetCalibration: no subject/assignment, just "what do tutors charge for this level".
 // Uses the SAME floor + percentile logic as the owner-side calibration, so both sides agree.
 //
@@ -956,7 +948,7 @@ export {
   getLevelCategory,
   subjectToFieldName,
   LOCATION_TO_REGION,
-  // Exported for unit tests of the Phase 7 numeric-preferred budget path.
+  // Exported for unit tests of the numeric-preferred budget path.
   resolveBudget,
   tutorFloorRate,
   budgetFit,

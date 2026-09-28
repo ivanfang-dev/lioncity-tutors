@@ -1,9 +1,7 @@
 import { describe, test, expect } from '@jest/globals';
 import { findMatchingTutorsScored } from './tutorMatcher.js';
 
-// Phase 9 Step B: production ranking now folds in an extracted qualityGrade instead of the
-// length-based commitmentScore (useQualityGrade defaults ON). The flag is retained so the comparison
-// script can still reproduce the pre-swap commitment-only ranking (useQualityGrade:false).
+// Ranking uses the extracted qualityGrade in place of the length-based commitmentScore when present.
 const assignment = {
   level: 'Secondary 3',
   subject: 'Mathematics',
@@ -36,18 +34,13 @@ function fakeModel(docs) {
   return { countDocuments: async () => docs.length, find: () => chain };
 }
 
-describe('useQualityGrade scoring gate', () => {
-  test('ON by default: the extracted grade replaces commitmentScore, so high-grade B overtakes A', async () => {
+describe('qualityGrade scoring', () => {
+  test('the extracted grade replaces commitmentScore, so high-grade B overtakes A', async () => {
     const scored = await findMatchingTutorsScored(assignment, 40, { model: fakeModel([A, B]) });
     expect(scored.map(s => s.tutor._id)).toEqual(['B', 'A']);
   });
 
-  test('OFF (comparison-script path): commitmentScore wins, long-profile A ranks above blank B', async () => {
-    const scored = await findMatchingTutorsScored(assignment, 40, { model: fakeModel([A, B]), useQualityGrade: false });
-    expect(scored.map(s => s.tutor._id)).toEqual(['A', 'B']);
-  });
-
-  test('ON but a tutor has no extracted grade → falls back to commitmentScore', async () => {
+  test('a tutor with no extracted grade falls back to commitmentScore', async () => {
     const noGrade = tutor('C', { text: true, qualityGrade: null }); // high commitment, no grade
     const blankNoGrade = tutor('D', { text: false, qualityGrade: null }); // low commitment, no grade
     const scored = await findMatchingTutorsScored(assignment, 40, { model: fakeModel([blankNoGrade, noGrade]) });
