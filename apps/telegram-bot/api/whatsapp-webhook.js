@@ -1,3 +1,4 @@
+import crypto from 'crypto';
 import { recordTutorReply, recordReplyNote } from '../utils/recordTutorReply.js';
 import { sendWhatsApp, sendWhatsAppList, sendWhatsAppButtons } from '../utils/whatsappSender.js';
 import { notifyOwner } from '../utils/ownerAlert.js';
@@ -9,6 +10,21 @@ import { declineReasonListRows, parseListReplyId, recordDeclineReason } from '..
 // (tutor replies + delivery statuses). Meta gives us the sender's real number (wa_id)
 // directly, so no contact resolution is needed.
 const VERIFY_TOKEN = process.env.WHATSAPP_WEBHOOK_VERIFY_TOKEN;
+
+// True when X-Hub-Signature-256 is Meta's HMAC-SHA256 of the raw body, keyed with the app secret.
+export function isValidSignature(rawBody, header, secret) {
+  if (!secret || typeof header !== 'string' || !header.startsWith('sha256=')) return false;
+  const expected = Buffer.from(crypto.createHmac('sha256', secret).update(rawBody).digest('hex'));
+  const given = Buffer.from(header.slice('sha256='.length));
+  return given.length === expected.length && crypto.timingSafeEqual(given, expected);
+}
+
+// Vercel buffers the body and then restores the stream, so the exact bytes Meta signed are still readable.
+async function readRawBody(req) {
+  const chunks = [];
+  for await (const chunk of req) chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk));
+  return Buffer.concat(chunks);
+}
 
 // Lowercase, and fold contractions so one negation list also covers isn't / can't / don't.
 function normalizeInbound(value) {
@@ -290,10 +306,24 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
+  // Reject anything Meta didn't sign. A missing secret fails closed: Meta retries, so replies
+  // aren't lost while the env var gets set.
+  const secret = process.env.WHATSAPP_APP_SECRET;
+  if (!secret) {
+    console.error('whatsapp-webhook: WHATSAPP_APP_SECRET is not set; rejecting webhook');
+    return res.status(500).json({ error: 'Webhook not configured' });
+  }
+  const rawBody = await readRawBody(req);
+  if (!isValidSignature(rawBody, req.headers?.['x-hub-signature-256'], secret)) {
+    console.warn('whatsapp-webhook: rejected a POST with a missing or invalid signature');
+    return res.status(401).json({ error: 'Invalid signature' });
+  }
+
   // Meta retries on non-2xx and expects a fast ack, so we process inline (light work) and
   // always return 200. Any per-message error is logged, never surfaced to Meta.
   try {
-    for (const entry of req.body?.entry || []) {
+    const payload = JSON.parse(rawBody.toString('utf8'));
+    for (const entry of payload.entry || []) {
       for (const change of entry.changes || []) {
         const value = change.value || {};
 

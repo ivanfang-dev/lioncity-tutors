@@ -1,4 +1,8 @@
 import { jest } from '@jest/globals';
+import crypto from 'crypto';
+import { Readable } from 'stream';
+
+process.env.WHATSAPP_APP_SECRET = 'test-secret';
 
 // A mixed WhatsApp reply keeps the text as a note and asks the tutor to tap Yes/No.
 const recordReplyNote = jest.fn();
@@ -24,7 +28,15 @@ jest.unstable_mockModule('../utils/rateCapture.js', () => ({
 const { default: handler } = await import('./whatsapp-webhook.js');
 
 const res = () => ({ status: jest.fn().mockReturnThis(), json: jest.fn(), send: jest.fn(), end: jest.fn() });
-const inbound = (msg) => ({ method: 'POST', body: { entry: [{ changes: [{ value: { messages: [{ from: '6591234567', ...msg }] } }] }] } });
+// A request signed the way Meta signs it, as a readable stream like Vercel hands the handler.
+const inbound = (msg) => {
+  const raw = JSON.stringify({ entry: [{ changes: [{ value: { messages: [{ from: '6591234567', ...msg }] } }] }] });
+  const sig = crypto.createHmac('sha256', 'test-secret').update(raw).digest('hex');
+  return Object.assign(Readable.from([Buffer.from(raw)]), {
+    method: 'POST',
+    headers: { 'content-type': 'application/json', 'x-hub-signature-256': `sha256=${sig}` },
+  });
+};
 
 beforeEach(() => jest.clearAllMocks());
 

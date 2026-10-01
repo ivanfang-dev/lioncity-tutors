@@ -1,5 +1,7 @@
-import { describe, test, expect } from '@jest/globals';
-import { classifyInbound } from './whatsapp-webhook.js';
+import { describe, test, expect, jest, afterEach } from '@jest/globals';
+import crypto from 'crypto';
+import { Readable } from 'stream';
+import handler, { classifyInbound, isValidSignature } from './whatsapp-webhook.js';
 import { parseRateReply } from '../utils/rateCapture.js';
 
 const text = (body) => ({ type: 'text', text: { body } });
@@ -136,5 +138,53 @@ describe('parse-order precedence', () => {
   test('prose containing a number is neither a rate nor a reply — it goes to the owner', () => {
     expect(parseRateReply('I can do 45 if the timing changes')).toBeNull();
     expect(classifyInbound(text('I can do 45 if the timing changes')).kind).toBe('text');
+  });
+});
+
+describe('webhook signature', () => {
+  const secret = 'test-secret';
+  const raw = Buffer.from(JSON.stringify({ entry: [] }));
+  const sign = (body, key = secret) => `sha256=${crypto.createHmac('sha256', key).update(body).digest('hex')}`;
+  const post = (body, signature) => Object.assign(Readable.from([body]), {
+    method: 'POST',
+    headers: signature ? { 'x-hub-signature-256': signature } : {},
+  });
+  const res = () => ({ status: jest.fn().mockReturnThis(), json: jest.fn(), send: jest.fn(), end: jest.fn() });
+
+  afterEach(() => { delete process.env.WHATSAPP_APP_SECRET; });
+
+  test('accepts Meta\'s HMAC of the exact raw body', () => {
+    expect(isValidSignature(raw, sign(raw), secret)).toBe(true);
+  });
+
+  test('rejects a wrong key, a tampered body, a malformed header, or no secret', () => {
+    expect(isValidSignature(raw, sign(raw, 'other'), secret)).toBe(false);
+    expect(isValidSignature(Buffer.from('{"entry":[1]}'), sign(raw), secret)).toBe(false);
+    expect(isValidSignature(raw, sign(raw).slice(7), secret)).toBe(false);
+    expect(isValidSignature(raw, 'sha256=abc', secret)).toBe(false);
+    expect(isValidSignature(raw, undefined, secret)).toBe(false);
+    expect(isValidSignature(raw, sign(raw), undefined)).toBe(false);
+  });
+
+  test('a forged or unsigned POST gets 401 and is not processed', async () => {
+    process.env.WHATSAPP_APP_SECRET = secret;
+    for (const signature of [undefined, sign(raw, 'attacker-guess')]) {
+      const r = res();
+      await handler(post(raw, signature), r);
+      expect(r.status).toHaveBeenCalledWith(401);
+    }
+  });
+
+  test('a correctly signed POST is acknowledged with 200', async () => {
+    process.env.WHATSAPP_APP_SECRET = secret;
+    const r = res();
+    await handler(post(raw, sign(raw)), r);
+    expect(r.status).toHaveBeenCalledWith(200);
+  });
+
+  test('fails closed when the app secret is not configured', async () => {
+    const r = res();
+    await handler(post(raw, sign(raw)), r);
+    expect(r.status).toHaveBeenCalledWith(500);
   });
 });
