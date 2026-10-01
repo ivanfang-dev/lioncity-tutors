@@ -1,183 +1,127 @@
 # LionCity Tutors
 
-LionCity Tutors is a full-featured tutoring platform built as a monorepo using Node.js, React, Tailwind CSS, and MongoDB. It consists of multiple apps, including a backend API, a web frontend, and a Telegram bot for tutor management.
+The platform behind [LionCity Tutors](https://www.lioncitytutors.com), a Singapore tuition agency. Parents
+request a tutor on the website; the system matches the request against the tutor database, reaches
+out to the best-ranked tutors in waves over Telegram and WhatsApp, and hands the owner a shortlist
+to send to the parent. The goal is a parent-ready shortlist within hours, without anyone working
+through spreadsheets.
 
----
+## How it works
 
-## Table of Contents
-
-- [Project Structure](#project-structure)  
-- [Features](#features)  
-- [Technologies](#technologies)  
-- [Getting Started](#getting-started)  
-- [Environment Variables](#environment-variables)  
-# LionCity Tutors
-
-LionCity Tutors is a production-ready tutoring platform (monorepo) that includes:
-
-- a Next.js website (`apps/website`) for parents/students,
-- an Express backend API (`apps/backend`) for form submission and admin tasks,
-- a Telegram bot (`apps/telegram-bot`) used for tutor management and notifications,
-- shared utilities packaged under `packages/shared`.
-
-This README covers how to run and develop the project locally, environment variables, and troubleshooting tips.
-
-## Table of contents
-
-- [Quick start](#quick-start)
-- [Repository structure](#repository-structure)
-- [Features](#features)
-- [Tech stack](#tech-stack)
-- [Environment variables](#environment-variables)
-- [Common scripts](#common-scripts)
-- [Local development](#local-development)
-- [Building & deployment](#building--deployment)
-
-
-## Quick start
-
-Prerequisites:
-
-- Node.js 18+ (or the version you use for Next 14)
-- npm 9+ (this repo uses npm workspaces)
-- A MongoDB Atlas URI or local MongoDB instance
-
-1. Clone the repo and install dependencies:
-
-```bash
-git clone https://github.com/<your-username>/lioncity-tutors.git
-cd lioncity-tutors
-npm run install:all
+```mermaid
+flowchart LR
+  Parent -->|request form| Website
+  Website -->|lead| Backend
+  Backend -->|Telegram alert| Owner
+  Owner -->|posts assignment| Bot
+  Bot -->|match + rank| DB[(MongoDB)]
+  Bot -->|Telegram DM, WhatsApp fallback| Tutors
+  Tutors -->|Yes / No / rate| Bot
+  Scheduler -->|escalation tick| Bot
+  Bot -->|shortlist draft| Owner
+  Owner -->|forwards on WhatsApp| Parent
+  Console[Ops console] --> DB
+  Console --> Bot
 ```
 
-2. Create environment files (see next section for required variables).
+1. **Intake.** A parent fills in the request form. The owner posts the assignment through the
+   Telegram bot, which shows a budget check: how many tutors the rate can afford and the typical
+   market range for that level.
+2. **Matching.** Tutors are hard-filtered on level, subject, region, tutor type, budget, timing and
+   availability, then ranked on experience, education, profile quality, budget fit, track record
+   and reply history. Profile quality is a 1–5 grade that Gemini extracts once, when a tutor
+   registers or edits their profile, so ranking itself makes no LLM calls.
+3. **Outreach.** Wave 1 goes out as soon as the assignment is posted. Tutors with a linked Telegram
+   account get a free DM; everyone else gets a WhatsApp template through the Meta Cloud API. A
+   scheduled tick sends further waves, sized from the recent interest rate, until enough tutors
+   say yes or the pool runs out.
+4. **Replies.** Tutors tap Yes or No (typed replies are parsed too). Interested tutors are asked
+   for their rate for this assignment; decliners are asked why. Anything the bot can't classify is
+   forwarded to the owner's Telegram, and the owner can reply from there.
+5. **Shortlist.** After a short hold window the interested tutors are re-ranked and the best are
+   drafted into a parent message. Parents are never messaged automatically: the owner gets a
+   one-tap WhatsApp link with the draft filled in.
+6. **After the match.** A placement is recorded when the parent picks a tutor, and the owner is
+   prompted for a check-in around day 30. Every ranking decision is logged with its inputs, so the
+   ranking can be tuned against real outcomes.
 
-3. Start the website or backend independently (examples below) or run both in parallel.
+The **ops console** (`/ops` on the website, password-protected) is the owner's mobile workspace:
+a queue of assignments that need attention, a per-assignment breakdown of who was contacted and
+why, one-tap recovery for stalled outreach (widen region, raise budget, relax tutor type), the
+check-in queue, and weekly health metrics.
 
+## Repository layout
 
-## Repository structure
-
-Top-level layout (important folders):
-
-- `apps/`
-	- `website/` — Next.js (app router) site (frontend)
-	- `backend/` — Express API used for contact forms and admin tasks
-	- `telegram-bot/` — Telegram bot code and API wrappers
-- `packages/`
-	- `shared/` — utilities/constants shared between apps
-- `package.json` — workspace scripts (run dev/build across workspaces)
-
-
-## Features
-
-- Parent-facing Next.js website with forms for tutor requests
-- Backend API for storing leads and basic admin endpoints
-- Telegram bot integration for tutors and assignment workflows
-- Tailwind CSS + GSAP + Framer Motion for UI and animations
-
+```
+apps/
+  website/        Next.js 14 site: parent pages, subject guides, request form, tutor sign-up, ops console
+  backend/        Express API that receives website forms and alerts the owner
+  telegram-bot/   Bot, matching and outreach, deployed as Vercel functions
+    api/          HTTP entry points: Telegram + WhatsApp webhooks, escalation tick, console actions
+    bot/          Telegram command and callback handlers
+    utils/        Matching, ranking, outreach, reply parsing, profile extraction
+    scripts/      Maintenance and inspection scripts (dry run by default)
+packages/
+  shared/         Mongoose models (Tutor, Assignment, Placement, Recommendation) and shared utilities
+```
 
 ## Tech stack
 
-- Frontend: Next.js, React, Tailwind CSS, Framer Motion, GSAP
-- Backend: Node.js, Express, Mongoose (MongoDB)
-- Bot: node-telegram-bot-api
-- Monorepo: npm Workspaces
+- **Website:** Next.js 14 (app router), React 18, Tailwind CSS
+- **Bot:** Node.js on Vercel serverless functions, node-telegram-bot-api, Meta WhatsApp Cloud API,
+  Google Gemini (`@google/genai`) for profile extraction
+- **Backend:** Express
+- **Data:** MongoDB with Mongoose; models are shared across all three apps through `packages/shared`
+- **Monorepo:** npm workspaces
 
+## Running locally
 
-## Environment variables
-
-For local development, create `.env` files in the root and/or specific app folders. Example variables used across the repo:
-
-- `MONGODB_URI` — MongoDB connection string (used by backend and bot)
-- `PORT` — backend port (optional; defaults to 4000)
-- `BOT_TOKEN` — Telegram bot token (used by `apps/telegram-bot`)
-- `ADMIN_USERS` — comma-separated Telegram user IDs with admin access
-- `NODE_ENV` — development/production
-
-Important: Do NOT commit real credentials. Add `.env` to `.gitignore` (already present).
-
-Example `.env` (do not commit):
-
-```env
-MONGODB_URI=mongodb+srv://<username>:<password>@cluster0.mongodb.net/lioncity?retryWrites=true&w=majority
-PORT=4000
-# For telegram bot
-BOT_TOKEN=123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11
-ADMIN_USERS=123456789
-```
-
-
-## Common scripts (root)
-
-From the repo root you can use workspace-aware scripts defined in `package.json`:
-
-- `npm run dev:website` — run Next.js website in dev mode (runs `apps/website` `dev` script)
-- `npm run dev:backend` — run Express backend in dev mode (runs `apps/backend` `dev` script)
-- `npm run dev:all` — runs website + backend concurrently (requires `concurrently`)
-- `npm run build` — builds the website workspace (`apps/website`)
-- `npm run start:backend` — start backend (production-like)
-
-You can also cd into each app and use its own scripts, for example:
+Requires Node.js 20+ and a MongoDB connection string.
 
 ```bash
-cd apps/website
-npm run dev
-
-cd ../../apps/backend
-npm run dev
+npm install
+npm run dev:website     # http://localhost:3000
+npm run dev:backend     # http://localhost:4000
+npm run dev:all         # both
 ```
 
+The bot has no long-running process: each file in `apps/telegram-bot/api/` is a Vercel function.
+Run them locally with `vercel dev` from `apps/telegram-bot`, and point the Telegram and WhatsApp
+webhooks at a tunnel to test end to end.
 
-## Local development
+### Environment variables
 
-1. Install deps (done earlier):
+Each app reads its own env file (`apps/website/.env.local`, `apps/backend/.env`,
+`apps/telegram-bot/.env`). Never commit them. The main ones:
+
+| Variable | Used by | Purpose |
+| --- | --- | --- |
+| `MONGODB_URI` | all | Database connection |
+| `BOT_TOKEN`, `BOT_USERNAME`, `ADMIN_USERS` | bot, website | Telegram bot and the owner's admin IDs |
+| `WHATSAPP_PHONE_NUMBER_ID`, `WHATSAPP_ACCESS_TOKEN` | bot | Sending through the WhatsApp Cloud API |
+| `WHATSAPP_WEBHOOK_VERIFY_TOKEN`, `WHATSAPP_APP_SECRET` | bot | Webhook handshake and request signature check |
+| `WHATSAPP_API_KEY` | bot, website | Shared key the website uses to call the bot's API |
+| `GEMINI_API_KEY` | bot | Profile extraction |
+| `BOT_API_URL`, `OPS_PASSWORD`, `OPS_SESSION_SECRET` | website | Ops console |
+| `NEXT_PUBLIC_BACKEND_URL` | website | Where the request form posts |
+| `TELEGRAM_BOT_TOKEN`, `TELEGRAM_NOTIFY_CHAT_ID` | backend | New-request alerts |
+
+Outreach behaviour (wave size, intervals, interested target, hold window, exposure cap and so on)
+is tunable through `OUTREACH_*` variables; every one has a default in code.
+
+## Tests
 
 ```bash
-npm run install:all
+npm test --workspace=apps/telegram-bot   # Jest: matching, ranking, reply parsing, outreach
+npm test --workspace=apps/website        # node:test
 ```
 
-2. Run the website:
+The suites in `apps/telegram-bot/integration-tests/` need a database to run against.
 
-```bash
-npm run dev:website
-# or, from apps/website
-cd apps/website && npm run dev
-```
+## Deployment
 
-3. Run the backend (in another terminal):
-
-```bash
-npm run dev:backend
-```
-
-4. (Optional) Run both concurrently:
-
-```bash
-npm run dev:all
-```
-
-Notes:
-
-- The website is Next.js app router — pages are under `apps/website/src/app`.
-- The backend listens on `PORT` (defaults in code to 4000). Make sure `MONGODB_URI` is set before starting.
-
-
-## Building & deployment
-
-- To build the Next.js website for production from the repo root:
-
-```bash
-npm run build
-```
-
-- To start the backend for production:
-
-```bash
-npm run start:backend
-```
-
-Deployment notes:
-
-- The website can be deployed to Vercel or any platform supporting Next.js.
-- The backend requires a Node host and a MongoDB Atlas (or compatible) connection string.
-- For the Telegram bot, set `BOT_TOKEN` and run it in a process manager (PM2, systemd) or host it on a server that can reach Telegram.
+- **Website and bot:** Vercel, deployed on push. The Vercel Hobby plan only allows a daily cron,
+  so an external scheduler calls `/api/escalation-tick` to drive the outreach waves. The website
+  runs a daily watchdog that alerts the owner if the tick stops running.
+- **Backend:** Render.
+- **Database:** MongoDB Atlas.
