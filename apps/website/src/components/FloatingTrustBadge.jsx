@@ -62,10 +62,10 @@ export default function FloatingTrustBadge({ onGetStarted }) {
             {/* Gradient background */}
             <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-accent/5" />
             
-            {/* Close button */}
+            {/* Close button — z-20 so the z-10 content below can't paint over it */}
             <button
               onClick={handleDismiss}
-              className="absolute top-3 right-3 w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors z-10"
+              className="absolute top-3 right-3 w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors z-20"
               aria-label="Dismiss"
             >
               <X className="w-4 h-4 text-gray-600" />
