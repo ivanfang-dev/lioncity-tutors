@@ -35,7 +35,7 @@ export default function NLevelTuition() {
         <section id="request-form" className="bg-gradient-to-br from-blue-50 to-sky-50 p-8 rounded-2xl shadow-lg">
           <div className="max-w-4xl mx-auto">
             <h2 className="section-title text-primary text-center mb-4">Request an N-Level Tutor</h2>
-            <LevelRequestForm levelSubjects={['N-Level']} />
+            <LevelRequestForm student={{ level: 'secondary', stream: 'G2' }} />
           </div>
         </section>
 

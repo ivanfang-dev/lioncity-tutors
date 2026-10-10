@@ -6,11 +6,12 @@ import FormStepper from "@/components/FormStepper";
 import useTuitionRequestForm from "@/components/useTuitionRequestForm";
 import FormBenefits from "@/components/FormBenefits";
 import { CheckCircle } from "lucide-react";
+import { presetOverrides } from "@/lib/levelSubjects.mjs";
 
 // The tutor request form for the level pages (primary, secondary, O/N-Level, JC) —
 // the only interactive part, so those pages can stay server components.
-export default function LevelRequestForm({ levelSubjects }) {
-  const form = useTuitionRequestForm(levelSubjects ? { levelSubjects } : undefined);
+export default function LevelRequestForm({ student }) {
+  const form = useTuitionRequestForm(presetOverrides(student));
   const { currentStep, status, handleSubmit, resetForm } = form;
 
   return (

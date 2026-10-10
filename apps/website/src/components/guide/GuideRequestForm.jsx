@@ -9,11 +9,12 @@ import FormStepper from "@/components/FormStepper";
 import useTuitionRequestForm from "@/components/useTuitionRequestForm";
 import FormBenefits from "@/components/FormBenefits";
 import { CheckCircle } from "lucide-react";
+import { presetOverrides } from "@/lib/levelSubjects.mjs";
 
 // The tutor request form at the foot of a subject guide — the only interactive part,
 // so the guide page itself can stay a server component.
-export default function GuideRequestForm({ levelSubjects }) {
-  const form = useTuitionRequestForm({ levelSubjects });
+export default function GuideRequestForm({ student }) {
+  const form = useTuitionRequestForm(presetOverrides(student));
   const { currentStep, status, handleSubmit, resetForm } = form;
 
   return (

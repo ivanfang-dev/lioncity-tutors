@@ -426,7 +426,7 @@ export default function PSLEEnglish() {
       </main>
 
       {/* Conversion block — the live tutor request form */}
-      <GuideRequestForm levelSubjects={['PSLE English']} />
+      <GuideRequestForm student={{ level: 'primary', year: 'P6', subjects: ['English Language'] }} />
     </>
   );
 }

@@ -384,7 +384,7 @@ export default function PSLEMath() {
       </main>
 
       {/* Conversion block — the live tutor request form */}
-      <GuideRequestForm levelSubjects={['PSLE Math']} />
+      <GuideRequestForm student={{ level: 'primary', year: 'P6', subjects: ['Mathematics'] }} />
     </>
   );
 }

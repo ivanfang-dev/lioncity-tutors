@@ -5,6 +5,8 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Textarea } from "./ui/textarea";
+import LevelSubjectPicker from "./LevelSubjectPicker";
+import { toLevelSubjects } from '@/lib/levelSubjects.mjs';
 
 const cn = (...classes) => classes.filter(Boolean).join(' ');
 
@@ -75,7 +77,7 @@ const TypeInfo = ({ id, title, points, open, onToggle }) => (
 // ===================================
 // STEP 1: Your Details
 // ===================================
-export const Step1 = ({ nextStep, formData, handleChange, handleLevelSubjectChange, addLevelSubject, removeLevelSubject, errors }) => ( // <-- 1. Accept `errors` prop here
+export const Step1 = ({ nextStep, formData, handleChange, updateStudent, addStudent, removeStudent, errors }) => ( // <-- 1. Accept `errors` prop here
   <div className="space-y-6 animate-fadeIn">
       <h2 className="text-2xl font-bold text-text-default">Step 1: Your Details</h2>
       <div className="space-y-4">
@@ -103,37 +105,24 @@ export const Step1 = ({ nextStep, formData, handleChange, handleLevelSubjectChan
           </div>
           <div>
               <Label className="text-base font-medium text-text-secondary">Student's Level &amp; Subject<span className="text-error-text -ml-0.5" aria-hidden="true">*</span><span className="sr-only"> (required)</span></Label>
-              <p className="text-sm text-text-tertiary mt-0.5">Need help with more than one subject? Add each one — we can match a tutor who covers them.</p>
-              <div className="space-y-2 mt-2">
-                  {(formData.levelSubjects || ['']).map((entry, index) => (
-                      <div key={index} className="flex items-center gap-2">
-                          <Input
-                              type="text"
-                              value={entry}
-                              onChange={(e) => handleLevelSubjectChange(index, e.target.value)}
-                              placeholder={index === 0 ? "e.g., Secondary 3 A-Math" : "e.g., Secondary 3 Chemistry"}
-                              className={cn('h-12 text-base', errors.levelSubjects && index === 0 && 'border-error focus-visible:ring-error/40')}
-                          />
-                          {(formData.levelSubjects || ['']).length > 1 && (
-                              <button
-                                  type="button"
-                                  onClick={() => removeLevelSubject(index)}
-                                  aria-label="Remove this subject"
-                                  className="flex-shrink-0 h-12 w-12 flex items-center justify-center rounded-md text-text-tertiary hover:text-error hover:bg-error/10 transition-colors"
-                              >
-                                  <X size={18} />
-                              </button>
-                          )}
-                      </div>
+              <div className="space-y-3 mt-2">
+                  {formData.students.map((student, index) => (
+                      <LevelSubjectPicker
+                          key={index}
+                          student={student}
+                          onChange={(next) => updateStudent(index, next)}
+                          error={errors.students?.[index]}
+                          heading={formData.students.length > 1 ? `Child ${index + 1}` : null}
+                          onRemove={formData.students.length > 1 ? () => removeStudent(index) : null}
+                      />
                   ))}
               </div>
-              {errors.levelSubjects && <p className="text-sm text-error-text mt-1.5">{errors.levelSubjects}</p>}
               <button
                   type="button"
-                  onClick={addLevelSubject}
+                  onClick={addStudent}
                   className="mt-2 inline-flex items-center gap-1.5 min-h-11 text-sm font-semibold text-primary hover:text-primary/80 transition-colors"
               >
-                  <Plus size={16} /> Add another subject
+                  <Plus size={16} /> Add another child
               </button>
           </div>
       </div>
@@ -229,7 +218,7 @@ export const Step3 = ({ prevStep, formData, handleChange, status }) => {
   // fetched from the bot's aggregate rate-guide. Informational only — it never gates the budget the
   // parent can enter. Silent when the level is unrecognized or data is sparse (typical stays null).
   const [rateHint, setRateHint] = useState(null);
-  const levelSubjects = formData.levelSubjects || [];
+  const levelSubjects = toLevelSubjects(formData.students);
   const levelSubject = levelSubjects[0] || '';
 
   // Rate bands for the levels named in Step 1. Multiple levels span every matching
@@ -409,7 +398,7 @@ export const TuitionRequestSteps = ({ form }) => {
   const {
     currentStep, formData, errors, status,
     nextStep, prevStep, handleChange,
-    handleLevelSubjectChange, addLevelSubject, removeLevelSubject,
+    updateStudent, addStudent, removeStudent,
   } = form;
 
   return (
@@ -419,9 +408,9 @@ export const TuitionRequestSteps = ({ form }) => {
           nextStep={nextStep}
           formData={formData}
           handleChange={handleChange}
-          handleLevelSubjectChange={handleLevelSubjectChange}
-          addLevelSubject={addLevelSubject}
-          removeLevelSubject={removeLevelSubject}
+          updateStudent={updateStudent}
+          addStudent={addStudent}
+          removeStudent={removeStudent}
           errors={errors}
         />
       )}

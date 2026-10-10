@@ -411,7 +411,7 @@ export default function PSLEChinese() {
       </main>
 
       {/* Conversion block — the live tutor request form */}
-      <GuideRequestForm levelSubjects={['PSLE Chinese']} />
+      <GuideRequestForm student={{ level: 'primary', year: 'P6', subjects: ['Chinese'] }} />
     </>
   );
 }
