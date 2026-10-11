@@ -38,6 +38,14 @@ const STORAGE_KEY = 'tutorRequestDraft';
 const validateStep = (step, data) => {
     const newErrors = {};
     if (step === 1) {
+        const studentErrors = (data.students || []).map(studentError);
+        if (studentErrors.some(Boolean)) newErrors.students = studentErrors;
+    }
+    if (step === 2) {
+        if (!data.location.trim()) newErrors.location = "Location is required.";
+    }
+    // Contact details come last, once the parent has said what they need.
+    if (step === 3) {
         if (!data.name.trim()) newErrors.name = "Name is required.";
         if (!data.mobile.trim()) {
             newErrors.mobile = "Mobile number is required.";
@@ -47,13 +55,7 @@ const validateStep = (step, data) => {
             // restating the rule the visitor thinks they already followed.
             newErrors.mobile = "That doesn't look like a Singapore mobile number — it should be 8 digits starting with 8 or 9.";
         }
-        const studentErrors = (data.students || []).map(studentError);
-        if (studentErrors.some(Boolean)) newErrors.students = studentErrors;
     }
-    if (step === 2) {
-        if (!data.location.trim()) newErrors.location = "Location is required.";
-    }
-    // No validation needed for step 3 by default, but can be added here
     return newErrors;
 };
 
@@ -184,11 +186,11 @@ const useTuitionRequestForm = (overrides) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const allErrors = { ...validateStep(1, formData), ...validateStep(2, formData) };
+        const allErrors = { ...validateStep(1, formData), ...validateStep(2, formData), ...validateStep(3, formData) };
         if (Object.keys(allErrors).length > 0) {
             setErrors(allErrors);
             // Force user back to the step with the first error
-            if (allErrors.name || allErrors.mobile || allErrors.students) {
+            if (allErrors.students) {
                 setCurrentStep(1);
             } else if (allErrors.location) {
                 setCurrentStep(2);

@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useMemo} from 'react';
-import { Info, Loader2, Plus, X } from 'lucide-react';
+import { ChevronDown, Info, Loader2, Plus, X } from 'lucide-react';
 import { RATE_CARD, RATES_REVIEWED, bandFor, bandForLevelText, spanFor, hourlyLabel } from '@/app/tuition-rates/rates.mjs';
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
@@ -75,34 +75,12 @@ const TypeInfo = ({ id, title, points, open, onToggle }) => (
 );
 
 // ===================================
-// STEP 1: Your Details
+// STEP 1: Your Child
 // ===================================
-export const Step1 = ({ nextStep, formData, handleChange, updateStudent, addStudent, removeStudent, errors }) => ( // <-- 1. Accept `errors` prop here
+export const Step1 = ({ nextStep, formData, updateStudent, addStudent, removeStudent, errors }) => (
   <div className="space-y-6 animate-fadeIn">
-      <h2 className="text-2xl font-bold text-text-default">Step 1: Your Details</h2>
+      <h2 className="text-2xl font-bold text-text-default">Step 1: Your Child</h2>
       <div className="space-y-4">
-          <div>
-              <Label htmlFor="name" className="text-base font-medium text-text-secondary">Name<span className="text-error-text -ml-0.5" aria-hidden="true">*</span><span className="sr-only"> (required)</span></Label>
-              <Input
-                  id="name" name="name" type="text" value={formData.name} onChange={handleChange}
-                  autoComplete="name"
-                  placeholder="e.g., Jane Doe"
-                  className={cn('mt-1 h-12 text-base', errors.name && 'border-error focus-visible:ring-error/40')}
-              />
-              {/* 2. Add this block to display the error */}
-              {errors.name && <p className="text-sm text-error-text mt-1.5">{errors.name}</p>}
-          </div>
-          <div>
-              <Label htmlFor="mobile" className="text-base font-medium text-text-secondary">Mobile Number<span className="text-error-text -ml-0.5" aria-hidden="true">*</span><span className="sr-only"> (required)</span></Label>
-              <Input
-                  id="mobile" name="mobile" type="tel" value={formData.mobile} onChange={handleChange}
-                  autoComplete="tel" inputMode="tel"
-                  placeholder="e.g., 9123 4567"
-                  className={cn('mt-1 h-12 text-base', errors.mobile && 'border-error focus-visible:ring-error/40')}
-              />
-              {/* 2. Add this block to display the error */}
-              {errors.mobile && <p className="text-sm text-error-text mt-1.5">{errors.mobile}</p>}
-          </div>
           <div>
               <Label className="text-base font-medium text-text-secondary">Student's Level &amp; Subject<span className="text-error-text -ml-0.5" aria-hidden="true">*</span><span className="sr-only"> (required)</span></Label>
               <div className="space-y-3 mt-2">
@@ -184,7 +162,7 @@ export const Step2 = ({ nextStep, prevStep, formData, handleChange, errors }) =>
 );
 
 // ===================================
-// STEP 3: Tutor Preferences
+// STEP 3: Tutor & Contact
 // ===================================
 // `rateType` maps each checkbox to a row in the rate card (src/app/tuition-rates/rates.mjs).
 // Figures are read from there per level, so the form can't drift from /tuition-rates.
@@ -212,8 +190,11 @@ const TUTOR_TYPES = [
   },
 ];
 
-export const Step3 = ({ prevStep, formData, handleChange, status }) => {
+export const Step3 = ({ prevStep, formData, handleChange, status, errors }) => {
   const [openInfo, setOpenInfo] = useState(null);
+  // Optional extras start folded unless the parent (or a restored draft) already set one.
+  const [morePrefsOpen, setMorePrefsOpen] = useState(() =>
+    formData.genderPreference !== 'No preference' || formData.bilingualRequired === 'Yes' || formData.preferences.trim() !== '');
   // Read-only budget guidance: the typical rate tutors ask for the chosen level,
   // fetched from the bot's aggregate rate-guide. Informational only — it never gates the budget the
   // parent can enter. Silent when the level is unrecognized or data is sparse (typical stays null).
@@ -254,7 +235,7 @@ export const Step3 = ({ prevStep, formData, handleChange, status }) => {
 
   return (
       <div className="space-y-8 animate-fadeIn">
-          <h2 className="text-2xl font-bold text-text-default">Step 3: Tutor Preferences</h2>
+          <h2 className="text-2xl font-bold text-text-default">Step 3: Tutor &amp; Contact</h2>
 
           {/* Tutor Type Section */}
           <div className="border border-border rounded-xl p-4 sm:p-6 space-y-5">
@@ -327,56 +308,98 @@ export const Step3 = ({ prevStep, formData, handleChange, status }) => {
             )}
         </div>
 
-        {/* Tutor fit.
-            `genderPreference` and `bilingualRequired` already existed in the
-            request-tutor form's state and were POSTed on every submission — but
-            no control ever rendered them, so every request carried the same two
-            constants ("No preference" / "No") no matter what the family wanted.
-            These are the controls that were missing. Both stay strings rather
-            than booleans so the payload the backend already receives keeps its
-            shape. */}
-        <div className="border border-border rounded-xl p-4 sm:p-6 space-y-5">
-            <h3 className="text-lg font-semibold text-text-default">Tutor Fit</h3>
+        <div>
+            <button
+                type="button"
+                onClick={() => setMorePrefsOpen(!morePrefsOpen)}
+                aria-expanded={morePrefsOpen}
+                aria-controls="more-preferences"
+                className="flex w-full min-h-11 items-center justify-between rounded-xl border border-border px-4 sm:px-6 text-left font-semibold text-text-default transition-colors hover:border-primary hover:text-primary"
+            >
+                <span>More preferences <span className="font-normal text-text-tertiary">(optional)</span></span>
+                <ChevronDown size={20} aria-hidden="true" className={cn('transition-transform', morePrefsOpen && 'rotate-180')} />
+            </button>
+            <div id="more-preferences" hidden={!morePrefsOpen} className="mt-4 space-y-8">
+            {/* Tutor fit.
+                `genderPreference` and `bilingualRequired` already existed in the
+                request-tutor form's state and were POSTed on every submission — but
+                no control ever rendered them, so every request carried the same two
+                constants ("No preference" / "No") no matter what the family wanted.
+                These are the controls that were missing. Both stay strings rather
+                than booleans so the payload the backend already receives keeps its
+                shape. */}
+            <div className="border border-border rounded-xl p-4 sm:p-6 space-y-5">
+                <h3 className="text-lg font-semibold text-text-default">Tutor Fit</h3>
 
-            <div>
-                <Label htmlFor="genderPreference" className="text-base font-medium text-text-secondary">Tutor gender</Label>
-                <Select
-                    id="genderPreference"
-                    name="genderPreference"
-                    value={formData.genderPreference ?? 'No preference'}
-                    onChange={handleChange}
-                    className="mt-1"
-                >
-                    <option>No preference</option>
-                    <option>Female tutor</option>
-                    <option>Male tutor</option>
-                </Select>
-                <p className="mt-1.5 text-sm text-text-tertiary">Most families leave this as no preference — it widens the pool and we match faster.</p>
+                <div>
+                    <Label htmlFor="genderPreference" className="text-base font-medium text-text-secondary">Tutor gender</Label>
+                    <Select
+                        id="genderPreference"
+                        name="genderPreference"
+                        value={formData.genderPreference ?? 'No preference'}
+                        onChange={handleChange}
+                        className="mt-1"
+                    >
+                        <option>No preference</option>
+                        <option>Female tutor</option>
+                        <option>Male tutor</option>
+                    </Select>
+                    <p className="mt-1.5 text-sm text-text-tertiary">Most families leave this as no preference — it widens the pool and we match faster.</p>
+                </div>
+
+                <label htmlFor="bilingualRequired" className="flex items-start gap-3 cursor-pointer">
+                    <input
+                        type="checkbox"
+                        id="bilingualRequired"
+                        name="bilingualRequired"
+                        checked={(formData.bilingualRequired ?? 'No') === 'Yes'}
+                        // Mapped to the 'Yes'/'No' strings the field has always carried,
+                        // rather than switching the wire format to a boolean.
+                        onChange={(e) => handleChange({
+                            target: { name: 'bilingualRequired', value: e.target.checked ? 'Yes' : 'No', type: 'text' },
+                        })}
+                        className="h-5 w-5 mt-0.5 flex-shrink-0 rounded border-gray-400"
+                    />
+                    <span className="min-w-0">
+                        <span className="block text-base">Tutor should be bilingual</span>
+                        <span className="block text-sm text-text-tertiary">Useful for Chinese, Malay and Tamil, or if your child follows explanations better in their mother tongue.</span>
+                    </span>
+                </label>
             </div>
 
-            <label htmlFor="bilingualRequired" className="flex items-start gap-3 cursor-pointer">
-                <input
-                    type="checkbox"
-                    id="bilingualRequired"
-                    name="bilingualRequired"
-                    checked={(formData.bilingualRequired ?? 'No') === 'Yes'}
-                    // Mapped to the 'Yes'/'No' strings the field has always carried,
-                    // rather than switching the wire format to a boolean.
-                    onChange={(e) => handleChange({
-                        target: { name: 'bilingualRequired', value: e.target.checked ? 'Yes' : 'No', type: 'text' },
-                    })}
-                    className="h-5 w-5 mt-0.5 flex-shrink-0 rounded border-gray-400"
-                />
-                <span className="min-w-0">
-                    <span className="block text-base">Tutor should be bilingual</span>
-                    <span className="block text-sm text-text-tertiary">Useful for Chinese, Malay and Tamil, or if your child follows explanations better in their mother tongue.</span>
-                </span>
-            </label>
+            <div>
+                <Label htmlFor="preferences" className="text-base font-medium text-text-secondary">Additional Requirements</Label>
+                <Textarea id="preferences" name="preferences" value={formData.preferences} onChange={handleChange} rows="4" placeholder="e.g., patient with a shy child, experience with dyslexia, prefers to teach at our home." className="mt-1 text-base" />
+            </div>
+            </div>
         </div>
 
-        <div>
-            <Label htmlFor="preferences" className="text-base font-medium text-text-secondary">Additional Requirements</Label>
-            <Textarea id="preferences" name="preferences" value={formData.preferences} onChange={handleChange} rows="4" placeholder="e.g., patient with a shy child, experience with dyslexia, prefers to teach at our home." className="mt-1 text-base" />
+        <div className="border border-border rounded-xl p-4 sm:p-6 space-y-4">
+            <h3 className="text-lg font-semibold text-text-default">Your Details</h3>
+            <div>
+                <Label htmlFor="name" className="text-base font-medium text-text-secondary">Name<span className="text-error-text -ml-0.5" aria-hidden="true">*</span><span className="sr-only"> (required)</span></Label>
+                <Input
+                    id="name" name="name" type="text" value={formData.name} onChange={handleChange}
+                    autoComplete="name"
+                    placeholder="e.g., Jane Doe"
+                    className={cn('mt-1 h-12 text-base', errors.name && 'border-error focus-visible:ring-error/40')}
+                />
+                {/* 2. Add this block to display the error */}
+                {errors.name && <p className="text-sm text-error-text mt-1.5">{errors.name}</p>}
+            </div>
+            <div>
+                <Label htmlFor="mobile" className="text-base font-medium text-text-secondary">Mobile Number<span className="text-error-text -ml-0.5" aria-hidden="true">*</span><span className="sr-only"> (required)</span></Label>
+                <Input
+                    id="mobile" name="mobile" type="tel" value={formData.mobile} onChange={handleChange}
+                    autoComplete="tel" inputMode="tel"
+                    placeholder="e.g., 9123 4567"
+                    className={cn('mt-1 h-12 text-base', errors.mobile && 'border-error focus-visible:ring-error/40')}
+                />
+                {/* 2. Add this block to display the error */}
+                {errors.mobile
+                  ? <p className="text-sm text-error-text mt-1.5">{errors.mobile}</p>
+                  : <p className="text-sm text-text-tertiary mt-1.5">We'll WhatsApp you tutor profiles at this number. No spam.</p>}
+            </div>
         </div>
 
         <div className="flex flex-col-reverse sm:flex-row justify-between pt-4 gap-4">
@@ -407,7 +430,6 @@ export const TuitionRequestSteps = ({ form }) => {
         <Step1
           nextStep={nextStep}
           formData={formData}
-          handleChange={handleChange}
           updateStudent={updateStudent}
           addStudent={addStudent}
           removeStudent={removeStudent}

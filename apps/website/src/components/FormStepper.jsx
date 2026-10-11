@@ -2,7 +2,7 @@ import React from "react";
 
 // Shared progress header for the multi-step tutor request form.
 // Renders text labels on desktop, numbered circles on mobile, and a fill bar.
-const STEP_LABELS = ["Your Details", "Lesson Details", "Tutor Preferences"];
+const STEP_LABELS = ["Your Child", "Lesson Details", "Tutor & Contact"];
 
 export default function FormStepper({ currentStep }) {
     return (
