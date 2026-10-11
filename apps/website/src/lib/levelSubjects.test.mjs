@@ -47,6 +47,15 @@ test('subjectsFor', async (t) => {
     assert.ok(subjectsFor('secondary', 'S1').some((s) => s.name === 'Mathematics'));
   });
 
+  await t.test('upper secondary leads with the nine most-asked subjects', () => {
+    const upfront = subjectsFor('secondary', 'S3').filter((s) => !s.more).map((s) => s.label);
+    assert.deepEqual(upfront, [
+      'English', 'E-Math', 'A-Math', 'Physics', 'Chemistry', 'Biology',
+      'Combined Sci (Phy/Chem)', 'Combined Sci (Chem/Bio)', 'Chinese',
+    ]);
+    assert.ok(subjectsFor('secondary', 'S3').some((s) => s.more && s.label === 'POA'));
+  });
+
   await t.test('text-only levels have no chips', () => {
     assert.deepEqual(subjectsFor('ite-poly', 'ITE'), []);
     assert.deepEqual(subjectsFor('other', ''), []);

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useId, useState } from "react";
-import { Check, X } from "lucide-react";
+import { Check, Plus, X } from "lucide-react";
 import { Input } from "./ui/input";
 import {
   LEVELS, STREAMS, levelFor, yearsFor, subjectsFor, selectLevel, selectYear,
@@ -10,8 +10,10 @@ import {
 const cn = (...classes) => classes.filter(Boolean).join(" ");
 
 // Toggle buttons rather than radios, so an optional choice (stream) can be tapped off again.
-const Chip = ({ selected, onClick, children, check }) => (
+// Without `selected` it's a plain action button (no pressed state).
+const Chip = ({ id, selected, onClick, children, check }) => (
   <button
+    id={id}
     type="button"
     aria-pressed={selected}
     onClick={onClick}
@@ -55,6 +57,13 @@ export default function LevelSubjectPicker({ student, onChange, error, heading, 
   const years = yearsFor(student.level);
   const yearChosen = years.length === 0 || years.some((y) => y.id === student.year);
   const subjects = subjectsFor(student.level, student.year);
+  const [moreClicked, setMoreClicked] = useState(false);
+  // A restored draft that picked a folded subject shows the full list.
+  const showMore = moreClicked || subjects.some((s) => s.more && student.subjects.includes(s.name));
+  const hasMore = subjects.some((s) => s.more);
+  const firstMoreId = useId();
+  // The "More subjects" chip vanishes on tap, so focus moves to the first chip it revealed.
+  useEffect(() => { if (moreClicked) document.getElementById(firstMoreId)?.focus(); }, [moreClicked, firstMoreId]);
 
   const toggleSubject = (name) => onChange({
     ...student,
@@ -132,11 +141,22 @@ export default function LevelSubjectPicker({ student, onChange, error, heading, 
         </div>
       ) : (
         <ChipRow key={`${student.level}-subjects`} label="Subjects" hint="(pick all that apply)">
-          {subjects.map((s) => (
-            <Chip key={s.name} check selected={student.subjects.includes(s.name)} onClick={() => toggleSubject(s.name)}>
+          {subjects.filter((s) => showMore || !s.more).map((s) => (
+            <Chip
+              key={s.name}
+              id={s === subjects.find((x) => x.more) ? firstMoreId : undefined}
+              check
+              selected={student.subjects.includes(s.name)}
+              onClick={() => toggleSubject(s.name)}
+            >
               {s.label}
             </Chip>
           ))}
+          {hasMore && !showMore && (
+            <Chip onClick={() => setMoreClicked(true)}>
+              <Plus size={14} aria-hidden="true" /> More subjects
+            </Chip>
+          )}
           <Chip check selected={showOther} onClick={toggleOther}>Other</Chip>
           {showOther && (
             <Input

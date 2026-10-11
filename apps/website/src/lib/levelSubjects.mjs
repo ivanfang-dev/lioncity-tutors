@@ -4,10 +4,12 @@ import { LEVEL_SUBJECT_MAPPINGS } from '@lioncity/shared/client-exports.js';
 // shared canonical names, so a request reads the same as the assignment wizard's lists.
 
 const sg = (name, label) => ({ name, label });
+// Rarer subjects sit behind a "More subjects" chip so the common ones fit on a phone screen.
+const more = (subject) => ({ ...subject, more: true });
 
 const MOTHER_TONGUES = [sg('Chinese', 'Chinese'), sg('Malay', 'Malay'), sg('Tamil', 'Tamil')];
 
-// `years` restricts a chip to some years; `canonical` is the shared level whose list filters the chips.
+// `years` restricts a chip to some years; `more` folds it behind "More subjects"; `canonical` is the shared level whose list filters the chips.
 export const LEVELS = [
   {
     id: 'preschool', label: 'Pre-school',
@@ -33,11 +35,13 @@ export const LEVELS = [
       sg('Biology', 'Biology'),
       sg('Combined Science (Physics/Chemistry)', 'Combined Sci (Phy/Chem)'),
       sg('Combined Science (Chemistry/Biology)', 'Combined Sci (Chem/Bio)'),
-      ...MOTHER_TONGUES,
-      sg('Literature in English', 'Literature'),
-      sg('History', 'History'),
-      sg('Geography', 'Geography'),
-      sg('Principles of Accounts', 'POA'),
+      sg('Chinese', 'Chinese'),
+      more(sg('Malay', 'Malay')),
+      more(sg('Tamil', 'Tamil')),
+      more(sg('Literature in English', 'Literature')),
+      more(sg('History', 'History')),
+      more(sg('Geography', 'Geography')),
+      more(sg('Principles of Accounts', 'POA')),
     ],
   },
   {
