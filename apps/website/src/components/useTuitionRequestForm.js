@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { normalizeSgMobile } from '@/lib/phone';
 import { BACKEND_URL } from '@/lib/backend';
-import { emptyStudent, studentError, toLevelSubjects, fromLegacy } from '@/lib/levelSubjects.mjs';
+import { emptyStudent, studentError, toLevelSubjects, tutorArrangement, fromLegacy } from '@/lib/levelSubjects.mjs';
 
 // Safe localStorage wrapper with error handling
 const safeLocalStorage = {
@@ -101,6 +101,8 @@ const useTuitionRequestForm = (overrides) => {
                 if (!Array.isArray(parsed.students)) {
                     parsed.students = fromLegacy(parsed.levelSubjects || (parsed.level ? [parsed.level] : []));
                 }
+                // Each child is filled out to the current shape, so newer fields exist on older drafts.
+                parsed.students = parsed.students.map(s => ({ ...emptyStudent(), ...s }));
                 delete parsed.levelSubjects;
                 delete parsed.level;
                 const { _preset, ...draft } = parsed;
@@ -208,6 +210,7 @@ const useTuitionRequestForm = (overrides) => {
                 ...rest,
                 levelSubjects,
                 level: levelSubjects.join('; '),
+                tutorArrangement: tutorArrangement(students),
                 // Send the bare 8 digits regardless of how it was typed. Now that
                 // "+65 9123 4567" is accepted at the door, the backend and the
                 // WhatsApp outreach must not have to cope with four spellings of

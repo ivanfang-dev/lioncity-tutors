@@ -4,14 +4,15 @@ import { useEffect, useId, useState } from "react";
 import { Check, Plus, X } from "lucide-react";
 import { Input } from "./ui/input";
 import {
-  LEVELS, STREAMS, levelFor, yearsFor, subjectsFor, selectLevel, selectYear,
+  LEVELS, STREAMS, ARRANGEMENTS, levelFor, yearsFor, subjectsFor, subjectGroups, selectLevel, selectYear,
+  needsArrangement,
 } from "@/lib/levelSubjects.mjs";
 
 const cn = (...classes) => classes.filter(Boolean).join(" ");
 
-// Toggle buttons rather than radios, so an optional choice (stream) can be tapped off again.
+// Pick-one pills. Toggle buttons rather than radios, so an optional choice (stream) can be tapped off again.
 // Without `selected` it's a plain action button (no pressed state).
-const Chip = ({ id, selected, onClick, children, check }) => (
+const Chip = ({ id, selected, onClick, children }) => (
   <button
     id={id}
     type="button"
@@ -25,8 +26,43 @@ const Chip = ({ id, selected, onClick, children, check }) => (
         : "border-gray-300 bg-white text-text-secondary hover:border-primary hover:text-primary"
     )}
   >
-    {check && selected && <Check size={14} aria-hidden="true" />}
     {children}
+  </button>
+);
+
+// Pick-many tiles: a checkbox square says "choose several" before anything is tapped,
+// where the pick-one rows above are pills. `action` makes it a plain button (More subjects).
+const Tile = ({ id, checked, action, onClick, children }) => (
+  <button
+    id={id}
+    type="button"
+    role={action ? undefined : "checkbox"}
+    aria-checked={action ? undefined : checked}
+    onClick={onClick}
+    className={cn(
+      "flex min-h-12 w-full items-center gap-2.5 rounded-lg border px-3 py-2 text-left text-sm font-semibold transition-colors",
+      "focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50",
+      action
+        ? "border-dashed border-gray-300 bg-white text-primary hover:border-primary"
+        : checked
+          ? "border-primary bg-primary/5 text-text-default"
+          : "border-gray-300 bg-white text-text-secondary hover:border-primary hover:text-primary"
+    )}
+  >
+    {action ? (
+      <Plus size={16} aria-hidden="true" className="shrink-0" />
+    ) : (
+      <span
+        aria-hidden="true"
+        className={cn(
+          "flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-[4px] border transition-colors",
+          checked ? "border-primary bg-primary text-white" : "border-gray-400 bg-white"
+        )}
+      >
+        {checked && <Check size={13} strokeWidth={3} />}
+      </span>
+    )}
+    <span className="min-w-0">{children}</span>
   </button>
 );
 
@@ -61,8 +97,11 @@ export default function LevelSubjectPicker({ student, onChange, error, heading, 
   // A restored draft that picked a folded subject shows the full list.
   const showMore = moreClicked || subjects.some((s) => s.more && student.subjects.includes(s.name));
   const hasMore = subjects.some((s) => s.more);
+  const groups = subjectGroups(student.level, student.year, showMore);
+  const firstMore = groups.flatMap((g) => g.subjects).find((s) => s.more);
   const firstMoreId = useId();
-  // The "More subjects" chip vanishes on tap, so focus moves to the first chip it revealed.
+  const subjectsLabelId = useId();
+  // The "More subjects" tile vanishes on tap, so focus moves to the first tile it revealed.
   useEffect(() => { if (moreClicked) document.getElementById(firstMoreId)?.focus(); }, [moreClicked, firstMoreId]);
 
   const toggleSubject = (name) => onChange({
@@ -140,37 +179,62 @@ export default function LevelSubjectPicker({ student, onChange, error, heading, 
           />
         </div>
       ) : (
-        <ChipRow key={`${student.level}-subjects`} label="Subjects" hint="(pick all that apply)">
-          {subjects.filter((s) => showMore || !s.more).map((s) => (
+        <div key={`${student.level}-subjects`} className="animate-fadeIn">
+          <p id={subjectsLabelId} className="text-sm font-medium text-text-secondary">
+            Subjects <span className="font-normal text-text-tertiary">(pick all that apply)</span>
+          </p>
+          <div role="group" aria-labelledby={subjectsLabelId} className="mt-1.5 space-y-3">
+            {groups.map((g) => (
+              <div key={g.label || "all"} role={g.label ? "group" : undefined} aria-label={g.label || undefined}>
+                {g.label && <p aria-hidden="true" className="mb-1.5 text-sm text-text-tertiary">{g.label}</p>}
+                <div className="grid grid-cols-2 gap-2">
+                  {g.subjects.map((s) => (
+                    <Tile
+                      key={s.name}
+                      id={s === firstMore ? firstMoreId : undefined}
+                      checked={student.subjects.includes(s.name)}
+                      onClick={() => toggleSubject(s.name)}
+                    >
+                      {s.label}
+                    </Tile>
+                  ))}
+                </div>
+              </div>
+            ))}
+            <div className="grid grid-cols-2 gap-2">
+              {hasMore && !showMore && (
+                <Tile action onClick={() => setMoreClicked(true)}>More subjects</Tile>
+              )}
+              <Tile checked={showOther} onClick={toggleOther}>Other</Tile>
+              {showOther && (
+                <Input
+                  type="text"
+                  id={otherSubjectsId}
+                  aria-label="Other subjects"
+                  value={student.other}
+                  onChange={(e) => onChange({ ...student, other: e.target.value })}
+                  placeholder="e.g., Hindi, Computing"
+                  className="col-span-2 h-12 text-base"
+                />
+              )}
+            </div>
+          </div>
+        </div>
+      ))}
+
+      {level && !level.textOnly && needsArrangement(student) && (
+        <ChipRow label="Same tutor for all subjects?" hint="(optional)">
+          {ARRANGEMENTS.map((a) => (
             <Chip
-              key={s.name}
-              id={s === subjects.find((x) => x.more) ? firstMoreId : undefined}
-              check
-              selected={student.subjects.includes(s.name)}
-              onClick={() => toggleSubject(s.name)}
+              key={a.id}
+              selected={student.arrangement === a.id}
+              onClick={() => onChange({ ...student, arrangement: student.arrangement === a.id ? "" : a.id })}
             >
-              {s.label}
+              {a.label}
             </Chip>
           ))}
-          {hasMore && !showMore && (
-            <Chip onClick={() => setMoreClicked(true)}>
-              <Plus size={14} aria-hidden="true" /> More subjects
-            </Chip>
-          )}
-          <Chip check selected={showOther} onClick={toggleOther}>Other</Chip>
-          {showOther && (
-            <Input
-              type="text"
-              id={otherSubjectsId}
-              aria-label="Other subjects"
-              value={student.other}
-              onChange={(e) => onChange({ ...student, other: e.target.value })}
-              placeholder="e.g., Hindi, Computing"
-              className="h-12 w-full text-base"
-            />
-          )}
         </ChipRow>
-      ))}
+      )}
 
       {error && <p className="text-sm text-error-text">{error}</p>}
     </div>

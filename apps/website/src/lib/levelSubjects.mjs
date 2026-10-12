@@ -3,13 +3,23 @@ import { LEVEL_SUBJECT_MAPPINGS } from '@lioncity/shared/client-exports.js';
 // Chip options for the request form's "Level & Subject" picker. Subject `name`s are the
 // shared canonical names, so a request reads the same as the assignment wizard's lists.
 
-const sg = (name, label) => ({ name, label });
+const sg = (name, label, group) => ({ name, label, group });
 // Rarer subjects sit behind a "More subjects" chip so the common ones fit on a phone screen.
 const more = (subject) => ({ ...subject, more: true });
 
 const MOTHER_TONGUES = [sg('Chinese', 'Chinese'), sg('Malay', 'Malay'), sg('Tamil', 'Tamil')];
 
-// `years` restricts a chip to some years; `more` folds it behind "More subjects"; `canonical` is the shared level whose list filters the chips.
+// Headings for long subject lists, in display order.
+const GROUPS = [
+  { id: 'math', label: 'Math' },
+  { id: 'sciences', label: 'Sciences' },
+  { id: 'languages', label: 'Languages' },
+  { id: 'humanities', label: 'Humanities & others' },
+];
+const GROUP_ABOVE = 8;
+
+// `years` restricts a chip to some years; `more` folds it behind "More subjects"; `group` heads long lists;
+// `canonical` is the shared level whose list filters the chips. Lists run in display order, math first.
 export const LEVELS = [
   {
     id: 'preschool', label: 'Pre-school',
@@ -19,44 +29,44 @@ export const LEVELS = [
   {
     id: 'primary', label: 'Primary',
     years: [1, 2, 3, 4, 5, 6].map((n) => ({ id: `P${n}`, label: `P${n}`, name: `Primary ${n}`, canonical: `Primary ${n}` })),
-    subjects: [sg('English Language', 'English'), sg('Mathematics', 'Math'), sg('Science', 'Science'), ...MOTHER_TONGUES],
+    subjects: [sg('Mathematics', 'Math'), sg('Science', 'Science'), sg('English Language', 'English'), ...MOTHER_TONGUES],
   },
   {
     id: 'secondary', label: 'Secondary', hasStream: true,
     years: [1, 2, 3, 4, 5].map((n) => ({ id: `S${n}`, label: `Sec ${n}`, name: `Secondary ${n}`, canonical: `Secondary ${n}` })),
     subjects: [
-      sg('English Language', 'English'),
-      { ...sg('Mathematics', 'Math'), years: ['S1', 'S2'] },
-      sg('Elementary Mathematics', 'E-Math'),
-      sg('Additional Mathematics', 'A-Math'),
-      sg('Science', 'Science'),
-      sg('Physics', 'Physics'),
-      sg('Chemistry', 'Chemistry'),
-      sg('Biology', 'Biology'),
-      sg('Combined Science (Physics/Chemistry)', 'Combined Sci (Phy/Chem)'),
-      sg('Combined Science (Chemistry/Biology)', 'Combined Sci (Chem/Bio)'),
-      sg('Chinese', 'Chinese'),
-      more(sg('Malay', 'Malay')),
-      more(sg('Tamil', 'Tamil')),
-      more(sg('Literature in English', 'Literature')),
-      more(sg('History', 'History')),
-      more(sg('Geography', 'Geography')),
-      more(sg('Principles of Accounts', 'POA')),
+      { ...sg('Mathematics', 'Math', 'math'), years: ['S1', 'S2'] },
+      sg('Elementary Mathematics', 'E-Math', 'math'),
+      sg('Additional Mathematics', 'A-Math', 'math'),
+      sg('Science', 'Science', 'sciences'),
+      sg('Physics', 'Physics', 'sciences'),
+      sg('Chemistry', 'Chemistry', 'sciences'),
+      sg('Biology', 'Biology', 'sciences'),
+      sg('Combined Science (Physics/Chemistry)', 'Combined (Phy/Chem)', 'sciences'),
+      sg('Combined Science (Chemistry/Biology)', 'Combined (Chem/Bio)', 'sciences'),
+      sg('English Language', 'English', 'languages'),
+      sg('Chinese', 'Chinese', 'languages'),
+      more(sg('Malay', 'Malay', 'languages')),
+      more(sg('Tamil', 'Tamil', 'languages')),
+      more(sg('Literature in English', 'Literature', 'humanities')),
+      more(sg('History', 'History', 'humanities')),
+      more(sg('Geography', 'Geography', 'humanities')),
+      more(sg('Principles of Accounts', 'POA', 'humanities')),
     ],
   },
   {
     id: 'jc', label: 'JC',
     years: [1, 2].map((n) => ({ id: `J${n}`, label: `JC${n}`, name: `Junior College ${n}`, canonical: `Junior College ${n}` })),
     subjects: [
-      sg('General Paper', 'GP'),
-      sg('H2 Mathematics', 'H2 Math'),
-      sg('H1 Mathematics', 'H1 Math'),
-      sg('H2 Physics', 'H2 Physics'),
-      sg('H2 Chemistry', 'H2 Chem'),
-      sg('H2 Biology', 'H2 Bio'),
-      sg('H2 Economics', 'H2 Econs'),
-      sg('H1 Economics', 'H1 Econs'),
-      sg('Chinese Language', 'Chinese'),
+      sg('H2 Mathematics', 'H2 Math', 'math'),
+      sg('H1 Mathematics', 'H1 Math', 'math'),
+      sg('H2 Physics', 'H2 Physics', 'sciences'),
+      sg('H2 Chemistry', 'H2 Chem', 'sciences'),
+      sg('H2 Biology', 'H2 Bio', 'sciences'),
+      sg('General Paper', 'GP', 'languages'),
+      sg('Chinese Language', 'Chinese', 'languages'),
+      sg('H2 Economics', 'H2 Econs', 'humanities'),
+      sg('H1 Economics', 'H1 Econs', 'humanities'),
     ],
   },
   {
@@ -89,7 +99,12 @@ export const STREAMS = [
   { id: 'IP', label: 'IP' },
 ];
 
-export const emptyStudent = () => ({ level: '', year: '', stream: '', subjects: [], other: '' });
+export const ARRANGEMENTS = [
+  { id: 'one', label: 'One tutor for all' },
+  { id: 'split', label: 'Separate tutors are fine' },
+];
+
+export const emptyStudent = () => ({ level: '', year: '', stream: '', subjects: [], other: '', arrangement: '' });
 
 export const levelFor = (levelId) => LEVELS.find((l) => l.id === levelId) || null;
 
@@ -103,6 +118,15 @@ export const subjectsFor = (levelId, yearId) => {
   const offered = LEVEL_SUBJECT_MAPPINGS[yearFor(levelId, yearId)?.canonical];
   return level.subjects.filter((s) =>
     (!s.years || s.years.includes(yearId)) && (!offered || offered.includes(s.name)));
+};
+
+// The tiles to show, under group headings once the list is long enough to need them.
+export const subjectGroups = (levelId, yearId, showMore) => {
+  const visible = subjectsFor(levelId, yearId).filter((s) => showMore || !s.more);
+  if (visible.length <= GROUP_ABOVE || !visible.every((s) => s.group)) return [{ label: null, subjects: visible }];
+  return GROUPS
+    .map((g) => ({ label: g.label, subjects: visible.filter((s) => s.group === g.id) }))
+    .filter((g) => g.subjects.length);
 };
 
 // A new level starts clean; the Other text is kept since it's the parent's own words.
@@ -135,6 +159,20 @@ export const toLevelSubjects = (students) => students.flatMap((student) => {
   const other = student.other.trim();
   return [...student.subjects, ...(other ? [other] : [])].map(line);
 });
+
+// "One tutor or separate tutors?" only means something once a child has two subjects.
+export const needsArrangement = (student) =>
+  student.subjects.length + (student.other.trim() ? 1 : 0) >= 2;
+
+// The owner's step 3c answer, e.g. "Separate tutors are fine", or per child when siblings share a request.
+export const tutorArrangement = (students) => {
+  const answers = students.flatMap((student, i) => {
+    const choice = ARRANGEMENTS.find((a) => a.id === student.arrangement);
+    return choice && needsArrangement(student) && !studentError(student) ? [{ child: i + 1, label: choice.label }] : [];
+  });
+  if (students.length === 1) return answers[0]?.label || '';
+  return answers.map((a) => `Child ${a.child}: ${a.label}`).join('; ');
+};
 
 // Drafts saved before the picker held free-text strings; they come back as Other text.
 export const fromLegacy = (levelSubjects) => {

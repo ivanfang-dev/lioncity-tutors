@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { LEVEL_SUBJECT_MAPPINGS } from '@lioncity/shared/client-exports.js';
 import {
   LEVELS, emptyStudent, yearsFor, subjectsFor, selectLevel, selectYear,
-  studentError, toLevelSubjects, fromLegacy,
+  studentError, toLevelSubjects, fromLegacy, subjectGroups, needsArrangement, tutorArrangement,
 } from './levelSubjects.mjs';
 import { bandForLevelText } from '../app/tuition-rates/rates.mjs';
 
@@ -50,8 +50,8 @@ test('subjectsFor', async (t) => {
   await t.test('upper secondary leads with the nine most-asked subjects', () => {
     const upfront = subjectsFor('secondary', 'S3').filter((s) => !s.more).map((s) => s.label);
     assert.deepEqual(upfront, [
-      'English', 'E-Math', 'A-Math', 'Physics', 'Chemistry', 'Biology',
-      'Combined Sci (Phy/Chem)', 'Combined Sci (Chem/Bio)', 'Chinese',
+      'E-Math', 'A-Math', 'Physics', 'Chemistry', 'Biology',
+      'Combined (Phy/Chem)', 'Combined (Chem/Bio)', 'English', 'Chinese',
     ]);
     assert.ok(subjectsFor('secondary', 'S3').some((s) => s.more && s.label === 'POA'));
   });
@@ -59,6 +59,59 @@ test('subjectsFor', async (t) => {
   await t.test('text-only levels have no chips', () => {
     assert.deepEqual(subjectsFor('ite-poly', 'ITE'), []);
     assert.deepEqual(subjectsFor('other', ''), []);
+  });
+});
+
+test('subjectGroups', async (t) => {
+  const shape = (groups) => groups.map((g) => [g.label, g.subjects.map((s) => s.label)]);
+
+  await t.test('long lists are grouped, math first', () => {
+    assert.deepEqual(shape(subjectGroups('secondary', 'S3', false)), [
+      ['Math', ['E-Math', 'A-Math']],
+      ['Sciences', ['Physics', 'Chemistry', 'Biology', 'Combined (Phy/Chem)', 'Combined (Chem/Bio)']],
+      ['Languages', ['English', 'Chinese']],
+    ]);
+  });
+
+  await t.test('More subjects fills out the groups', () => {
+    assert.deepEqual(shape(subjectGroups('secondary', 'S3', true)).slice(2), [
+      ['Languages', ['English', 'Chinese', 'Malay', 'Tamil']],
+      ['Humanities & others', ['Literature', 'History', 'Geography', 'POA']],
+    ]);
+  });
+
+  await t.test('short lists stay one plain grid', () => {
+    assert.deepEqual(shape(subjectGroups('primary', 'P5', false)), [
+      [null, ['Math', 'Science', 'English', 'Chinese', 'Malay', 'Tamil']],
+    ]);
+    assert.deepEqual(shape(subjectGroups('secondary', 'S1', false)), [
+      [null, ['Math', 'Science', 'English', 'Chinese']],
+    ]);
+  });
+});
+
+test('tutor arrangement', async (t) => {
+  await t.test('asked only once a child has two or more subjects', () => {
+    assert.equal(needsArrangement(student({ level: 'primary', year: 'P6', subjects: ['Mathematics'] })), false);
+    assert.equal(needsArrangement(student({ level: 'primary', year: 'P6', subjects: ['Mathematics', 'Science'] })), true);
+    assert.equal(needsArrangement(student({ level: 'primary', year: 'P6', subjects: ['Mathematics'], other: 'Hindi' })), true);
+  });
+
+  await t.test('one child reads plainly', () => {
+    const s = student({ level: 'primary', year: 'P6', subjects: ['Mathematics', 'Science'], arrangement: 'split' });
+    assert.equal(tutorArrangement([s]), 'Separate tutors are fine');
+  });
+
+  await t.test('siblings are labelled, skipping unanswered or single-subject children', () => {
+    assert.equal(tutorArrangement([
+      student({ level: 'primary', year: 'P6', subjects: ['Mathematics', 'Science'], arrangement: 'one' }),
+      student({ level: 'primary', year: 'P2', subjects: ['Chinese'], arrangement: 'split' }),
+      student({ level: 'secondary', year: 'S3', subjects: ['Physics', 'Chemistry'] }),
+    ]), 'Child 1: One tutor for all');
+  });
+
+  await t.test('nothing answered sends nothing', () => {
+    assert.equal(tutorArrangement([student({ level: 'primary', year: 'P6', subjects: ['Mathematics', 'Science'] })]), '');
   });
 });
 
