@@ -72,6 +72,9 @@ const contactSchema = new mongoose.Schema({
   level: { type: String, required: true },
   // One parent request can cover several subjects (e.g. Physics + Chemistry for one child).
   levelSubjects: { type: [String], default: undefined },
+  // For multi-subject requests: "One tutor for all" | "Separate tutors are fine", or per child
+  // ("Child 1: ..."). Answers the assignment wizard's one-tutor-or-split step.
+  tutorArrangement: { type: String },
   location: { type: String },
   
   // Lesson details
@@ -145,6 +148,7 @@ async function notifyTelegramNewRequest(contact) {
     `👤 *Name:* ${md(contact.name)}`,
     `📱 *Mobile:* ${md(contact.mobile)}`,
     levelSubjectLine,
+    contact.tutorArrangement ? `👥 *Tutors:* ${md(contact.tutorArrangement)}` : '',
     `📍 *Location:* ${md(contact.location || '-')}`,
     `⏱ *Duration:* ${md(duration)}`,
     `🔄 *Frequency:* ${md(frequency)}`,
