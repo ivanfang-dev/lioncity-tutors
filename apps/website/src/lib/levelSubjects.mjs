@@ -9,6 +9,10 @@ const more = (subject) => ({ ...subject, more: true });
 
 const MOTHER_TONGUES = [sg('Chinese', 'Chinese'), sg('Malay', 'Malay'), sg('Tamil', 'Tamil')];
 
+// No shared list covers IGCSE or IB grades, so these subjects are plain names.
+const INTERNATIONAL_SUBJECTS = ['Mathematics', 'English', 'Physics', 'Chemistry', 'Biology', 'Economics', 'Chinese']
+  .map((s) => sg(s, s === 'Mathematics' ? 'Math' : s));
+
 // Headings for long subject lists, in display order.
 const GROUPS = [
   { id: 'math', label: 'Math' },
@@ -70,15 +74,18 @@ export const LEVELS = [
     ],
   },
   {
-    // No shared list covers IGCSE or MYP, so these chips are plain names.
-    id: 'ib-igcse', label: 'IB / IGCSE',
+    // Schools name grades either way, so each chip carries both: MYP 1 is Grade 6.
+    id: 'ib', label: 'IB',
     years: [
-      { id: 'IGCSE', label: 'IGCSE', name: 'IGCSE' },
-      { id: 'MYP', label: 'IB MYP', name: 'IB MYP' },
-      { id: 'DP', label: 'IB Diploma', name: 'IB Diploma' },
+      ...[1, 2, 3, 4, 5].map((n) => ({ id: `MYP${n}`, label: `MYP ${n} / G${n + 5}`, name: `IB MYP ${n}` })),
+      ...[1, 2].map((n) => ({ id: `DP${n}`, label: `DP ${n} / G${n + 10}`, name: `IB DP ${n}` })),
     ],
-    subjects: ['Mathematics', 'English', 'Physics', 'Chemistry', 'Biology', 'Economics', 'Chinese']
-      .map((s) => sg(s, s === 'Mathematics' ? 'Math' : s)),
+    subjects: INTERNATIONAL_SUBJECTS,
+  },
+  {
+    id: 'igcse', label: 'IGCSE',
+    years: [10, 11].map((n) => ({ id: `Y${n}`, label: `Year ${n} / G${n - 1}`, name: `IGCSE Year ${n}` })),
+    subjects: INTERNATIONAL_SUBJECTS,
   },
   {
     // Matching doesn't cover these yet; the owner reads the course text and matches by hand.
@@ -172,6 +179,14 @@ export const tutorArrangement = (students) => {
   });
   if (students.length === 1) return answers[0]?.label || '';
   return answers.map((a) => `Child ${a.child}: ${a.label}`).join('; ');
+};
+
+// A restored draft's child in the current shape. The old combined "IB / IGCSE" level stored only the
+// programme, so it moves to that programme's chip with the grade left to pick.
+export const normalizeStudent = (student) => {
+  const next = { ...emptyStudent(), ...student };
+  if (next.level !== 'ib-igcse') return next;
+  return { ...next, level: next.year === 'IGCSE' ? 'igcse' : 'ib', year: '' };
 };
 
 // Drafts saved before the picker held free-text strings; they come back as Other text.

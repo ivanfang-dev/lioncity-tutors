@@ -4,6 +4,7 @@ import { LEVEL_SUBJECT_MAPPINGS } from '@lioncity/shared/client-exports.js';
 import {
   LEVELS, emptyStudent, yearsFor, subjectsFor, selectLevel, selectYear,
   studentError, toLevelSubjects, fromLegacy, subjectGroups, needsArrangement, tutorArrangement,
+  normalizeStudent,
 } from './levelSubjects.mjs';
 import { bandForLevelText } from '../app/tuition-rates/rates.mjs';
 
@@ -186,7 +187,44 @@ test('toLevelSubjects', async (t) => {
     assert.equal(band({ level: 'secondary', year: 'S4', subjects: ['Physics'] }), 'secondary');
     assert.equal(band({ level: 'secondary', year: 'S3', stream: 'IP', subjects: ['Physics'] }), 'ib');
     assert.equal(band({ level: 'jc', year: 'J1', subjects: ['H2 Mathematics'] }), 'jc');
-    assert.equal(band({ level: 'ib-igcse', year: 'IGCSE', subjects: ['Mathematics'] }), 'ib');
+    assert.equal(band({ level: 'igcse', year: 'Y10', subjects: ['Mathematics'] }), 'ib');
+    assert.equal(band({ level: 'ib', year: 'MYP4', subjects: ['Physics'] }), 'ib');
+    assert.equal(band({ level: 'ib', year: 'DP2', subjects: ['Chemistry'] }), 'ib');
+  });
+});
+
+test('IB and IGCSE grades', async (t) => {
+  await t.test('each grade carries both names', () => {
+    assert.deepEqual(yearsFor('igcse').map((y) => y.label), ['Year 10 / G9', 'Year 11 / G10']);
+    assert.deepEqual(yearsFor('ib').map((y) => y.label), [
+      'MYP 1 / G6', 'MYP 2 / G7', 'MYP 3 / G8', 'MYP 4 / G9', 'MYP 5 / G10', 'DP 1 / G11', 'DP 2 / G12',
+    ]);
+  });
+
+  await t.test('the grade is required', () => {
+    assert.match(studentError(student({ level: 'ib', subjects: ['Physics'] })), /year/i);
+  });
+
+  await t.test('lines name the programme and grade', () => {
+    assert.deepEqual(toLevelSubjects([
+      student({ level: 'igcse', year: 'Y11', subjects: ['Mathematics'] }),
+      student({ level: 'ib', year: 'MYP4', subjects: ['Physics'] }),
+      student({ level: 'ib', year: 'DP1', subjects: ['Chemistry'] }),
+    ]), ['IGCSE Year 11 Mathematics', 'IB MYP 4 Physics', 'IB DP 1 Chemistry']);
+  });
+});
+
+test('normalizeStudent', async (t) => {
+  await t.test('fills fields an older draft lacks', () => {
+    const { arrangement, ...old } = student({ level: 'primary', year: 'P6', subjects: ['Science'] });
+    assert.deepEqual(normalizeStudent(old), student({ level: 'primary', year: 'P6', subjects: ['Science'] }));
+  });
+
+  await t.test('moves the old combined IB / IGCSE choice to its programme, grade cleared', () => {
+    assert.deepEqual(normalizeStudent(student({ level: 'ib-igcse', year: 'IGCSE', subjects: ['Mathematics'] })),
+      student({ level: 'igcse', subjects: ['Mathematics'] }));
+    assert.deepEqual(normalizeStudent(student({ level: 'ib-igcse', year: 'DP', subjects: ['Physics'] })),
+      student({ level: 'ib', subjects: ['Physics'] }));
   });
 });
 
