@@ -305,11 +305,17 @@ Preferred days & timing: `;
               ].map((stat, i) => {
                 const Icon = stat.icon;
                 return (
+                  // Static outer box owns hover so the lifting card can't slip out from under the cursor.
                   <motion.div
                     key={i}
                     {...enter(i, prefersReducedMotion)}
-                    whileHover={{ y: LIFT.card }}
-                    className="relative bg-white p-5 sm:p-6 md:p-8 rounded-2xl shadow-sm hover:shadow-lg border border-gray-100 transition-all duration-300 overflow-hidden group text-center"
+                    whileHover="hover"
+                    className="group"
+                  >
+                  <motion.div
+                    variants={{ hover: { y: LIFT.card } }}
+                    transition={{ duration: DURATION.base, ease: EASE_STANDARD }}
+                    className="relative h-full bg-white p-5 sm:p-6 md:p-8 rounded-2xl shadow-sm group-hover:shadow-lg border border-gray-100 transition-shadow duration-300 overflow-hidden text-center"
                   >
                     {/* Unified subtle gradient on hover */}
                     <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
@@ -326,6 +332,7 @@ Preferred days & timing: `;
                       <p className="text-sm sm:text-base font-semibold text-gray-800 mb-0.5">{stat.label}</p>
                       <p className="text-xs sm:text-sm text-gray-500">{stat.sub}</p>
                     </div>
+                  </motion.div>
                   </motion.div>
                 );
               })}
