@@ -75,11 +75,11 @@ const TypeInfo = ({ id, title, points, open, onToggle }) => (
 );
 
 // ===================================
-// STEP 1: Your Child
+// STEP 1: Student Details
 // ===================================
 export const Step1 = ({ nextStep, formData, updateStudent, addStudent, removeStudent, errors }) => (
   <div className="space-y-6 animate-fadeIn">
-      <h2 className="text-2xl font-bold text-text-default">Step 1: Your Child</h2>
+      <h2 className="text-2xl font-bold text-text-default">Step 1: Student Details</h2>
       <div className="space-y-4">
           <div>
               <Label className="text-base font-medium text-text-secondary">Student's Level &amp; Subject<span className="text-error-text -ml-0.5" aria-hidden="true">*</span><span className="sr-only"> (required)</span></Label>
@@ -90,7 +90,7 @@ export const Step1 = ({ nextStep, formData, updateStudent, addStudent, removeStu
                           student={student}
                           onChange={(next) => updateStudent(index, next)}
                           error={errors.students?.[index]}
-                          heading={formData.students.length > 1 ? `Child ${index + 1}` : null}
+                          heading={formData.students.length > 1 ? `Student ${index + 1}` : null}
                           onRemove={formData.students.length > 1 ? () => removeStudent(index) : null}
                       />
                   ))}
@@ -100,7 +100,7 @@ export const Step1 = ({ nextStep, formData, updateStudent, addStudent, removeStu
                   onClick={addStudent}
                   className="mt-2 inline-flex items-center gap-1.5 min-h-11 text-sm font-semibold text-primary hover:text-primary/80 transition-colors"
               >
-                  <Plus size={16} /> Add another child
+                  <Plus size={16} /> Add another student
               </button>
           </div>
       </div>
@@ -362,14 +362,14 @@ export const Step3 = ({ prevStep, formData, handleChange, status, errors }) => {
                     />
                     <span className="min-w-0">
                         <span className="block text-base">Tutor should be bilingual</span>
-                        <span className="block text-sm text-text-tertiary">Useful for Chinese, Malay and Tamil, or if your child follows explanations better in their mother tongue.</span>
+                        <span className="block text-sm text-text-tertiary">Useful for Chinese, Malay and Tamil, or if the student follows explanations better in their mother tongue.</span>
                     </span>
                 </label>
             </div>
 
             <div>
                 <Label htmlFor="preferences" className="text-base font-medium text-text-secondary">Additional Requirements</Label>
-                <Textarea id="preferences" name="preferences" value={formData.preferences} onChange={handleChange} rows="4" placeholder="e.g., patient with a shy child, experience with dyslexia, prefers to teach at our home." className="mt-1 text-base" />
+                <Textarea id="preferences" name="preferences" value={formData.preferences} onChange={handleChange} rows="4" placeholder="e.g., patient with a shy student, experience with dyslexia, prefers to teach at our home." className="mt-1 text-base" />
             </div>
             </div>
         </div>
