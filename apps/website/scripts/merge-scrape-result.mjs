@@ -32,7 +32,7 @@ const SUBJECT_BY_FOLDER = {
   "p5-maths": ["primary", "Primary 5 Math"],
   "p5-science": ["primary", "Primary 5 Science"],
   "p5-chinese": ["primary", "Primary 5 Chinese"],
-  amath: ["secondary", "Secondary 4 Math"],
+  amath: ["secondary", "Secondary 4 A Math"],
   emath: ["secondary", "Secondary 4 E Math"],
   chemistry: ["secondary", "Secondary 4 Chemistry"],
   physics: ["secondary", "Secondary 4 Physics"],
@@ -51,7 +51,7 @@ const SUBJECT_BY_FOLDER = {
 
 // Subjects whose testPapers.mjs buckets are split by paper number
 // ('Prelim Paper 1' / 'Prelim Paper 2') instead of a flat exam-type key.
-const PAPER_SPLIT_SUBJECTS = new Set(["Secondary 4 Math", "Secondary 4 Biology", "JC2 H2 Economics"]);
+const PAPER_SPLIT_SUBJECTS = new Set(["Secondary 4 A Math", "Secondary 4 Biology", "JC2 H2 Economics"]);
 
 // For Primary 6 subjects only, "SA2" is the old name for what schools now
 // call "Prelim" (PSLE terminology changed) — the same exam, not two

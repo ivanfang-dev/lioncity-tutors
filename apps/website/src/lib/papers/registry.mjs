@@ -217,6 +217,22 @@ export function getGroupBySlug(level, slug) {
   return getPaperGroups().find((g) => g.level === level && g.slug === slug) ?? null;
 }
 
+// Subjects renamed after their pages were indexed: new name -> old name.
+const RENAMED_SUBJECTS = {
+  'Secondary 4 A Math': 'Secondary 4 Math',
+};
+
+/** Old group URLs of renamed subjects, each pointing at the group's current URL. */
+export function getRenamedGroupRedirects() {
+  return getPaperGroups()
+    .filter((group) => RENAMED_SUBJECTS[group.subject])
+    .map((group) => {
+      const oldShort = shortenSubject(RENAMED_SUBJECTS[group.subject]);
+      const oldSlug = `${kebab(oldShort)}-${group.year}-${kebab(group.examLabel)}`;
+      return { source: `/free-test-papers/${group.level}/${oldSlug}`, destination: group.url, permanent: true };
+    });
+}
+
 let groupUrlByPaperKey;
 
 /** Where a single paper now lives: its group's page. */

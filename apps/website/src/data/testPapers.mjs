@@ -160,7 +160,7 @@ export const testPapers = {
         { title: 'O Level English 2023 Prelim (with Answers) - NCHS', downloadUrl: 'https://drive.google.com/uc?export=download&id=1X8H-mlcjiSCzlFCA9kGQPHJqk5M-McoO' },
       ]
     },
-    'Secondary 4 Math': {
+    'Secondary 4 A Math': {
       prelim: [
         { title: 'Sec4 Additional Maths(G3) 2025 Prelims - Ahmad Ibrahim - Answers', fileKey: 'papers/secondary/2025/amath/sec4-additional-maths-g3-2025-prelims-ahmad-ibrahim-answers.pdf' },
         { title: 'Sec4 Additional Maths(G3) 2025 Prelims - Ahmad Ibrahim - Questions', fileKey: 'papers/secondary/2025/amath/sec4-additional-maths-g3-2025-prelims-ahmad-ibrahim-questions.pdf' },

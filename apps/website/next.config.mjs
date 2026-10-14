@@ -1,4 +1,4 @@
-import { getRetiredPaperRedirects } from './src/lib/papers/registry.mjs';
+import { getRetiredPaperRedirects, getRenamedGroupRedirects } from './src/lib/papers/registry.mjs';
 
 export default {
     // Next serves WebP only by default. AVIF is typically 20-30% smaller again,
@@ -12,6 +12,8 @@ export default {
         // subject/exam/year group that replaced it. Generated from the registry
         // rather than listed by hand, so they cannot drift from testPapers.mjs.
         ...getRetiredPaperRedirects(),
+        // 'Secondary 4 Math' became 'Secondary 4 A Math' in October 2026.
+        ...getRenamedGroupRedirects(),
         // Moved out of /blog/ when the how-to-study series got its own path.
         {
           source: '/blog/how-to-study-history-o-level',
