@@ -146,13 +146,9 @@ function classify(entry) {
   if (P6_SA2_MEANS_PRELIM && /^Primary 6 /.test(subject) && bucketKey === "sa2") {
     bucketKey = "prelim";
   }
-  if (PAPER_SPLIT_SUBJECTS.has(subject)) {
-    const paperNum = detectPaperNumber(entry.title);
-    if (!paperNum) {
-      return { entry, reason: `${subject} splits buckets by paper number but no "Paper 1/2" found in title` };
-    }
-    bucketKey = `${examType.label} Paper ${paperNum}`;
-  }
+  // Combined Paper 1+2 files (no paper number in the title) keep the flat bucket.
+  const paperNum = PAPER_SPLIT_SUBJECTS.has(subject) ? detectPaperNumber(entry.title) : null;
+  if (paperNum) bucketKey = `${examType.label} Paper ${paperNum}`;
 
   return { entry, level, subject, bucketKey };
 }

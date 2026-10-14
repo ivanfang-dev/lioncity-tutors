@@ -27,7 +27,7 @@ const DESCRIPTOR =
 
 // A separate solutions document, as opposed to a paper that ships with answers.
 // testpapersfree splits a paper into "… - Questions" and "… - Answers".
-const SOLUTIONS_DOC = /worked\s*solutions?|\bsolutions\b|\(\s*answers?\s*\)|\s-\s*answers?\s*$/i;
+const SOLUTIONS_DOC = /worked\s*solutions?|\bsolutions\b|\(\s*answers?\s*\)|\s-\s*answers?\s*$|\S-\s+answers?\s*$/i;
 const WITH_ANSWERS = /with\s*answers?|with\s*answer\s*key|test\s*paper\s*&\s*answers?/i;
 
 function kebab(value) {
@@ -69,7 +69,8 @@ function cleanSchool(value) {
  * solutions file ("… 2025 Raffles - Worked Solutions").
  */
 function parseSchool(title, year) {
-  const segments = title.split(/\s+-\s+/).map((s) => s.trim()).filter(Boolean);
+  // "ACS- Questions": some sources drop the space before the dash.
+  const segments = title.split(/\s+-\s+|(?<=\S)-\s+/).map((s) => s.trim()).filter(Boolean);
   for (let i = segments.length - 1; i >= 0; i -= 1) {
     const school = cleanSchool(segments[i]);
     if (school && !(year && school === String(year))) {
