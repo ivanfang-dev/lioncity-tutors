@@ -2,7 +2,7 @@ import { MATCH_TIME, MATCH_HOURS } from '@/data/promises';
 // app/page.jsx
 
 // Brand last so name searches still match the homepage.
-const HOME_TITLE = `Singapore Tuition Agency — Tutor Matched in ${MATCH_HOURS} Hours | LionCity Tutors`;
+const HOME_TITLE = `Singapore Tuition Agency — ${MATCH_HOURS}-Hour Match | LionCity Tutors`;
 
 export const metadata = {
   // Claim accuracy: MOE certifies teachers, not agencies, so "MOE-Certified
