@@ -23,10 +23,11 @@ const EXAM_LABELS = {
 
 // Trailing segments that name the document, not the school that set it.
 const DESCRIPTOR =
-  /^(test\s*papers?(\s*&\s*answers?)?|worked\s*solutions?|solutions?|answers?|answer\s*key|exam\s*papers?|paper)$/i;
+  /^(test\s*papers?(\s*&\s*answers?)?|worked\s*solutions?|solutions?|answers?|questions?|answer\s*key|exam\s*papers?|paper)$/i;
 
 // A separate solutions document, as opposed to a paper that ships with answers.
-const SOLUTIONS_DOC = /worked\s*solutions?|\bsolutions\b|\(\s*answers?\s*\)/i;
+// testpapersfree splits a paper into "… - Questions" and "… - Answers".
+const SOLUTIONS_DOC = /worked\s*solutions?|\bsolutions\b|\(\s*answers?\s*\)|\s-\s*answers?\s*$/i;
 const WITH_ANSWERS = /with\s*answers?|with\s*answer\s*key|test\s*paper\s*&\s*answers?/i;
 
 function kebab(value) {

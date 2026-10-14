@@ -60,7 +60,7 @@ const PAPER_SPLIT_SUBJECTS = new Set(["Secondary 4 Math", "Secondary 4 Biology",
 const P6_SA2_MEANS_PRELIM = true;
 
 const EXAM_TYPE_PATTERNS = [
-  [/\bprelim\b/i, "prelim", "Prelim"],
+  [/\bprelims?\b/i, "prelim", "Prelim"],
   [/\bwa\s?1\b/i, "wa1", "WA1"],
   [/\bwa\s?2\b/i, "wa2", "WA2"],
   [/\bsa\s?1\b/i, "sa1", "SA1"],

@@ -117,8 +117,10 @@ const client = new AwsClient({ accessKeyId: R2_ACCESS_KEY_ID, secretAccessKey: R
 const results = [];
 for (const { pdfUrl, text } of resolved) {
   try {
+    // testpapersfree's PDF names can be wrong (prelims saved as "SA2"), so name by the listing title.
     const filename = decodeURIComponent(path.basename(new URL(pdfUrl).pathname));
-    const key = `${keyPrefix}/${slugifySegment(filename.replace(/\.pdf$/i, ""))}.pdf`;
+    const baseName = url.hostname.endsWith("testpapersfree.com") && text ? text : filename.replace(/\.pdf$/i, "");
+    const key = `${keyPrefix}/${slugifySegment(baseName)}.pdf`;
 
     await pause();
     const res = await fetch(pdfUrl, { headers: { "User-Agent": "Mozilla/5.0 (compatible; LionCityTutorsBot/1.0)" } });
