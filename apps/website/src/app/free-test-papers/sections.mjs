@@ -20,7 +20,7 @@ export const PAPER_SECTIONS = [
     label: 'O-Level and secondary school papers',
     heading: 'What secondary school and O-Level test papers are free to download?',
     answer:
-      'Every O-Level paper here is free. Most are 2025 Secondary 4 prelims in E-Math, A-Math, Physics, Chemistry, Geography and History, from schools such as Catholic High, CHIJ, Chung Cheng, Maris Stella, Anglican High and Methodist Girls, and many come with a separate answers file. Earlier prelims cover English, Biology, E-Math, A-Math, Physics, Chemistry and Geography, plus SA1 papers in E-Math and Chemistry.',
+      'Every O-Level paper here is free. Recent papers include 2025 Secondary 4 prelims in E-Math, A-Math, Physics, Chemistry, Geography and History, from schools such as Catholic High, CHIJ, Chung Cheng, Maris Stella, Anglican High and Methodist Girls, and Principles of Accounts prelims from 2022 to 2026, including 2026 papers from St Patrick\'s and Yuan Ching. Many come with answers. Earlier prelims cover English, Biology, E-Math, A-Math, Physics, Chemistry and Geography, plus SA1 papers in E-Math and Chemistry.',
     linkLead: 'Fitting practice papers into a revision plan is covered in the',
     hub: 'o-level-prep',
   },
@@ -29,7 +29,7 @@ export const PAPER_SECTIONS = [
     label: 'N-Level papers',
     heading: 'Are there free N-Level test papers?',
     answer:
-      'Not yet. The secondary shelf holds Secondary 4 O-Level school papers, and there are no N(A) or N(T) papers in the library today. N-Level students heading for O-Level in Secondary 5 can still work through the O-Level prelims in this library, which are the papers they will eventually sit.',
+      'Yes, for N(A). The secondary shelf holds N(A) prelim papers in English, Science (Chemistry) and A-Math from 2025, Mathematics from 2024, and older A-Math and Principles of Accounts papers, from schools such as Ang Mo Kio, Bowen, Sengkang, Fairfield Methodist, Kuo Chuan Presbyterian, Crest and Woodgrove. There are no N(T) papers yet. N(A) students heading for O-Level in Secondary 5 can also work through the O-Level prelims here, which are the papers they will eventually sit.',
     linkLead: 'For the N-Level route itself, including the Secondary 5 decision, read the',
     hub: 'n-level-prep',
   },

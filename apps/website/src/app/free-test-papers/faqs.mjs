@@ -15,7 +15,7 @@ export const FREE_TEST_PAPERS_FAQS = [
   {
     question: 'Where can I download free O-Level prelim papers?',
     answer:
-      'From the Secondary section on this page — every O-Level prelim paper here is free. Open a subject card, choose the Prelim tab, and enter an email address and contact number to unlock the file. Prelims run from 2022 to 2025 across English, E-Math, A-Math, Physics, Chemistry, Biology, Geography and History, and most of them are 2025 papers.',
+      'From the Secondary section on this page — every O-Level prelim paper here is free. Open a subject card, choose the Prelim tab, and enter an email address and contact number to unlock the file. Prelims run from 2022 to 2026 across English, E-Math, A-Math, Physics, Chemistry, Biology, Geography, History and Principles of Accounts, with N(A) prelims alongside them.',
   },
   {
     question: 'Are past year papers with answers available?',
