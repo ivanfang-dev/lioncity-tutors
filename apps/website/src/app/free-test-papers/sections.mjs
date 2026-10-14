@@ -20,7 +20,7 @@ export const PAPER_SECTIONS = [
     label: 'O-Level and secondary school papers',
     heading: 'What secondary school and O-Level test papers are free to download?',
     answer:
-      'Every O-Level paper here is free. The shelf covers school prelim papers in English, E-Math, A-Math, Physics, Chemistry and Biology, plus earlier SA1 papers in E-Math and Chemistry. Most are 2024 prelims from schools such as ACS, CHIJ, Methodist Girls, Nanyang Girls, SJI and Xinmin, and several arrive with answers.',
+      'Every O-Level paper here is free. Most are 2025 Secondary 4 prelims in E-Math, A-Math, Physics, Chemistry, Geography and History, from schools such as Catholic High, CHIJ, Chung Cheng, Maris Stella, Anglican High and Methodist Girls, and many come with a separate answers file. Earlier prelims cover English, Biology, E-Math, A-Math, Physics, Chemistry and Geography, plus SA1 papers in E-Math and Chemistry.',
     linkLead: 'Fitting practice papers into a revision plan is covered in the',
     hub: 'o-level-prep',
   },
@@ -38,7 +38,7 @@ export const PAPER_SECTIONS = [
     label: 'JC and A-Level prelim papers',
     heading: 'What JC and A-Level test papers can I download?',
     answer:
-      'The JC shelf is entirely 2024 JC2 prelim papers: General Paper, H2 Mathematics, H2 Physics, H2 Chemistry, H2 Biology and H2 Economics. They come from HCI, RI, ACJC, NJC, NYJC, EJC, VJC, CJC and RVHS, and most of the science and General Paper prelims include answers.',
+      'The JC shelf holds JC2 prelim papers from 2025 and 2024. The 2025 prelims cover General Paper, H2 Mathematics, H2 Physics and H2 Chemistry, from Hwa Chong, Anglo Chinese, Anderson, Catholic, Dunman and Eunoia among others, and the H2 papers mostly come with a separate answers file. The 2024 prelims add H2 Biology and H2 Economics, from HCI, RI, ACJC, NJC, NYJC, EJC, VJC, CJC and RVHS.',
     linkLead: 'To place these papers in a two-year H2 timeline, see the',
     hub: 'a-level-prep',
   },
@@ -47,7 +47,7 @@ export const PAPER_SECTIONS = [
     label: 'PSLE and primary school papers',
     heading: 'What free PSLE and primary school papers are available?',
     answer:
-      'Primary papers are 2024 school assessments: P6 English, Maths and Science, and P5 English, from Nanyang, Raffles Girls, Henry Park, Methodist Girls, Catholic High, Tao Nan and SCGS. These are WA1 and SA2 papers set by the schools themselves rather than the national PSLE papers.',
+      'Primary papers are school assessments set by the schools themselves, not the national PSLE papers. The 2025 shelf covers P6 Maths and P6 Chinese across WA1, WA2, SA1 and prelims, from schools such as Raffles, Rosyth, Nanyang, Henry Park, Catholic High and Tao Nan, and most P6 Maths papers include answers. The 2024 shelf adds P6 English, Maths and Science and P5 English, from Nanyang, Raffles Girls, Methodist Girls and SCGS.',
     linkLead: 'For how the school year builds towards the exam, see the',
     hub: 'psle-prep',
   },
