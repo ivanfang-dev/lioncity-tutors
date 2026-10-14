@@ -208,7 +208,15 @@ export const testPapers = {
         { title: 'O Level Chemistry 2024 Prelim - Crescent Girls', downloadUrl: 'https://drive.google.com/uc?export=download&id=1dSZqqWVisidTVEcfQxgC_Qqxy8vvDo0L' },
         { title: 'O Level Chemistry 2024 Prelim - Methodist Girls', downloadUrl: 'https://drive.google.com/uc?export=download&id=16xkYSNPMx4Ak_6mXLv_8uJMQZT0TEiRW' },
         { title: 'O Level Chemistry 2024 Prelim - Nanyang Girls', downloadUrl: 'https://drive.google.com/uc?export=download&id=12oFDFOIg-mXiBBb90lml40i2MEo2rx' },
-        { title: 'O Level Chemistry 2024 Prelim - SCGS', downloadUrl: 'https://drive.google.com/uc?export=download&id=1tHSkVTicIMwbK-LMzYhda-FMogP7J5L0' }
+        { title: 'O Level Chemistry 2024 Prelim - SCGS', downloadUrl: 'https://drive.google.com/uc?export=download&id=1tHSkVTicIMwbK-LMzYhda-FMogP7J5L0' },
+        { title: 'Sec4 Pure Chemistry 2025 prelims - Ang Mo Kio', fileKey: 'papers/secondary/2025/chemistry/sec4-pure-chemistry-2025-prelims-ang-mo-kio.pdf' },
+        { title: 'Sec4 Pure Chemistry 2025 prelims - CHIJ', fileKey: 'papers/secondary/2025/chemistry/sec4-pure-chemistry-2025-prelims-chij.pdf' },
+        { title: 'Sec4 Pure Chemistry 2025 prelims - Christ Church', fileKey: 'papers/secondary/2025/chemistry/sec4-pure-chemistry-2025-prelims-christ-church.pdf' },
+        { title: 'Sec4 Pure Chemistry 2025 prelims - Chung Cheng', fileKey: 'papers/secondary/2025/chemistry/sec4-pure-chemistry-2025-prelims-chung-cheng.pdf' },
+        { title: 'Sec4 Pure Chemistry 2025 prelims - Fu Hua', fileKey: 'papers/secondary/2025/chemistry/sec4-pure-chemistry-2025-prelims-fu-hua.pdf' },
+        { title: 'Sec4 Pure Chemistry 2025 prelims - Maris Stella', fileKey: 'papers/secondary/2025/chemistry/sec4-pure-chemistry-2025-prelims-maris-stella.pdf' },
+        { title: 'Sec4 Pure Chemistry 2025 prelims - Tanjong Katong', fileKey: 'papers/secondary/2025/chemistry/sec4-pure-chemistry-2025-prelims-tanjong-katong.pdf' },
+        { title: 'Sec4 Pure Chemistry 2025 prelims - Yishun Town', fileKey: 'papers/secondary/2025/chemistry/sec4-pure-chemistry-2025-prelims-yishun-town.pdf' },
       ]
     },
     'Secondary 4 Physics': {
