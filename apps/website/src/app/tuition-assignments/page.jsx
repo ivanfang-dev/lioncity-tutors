@@ -25,62 +25,42 @@ async function getAssignments(path = '/api/assignments') {
   }
 }
 
-const TITLE_SUFFIX = ' | LionCity Tutors';
+const PAGE_TITLE = 'Tuition Assignments in Singapore | LionCity Tutors';
+const PAGE_DESCRIPTION = 'Open home tuition assignments across Singapore — every level and subject, with the location and rate on each listing. Apply online in minutes as a vetted tutor.';
+const CANONICAL_URL = 'https://www.lioncitytutors.com/tuition-assignments';
 
-export async function generateMetadata({ searchParams }) {
-  const levelFilter = searchParams.level || '';
-  const subjectFilter = searchParams.subject || '';
-  const filtered = Boolean(levelFilter || subjectFilter);
+// One URL for the page: ?level= / ?subject= links show the same list, so they canonicalise here.
+export const metadata = {
+  title: PAGE_TITLE,
+  description: PAGE_DESCRIPTION,
+  keywords: [
+    'tuition assignments Singapore',
+    'tuition assignment east',
+    'tuition assignments west',
+    'tutoring jobs Singapore',
+    'private tutor opportunities',
+    'home tutoring jobs Singapore'
+  ],
+  openGraph: {
+    images: [DEFAULT_OG_IMAGE],
+    title: PAGE_TITLE,
+    description: PAGE_DESCRIPTION,
+    url: CANONICAL_URL,
+    type: 'website',
+  },
+  twitter: {
+    images: [DEFAULT_OG_IMAGE.url],
+    card: 'summary_large_image',
+    title: PAGE_TITLE,
+    description: PAGE_DESCRIPTION,
+  },
+  alternates: {
+    canonical: CANONICAL_URL,
+  },
+};
 
-  // "Singapore" only fits in the unfiltered title; with both filters applied
-  // the string would run past 60 characters and truncate in the SERP.
-  const pageTitle = filtered
-    ? `${[levelFilter, subjectFilter, 'Tuition Assignments'].filter(Boolean).join(' ')}${TITLE_SUFFIX}`
-    : `Tuition Assignments in Singapore${TITLE_SUFFIX}`;
-
-  const pageDescription = filtered
-    ? `Open ${[levelFilter, subjectFilter].filter(Boolean).join(' ')} home tuition assignments in Singapore, with the location and rate on every listing. Apply online in minutes as a vetted tutor.`
-    : 'Open home tuition assignments across Singapore — every level and subject, with the location and rate on each listing. Apply online in minutes as a vetted tutor.';
-
-  const query = new URLSearchParams();
-  if (levelFilter) query.set('level', levelFilter);
-  if (subjectFilter) query.set('subject', subjectFilter);
-  const suffix = query.toString() ? `?${query}` : '';
-  const canonicalUrl = `https://www.lioncitytutors.com/tuition-assignments${suffix}`;
-
-  return {
-    title: pageTitle,
-    description: pageDescription,
-    keywords: [
-      'tuition assignments Singapore',
-      'tuition assignment east',
-      'tuition assignments west',
-      'tutoring jobs Singapore',
-      levelFilter ? `${levelFilter} tutor jobs` : null,
-      subjectFilter ? `${subjectFilter} tuition assignments` : null,
-      'private tutor opportunities',
-      'home tutoring jobs Singapore'
-    ].filter(Boolean),
-    openGraph: {
-      images: [DEFAULT_OG_IMAGE],
-      title: pageTitle,
-      description: pageDescription,
-      url: canonicalUrl,
-      type: 'website',
-    },
-    twitter: {
-      images: [DEFAULT_OG_IMAGE.url],
-      card: 'summary_large_image',
-      title: pageTitle,
-      description: pageDescription,
-    },
-    alternates: {
-      canonical: canonicalUrl,
-    },
-  };
-}
-
-export default async function TuitionAssignmentsPage() {
+// ?apply=<id> comes from assignment emails; read here so the list stays server-rendered.
+export default async function TuitionAssignmentsPage({ searchParams }) {
   const [initialAssignments, recentlyClosed] = await Promise.all([
     getAssignments(),
     getAssignments('/api/assignments/recently-closed'),
@@ -97,7 +77,7 @@ export default async function TuitionAssignmentsPage() {
       />
 
       <Suspense fallback={<div>Loading assignments...</div>}>
-        <TuitionAssignmentsClient initialAssignments={initialAssignments} recentlyClosed={recentlyClosed} />
+        <TuitionAssignmentsClient initialAssignments={initialAssignments} recentlyClosed={recentlyClosed} applyAssignmentId={searchParams?.apply || null} />
       </Suspense>
 
       {/* Server-rendered so the answers are in the HTML whatever the listing

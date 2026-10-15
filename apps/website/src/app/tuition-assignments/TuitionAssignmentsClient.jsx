@@ -7,7 +7,7 @@ import {
   memo,
   useCallback,
 } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { AnimatePresence, motion } from 'framer-motion';
 
 // Import from shared package
@@ -492,9 +492,8 @@ const PaginationControls = ({ currentPage, totalPages, onPageChange }) => {
 
 
 // --- Main Client Component ---
-export default function TuitionAssignmentsClient({ initialAssignments, recentlyClosed = [] }) {
+export default function TuitionAssignmentsClient({ initialAssignments, recentlyClosed = [], applyAssignmentId = null }) {
   const router = useRouter();
-  const searchParams = useSearchParams();
 
   // --- State Management ---
   const [allAssignments, setAllAssignments] = useState(initialAssignments || []);
@@ -516,20 +515,6 @@ export default function TuitionAssignmentsClient({ initialAssignments, recentlyC
 
   // --- Handle URL parameters for direct assignment selection ---
   useEffect(() => {
-    // Fallback approach that works in all environments
-    let applyAssignmentId = null;
-    
-    try {
-      // Try Next.js approach first
-      applyAssignmentId = searchParams.get('apply');
-    } catch (error) {
-      // Fallback to vanilla JS approach
-      if (typeof window !== 'undefined') {
-        const urlParams = new URLSearchParams(window.location.search);
-        applyAssignmentId = urlParams.get('apply');
-      }
-    }
-    
     console.log('URL parameter check:', { applyAssignmentId, assignmentsCount: allAssignments.length });
     
     if (applyAssignmentId && allAssignments.length > 0) {
@@ -567,7 +552,7 @@ export default function TuitionAssignmentsClient({ initialAssignments, recentlyC
         }
       }
     }
-  }, [searchParams, allAssignments]);
+  }, [applyAssignmentId, allAssignments]);
 
   // --- Filtering Logic ---
   const matchesFilters = useCallback((assignment) => {
