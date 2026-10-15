@@ -382,6 +382,24 @@ app.get('/api/assignments', async (req, res) => {
   }
 });
 
+// The 12 newest closed/filled assignments from the last 60 days, shown greyed out under the open ones.
+app.get('/api/assignments/recently-closed', async (req, res) => {
+  try {
+    const since = new Date(Date.now() - 60 * 24 * 60 * 60 * 1000);
+    const assignments = await Assignment
+      .find({ status: { $in: ['Closed', 'Filled'] }, createdAt: { $gte: since } })
+      .sort({ createdAt: -1 })
+      .limit(12)
+      .select('title level subject location frequency rate createdAt _id')
+      .lean();
+
+    res.status(200).json(assignments);
+  } catch (err) {
+    console.error('Error fetching recently closed assignments:', err);
+    res.status(500).json({ error: 'Failed to fetch assignments.' });
+  }
+});
+
 /**
  * @route   GET /api/email/latest-assignments
  * @desc    Generates HTML email content with top 10 latest tuition assignments
