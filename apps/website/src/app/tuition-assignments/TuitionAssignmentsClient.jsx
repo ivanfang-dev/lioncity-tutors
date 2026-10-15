@@ -384,6 +384,38 @@ const AssignmentCard = memo(({ assignment, isSelected, isExpanded, onSelect, onT
 });
 AssignmentCard.displayName = 'AssignmentCard';
 
+// Formatted by hand in Singapore time (UTC+8, no DST) so server and browser render the same date.
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const formatPostedDate = (date) => {
+  const sg = new Date(new Date(date).getTime() + 8 * 60 * 60 * 1000);
+  return `${sg.getUTCDate()} ${MONTHS[sg.getUTCMonth()]}`;
+};
+
+// Read-only card for a closed assignment: no checkbox, can't be selected.
+const ClosedAssignmentCard = ({ assignment }) => (
+  <article role="listitem" className="rounded-2xl border border-slate-200 bg-slate-50 p-4 sm:p-5">
+    <div className="flex items-start justify-between gap-3 mb-2">
+      <h3 className="text-base font-semibold text-slate-600 leading-tight min-w-0">{assignment.title}</h3>
+      <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-slate-200 text-slate-600 flex-shrink-0">
+        Closed
+      </span>
+    </div>
+    <p className="text-sm font-medium text-slate-500 mb-3">
+      {assignment.rate && assignment.rate !== 'Tutor to propose' ? assignment.rate : 'Negotiate'}
+    </p>
+    <div className="flex flex-wrap gap-1.5 mb-3">
+      {[assignment.level, assignment.subject, `📍 ${assignment.location}`].map((label) => (
+        <span key={label} className="inline-flex items-center px-2 py-0.5 rounded-lg text-xs font-medium bg-white text-slate-500 border border-slate-200">
+          {label}
+        </span>
+      ))}
+    </div>
+    <p className="text-xs text-slate-400">
+      {assignment.frequency} · Posted {formatPostedDate(assignment.createdAt)}
+    </p>
+  </article>
+);
+
 // --- Pagination Controls Component ---
 const PaginationControls = ({ currentPage, totalPages, onPageChange }) => {
     if (totalPages <= 1) return null;
@@ -460,7 +492,7 @@ const PaginationControls = ({ currentPage, totalPages, onPageChange }) => {
 
 
 // --- Main Client Component ---
-export default function TuitionAssignmentsClient({ initialAssignments }) {
+export default function TuitionAssignmentsClient({ initialAssignments, recentlyClosed = [] }) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -538,13 +570,15 @@ export default function TuitionAssignmentsClient({ initialAssignments }) {
   }, [searchParams, allAssignments]);
 
   // --- Filtering Logic ---
-  const filteredAssignments = useMemo(() => {
+  const matchesFilters = useCallback((assignment) => {
     const keyword = debouncedSearchKeyword.toLowerCase();
-    return allAssignments
-      .filter(assignment => levelFilter ? assignment.level === levelFilter : true)
-      .filter(assignment => subjectFilter ? assignment.subject === subjectFilter : true)
-      .filter(assignment => keyword ? (assignment.title.toLowerCase().includes(keyword) || assignment.location.toLowerCase().includes(keyword)) : true);
-  }, [allAssignments, levelFilter, subjectFilter, debouncedSearchKeyword]);
+    return (!levelFilter || assignment.level === levelFilter)
+      && (!subjectFilter || assignment.subject === subjectFilter)
+      && (!keyword || assignment.title.toLowerCase().includes(keyword) || assignment.location.toLowerCase().includes(keyword));
+  }, [levelFilter, subjectFilter, debouncedSearchKeyword]);
+
+  const filteredAssignments = useMemo(() => allAssignments.filter(matchesFilters), [allAssignments, matchesFilters]);
+  const filteredClosed = useMemo(() => recentlyClosed.filter(matchesFilters), [recentlyClosed, matchesFilters]);
 
   // --- Reset to page 1 when filters change ---
   useEffect(() => {
@@ -737,6 +771,19 @@ export default function TuitionAssignmentsClient({ initialAssignments }) {
                     ))}
                     <PaginationControls currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
                 </div>
+            ) : filteredClosed.length > 0 ? (
+              <div className="text-center bg-white rounded-2xl border border-slate-200 shadow-sm py-10 px-6">
+                <h2 className="text-xl font-semibold text-slate-800 mb-2">No open assignments match right now</h2>
+                <p className="text-slate-500 max-w-md mx-auto">New assignments are posted as parents ask for tutors. Registered tutors get matching ones sent to them on Telegram or WhatsApp.</p>
+                <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+                  <a href="/register-tutor" className="inline-flex items-center gap-2 px-4 py-2 bg-[#0474BA] text-white font-semibold rounded-lg hover:bg-[#03609a] transition">
+                    Register as a tutor <ArrowRight className="h-4 w-4" />
+                  </a>
+                  {(levelFilter || subjectFilter || searchKeyword) && (
+                    <button onClick={resetFilters} className="px-4 py-2 text-sm font-semibold text-slate-600 hover:text-slate-900 transition">Clear filters</button>
+                  )}
+                </div>
+              </div>
             ) : (
               <div className="text-center bg-white rounded-2xl shadow-lg py-20 px-8">
                 <Book className="mx-auto h-16 w-16 text-slate-300 mb-6" strokeWidth={1} />
@@ -744,6 +791,22 @@ export default function TuitionAssignmentsClient({ initialAssignments }) {
                 <p className="text-slate-500 max-w-md mx-auto">Your search and filter combination did not match any assignments. Try adjusting your criteria.</p>
                 <button onClick={resetFilters} className="mt-6 inline-flex items-center px-4 py-2 bg-gradient-to-r from-teal-500 to-emerald-500 text-white font-semibold rounded-lg transition-transform transform hover:scale-105">Clear All Filters</button>
               </div>
+            )}
+
+            {filteredClosed.length > 0 && (
+              <section className="mt-14" aria-labelledby="recently-closed">
+                <h2 id="recently-closed" className="text-xl font-bold text-slate-800">Recently closed</h2>
+                <p className="mt-1 mb-6 text-sm text-slate-500">
+                  Assignments from the past two months that are no longer taking applications.{' '}
+                  <a href="/register-tutor" className="font-semibold text-[#0474BA] underline underline-offset-2">Register as a tutor</a>{' '}
+                  to hear about the next ones.
+                </p>
+                <div role="list" className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                  {filteredClosed.map((assignment) => (
+                    <ClosedAssignmentCard key={assignment._id} assignment={assignment} />
+                  ))}
+                </div>
+              </section>
             )}
           </section>
           <VerificationModal 

@@ -8,11 +8,10 @@ import TuitionAssignmentsClient from './TuitionAssignmentsClient';
 import { TUITION_ASSIGNMENTS_FAQS } from './faqs.mjs';
 import { DEFAULT_OG_IMAGE } from '@/lib/seo/openGraph';
 
-// Helper function to fetch data on the server
-async function getAssignments() {
+// Fetches a backend assignment list, cached for 5 minutes; [] on any failure.
+async function getAssignments(path = '/api/assignments') {
   try {
-    // Using fetch with revalidation for fresh data (cache for 5 minutes)
-    const response = await fetch(`${BACKEND_URL}/api/assignments`, {
+    const response = await fetch(`${BACKEND_URL}${path}`, {
       next: { revalidate: 300 }
     });
     if (!response.ok) {
@@ -82,7 +81,10 @@ export async function generateMetadata({ searchParams }) {
 }
 
 export default async function TuitionAssignmentsPage() {
-  const initialAssignments = await getAssignments();
+  const [initialAssignments, recentlyClosed] = await Promise.all([
+    getAssignments(),
+    getAssignments('/api/assignments/recently-closed'),
+  ]);
 
   return (
     <>
@@ -95,7 +97,7 @@ export default async function TuitionAssignmentsPage() {
       />
 
       <Suspense fallback={<div>Loading assignments...</div>}>
-        <TuitionAssignmentsClient initialAssignments={initialAssignments} />
+        <TuitionAssignmentsClient initialAssignments={initialAssignments} recentlyClosed={recentlyClosed} />
       </Suspense>
 
       {/* Server-rendered so the answers are in the HTML whatever the listing
