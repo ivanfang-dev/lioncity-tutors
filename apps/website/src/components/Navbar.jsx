@@ -20,7 +20,7 @@ export default function Navbar() {
   const [navHidden, setNavHidden] = useState(false);
 
   const navLinkStyle = (path) =>
-    `text-sm font-medium px-4 py-2 rounded-lg hover:bg-gray-100 transition-colors whitespace-nowrap ${
+    `text-sm font-medium px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors whitespace-nowrap ${
       pathname === path ? "bg-gray-100 text-primary font-semibold" : "text-gray-700"
     }`;
 
@@ -123,44 +123,46 @@ export default function Navbar() {
         <span className="text-lg font-bold text-primary whitespace-nowrap">LionCity Tutors</span>
       </Link>
 
-      {/* Desktop Menu */}
-      <div className="hidden lg:flex items-center gap-1 ml-auto">
-        <Link href="/" className={navLinkStyle("/")}>Home</Link>
+      {/* Desktop Menu: the links need ~1240px, so below xl only the CTA shows beside the hamburger */}
+      <div className="hidden lg:flex items-center ml-auto">
+        <div className="hidden xl:flex items-center">
+          <Link href="/" className={navLinkStyle("/")}>Home</Link>
 
-        <Dropdown
-          label="Levels & Exams"
-          items={levels}
-          open={openDropdown === "levels"}
-          onToggle={() => toggleDropdown("levels")}
-        />
-        <Dropdown
-          label="Subjects"
-          items={subjects}
-          open={openDropdown === "subjects"}
-          onToggle={() => toggleDropdown("subjects")}
-        />
-        <div className="relative">
           <Dropdown
-            label="Free Resources"
-            items={resources}
-            open={openDropdown === "resources"}
-            onToggle={() => toggleDropdown("resources")}
+            label="Levels & Exams"
+            items={levels}
+            open={openDropdown === "levels"}
+            onToggle={() => toggleDropdown("levels")}
           />
-        </div>
-        <Dropdown
-          label="For Parents"
-          items={forParents}
-          open={openDropdown === "parents"}
-          onToggle={() => toggleDropdown("parents")}
-        />
-        <Dropdown
-          label="For Tutors"
-          items={forTutors}
-          open={openDropdown === "tutors"}
-          onToggle={() => toggleDropdown("tutors")}
-        />
+          <Dropdown
+            label="Subjects"
+            items={subjects}
+            open={openDropdown === "subjects"}
+            onToggle={() => toggleDropdown("subjects")}
+          />
+          <div className="relative">
+            <Dropdown
+              label="Free Resources"
+              items={resources}
+              open={openDropdown === "resources"}
+              onToggle={() => toggleDropdown("resources")}
+            />
+          </div>
+          <Dropdown
+            label="For Parents"
+            items={forParents}
+            open={openDropdown === "parents"}
+            onToggle={() => toggleDropdown("parents")}
+          />
+          <Dropdown
+            label="For Tutors"
+            items={forTutors}
+            open={openDropdown === "tutors"}
+            onToggle={() => toggleDropdown("tutors")}
+          />
 
-        <Link href="/tuition-rates" className={navLinkStyle("/tuition-rates")}>Tuition Rates</Link>
+          <Link href="/tuition-rates" className={navLinkStyle("/tuition-rates")}>Tuition Rates</Link>
+        </div>
 
         <Link
           href="/request-tutor"
@@ -172,7 +174,7 @@ export default function Navbar() {
 
       {/* Mobile Menu Button */}
       <button
-        className="lg:hidden text-gray-600 -mr-2 flex h-11 w-11 items-center justify-center rounded-lg transition-colors hover:bg-gray-100 active:bg-gray-200"
+        className="xl:hidden lg:ml-2 text-gray-600 -mr-2 flex h-11 w-11 items-center justify-center rounded-lg transition-colors hover:bg-gray-100 active:bg-gray-200"
         onClick={() => setMenuOpen(!menuOpen)}
         aria-label={menuOpen ? "Close menu" : "Open menu"}
         aria-expanded={menuOpen}
