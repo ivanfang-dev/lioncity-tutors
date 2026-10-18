@@ -17,6 +17,16 @@
   transition: transform 1.6s cubic-bezier(0.65, 0, 0.35, 1);
 }
 
+/* The card's content changes in place: a short rise, no fade, so nothing is ever blank. */
+.swap {
+  animation: swap 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Waits until the intro has lit the pool, then invites a tap. */
+.hint {
+  animation: swap 0.3s cubic-bezier(0.4, 0, 0.2, 1) 2.2s both;
+}
+
 /* Stage marks: hollow while pending, filled as the replay reaches them. */
 .mark {
   width: 10px;
@@ -54,6 +64,12 @@
   transform-origin: left;
 }
 
+@keyframes swap {
+  from {
+    transform: translateY(6px);
+  }
+}
+
 @keyframes arrive {
   from {
     box-shadow: 0 0 0 0 rgb(241 119 32 / 0.45);
@@ -70,7 +86,9 @@
     transition: none;
   }
 
-  .markLast.markDone {
+  .markLast.markDone,
+  .swap,
+  .hint {
     animation: none;
   }
 }

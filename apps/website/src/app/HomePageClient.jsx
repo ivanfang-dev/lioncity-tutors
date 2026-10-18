@@ -88,6 +88,11 @@ export default function HomePageClient() {
   const { currentStep, status, handleSubmit, resetForm } = form;
 
   const scrollToForm = () => formRef.current?.scrollIntoView({ behavior: 'smooth' });
+  // A tap on the hero map carries that neighbourhood into the request.
+  const requestInArea = (area) => {
+    form.setFormData((prev) => ({ ...prev, location: area }));
+    scrollToForm();
+  };
   const scrollToFAQ = () => faqRef.current?.scrollIntoView({ behavior: 'smooth' });
   const testimonials = [
     { initials: 'M.T', name: 'Molly Tan', relation: 'Parent of Primary 3 and Primary 5 Student', text: "Suggestion of tutor is good. Able to match my requirement and tutor is very responsible in meeting my children's needs.", subject: 'Primary Chinese', location: 'Pasir Panjang Road' },
@@ -268,7 +273,10 @@ Preferred days & timing: `;
 
               {/* The tutor pool on the map, replaying real requests: what a parent is buying, shown. */}
               <div className="order-2 lg:col-span-6">
-                <TutorMapHero stageClassName="lg:-mr-6 xl:mr-[calc(-1*(max(0px,(100vw-80rem)/2)+1.5rem))]" />
+                <TutorMapHero
+                  stageClassName="lg:-mr-6 xl:mr-[calc(-1*(max(0px,(100vw-80rem)/2)+1.5rem))]"
+                  onRequestArea={requestInArea}
+                />
               </div>
             </div>
           </div>
