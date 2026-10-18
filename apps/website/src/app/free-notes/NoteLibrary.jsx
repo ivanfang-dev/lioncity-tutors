@@ -14,7 +14,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import LevelFilter from "@/components/LevelFilter";
 import { Download, BookOpen, GraduationCap, Atom, FileText, Search, Clock } from "lucide-react";
 import { notesData } from "../../data/notesData.mjs";
 import { LEVEL_TINTS } from "@/lib/levelTints";
@@ -29,15 +29,15 @@ const noteCount = flatten(notesData).length;
 // O-Level / A-Level. The keys stay primary/secondary/jc: they are what
 // notesData and LEVEL_TINTS are keyed by.
 const LEVEL_LABELS = {
-  all: "All Levels",
+  all: "All",
   primary: "PSLE",
   secondary: "O-Level",
   jc: "A-Level",
 };
 
 // The headings carry both namings, because the exam name and the school stage
-// are searched separately ("psle notes", "primary school notes"). Tabs stay on
-// the short label — four chips share one row.
+// are searched separately ("psle notes", "primary school notes"). The level filter
+// stays on the short label — four segments share one row.
 const LEVEL_HEADINGS = {
   primary: "PSLE and Primary School",
   secondary: "O-Level and Secondary School",
@@ -322,22 +322,12 @@ export default function NoteLibrary() {
         </div>
         </div>
 
-        {/* Enhanced Level Filter Menu */}
-        <div className="flex justify-center">
-          <Tabs value={selectedLevel} onValueChange={setSelectedLevel} className="w-full max-w-2xl">
-            <TabsList className="grid w-full grid-cols-4 p-1 bg-white rounded-full h-auto shadow-sm border">
-              {levelFilters.map((level) => (
-                <TabsTrigger
-                  key={level}
-                  value={level}
-                  className="rounded-full data-[state=active]:bg-primary data-[state=active]:text-white data-[state=active]:shadow-sm font-semibold px-4 py-3 transition-all duration-200"
-                >
-                  {LEVEL_LABELS[level]}
-                </TabsTrigger>
-              ))}
-            </TabsList>
-          </Tabs>
-        </div>
+        <LevelFilter
+          levels={levelFilters.map((level) => [level, LEVEL_LABELS[level]])}
+          value={selectedLevel}
+          onChange={setSelectedLevel}
+          label="Filter notes by level"
+        />
 
         {/* Notes Sections */}
         <div className="space-y-20">

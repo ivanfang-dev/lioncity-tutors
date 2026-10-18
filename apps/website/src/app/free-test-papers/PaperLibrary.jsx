@@ -10,6 +10,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import LeadRoleField, { ROLE_REQUIRED, downloadToast } from "@/components/LeadRoleField";
+import LevelFilter from "@/components/LevelFilter";
 import { Download, BookOpen, GraduationCap, Atom, FileText, Search, Clock } from "lucide-react";
 import { testPapers } from "../../data/testPapers.mjs";
 import { LEVEL_TINTS } from "@/lib/levelTints";
@@ -30,6 +31,13 @@ const LEVEL_FOR_ANCHOR = {
   "#papers-secondary": "secondary",
   "#papers-jc": "jc",
 };
+
+const LEVEL_FILTERS = [
+  ["all", "All"],
+  ["primary", "Primary"],
+  ["secondary", "Secondary"],
+  ["jc", "JC"],
+];
 
 // Radix builds aria-controls ids from the tab value, and exam keys like
 // "Prelim Paper 1" put a space in the id, which is not a valid IDREF.
@@ -437,8 +445,6 @@ export default function PaperLibrary({ counts = { perPaper: {}, perSubject: {}, 
     setFormData((prev) => ({ ...prev, [id]: value }));
   };
 
-  const levelFilters = ["all", "primary", "secondary", "jc"];
-
   return (
     <DownloadCounts.Provider value={liveCounts}>
       <div className="space-y-16">
@@ -458,33 +464,12 @@ export default function PaperLibrary({ counts = { perPaper: {}, perSubject: {}, 
           </div>
         </div>
 
-        {/* A segmented control, not tabs: there are no tab panels to control, so
-            Radix Tabs emitted aria-controls pointing at ids that do not exist. */}
-        <div className="flex justify-center">
-          <div
-            role="group"
-            aria-label="Filter papers by level"
-            className="grid w-full max-w-2xl grid-cols-4 gap-1 rounded-full border bg-white p-1 shadow-sm"
-          >
-            {levelFilters.map((level) => {
-              const active = selectedLevel === level;
-              return (
-                <button
-                  key={level}
-                  type="button"
-                  onClick={() => setSelectedLevel(level)}
-                  aria-pressed={active}
-                  className={`min-h-11 rounded-full px-4 py-3 text-sm font-semibold transition-all duration-200 ${
-                    active ? "bg-primary text-white shadow-sm" : "text-gray-700 hover:bg-gray-50"
-                  }`}
-                >
-                  {level === "jc" ? "JC" : level.charAt(0).toUpperCase() + level.slice(1)}
-                  {level === "all" && " Levels"}
-                </button>
-              );
-            })}
-          </div>
-        </div>
+        <LevelFilter
+          levels={LEVEL_FILTERS}
+          value={selectedLevel}
+          onChange={setSelectedLevel}
+          label="Filter papers by level"
+        />
 
         {/* Test Papers Sections */}
         <div className="space-y-20">
