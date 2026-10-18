@@ -6,8 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { motion, useReducedMotion } from "framer-motion";
 import { DURATION, EASE_STANDARD, LIFT, PRESS, STAGGER, enter } from "@/lib/motion";
-import Image from 'next/image';
 import MatchTimelineSection from "@/components/MatchTimelineSection";
+import TutorMapHero from "@/components/TutorMapHero";
 import { TuitionRequestSteps } from "@/components/FormSteps";
 import FormStepper from "@/components/FormStepper";
 import FormBenefits from "@/components/FormBenefits";
@@ -137,7 +137,7 @@ Preferred days & timing: `;
           <div className="absolute inset-0 bg-gradient-to-b from-background-subtle/40 to-background-default pointer-events-none" />
 
           <div className="relative max-w-7xl mx-auto w-full py-16 sm:py-20 md:py-24">
-            <div className="grid lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-16 items-center">
+            <div className="grid lg:grid-cols-12 gap-10 sm:gap-12 lg:gap-8 items-center">
               {/* Text Content */}
               <motion.div
                 initial="hidden"
@@ -155,7 +155,7 @@ Preferred days & timing: `;
                 // Tutor. Matched in hours." — the entire pitch, and the first
                 // CTA, below the fold. The two-column desktop layout is
                 // unaffected; only the stacking order changed.
-                className="text-center lg:text-left order-1"
+                className="text-center lg:text-left order-1 lg:col-span-6"
               >
                 <motion.p
                   variants={fadeUp}
@@ -266,25 +266,10 @@ Preferred days & timing: `;
                 </motion.div>
               </motion.div>
 
-              {/* Image */}
-              <motion.div
-                animate={prefersReducedMotion ? undefined : { scale: [0.97, 1] }}
-                transition={{ duration: DURATION.base, delay: STAGGER * 2, ease: EASE_STANDARD }}
-                className="relative h-[260px] sm:h-[400px] md:h-[450px] lg:h-[520px] rounded-2xl overflow-hidden shadow-xl order-2"
-              >
-                <Image
-                  src="/final.webp"
-                  alt="A dedicated tutor helping a student."
-                  fill
-                  priority
-                  /* Measured, not guessed: the hero sits in a max-w-7xl grid with
-                     px-4/px-6 padding and a lg:gap-16 second column, so it renders
-                     358px at a 390px viewport and 608px past 1280 — never 100vw.
-                     Claiming 100vw pushed phones onto the w=828 candidate. */
-                  sizes="(max-width: 1023px) 94vw, (max-width: 1280px) 45vw, 608px"
-                  className="object-cover"
-                />
-              </motion.div>
+              {/* The tutor pool on the map, replaying real requests: what a parent is buying, shown. */}
+              <div className="order-2 lg:col-span-6">
+                <TutorMapHero stageClassName="lg:-mr-6 xl:mr-[calc(-1*(max(0px,(100vw-80rem)/2)+1.5rem))]" />
+              </div>
             </div>
           </div>
         </section>

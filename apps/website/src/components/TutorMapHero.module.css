@@ -1,0 +1,76 @@
+/* Timings follow src/lib/motion.js: base 0.3s, standard easing. */
+
+.tilt {
+  transform: perspective(1400px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg));
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* The map fades out at its edges, so the camera's crop never shows a hard border. */
+.viewport {
+  overflow: hidden;
+  mask-image: radial-gradient(ellipse 72% 70% at 50% 50%, #000 62%, transparent 100%);
+}
+
+/* Moves between requests on the draw easing, slow enough to read as a flight. */
+.camera {
+  transform-origin: 0 0;
+  transition: transform 1.6s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+/* Stage marks: hollow while pending, filled as the replay reaches them. */
+.mark {
+  width: 10px;
+  height: 10px;
+  flex-shrink: 0;
+  border-radius: 9999px;
+  border: 1.5px solid var(--color-gray-300, #d4d4d4);
+  transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.markDone {
+  border-color: var(--color-primary);
+  background-color: var(--color-primary);
+}
+
+.markLast.markDone {
+  border-color: var(--color-accent);
+  background-color: var(--color-accent);
+  box-shadow: 0 0 0 3px rgb(241 119 32 / 0.2);
+  animation: arrive 0.9s cubic-bezier(0, 0, 0.2, 1);
+}
+
+/* Fills under the active town as its replay plays; the canvas loop drives scaleX. */
+.progress {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 4px;
+  height: 2px;
+  border-radius: 9999px;
+  background: var(--color-primary);
+  opacity: 0.45;
+  transform: scaleX(0);
+  transform-origin: left;
+}
+
+@keyframes arrive {
+  from {
+    box-shadow: 0 0 0 0 rgb(241 119 32 / 0.45);
+  }
+  to {
+    box-shadow: 0 0 0 3px rgb(241 119 32 / 0.2);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tilt,
+  .camera,
+  .mark {
+    transition: none;
+  }
+
+  .markLast.markDone {
+    animation: none;
+  }
+}
