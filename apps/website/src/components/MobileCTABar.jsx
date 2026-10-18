@@ -67,12 +67,13 @@ export default function MobileCTABar({
 
   useEffect(() => {
     const { dataset } = document.documentElement;
-    if (isVisible) dataset[CHROME_FLAG] = 'on';
+    // At the form too: the floating buttons would otherwise sit on its Next Step button.
+    if (isVisible || formInView) dataset[CHROME_FLAG] = 'on';
     else delete dataset[CHROME_FLAG];
     return () => {
       delete document.documentElement.dataset[CHROME_FLAG];
     };
-  }, [isVisible]);
+  }, [isVisible, formInView]);
 
   // No exit animation, for the same reason as TutorPopup and BackToTop: an exit
   // animation keeps this mounted while it fades, and a fixed full-width bar that

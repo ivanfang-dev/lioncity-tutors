@@ -16,7 +16,7 @@ function Attribution({ review }) {
       {source && (
         <>
           {' · '}
-          <a href={source.url} target="_blank" rel="noopener noreferrer" className="underline-offset-4 hover:text-gray-800 hover:underline">
+          <a href={source.url} target="_blank" rel="noopener noreferrer" className="-my-3 inline-block py-3 underline-offset-4 hover:text-gray-800 hover:underline">
             {source.name} review
           </a>
         </>
@@ -38,16 +38,17 @@ export default function ReviewsWall() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <h2 className="text-balance text-gray-900">Parents, in their own words.</h2>
-          <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-gray-600">
-            <Star className="h-5 w-5 fill-rating text-rating" aria-hidden="true" />
-            <span className="font-semibold text-gray-900 tabular-nums">{google.rating}</span>
+          <p className="text-gray-600 text-pretty">
+            <span className="whitespace-nowrap">
+              <Star className="-mt-1 mr-1.5 inline h-5 w-5 fill-rating text-rating" aria-hidden="true" />
+              <span className="font-semibold text-gray-900 tabular-nums">{google.rating}</span> from
+            </span>{' '}
             <span>
-              from{' '}
-              <a href={google.url} target="_blank" rel="noopener noreferrer" className="font-medium text-primary-deep underline underline-offset-4">
+              <a href={google.url} target="_blank" rel="noopener noreferrer" className="-my-2 inline-block py-2 font-medium text-primary-deep underline underline-offset-4">
                 <span className="tabular-nums">{google.count}</span> Google reviews
               </a>
               , plus{' '}
-              <a href={carousell.url} target="_blank" rel="noopener noreferrer" className="font-medium text-primary-deep underline underline-offset-4">
+              <a href={carousell.url} target="_blank" rel="noopener noreferrer" className="-my-2 inline-block py-2 font-medium text-primary-deep underline underline-offset-4">
                 <span className="tabular-nums">{carousell.count}</span> on Carousell
               </a>
             </span>

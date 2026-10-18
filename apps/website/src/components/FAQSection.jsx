@@ -1,7 +1,7 @@
 import { MATCH_TIME } from '@/data/promises';
 import React, { useState } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
-import { DURATION, EASE_STANDARD, LIFT, enter } from "@/lib/motion";
+import { DURATION, EASE_STANDARD, enter } from "@/lib/motion";
 import { ChevronDown } from "lucide-react";
 
 // SEO & Best Practice: FAQ data is kept separate. No changes needed here.
@@ -40,14 +40,7 @@ function FAQItem({ faq, isOpen, onClick }) {
   };
 
   return (
-    <motion.details
-      className={`bg-white rounded-2xl sm:rounded-3xl shadow-md hover:shadow-lg overflow-hidden border transition-all duration-300 ${
-        isOpen ? 'border-primary/50' : 'border-border/50'
-      }`}
-      open={isOpen}
-      whileHover={{ y: LIFT.card }}
-      transition={{ duration: DURATION.fast, ease: EASE_STANDARD }}
-    >
+    <details className="group/faq" open={isOpen}>
       {/* The toggle handler belongs on the <summary>, not on the <details>.
           On the parent it also caught every click that bubbled up from the
           ANSWER, so on a phone — where selecting text means touching the
@@ -59,9 +52,9 @@ function FAQItem({ faq, isOpen, onClick }) {
           e.preventDefault();
           onClick();
         }}
-        className="w-full flex justify-between items-start sm:items-center gap-4 p-5 sm:p-6 md:p-8 text-left cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 group"
+        className="flex w-full cursor-pointer list-none items-start justify-between gap-4 py-5 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 [&::-webkit-details-marker]:hidden group"
       >
-        <h3 className="text-base sm:text-lg md:text-xl font-semibold text-primary group-hover:text-primary/80 transition-colors duration-300 leading-snug">
+        <h3 className="text-base sm:text-lg font-semibold text-gray-900 group-hover:text-primary-deep transition-colors duration-200 leading-snug">
           {faq.question}
         </h3>
         <motion.div
@@ -69,13 +62,7 @@ function FAQItem({ faq, isOpen, onClick }) {
           transition={{ duration: DURATION.fast, ease: EASE_STANDARD }}
           className="flex-shrink-0"
         >
-          <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center transition-colors duration-300 ${
-            isOpen ? 'bg-primary/10' : 'bg-background-subtle'
-          }`}>
-            <ChevronDown className={`w-5 h-5 transition-colors duration-300 ${
-              isOpen ? 'text-primary' : 'text-text-secondary'
-            }`} />
-          </div>
+          <ChevronDown className={`mt-0.5 h-5 w-5 transition-colors duration-200 ${isOpen ? 'text-primary' : 'text-gray-400'}`} aria-hidden="true" />
         </motion.div>
       </summary>
       
@@ -87,15 +74,15 @@ function FAQItem({ faq, isOpen, onClick }) {
             animate="open"
             exit="closed"
             variants={itemVariants}
-            className="px-5 sm:px-6 md:px-8 text-text-default/90"
+            className="overflow-hidden text-gray-600"
           >
-            <div className="pb-5 sm:pb-6 md:pb-8 pt-2 text-base sm:text-lg leading-relaxed border-t border-border/30">
+            <div className="max-w-2xl pb-6 leading-relaxed text-pretty">
               {faq.answer}
             </div>
           </motion.div>
         )}
       </AnimatePresence>
-    </motion.details>
+    </details>
   );
 }
 
@@ -123,26 +110,21 @@ export default function FAQSection() {
   };
 
   return (
-    <section className="py-20 md:py-32 px-4 sm:px-6 bg-background-subtle">
+    <section className="section-padding bg-background-subtle">
       {/* Add the schema script to the head of your document */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
-      <div className="max-w-4xl mx-auto">
-        <motion.div
-          {...enter(0, prefersReducedMotion)}
-          className="text-center mb-12 md:mb-16"
-        >
-          <h2 className="text-primary mb-4">
-            Frequently Asked<br className="sm:hidden" /> Questions
-          </h2>
-          <p className="text-lg md:text-xl text-text-default/80 max-w-2xl mx-auto">
-            Everything you need to know about our tuition matching service
+      <div className="mx-auto grid max-w-7xl gap-8 px-4 sm:px-6 lg:grid-cols-12 lg:gap-16">
+        <div className="lg:col-span-4">
+          <h2 className="text-balance text-gray-900">Questions parents ask</h2>
+          <p className="mt-4 text-lg leading-relaxed text-gray-600 text-pretty">
+            Anything else? Message us on WhatsApp and a person replies.
           </p>
-        </motion.div>
-        <motion.div 
-          className="space-y-3 sm:space-y-4"
+        </div>
+        <motion.div
+          className="divide-y divide-gray-300 border-y border-gray-300 lg:col-span-8"
           {...enter(0, prefersReducedMotion)}
         >
           {faqs.map((faq, index) => (

@@ -578,7 +578,7 @@ export default function TutorMapHero({ stageClassName = '', onRequestArea }) {
   };
 
   const pillClass =
-    'absolute left-0 top-1 z-10 flex min-h-8 items-center gap-1.5 rounded-full border border-gray-200 bg-white px-3 py-1.5 text-xs font-medium text-gray-600 shadow-[0_1px_2px_rgba(0,0,0,0.04)] sm:top-3';
+    'absolute left-0 top-1 z-10 flex min-h-8 pointer-coarse:min-h-11 items-center gap-1.5 rounded-full border border-gray-200 bg-white px-3 py-1.5 text-xs font-medium text-gray-600 shadow-[0_1px_2px_rgba(0,0,0,0.04)] sm:top-3';
 
   const rows = [
     { label: `${replay.contacted} tutors messaged`, at: replay.messaged },
