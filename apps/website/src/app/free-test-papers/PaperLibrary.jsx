@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
@@ -11,7 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import LeadRoleField, { ROLE_REQUIRED, downloadToast } from "@/components/LeadRoleField";
 import LevelFilter from "@/components/LevelFilter";
-import { Download, BookOpen, GraduationCap, Atom, FileText, Search, Clock } from "lucide-react";
+import { Download, BookOpen, GraduationCap, Atom, FileText, Search, Clock, ChevronDown } from "lucide-react";
 import { testPapers } from "../../data/testPapers.mjs";
 import { LEVEL_TINTS } from "@/lib/levelTints";
 import { paperKeyOf } from "@/lib/downloadKeys.mjs";
@@ -43,6 +42,12 @@ const LEVEL_FILTERS = [
 // "Prelim Paper 1" put a space in the id, which is not a valid IDREF.
 const tabValue = (type) => type.replace(/[^a-zA-Z0-9_-]+/g, "-");
 
+// "wa1" -> "WA1", "prelim" -> "Prelim"; "Prelim Paper 1" is already written for display.
+const examLabel = (type) => {
+  const text = type.replace(/_/g, " ");
+  return /^[a-z]+\d$/.test(text) ? text.toUpperCase() : text.charAt(0).toUpperCase() + text.slice(1);
+};
+
 // Coming Soon Component for empty arrays
 const ComingSoonCard = ({ examType, tint }) => (
   <div className={`flex flex-col items-center justify-center p-6 rounded-lg border-2 border-dashed transition-colors ${tint.placeholder}`}>
@@ -56,8 +61,9 @@ const ComingSoonCard = ({ examType, tint }) => (
   </div>
 );
 
-// ✅ Improved Paper list item with better spacing and responsive design
-const PaperListItem = ({ paper, onDownloadClick, tint }) => {
+// One row per paper: title left, download right, on every screen size. The
+// stacked full-width button made each row ~145px tall on a phone.
+const PaperListItem = ({ paper, onDownloadClick, tint, hidden }) => {
   const { perPaper } = React.useContext(DownloadCounts);
   const downloads = perPaper[paperKeyOf(paper)] ?? 0;
   // The title links to the group page the paper now lives on, which is what
@@ -65,233 +71,250 @@ const PaperListItem = ({ paper, onDownloadClick, tint }) => {
   const paperUrl = getGroupUrlByPaperKey(paperKeyOf(paper));
 
   return (
-    <li className={`flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 sm:gap-4 p-4 rounded-lg border border-gray-200 bg-white hover:shadow-md transition-all duration-200 ${tint.rowHover}`}>
-      <div className="flex items-start gap-3 min-w-0 flex-1">
-        <FileText className="h-5 w-5 text-gray-400 mt-0.5 flex-shrink-0" />
-        <div className="min-w-0 flex-1">
-          {paperUrl ? (
-            <Link
-              href={paperUrl}
-              className="font-medium text-gray-800 text-sm sm:text-base leading-tight block hover:text-primary hover:underline underline-offset-2"
-            >
-              {paper.title}
-            </Link>
-          ) : (
-            <span className="font-medium text-gray-800 text-sm sm:text-base leading-tight block">
-              {paper.title}
-            </span>
-          )}
-          {paper.description && (
-            <span className="text-sm text-gray-600 mt-1 block">{paper.description}</span>
-          )}
-          {downloads >= MIN_DOWNLOADS_SHOWN && (
-            <span className="mt-1 flex items-center gap-1 text-sm text-gray-600">
-              <Download className="h-3 w-3" aria-hidden="true" />
-              <span className="tabular-nums">{downloads.toLocaleString()}</span> downloads
-            </span>
-          )}
-        </div>
+    <li hidden={hidden} className="flex items-center gap-3 border-t border-gray-100 py-3 first:border-t-0">
+      <FileText className="hidden h-5 w-5 flex-shrink-0 text-gray-400 sm:block" aria-hidden="true" />
+      <div className="min-w-0 flex-1">
+        {paperUrl ? (
+          <Link
+            href={paperUrl}
+            className="block text-sm font-medium leading-snug text-gray-800 text-pretty hover:text-primary hover:underline underline-offset-2 sm:text-base"
+          >
+            {paper.title}
+          </Link>
+        ) : (
+          <span className="block text-sm font-medium leading-snug text-gray-800 text-pretty sm:text-base">
+            {paper.title}
+          </span>
+        )}
+        {paper.description && (
+          <span className="text-sm text-gray-600 mt-1 block">{paper.description}</span>
+        )}
+        {downloads >= MIN_DOWNLOADS_SHOWN && (
+          <span className="mt-1 flex items-center gap-1 text-sm text-gray-600">
+            <Download className="h-3 w-3" aria-hidden="true" />
+            <span className="tabular-nums">{downloads.toLocaleString()}</span> downloads
+          </span>
+        )}
       </div>
+      {/* Icon-only on phones so the title keeps the width; the label returns at sm. */}
       <Button
         variant="outline"
         size="sm"
-        className={`flex min-h-11 items-center gap-2 transition-colors duration-200 flex-shrink-0 w-full sm:w-auto justify-center sm:min-h-0 ${tint.action}`}
+        className={`size-11 flex-shrink-0 p-0 transition-colors duration-200 sm:h-9 sm:w-auto sm:px-3 ${tint.action}`}
         onClick={onDownloadClick}
         aria-label={`Download ${paper.title}`}
       >
-        <Download className="h-4 w-4" />
-        Download
+        <Download className="h-4 w-4" aria-hidden="true" />
+        <span className="hidden sm:inline">Download</span>
       </Button>
     </li>
   );
 };
 
-// Subject card with search functionality and coming soon support
+// A long shelf opens on its newest papers. Most lists are stored oldest
+// first, so the 2026 POA prelims sat under 64 older rows.
+const PAPERS_SHOWN = 6;
+const yearOf = (paper) => Number(paper.title.match(/20\d\d/)?.[0] ?? 0);
+const newestFirst = (papers) => [...papers].sort((a, b) => yearOf(b) - yearOf(a));
+// Every word must appear, in any order, so "raffles 2025" finds "2025 Prelim - Raffles".
+const matches = (paper, searchTerm) => {
+  const title = paper.title.toLowerCase();
+  return searchTerm.toLowerCase().split(/\s+/).filter(Boolean).every((word) => title.includes(word));
+};
+
+// The rows past PAPERS_SHOWN stay in the HTML, hidden, so their links are
+// still crawlable. A search shows every match.
+const PaperList = ({ papers, searchTerm, tint, onDownloadClick }) => {
+  const [showAll, setShowAll] = useState(false);
+  const sorted = newestFirst(searchTerm ? papers.filter((paper) => matches(paper, searchTerm)) : papers);
+  const limited = !searchTerm && !showAll && sorted.length > PAPERS_SHOWN;
+
+  return (
+    <>
+      <ul>
+        {sorted.map((paper, index) => (
+          <PaperListItem
+            key={paper.fileKey ?? paper.title}
+            paper={paper}
+            tint={tint}
+            hidden={limited && index >= PAPERS_SHOWN}
+            onDownloadClick={() => onDownloadClick(paper)}
+          />
+        ))}
+      </ul>
+      {!searchTerm && sorted.length > PAPERS_SHOWN && (
+        <button
+          type="button"
+          onClick={() => setShowAll((v) => !v)}
+          aria-expanded={showAll}
+          className="mt-2 flex min-h-11 w-full items-center justify-center gap-1.5 rounded-lg bg-gray-50 text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-100 hover:text-primary"
+        >
+          <span>
+            {showAll ? "Show fewer" : <>Show all <span className="tabular-nums">{sorted.length}</span> papers</>}
+          </span>
+          <ChevronDown
+            className={`h-4 w-4 transition-transform duration-200 ${showAll ? "rotate-180" : ""}`}
+            aria-hidden="true"
+          />
+        </button>
+      )}
+    </>
+  );
+};
+
+// Every paper array under a subject, however deeply its exam types nest.
+const papersIn = (node) => (Array.isArray(node) ? node : Object.values(node ?? {}).flatMap(papersIn));
+
+const yearSpan = (papers) => {
+  const years = papers.map(yearOf).filter(Boolean);
+  if (!years.length) return null;
+  const [first, last] = [Math.min(...years), Math.max(...years)];
+  return first === last ? `${first}` : `${first}–${last}`;
+};
+
+// A subject is a closed row until tapped, so a level reads as a list of
+// subjects rather than every paper in it — Secondary was 46 phone screens.
+// A search opens every subject with a match, and closes them when cleared.
 const SubjectCard = ({ subjectKey, subjectTitle, subjectData, onDownloadClick, searchTerm, tint }) => {
   const { perSubject } = React.useContext(DownloadCounts);
   const downloads = perSubject[subjectKey] ?? 0;
+  const panelId = React.useId();
+  const searching = Boolean(searchTerm);
+  const [open, setOpen] = useState(false);
+  const [wasSearching, setWasSearching] = useState(searching);
+  if (searching !== wasSearching) {
+    setWasSearching(searching);
+    setOpen(searching);
+  }
+
   const hasExamTypes =
     typeof subjectData === "object" && !Array.isArray(subjectData) && Object.keys(subjectData).length > 0;
-  const examTypes = hasExamTypes ? Object.keys(subjectData) : [];
+  const allPapers = papersIn(subjectData);
+  const hasMatch = (node) => papersIn(node).some((paper) => matches(paper, searchTerm));
 
-  // Filter papers based on search term
-  const filterPapers = (papers) => {
-    if (!searchTerm) return papers;
-    return papers.filter(paper => 
-      paper.title.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-  };
-
-  // Check if subject has any papers matching search
-  const hasMatchingPapers = () => {
-    if (hasExamTypes) {
-      return examTypes.some(type => 
-        Array.isArray(subjectData[type]) ? filterPapers(subjectData[type]).length > 0 : 
-        Object.values(subjectData[type] || {}).some(papers => filterPapers(papers).length > 0)
-      );
-    } else {
-      return Array.isArray(subjectData) && filterPapers(subjectData).length > 0;
-    }
-  };
-
-  // Calculate total available papers (excluding empty arrays)
-  const totalAvailablePapers = () => {
-    if (hasExamTypes) {
-      return examTypes.reduce((total, type) => {
-        if (Array.isArray(subjectData[type])) {
-          return total + subjectData[type].length;
-        } else if (typeof subjectData[type] === 'object') {
-          return total + Object.values(subjectData[type] || {}).reduce((subTotal, papers) => {
-            return subTotal + (Array.isArray(papers) ? papers.length : 0);
-          }, 0);
-        }
-        return total;
-      }, 0);
-    } else {
-      return Array.isArray(subjectData) ? subjectData.length : 0;
-    }
-  };
-
-  if (searchTerm && !hasMatchingPapers()) {
+  if (searching && !hasMatch(subjectData)) {
     return null; // Hide card if no matching papers
   }
 
-  const availablePapers = totalAvailablePapers();
+  const meta = [
+    `${allPapers.length} papers`,
+    yearSpan(allPapers),
+    downloads >= MIN_DOWNLOADS_SHOWN && `${downloads.toLocaleString()} downloads`,
+  ].filter(Boolean).join(" · ");
+
+  if (allPapers.length === 0) {
+    return (
+      <div className="self-start rounded-2xl border border-dashed border-gray-200 px-4 py-4 sm:px-5">
+        <h3 className="text-lg font-bold text-gray-500">{subjectTitle}</h3>
+        <p className="mt-0.5 text-sm text-gray-600">Coming soon</p>
+      </div>
+    );
+  }
+
+  // While searching, an exam type with no matches would open on an empty list.
+  const examTypes = hasExamTypes
+    ? Object.keys(subjectData).filter((type) => !searching || hasMatch(subjectData[type]))
+    : [];
+
+  const renderPapers = (papers, examType) =>
+    papers.length === 0 ? (
+      <ComingSoonCard examType={examType ?? "papers"} tint={tint} />
+    ) : (
+      <PaperList
+        papers={papers}
+        searchTerm={searchTerm}
+        tint={tint}
+        onDownloadClick={(paper) =>
+          onDownloadClick(paper, { subject: subjectTitle, ...(examType && { examType }) })
+        }
+      />
+    );
+
+  const renderExamType = (type) =>
+    Array.isArray(subjectData[type]) ? (
+      renderPapers(subjectData[type], type)
+    ) : (
+      <div className="space-y-4">
+        {Object.entries(subjectData[type] || {}).map(([subType, papers]) => (
+          <div key={subType}>
+            <h4 className="text-sm font-semibold text-gray-700">{subType.replace(/_/g, " ")}</h4>
+            {renderPapers(papers, `${type} - ${subType}`)}
+          </div>
+        ))}
+      </div>
+    );
 
   return (
-    <Card className="hover:shadow-xl hover:-translate-y-1 transition-all duration-300 ease-in-out rounded-2xl overflow-hidden">
-      <CardContent className="p-6 space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-          <h3 className="font-bold text-xl text-gray-900">{subjectTitle}</h3>
-          <div className="text-sm text-gray-600 bg-gray-100 px-3 py-1.5 rounded-full whitespace-nowrap self-start sm:self-auto">
-            <span className="tabular-nums">{availablePapers}</span> papers
-            {downloads >= MIN_DOWNLOADS_SHOWN && (
-              <> &middot; <span className="tabular-nums">{downloads.toLocaleString()}</span> downloads</>
-            )}
-          </div>
-        </div>
-        
-        {hasExamTypes ? (
-          <Tabs defaultValue={tabValue(examTypes[0])} className="w-full">
+    <div className="self-start overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition-shadow duration-300 hover:shadow-md">
+      <h3>
+        <button
+          type="button"
+          onClick={() => setOpen((v) => !v)}
+          aria-expanded={open}
+          aria-controls={panelId}
+          className="flex min-h-16 w-full items-center gap-3 px-4 py-3 text-left sm:px-5"
+        >
+          <span className="min-w-0 flex-1">
+            <span className="block text-lg font-bold leading-snug text-gray-900">{subjectTitle}</span>
+            <span className="mt-0.5 block text-sm text-gray-600 tabular-nums">{meta}</span>
+          </span>
+          <ChevronDown
+            className={`h-5 w-5 flex-shrink-0 text-gray-500 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
+            aria-hidden="true"
+          />
+        </button>
+      </h3>
+
+      <div id={panelId} hidden={!open} className="border-t border-gray-100 px-4 pb-4 pt-3 sm:px-5 sm:pb-5">
+        {/* One exam type needs no tab row — a lone "PRELIM" pill was just chrome. */}
+        {examTypes.length > 1 ? (
+          // Keyed on the visible tabs so a search always opens on one with matches.
+          <Tabs key={examTypes.join("|")} defaultValue={tabValue(examTypes[0])} className="w-full">
             {/* `h-auto` overrides the base `h-9`/`h-[calc(100%-1px)]`, which clip a wrapped second row. */}
-            <TabsList className="flex h-auto flex-wrap gap-2 bg-gray-100 p-2 rounded-lg w-full">
+            <TabsList className="flex h-auto w-full flex-wrap justify-start gap-1 rounded-xl bg-gray-100 p-1">
               {examTypes.map((type) => (
                 <TabsTrigger
                   key={type}
                   value={tabValue(type)}
-                  className={`h-auto flex-none rounded-full px-3 py-2 text-sm font-semibold transition-all ${tint.tab}`}
+                  className={`h-auto min-h-9 flex-none rounded-full px-3 py-1.5 text-sm font-semibold transition-all ${tint.tab}`}
                 >
-                  {type.replace(/_/g, ' ').toUpperCase()}
+                  {examLabel(type)}
                 </TabsTrigger>
               ))}
             </TabsList>
             {examTypes.map((type) => (
-              <TabsContent key={type} value={tabValue(type)} className="mt-4">
-                {Array.isArray(subjectData[type]) ? (
-                  subjectData[type].length === 0 ? (
-                    <ComingSoonCard examType={type} tint={tint} />
-                  ) : (
-                    <ul className="space-y-3">
-                      {filterPapers(subjectData[type]).map((paper, index) => (
-                        <PaperListItem
-                          key={index}
-                          paper={paper}
-                          tint={tint}
-                          onDownloadClick={() =>
-                            onDownloadClick(paper, { subject: subjectTitle, examType: type })
-                          }
-                        />
-                      ))}
-                    </ul>
-                  )
-                ) : (
-                  <div className="space-y-4">
-                    {Object.entries(subjectData[type] || {}).map(([subType, papers]) => (
-                      <div key={subType} className="space-y-2">
-                        <h4 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">
-                          {subType.replace(/_/g, ' ')}
-                        </h4>
-                        {Array.isArray(papers) && papers.length === 0 ? (
-                          <ComingSoonCard examType={`${type} ${subType}`} tint={tint} />
-                        ) : (
-                          <ul className="space-y-3">
-                            {filterPapers(papers).map((paper, index) => (
-                              <PaperListItem
-                                key={index}
-                                paper={paper}
-                                tint={tint}
-                                onDownloadClick={() =>
-                                  onDownloadClick(paper, { subject: subjectTitle, examType: `${type} - ${subType}` })
-                                }
-                              />
-                            ))}
-                          </ul>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                )}
+              <TabsContent key={type} value={tabValue(type)} className="mt-2">
+                {renderExamType(type)}
               </TabsContent>
             ))}
           </Tabs>
+        ) : examTypes.length === 1 ? (
+          renderExamType(examTypes[0])
         ) : (
-          <div>
-            {Array.isArray(subjectData) && subjectData.length === 0 ? (
-              <ComingSoonCard examType="papers" tint={tint} />
-            ) : (
-              <ul className="space-y-3">
-                {Array.isArray(subjectData) &&
-                  filterPapers(subjectData).map((paper, index) => (
-                    <PaperListItem
-                      key={index}
-                      paper={paper}
-                      tint={tint}
-                      onDownloadClick={() => onDownloadClick(paper, { subject: subjectTitle })}
-                    />
-                  ))}
-              </ul>
-            )}
-          </div>
+          renderPapers(Array.isArray(subjectData) ? subjectData : [])
         )}
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 };
 
 // Level section with paper count (only counting available papers).
 // `id` is the anchor the level answer blocks above the library link into.
 const LevelSection = ({ id, title, icon, papers, onDownloadClick, searchTerm, tint }) => {
-  // Calculate total available papers for this level (excluding empty arrays)
-  const totalPapers = Object.values(papers).reduce((total, subjectData) => {
-    if (Array.isArray(subjectData)) {
-      return total + subjectData.length;
-    } else if (typeof subjectData === 'object') {
-      return total + Object.values(subjectData).reduce((subTotal, typeData) => {
-        if (Array.isArray(typeData)) {
-          return subTotal + typeData.length;
-        } else if (typeof typeData === 'object') {
-          return subTotal + Object.values(typeData).reduce((deepTotal, papers) => {
-            return deepTotal + (Array.isArray(papers) ? papers.length : 0);
-          }, 0);
-        }
-        return subTotal;
-      }, 0);
-    }
-    return total;
-  }, 0);
+  const totalPapers = papersIn(papers).length;
 
   return (
-    <section id={id} className="space-y-8 scroll-mt-28 animate-fade-in">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-        <div className="flex items-center gap-3">
+    <section id={id} className="space-y-4 sm:space-y-6 scroll-mt-28 animate-fade-in">
+      <div className="flex items-center justify-between gap-3">
+        <div className="flex min-w-0 items-center gap-3">
           {icon}
-          <h2 className={`text-2xl sm:text-3xl font-bold ${tint.heading}`}>{title}</h2>
+          <h2 className={`text-2xl sm:text-3xl font-bold text-balance ${tint.heading}`}>{title}</h2>
         </div>
-        <div className="text-sm text-gray-600 bg-white px-3 py-2 rounded-full border whitespace-nowrap self-start sm:self-auto">
-          {totalPapers} papers available
-        </div>
+        <p className="whitespace-nowrap text-sm text-gray-600">
+          <span className="tabular-nums">{totalPapers}</span> papers
+        </p>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 gap-3 sm:gap-4 md:grid-cols-2 xl:grid-cols-3">
         {Object.entries(papers).map(([subjectKey, subjectData]) => {
           const subjectTitle = subjectKey.replace(/_/g, " ").replace(/\b\w/g, (l) => l.toUpperCase());
           return (
@@ -447,40 +470,42 @@ export default function PaperLibrary({ counts = { perPaper: {}, perSubject: {}, 
 
   return (
     <DownloadCounts.Provider value={liveCounts}>
-      <div className="space-y-16">
-        {/* Search Bar */}
-        <div className="max-w-md mx-auto">
-          <label htmlFor="paper-search" className="sr-only">Search the paper library</label>
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-            <Input
-              id="paper-search"
-              type="text"
-              placeholder="Search for specific papers..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 pr-4 py-3 w-full rounded-full border-gray-300 focus-visible:border-primary focus-visible:ring-primary/30 focus-visible:ring-[3px]"
-            />
+      <div className="space-y-10 sm:space-y-16">
+        {/* Search and level filter read as one control group. */}
+        <div className="space-y-3">
+          <div className="max-w-md mx-auto">
+            <label htmlFor="paper-search" className="sr-only">Search the paper library</label>
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+              <Input
+                id="paper-search"
+                type="search"
+                placeholder="Search by school, year or exam"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="h-12 pl-10 pr-4 w-full rounded-full border-gray-300 bg-white text-base focus-visible:border-primary focus-visible:ring-primary/30 focus-visible:ring-[3px]"
+              />
+            </div>
           </div>
+
+          <LevelFilter
+            levels={LEVEL_FILTERS}
+            value={selectedLevel}
+            onChange={setSelectedLevel}
+            label="Filter papers by level"
+          />
         </div>
 
-        <LevelFilter
-          levels={LEVEL_FILTERS}
-          value={selectedLevel}
-          onChange={setSelectedLevel}
-          label="Filter papers by level"
-        />
-
         {/* Test Papers Sections */}
-        <div className="space-y-20">
+        <div className="space-y-12 sm:space-y-20">
           {(selectedLevel === "all" || selectedLevel === "primary") && (
             <LevelSection
               id="papers-primary"
               title="Primary School"
-              icon={<BookOpen className={`h-8 w-8 ${LEVEL_TINTS.primary.icon}`} />}
+              icon={<BookOpen className={`h-7 w-7 flex-shrink-0 sm:h-8 sm:w-8 ${LEVEL_TINTS.primary.icon}`} />}
               papers={testPapers.primary}
               onDownloadClick={handleDownloadClick}
-              searchTerm={searchTerm}
+              searchTerm={searchTerm.trim()}
               tint={LEVEL_TINTS.primary}
             />
           )}
@@ -488,10 +513,10 @@ export default function PaperLibrary({ counts = { perPaper: {}, perSubject: {}, 
             <LevelSection
               id="papers-secondary"
               title="Secondary School"
-              icon={<GraduationCap className={`h-8 w-8 ${LEVEL_TINTS.secondary.icon}`} />}
+              icon={<GraduationCap className={`h-7 w-7 flex-shrink-0 sm:h-8 sm:w-8 ${LEVEL_TINTS.secondary.icon}`} />}
               papers={testPapers.secondary}
               onDownloadClick={handleDownloadClick}
-              searchTerm={searchTerm}
+              searchTerm={searchTerm.trim()}
               tint={LEVEL_TINTS.secondary}
             />
           )}
@@ -499,10 +524,10 @@ export default function PaperLibrary({ counts = { perPaper: {}, perSubject: {}, 
             <LevelSection
               id="papers-jc"
               title="Junior College (A-Level)"
-              icon={<Atom className={`h-8 w-8 ${LEVEL_TINTS.jc.icon}`} />}
+              icon={<Atom className={`h-7 w-7 flex-shrink-0 sm:h-8 sm:w-8 ${LEVEL_TINTS.jc.icon}`} />}
               papers={testPapers.jc}
               onDownloadClick={handleDownloadClick}
-              searchTerm={searchTerm}
+              searchTerm={searchTerm.trim()}
               tint={LEVEL_TINTS.jc}
             />
           )}
@@ -511,7 +536,7 @@ export default function PaperLibrary({ counts = { perPaper: {}, perSubject: {}, 
         {/* What's in the library — every figure counted from testPapers.js */}
         <section className="text-center py-16 border-t border-gray-200 rounded-2xl">
           <h3 className="text-2xl font-bold text-gray-900 mb-4">What&apos;s in the library today</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 max-w-4xl mx-auto">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-4 gap-y-8 sm:gap-8 max-w-4xl mx-auto">
             <div className="text-center">
               <div className="text-3xl font-bold text-primary tabular-nums">{paperStats.total}</div>
               <div className="text-gray-600">Papers to download</div>
