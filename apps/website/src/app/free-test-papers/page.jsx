@@ -68,7 +68,7 @@ export default async function FreeTestPapersPage() {
             <h1 className="page-title text-primary">
               Free Test Papers
             </h1>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed text-pretty">
+            <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed text-pretty">
               Free exam papers for every level &mdash; {paperStats.total} prelim and past year
               papers from Singapore schools, {paperStats.firstYear} to {paperStats.lastYear},
               sorted by level, subject and exam.
@@ -77,15 +77,15 @@ export default async function FreeTestPapersPage() {
                 so reaching a paper took two taps. They go to the shelf now. */}
             <nav
               aria-label="Jump to a level"
-              className="mx-auto grid max-w-xl grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:justify-center"
+              className="mx-auto grid max-w-xl grid-cols-4 gap-2 sm:flex sm:flex-wrap sm:justify-center"
             >
               {PAPER_SECTIONS.map((section) => (
                 <a
                   key={section.id}
                   href={LIBRARY_ANCHOR[section.id]}
-                  className="inline-flex min-h-11 items-center justify-center rounded-full border border-[#0474BA]/25 bg-white px-4 py-2 text-center text-sm font-semibold text-[#0474BA] shadow-sm transition-colors hover:border-[#0474BA] hover:bg-[#0474BA]/5"
+                  className="inline-flex min-h-11 items-center justify-center whitespace-nowrap rounded-full border border-[#0474BA]/25 bg-white px-2 py-2 text-center text-sm font-semibold text-[#0474BA] shadow-sm transition-colors hover:border-[#0474BA] hover:bg-[#0474BA]/5 sm:px-5"
                 >
-                  {section.label}
+                  {section.pill}
                 </a>
               ))}
             </nav>

@@ -480,7 +480,7 @@ export default function PaperLibrary({ counts = { perPaper: {}, perSubject: {}, 
               <Input
                 id="paper-search"
                 type="search"
-                placeholder="Search by school, year or exam"
+                placeholder="Search by school or year"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="h-12 pl-10 pr-4 w-full rounded-full border-gray-300 bg-white text-base focus-visible:border-primary focus-visible:ring-primary/30 focus-visible:ring-[3px]"
