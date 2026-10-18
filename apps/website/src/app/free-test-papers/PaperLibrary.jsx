@@ -361,15 +361,27 @@ export default function PaperLibrary({ counts = { perPaper: {}, perSubject: {}, 
   // The hero pills link to a shelf anchor. Honouring them as a filter too means
   // a parent who taps "O-Level" never renders the primary shelf they were
   // scrolling 11.5 phone screens past to reach it.
+  const [jumpTo, setJumpTo] = useState(null);
   useEffect(() => {
     const applyHash = () => {
       const level = LEVEL_FOR_ANCHOR[window.location.hash];
-      if (level) setSelectedLevel(level);
+      if (level) {
+        setSelectedLevel(level);
+        setJumpTo(window.location.hash);
+      }
     };
     applyHash();
     window.addEventListener("hashchange", applyHash);
     return () => window.removeEventListener("hashchange", applyHash);
   }, []);
+
+  // The browser jumps to the anchor before the filter removes the shelves
+  // above it, which left the reader 600px past the heading. Re-land once rendered.
+  useEffect(() => {
+    if (!jumpTo) return;
+    document.querySelector(jumpTo)?.scrollIntoView({ block: "start" });
+    setJumpTo(null);
+  }, [jumpTo, selectedLevel]);
 
   useEffect(() => {
     const savedEmail = localStorage.getItem("email");
