@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { motion, useReducedMotion } from "framer-motion";
 import { DURATION, EASE_STANDARD, LIFT, PRESS, STAGGER, enter } from "@/lib/motion";
-import MatchTimelineSection from "@/components/MatchTimelineSection";
+import ShortlistSection from "@/components/ShortlistSection";
 import TutorMapHero from "@/components/TutorMapHero";
 import { TuitionRequestSteps } from "@/components/FormSteps";
 import FormStepper from "@/components/FormStepper";
@@ -16,29 +16,14 @@ import MobileCTABar from "@/components/MobileCTABar";
 import useTuitionRequestForm from "@/components/useTuitionRequestForm";
 import { Star, CheckCircle, Users, Clock, Shield, Quote, TrendingUp, MapPin, Mail, FileText, BookOpen, ArrowRight } from "lucide-react";
 
-// Lazy-loaded sections
-import dynamic from 'next/dynamic';
 import { TestimonialsColumn } from "@/components/ui/testimonials-columns";
 import SubjectSpotlightSection from "@/components/SubjectSpotlightSection";
 import ScrollProgress from "@/components/ScrollProgress";
 
-// Loading spinner component
-const LoadingSpinner = () => (
-  <div className="section-padding flex items-center justify-center">
-    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-  </div>
-);
 
 // Remove lazy loading from FAQSection (import directly)
 import FAQSection from '@/components/FAQSection';
 
-const HowitWorksSection = dynamic(
-  () => import('@/components/HowItWorksSection'),
-  {
-    ssr: false,
-    loading: () => <LoadingSpinner />
-  }
-);
 
 
 export default function HomePageClient() {
@@ -244,7 +229,7 @@ Preferred days & timing: `;
           </div>
         </section>
         
-        <HowitWorksSection formRef={formRef} />
+        <ShortlistSection />
         
         {/* Social Proof */}
         <section className="section-padding bg-background-subtle relative">
@@ -284,7 +269,6 @@ Preferred days & timing: `;
           </div>
         </section>
         
-        <MatchTimelineSection />
         <SubjectSpotlightSection/>
 
     {/* --- Form Section with Corrected Props --- */}
