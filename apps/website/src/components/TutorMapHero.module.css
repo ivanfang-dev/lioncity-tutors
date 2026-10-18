@@ -1,10 +1,5 @@
 /* Timings follow src/lib/motion.js: base 0.3s, standard easing. */
 
-.tilt {
-  transform: perspective(1400px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg));
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
 /* The map fades out at its edges, so the camera's crop never shows a hard border. */
 .viewport {
   overflow: hidden;
@@ -80,7 +75,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .tilt,
   .camera,
   .mark {
     transition: none;

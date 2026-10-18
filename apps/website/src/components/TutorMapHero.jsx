@@ -17,7 +17,6 @@ import {
 } from '@/data/tutorMap';
 import { MATCH_REPLAYS, REPLAYS_AS_OF, formatClock } from '@/data/matchReplays';
 import { ICON_STROKE } from '@/components/guide';
-import TiltSurface from '@/components/TiltSurface';
 import styles from './TutorMapHero.module.css';
 
 const BLUE = '4, 116, 186';
@@ -338,13 +337,14 @@ export default function TutorMapHero({ stageClassName = '', onRequestArea }) {
     intro: true,
     mine: null,
     exploring: false,
+    hovering: false,
     pointer: null,
     ripples: [],
     pointerType: 'mouse',
   });
 
   const replay = MATCH_REPLAYS[index];
-  // The camera pulls back to the whole island whenever the parent reaches for the map.
+  // The camera only pulls back to the whole island when the parent asks to find their area.
   const zoomed = flying && !exploring;
   const camera = !zoomed ? { x: 0, y: 0 } : mine ? cameraAt(mine.x, mine.y) : cameraFor(replay);
 
@@ -445,7 +445,7 @@ export default function TutorMapHero({ stageClassName = '', onRequestArea }) {
     const tick = (now) => {
       const dt = Math.min(64, now - (last || now));
       last = now;
-      if (!state.intro && !state.paused && !state.mine && !state.exploring) {
+      if (!state.intro && !state.paused && !state.mine && !state.hovering) {
         state.elapsed += dt;
         if (state.elapsed >= TOTAL) {
           state.elapsed = 0;
@@ -535,14 +535,15 @@ export default function TutorMapHero({ stageClassName = '', onRequestArea }) {
     setPointing(areaAt(point.x, point.y) >= 0);
   };
 
+  // Hovering holds the replay still while it is read; it never moves the map.
   const onPointerEnter = (event) => {
-    if (event.pointerType === 'mouse') explore(true);
+    if (event.pointerType === 'mouse') live.current.hovering = true;
   };
 
-  const onPointerLeave = (event) => {
+  const onPointerLeave = () => {
     live.current.pointer = null;
+    live.current.hovering = false;
     setPointing(false);
-    if (event.pointerType === 'mouse') explore(false);
   };
 
   const onPointerDown = (event) => {
@@ -566,7 +567,7 @@ export default function TutorMapHero({ stageClassName = '', onRequestArea }) {
     state.mine = next;
     state.intro = false;
     setMine(next);
-    if (state.pointerType !== 'mouse') explore(false);
+    explore(false);
     if (!reduced) setFlying(true);
     state.start?.();
   };
@@ -576,6 +577,9 @@ export default function TutorMapHero({ stageClassName = '', onRequestArea }) {
     setPaused(live.current.paused);
   };
 
+  const pillClass =
+    'absolute left-0 top-1 z-10 flex min-h-8 items-center gap-1.5 rounded-full border border-gray-200 bg-white px-3 py-1.5 text-xs font-medium text-gray-600 shadow-[0_1px_2px_rgba(0,0,0,0.04)] sm:top-3';
+
   const rows = [
     { label: `${replay.contacted} tutors messaged`, at: replay.messaged },
     { label: 'First tutor says yes', at: replay.yes[0] },
@@ -584,8 +588,7 @@ export default function TutorMapHero({ stageClassName = '', onRequestArea }) {
 
   return (
     <figure className="relative w-full" aria-labelledby="tutor-map-caption">
-      <div className={stageClassName}>
-      <TiltSurface className={`${styles.tilt} relative`}>
+      <div className={`${stageClassName} relative`}>
         <div
           className={`${styles.viewport} relative touch-manipulation`}
           style={{ aspectRatio: `${VIEWBOX[2]} / ${VIEWBOX[3]}`, cursor: pointing ? 'pointer' : 'default' }}
@@ -597,7 +600,7 @@ export default function TutorMapHero({ stageClassName = '', onRequestArea }) {
         >
           <div
             className={`${styles.camera} absolute inset-0`}
-            style={{ transform: `translate(${camera.x * 100}%, ${camera.y * 100}%) scale(${flying ? ZOOM : 1})` }}
+            style={{ transform: `translate(${camera.x * 100}%, ${camera.y * 100}%) scale(${zoomed ? ZOOM : 1})` }}
           >
             {/* eslint-disable-next-line @next/next/no-img-element -- an SVG of dots gains nothing from the image optimiser */}
             <img
@@ -610,17 +613,18 @@ export default function TutorMapHero({ stageClassName = '', onRequestArea }) {
             <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" aria-hidden="true" />
           </div>
         </div>
-        {!mine && (
-          <p
-            className={`${styles.hint} pointer-events-none absolute left-0 top-1 flex items-center gap-1.5 rounded-full border border-gray-200 bg-white px-3 py-1.5 text-xs font-medium text-gray-600 shadow-[0_1px_2px_rgba(0,0,0,0.04)] sm:top-3`}
-            aria-hidden="true"
-          >
+        {exploring ? (
+          <p className={`${styles.hint} ${pillClass} pointer-events-none`} aria-hidden="true">
             <MapPin className="h-3.5 w-3.5 text-accent" strokeWidth={ICON_STROKE} />
             <span className="pointer-coarse:hidden">Click your neighbourhood</span>
             <span className="hidden pointer-coarse:inline">Tap your neighbourhood</span>
           </p>
+        ) : (
+          <button type="button" onClick={() => explore(true)} className={`${styles.hint} ${pillClass} transition-colors duration-200 hover:border-primary/40 hover:text-primary-deep`}>
+            <MapPin className="h-3.5 w-3.5 text-accent" strokeWidth={ICON_STROKE} aria-hidden="true" />
+            {mine ? 'Pick another area' : 'Find your neighbourhood'}
+          </button>
         )}
-      </TiltSurface>
       </div>
 
       <div
