@@ -18,10 +18,8 @@ import { Star, CheckCircle, Users, Clock, Shield, Quote, TrendingUp, MapPin, Mai
 
 // Lazy-loaded sections
 import dynamic from 'next/dynamic';
-import ReviewStrip from "@/components/ReviewStrip";
 import { TestimonialsColumn } from "@/components/ui/testimonials-columns";
 import SubjectSpotlightSection from "@/components/SubjectSpotlightSection";
-import FloatingTrustBadge from "@/components/FloatingTrustBadge";
 import ScrollProgress from "@/components/ScrollProgress";
 
 // Loading spinner component
@@ -42,41 +40,6 @@ const HowitWorksSection = dynamic(
   }
 );
 
-// Runs before paint on the client, but falls back to useEffect during SSR so React
-// doesn't warn about useLayoutEffect on the server.
-const useIsomorphicLayoutEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect;
-
-// The count-up starts from the FINAL value, not from zero: the server-rendered HTML
-// (and any crawler or no-JS visitor) must show the real figure. The reset to 0 happens
-// in a layout effect, before the browser paints, so the animation is still seen.
-const Counter = ({ end, duration = DURATION.draw, suffix = "", decimals = 0 }) => {
-  const [count, setCount] = useState(end);
-  const prefersReducedMotion = useReducedMotion();
-
-  useIsomorphicLayoutEffect(() => {
-    if (prefersReducedMotion) {
-      setCount(end);
-      return;
-    }
-    setCount(0);
-    let frame;
-    let startTime = null;
-    const animate = (currentTime) => {
-      if (!startTime) startTime = currentTime;
-      const progress = Math.min((currentTime - startTime) / (duration * 1000), 1);
-      const currentValue = progress * end;
-      setCount(decimals > 0 ? Number(currentValue.toFixed(decimals)) : Math.floor(currentValue));
-      if (progress < 1) frame = requestAnimationFrame(animate);
-    };
-    frame = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(frame);
-  }, [end, duration, decimals, prefersReducedMotion]);
-
-  // No entrance fade here: the figure is server-rendered at its real value, and an
-  // `initial: { opacity: 0 }` would ship it invisible to anyone whose JS never runs.
-  // The count-up is the animation.
-  return <span className="tabular-nums">{count}{suffix}</span>;
-};
 
 export default function HomePageClient() {
   const router = useRouter();
@@ -136,7 +99,6 @@ Preferred days & timing: `;
           formRef={formRef}
           whatsappHref={whatsappHref}
         />
-        <FloatingTrustBadge onGetStarted={scrollToForm} />
         {/* Hero Section */}
         <section className="relative flex items-center bg-background-default px-4 sm:px-6 overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-b from-background-subtle/40 to-background-default pointer-events-none" />
@@ -282,57 +244,6 @@ Preferred days & timing: `;
           </div>
         </section>
         
-        <ReviewStrip />
-        
-        {/* Stats */}
-        <section className="py-16 sm:py-20 md:py-24 bg-background-default">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6">
-            {/* The wrapper no longer animates: the four cards stagger themselves,
-                and moving the container too meant every stat travelled twice. */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
-              {[
-                { icon: TrendingUp, end: 100, suffix: "+", label: "Successful Matches", sub: "Last 3 months" },
-                { icon: Users, end: TUTOR_COUNT_NUM, suffix: "+", label: "Qualified Tutors", sub: "Vetted professionals" },
-                { icon: Clock, end: MATCH_HOURS, suffix: "h", label: "Response Time", sub: "Average match time" },
-                { icon: Star, end: 4.8, suffix: "/5", label: "Client Rating", sub: "From happy parents", decimals: 1 }
-              ].map((stat, i) => {
-                const Icon = stat.icon;
-                return (
-                  // Static outer box owns hover so the lifting card can't slip out from under the cursor.
-                  <motion.div
-                    key={i}
-                    {...enter(i, prefersReducedMotion)}
-                    whileHover="hover"
-                    className="group"
-                  >
-                  <motion.div
-                    variants={{ hover: { y: LIFT.card } }}
-                    transition={{ duration: DURATION.base, ease: EASE_STANDARD }}
-                    className="relative h-full bg-white p-5 sm:p-6 md:p-8 rounded-2xl shadow-sm group-hover:shadow-lg border border-gray-100 transition-shadow duration-300 overflow-hidden text-center"
-                  >
-                    {/* Unified subtle gradient on hover */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-
-                    <div className="relative z-10">
-                      <div className="mb-3 sm:mb-4 flex justify-center">
-                        <div className="w-10 h-10 sm:w-12 sm:h-12 bg-primary/8 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                          <Icon className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
-                        </div>
-                      </div>
-                      <div className="text-3xl sm:text-4xl md:text-5xl font-bold text-primary mb-2 tracking-tight">
-                        <Counter end={stat.end} suffix={stat.suffix} decimals={stat.decimals || 0} />
-                      </div>
-                      <p className="text-sm sm:text-base font-semibold text-gray-800 mb-0.5">{stat.label}</p>
-                      <p className="text-xs sm:text-sm text-gray-500">{stat.sub}</p>
-                    </div>
-                  </motion.div>
-                  </motion.div>
-                );
-              })}
-            </div>
-          </div>
-        </section>
-
         <HowitWorksSection formRef={formRef} />
         
         {/* Social Proof */}
@@ -502,28 +413,6 @@ Preferred days & timing: `;
           </div>
         </section>
 
-        {/* Final CTA Banner */}
-        <section className="bg-gradient-to-r from-primary to-primary/90 text-white py-16 sm:py-20 px-4 sm:px-6 text-center">
-          <div className="max-w-2xl mx-auto">
-            <h2 className="mb-4 text-white">
-              Ready to Find the Perfect Tutor?
-            </h2>
-            {/* Full white: white/80 on this blue is 3.77:1 and 18px/400 does not
-                 qualify as WCAG large text (that needs 24px, or 18.66px bold). */}
-            <p className="mb-8 text-white text-lg">
-              Get 3 qualified tutor profiles in {MATCH_TIME} — absolutely free.
-            </p>
-            <motion.div {...PRESS}>
-              <Button
-                size="cta"
-                className="text-[18.7px] font-bold bg-accent-fill hover:bg-accent-fill-hover text-white px-10 rounded-full shadow-lg hover:shadow-xl transition-all"
-                onClick={scrollToForm}
-              >
-                Request My Tutor Now
-              </Button>
-            </motion.div>
-          </div>
-        </section>
       </main>
     </>
   );
