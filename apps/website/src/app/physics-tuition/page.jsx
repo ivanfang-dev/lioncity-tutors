@@ -1,11 +1,15 @@
 import React from "react";
 import Link from 'next/link';
-import Image from 'next/image';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Star, Users, Wallet } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { GuideCTA, RelatedGuides, ICON_STROKE } from "@/components/guide";
 import GuideSchema from "@/components/seo/GuideSchema";
 import Reviews from "@/components/Reviews";
+import ShortlistArtifact from "@/components/ShortlistArtifact";
+import { PHYSICS_SHORTLIST, PHYSICS_TUTOR_COUNT } from "@/data/shortlists";
+import { REVIEW_SOURCES } from "@/data/reviews.mjs";
+
+const google = REVIEW_SOURCES.google;
 
 
 export const metadata = {
@@ -65,27 +69,34 @@ export default function PhysicsTuition() {
         }}
       />
       <div className="p-4 sm:p-6 max-w-5xl mx-auto space-y-16 sm:space-y-24">
-        {/* Section 1: Hero with Image */}
-        <section className="text-center space-y-4 sm:space-y-6">
-          <h1 className="page-title text-primary">Master Physics: Expert Tutors for Every Level in Singapore</h1>
-          <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto text-pretty">
-            From Secondary Pure/Combined Physics to JC H1/H2, IGCSE and IB Physics – our specialized tutors transform complex physical concepts including mechanics, electromagnetism, thermodynamics, and quantum physics into clear, understandable knowledge.
-          </p>
-          <div className="my-8 relative w-full max-w-3xl mx-auto aspect-video overflow-hidden rounded-xl shadow-lg">
-            <Image
-              src="/physics.webp"
-              alt="Physics tuition in Singapore - Students learning with experienced tutors"
-              fill
-              className="object-cover"
-              sizes="100vw"
-              placeholder="blur"
-              blurDataURL="/physics.webp"
-              priority
-            />
+        {/* Section 1: Hero with the example shortlist */}
+        <section className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_26rem] xl:grid-cols-[minmax(0,1fr)_30rem] xl:-mx-16 items-center gap-12 lg:gap-14 pt-4 sm:pt-8">
+          <div>
+            <h1 className="page-title text-primary">Master Physics: Expert Tutors for Every Level in Singapore</h1>
+            <p className="mt-5 text-base sm:text-lg text-gray-600 max-w-xl text-pretty">
+              From Secondary Pure/Combined Physics to JC H1/H2, IGCSE and IB Physics – our specialized tutors transform complex physical concepts including mechanics, electromagnetism, thermodynamics, and quantum physics into clear, understandable knowledge.
+            </p>
+            <Button asChild className="h-auto text-[18.7px] font-bold w-full sm:w-auto px-4 sm:px-8 py-3 sm:py-4 mt-8 bg-accent-fill hover:bg-accent-fill-hover text-white rounded-full shadow-md hover:shadow-lg hover:scale-[1.03] active:scale-[0.97] transition-[transform,box-shadow,background-color] duration-300">
+              <a href="/request-tutor">Request a Physics Tutor</a>
+            </Button>
+            <ul className="mt-6 flex flex-wrap gap-x-6 gap-y-2 text-sm text-gray-600">
+              <li>
+                <a href={google.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 underline-offset-4 hover:text-primary hover:underline">
+                  <Star className="h-4 w-4 fill-rating text-rating" strokeWidth={ICON_STROKE} aria-hidden="true" />
+                  <span className="tabular-nums">{google.rating} on Google · {google.count} reviews</span>
+                </a>
+              </li>
+              <li className="inline-flex items-center gap-1.5">
+                <Users className="h-4 w-4 text-primary" strokeWidth={ICON_STROKE} aria-hidden="true" />
+                {PHYSICS_TUTOR_COUNT} physics tutors
+              </li>
+              <li className="inline-flex items-center gap-1.5">
+                <Wallet className="h-4 w-4 text-primary" strokeWidth={ICON_STROKE} aria-hidden="true" />
+                No agency fee
+              </li>
+            </ul>
           </div>
-          <Button asChild className="h-auto text-[18.7px] font-bold w-full sm:w-auto px-4 sm:px-8 py-3 sm:py-4 mt-4 bg-accent-fill hover:bg-accent-fill-hover text-white rounded-full shadow-md hover:shadow-lg hover:scale-[1.03] active:scale-[0.97] transition-[transform,box-shadow,background-color] duration-300">
-            <a href="/request-tutor">Request a Physics Tutor</a>
-          </Button>
+          <ShortlistArtifact shortlist={PHYSICS_SHORTLIST} subject="physics" />
         </section>
 
         {/* Section 2: Comprehensive Physics Guides */}

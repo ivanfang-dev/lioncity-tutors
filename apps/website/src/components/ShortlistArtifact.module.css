@@ -1,0 +1,71 @@
+/* Choreography: card rises, the stroke draws node to node, then the tutors arrive.
+   Timings follow src/lib/motion.js: base 0.3s, draw 0.9s split over three segments, stagger 0.08s. */
+
+.tilt {
+  transform: perspective(1200px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg));
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.rise {
+  animation: rise 0.3s cubic-bezier(0.4, 0, 0.2, 1) 0.15s both;
+}
+
+.draw {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: draw 0.3s cubic-bezier(0.65, 0, 0.35, 1) both;
+  animation-delay: calc(0.45s + var(--i) * 0.3s);
+}
+
+.node {
+  animation: ping 0.3s cubic-bezier(0.4, 0, 0.2, 1) both;
+  animation-delay: calc(0.45s + var(--i) * 0.3s);
+}
+
+.arrive {
+  animation: arrive 0.9s cubic-bezier(0, 0, 0.2, 1) 1.35s both;
+}
+
+.deal {
+  animation: deal 0.3s cubic-bezier(0.4, 0, 0.2, 1) both;
+  animation-delay: calc(1.35s + var(--i) * 0.08s);
+}
+
+@keyframes rise {
+  from { transform: translateY(20px); }
+}
+
+@keyframes draw {
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes ping {
+  from { transform: scale(0.4); }
+}
+
+@keyframes arrive {
+  from { box-shadow: 0 0 0 0 rgb(241 119 32 / 0.4); }
+  to { box-shadow: 0 0 0 12px rgb(241 119 32 / 0); }
+}
+
+@keyframes deal {
+  from { transform: translateY(12px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rise,
+  .node,
+  .arrive,
+  .deal {
+    animation: none;
+  }
+
+  .draw {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+
+  .tilt {
+    transition: none;
+  }
+}
