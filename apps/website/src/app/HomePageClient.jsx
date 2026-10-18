@@ -8,6 +8,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import { DURATION, EASE_STANDARD, LIFT, PRESS, STAGGER, enter } from "@/lib/motion";
 import ShortlistSection from "@/components/ShortlistSection";
 import FeeSection from "@/components/FeeSection";
+import ReviewsWall from "@/components/ReviewsWall";
 import TutorMapHero from "@/components/TutorMapHero";
 import { TuitionRequestSteps } from "@/components/FormSteps";
 import FormStepper from "@/components/FormStepper";
@@ -17,7 +18,6 @@ import MobileCTABar from "@/components/MobileCTABar";
 import useTuitionRequestForm from "@/components/useTuitionRequestForm";
 import { Star, CheckCircle, Users, Clock, Shield, Quote, TrendingUp, MapPin, Mail, FileText, BookOpen, ArrowRight } from "lucide-react";
 
-import { TestimonialsColumn } from "@/components/ui/testimonials-columns";
 import SubjectSpotlightSection from "@/components/SubjectSpotlightSection";
 import ScrollProgress from "@/components/ScrollProgress";
 
@@ -43,17 +43,6 @@ export default function HomePageClient() {
     scrollToForm();
   };
   const scrollToFAQ = () => faqRef.current?.scrollIntoView({ behavior: 'smooth' });
-  const testimonials = [
-    { initials: 'M.T', name: 'Molly Tan', relation: 'Parent of Primary 3 and Primary 5 Student', text: "Suggestion of tutor is good. Able to match my requirement and tutor is very responsible in meeting my children's needs.", subject: 'Primary Chinese', location: 'Pasir Panjang Road' },
-    { initials: 'A', name: 'Mrs Amanda', relation: 'Parent of Primary 2 Student', text: "Found this agency from carousel! Met our amazing tutor Mr Junaith. It’s been an amazing month, and we’re so happy with the sessions that he conducted, very professional, very supportive teacher towards his students!", subject: 'Primary Maths', location: 'Tiong Bahru' },
-    { initials: 'D.L', name: 'David L.', relation: 'Parent of Primary 6 Student', text: 'No fees for parents. Tutor helped my son move up 3 grades in 2 months.', subject: 'PSLE Math', location: 'Jurong West' },
-    { initials: 'M', name: 'Mrs Madushani', relation: 'Parent of Secondary 3 Student', text: "Fast and fuss-free. Just filled in the form and someone got back within the hour. Helped me find a Sec 3 E Math and Chem tutor for my son. So far the tutor is very patient and reliable. Fee also reasonable.", subject: 'Secondary 3 Math & Chemistry', location: 'Woodlands' },
-    { initials: 'J', name: 'Mrs Juanita ', relation: 'Parent of Primary 5 Student', text: 'Mr. Jin YT is a dedicated tutor who has the patience to guide my special needs son. My son understands and enjoys his teachings.', subject: 'Primary 1 Maths and Science', location: 'Yuan Ching Road' },
-    { initials: 'K.A', name: 'Kaveesha Archana', relation: 'Parent of JC1 Student', text: 'Really glad I found LionCity Tutors. I’ve already recommended them to a few friends. As a working parent, I appreciated how easy and stress-free the entire process was — they listened to our needs and quickly found us a tutor who was a great fit for my daughter. The tutor was not only well-versed in the subject matter but also very encouraging and engaging.', subject: 'H2 Chemistry', location: 'Woodlands' },
-    { initials: 'A', name: 'Mrs Athikashri ', relation: 'Parent of Secondary 1 Student', text: 'The agency was very efficient in helping me find a tutor quickly. Communication and arrangements were smooth, and the overall experience was pleasant and hassle-free.', subject: 'Secondary 1 Maths', location: 'Sengkang Central' },
-    { initials: 'M.M', name: 'Mrs Mardiana ', relation: 'Parent of Primary 3 Student', text: 'The agency made alot of effort to ensure my expectations and preferred choice of tutoring style aligned to whom they chose for my daughter to do a trial lesson. Happy to say they made a right selection and my daughter learns while enjoying the lesson with the tutor.', subject: 'Primary 3 Maths', location: 'Serangoon Ave 2' },
-    { initials: 'R.R', name: 'Mrs Rahman', relation: 'Parent of JC1', text: 'Great follow-up and tutor matched to learning style. Highly recommended.', subject: 'H2 Chemistry', location: 'Woodlands' }
-  ];
 
   const prefersReducedMotion = useReducedMotion();
 
@@ -233,43 +222,7 @@ Preferred days & timing: `;
         <ShortlistSection />
         <FeeSection />
         
-        {/* Social Proof */}
-        <section className="section-padding bg-background-subtle relative">
-          <div className="max-w-7xl z-10 mx-auto px-4 sm:px-6">
-            <motion.div
-              {...enter(0, prefersReducedMotion)}
-              className="text-center mb-10"
-            >
-              <h2 className="text-primary">
-                Trusted by Parents Across Singapore
-              </h2>
-              <p className="mt-4 text-gray-600 text-lg max-w-xl mx-auto">
-                Verified reviews from families who found success with our tutors.
-              </p>
-            </motion.div>
-
-            {/* The mask fades the top and bottom of the column, so a 25% fade
-                against a 740px window spent ~370px of a phone screen on text
-                that is too faint to read. On mobile the window is shorter and
-                the fade is tighter, which puts more legible reviews in the same
-                scroll distance; the desktop composition is unchanged. */}
-            <div className="flex justify-center gap-6 [mask-image:linear-gradient(to_bottom,transparent,black_12%,black_88%,transparent)] sm:[mask-image:linear-gradient(to_bottom,transparent,black_25%,black_75%,transparent)] max-h-[560px] sm:max-h-[740px] overflow-hidden">
-              <TestimonialsColumn testimonials={testimonials.slice(0, 3)} duration={30} />
-              <TestimonialsColumn testimonials={testimonials.slice(3, 6)} className="hidden md:block" duration={31} />
-              <TestimonialsColumn testimonials={testimonials.slice(6, 9)} className="hidden lg:block" duration={33} />
-            </div>
-
-            <div className="mt-10 text-center">
-              <Button
-                onClick={() => window.open('https://search.google.com/local/reviews?placeid=ChIJz5sczNYR2jERc_4Ka3tDwyY','_blank')}
-                size="cta"
-                className="bg-transparent text-primary border-2 border-primary hover:bg-primary hover:text-white font-semibold py-3 rounded-full shadow-sm hover:shadow-md transition-all text-base"
-              >
-                Read More Google Reviews
-              </Button>
-            </div>
-          </div>
-        </section>
+        <ReviewsWall />
         
         <SubjectSpotlightSection/>
 
