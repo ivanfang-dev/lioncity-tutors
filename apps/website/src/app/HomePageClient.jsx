@@ -1,24 +1,21 @@
 'use client';
-import { MATCH_HOURS, MATCH_TIME, TUTOR_COUNT_LABEL, TUTOR_COUNT_NUM } from '@/data/promises';
-import React, { useState, useEffect, useLayoutEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
+import { MATCH_TIME, TUTOR_COUNT_LABEL } from '@/data/promises';
+import React, { useRef } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { motion, useReducedMotion } from "framer-motion";
-import { DURATION, EASE_STANDARD, LIFT, PRESS, STAGGER, enter } from "@/lib/motion";
+import { DURATION, EASE_STANDARD, PRESS, STAGGER, enter } from "@/lib/motion";
 import ShortlistSection from "@/components/ShortlistSection";
 import FeeSection from "@/components/FeeSection";
 import ReviewsWall from "@/components/ReviewsWall";
+import BrowseSection from "@/components/BrowseSection";
 import TutorMapHero from "@/components/TutorMapHero";
 import { TuitionRequestSteps } from "@/components/FormSteps";
 import FormStepper from "@/components/FormStepper";
-import FormBenefits from "@/components/FormBenefits";
 import TutorPopup from "@/components/TutorPopup";
 import MobileCTABar from "@/components/MobileCTABar";
 import useTuitionRequestForm from "@/components/useTuitionRequestForm";
-import { Star, CheckCircle, Users, Clock, Shield, Quote, TrendingUp, MapPin, Mail, FileText, BookOpen, ArrowRight } from "lucide-react";
+import { Star, CheckCircle, Users } from "lucide-react";
 
-import SubjectSpotlightSection from "@/components/SubjectSpotlightSection";
 import ScrollProgress from "@/components/ScrollProgress";
 
 
@@ -28,7 +25,6 @@ import FAQSection from '@/components/FAQSection';
 
 
 export default function HomePageClient() {
-  const router = useRouter();
   const formRef = useRef(null);
   const faqRef = useRef(null);
   const main = useRef(null);
@@ -42,7 +38,6 @@ export default function HomePageClient() {
     form.setFormData((prev) => ({ ...prev, location: area }));
     scrollToForm();
   };
-  const scrollToFAQ = () => faqRef.current?.scrollIntoView({ behavior: 'smooth' });
 
   const prefersReducedMotion = useReducedMotion();
 
@@ -224,7 +219,6 @@ Preferred days & timing: `;
         
         <ReviewsWall />
         
-        <SubjectSpotlightSection/>
 
     {/* --- Form Section with Corrected Props --- */}
     <section ref={formRef} className="section-padding form-section-gradient">
@@ -234,26 +228,25 @@ Preferred days & timing: `;
           className="form-card-container"
           {...enter(0, prefersReducedMotion)}
       >
-        <h2 className="text-center text-primary mb-4">
-            Ready to Find The Perfect Tutor?
-        </h2>
-        <p className="text-center text-gray-600 mb-10 text-lg">
-            Get matched with qualified tutors in {MATCH_TIME}. Just fill out the details below.
+        <h2 className="text-center text-gray-900 mb-4">Request tutors</h2>
+        <p className="text-center text-gray-600 mb-8 sm:mb-10 text-lg max-w-xl mx-auto text-pretty">
+            About three minutes. Profiles reach you on WhatsApp within {MATCH_TIME}, and matching is free.
         </p>
-        
-        {/* Benefits */}
-        <FormBenefits />
             <div className="bg-background-card rounded-xl shadow-lg p-5 sm:p-8">
                 {status.submitted ? (
-                    <div className="text-center py-10">
-                        <CheckCircle className="text-primary w-16 h-16 mx-auto mb-4" />
-                        <h2 className="text-2xl font-semibold text-gray-900 mb-2">Thank you!</h2>
-                        <p className="text-gray-600 mb-4">Our team will be in touch with suitable tutor profiles shortly via WhatsApp.</p>
-                        <Button 
-                            className="bg-accent-fill text-text-inverse hover:bg-accent-fill-hover" 
-                            onClick={resetForm}
-                        >
-                            Submit Another Request
+                    <div className="text-center py-10" role="status">
+                        {/* The tick draws itself once: the one celebration on the page, for the one action that earns it. */}
+                        <svg viewBox="0 0 64 64" className="success-tick mx-auto mb-5 h-16 w-16 text-primary" aria-hidden="true">
+                            <circle cx="32" cy="32" r="29" fill="none" stroke="currentColor" strokeWidth="3" opacity="0.15" />
+                            <circle className="success-tick-ring" cx="32" cy="32" r="29" fill="none" stroke="currentColor" strokeWidth="3" pathLength="1" />
+                            <path className="success-tick-mark" d="M20 33.5l8 8 16-17" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" pathLength="1" />
+                        </svg>
+                        <h2 className="section-title text-gray-900 mb-2">Request received</h2>
+                        <p className="text-gray-600 mb-6 max-w-sm mx-auto text-pretty">
+                            We are messaging tutors now. Their profiles reach you on WhatsApp within {MATCH_TIME}.
+                        </p>
+                        <Button variant="outline" className="rounded-full" onClick={resetForm}>
+                            Request for another child
                         </Button>
                     </div>
                 ) : (
@@ -275,82 +268,7 @@ Preferred days & timing: `;
           <FAQSection />
         </div>
 
-        {/* Free Resources */}
-        <section className="section-padding bg-background-default px-4 sm:px-6">
-          <div className="max-w-6xl mx-auto">
-            <motion.div
-              {...enter(0, prefersReducedMotion)}
-              className="text-center mb-12"
-            >
-              <h2 className="text-primary mb-4">
-                Access Our Free Resources
-              </h2>
-              <p className="text-gray-600 mt-4 text-lg max-w-2xl mx-auto">
-                Unlock your potential with our comprehensive collection of educational materials
-              </p>
-            </motion.div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {/* Free Test Papers */}
-              <motion.div
-                {...enter(0, prefersReducedMotion)}
-                whileHover={{ y: LIFT.cardStrong }}
-                className="group relative p-8 bg-white rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer border border-gray-100 overflow-hidden"
-                onClick={() => router.push("/free-test-papers")}
-              >
-                <div className="absolute inset-0 bg-gradient-to-br from-primary/3 to-primary/8 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-
-                <div className="relative z-10 mb-6">
-                  <div className="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    <FileText className="w-7 h-7 text-primary" />
-                  </div>
-                </div>
-
-                <div className="relative z-10">
-                  <h3 className="text-2xl font-bold text-gray-900 mb-3">
-                    Free Test Papers
-                  </h3>
-                  <p className="text-gray-600 leading-relaxed mb-5">
-                    Download comprehensive past year papers for all academic levels and subjects.
-                  </p>
-                  <div className="flex items-center text-primary font-medium">
-                    <span>Browse Papers</span>
-                    <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-                  </div>
-                </div>
-              </motion.div>
-
-              {/* Free Notes */}
-              <motion.div
-                {...enter(1, prefersReducedMotion)}
-                whileHover={{ y: LIFT.cardStrong }}
-                className="group relative p-8 bg-white rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer border border-gray-100 overflow-hidden"
-                onClick={() => router.push("/free-notes")}
-              >
-                <div className="absolute inset-0 bg-gradient-to-br from-primary/3 to-primary/8 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-
-                <div className="relative z-10 mb-6">
-                  <div className="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    <BookOpen className="w-7 h-7 text-primary" />
-                  </div>
-                </div>
-
-                <div className="relative z-10">
-                  <h3 className="text-2xl font-bold text-gray-900 mb-3">
-                    Free Notes
-                  </h3>
-                  <p className="text-gray-600 leading-relaxed mb-5">
-                    Access concise, high-quality revision notes curated from top schools.
-                  </p>
-                  <div className="flex items-center text-primary font-medium">
-                    <span>View Notes</span>
-                    <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-                  </div>
-                </div>
-              </motion.div>
-            </div>
-          </div>
-        </section>
+        <BrowseSection />
 
       </main>
     </>

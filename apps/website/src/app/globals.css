@@ -466,3 +466,25 @@ a:focus-visible {
 .animate-fadeIn {
   animation: fadeIn 0.15s ease-out;
 }
+
+/* Request received: the ring closes, then the tick draws. Reduced motion shows it drawn. */
+.success-tick-ring,
+.success-tick-mark {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .success-tick-ring {
+    transform: rotate(-90deg);
+    transform-origin: center;
+    animation: success-draw 0.6s cubic-bezier(0.65, 0, 0.35, 1) both;
+  }
+  .success-tick-mark {
+    animation: success-draw 0.3s cubic-bezier(0.65, 0, 0.35, 1) 0.5s both;
+  }
+}
+@keyframes success-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+}
