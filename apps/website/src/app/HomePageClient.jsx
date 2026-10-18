@@ -7,6 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { motion, useReducedMotion } from "framer-motion";
 import { DURATION, EASE_STANDARD, LIFT, PRESS, STAGGER, enter } from "@/lib/motion";
 import ShortlistSection from "@/components/ShortlistSection";
+import FeeSection from "@/components/FeeSection";
 import TutorMapHero from "@/components/TutorMapHero";
 import { TuitionRequestSteps } from "@/components/FormSteps";
 import FormStepper from "@/components/FormStepper";
@@ -230,6 +231,7 @@ Preferred days & timing: `;
         </section>
         
         <ShortlistSection />
+        <FeeSection />
         
         {/* Social Proof */}
         <section className="section-padding bg-background-subtle relative">
