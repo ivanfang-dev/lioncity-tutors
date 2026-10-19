@@ -120,7 +120,7 @@ export default function FAQSection() {
         <div className="lg:col-span-4">
           <h2 className="text-balance text-gray-900">Questions parents ask</h2>
           <p className="mt-4 text-lg leading-relaxed text-gray-600 text-pretty">
-            Anything else? Message us on WhatsApp and a person replies.
+            Anything else? Message us on WhatsApp!
           </p>
         </div>
         <motion.div
