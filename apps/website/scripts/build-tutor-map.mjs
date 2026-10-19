@@ -15,8 +15,8 @@ import Tutor from '../../../packages/shared/models/Tutor.js';
 const [geojsonPath] = process.argv.slice(2);
 if (!geojsonPath) throw new Error('Usage: build-tutor-map.mjs <planning-areas.geojson>');
 
-// Bounds clip the far southern islands; the grid pitch is about 520m.
-const BOUNDS = { west: 103.6, east: 104.09, south: 1.236, north: 1.473 };
+// Bounds clip the far southern islands and leave one dot of sea either side; the grid pitch is about 520m.
+const BOUNDS = { west: 103.6, east: 104.038667, south: 1.236, north: 1.473 };
 const PITCH_KM = 0.52;
 const KM_PER_DEG_LAT = 110.57;
 const KM_PER_DEG_LON = 111.32 * Math.cos((1.35 * Math.PI) / 180);
@@ -127,8 +127,8 @@ export const GRID = { cols: ${COLS}, rows: ${ROWS} };
 /** Lon/lat to grid units, for placing a pin on the map. */
 export function project(lon, lat) {
   return [
-    ((lon - ${BOUNDS.west}) / ${(BOUNDS.east - BOUNDS.west).toFixed(3)}) * ${COLS} - 0.5,
-    ((${BOUNDS.north} - lat) / ${(BOUNDS.north - BOUNDS.south).toFixed(3)}) * ${ROWS} - 0.5,
+    ((lon - ${BOUNDS.west}) / ${+(BOUNDS.east - BOUNDS.west).toFixed(6)}) * ${COLS} - 0.5,
+    ((${BOUNDS.north} - lat) / ${+(BOUNDS.north - BOUNDS.south).toFixed(6)}) * ${ROWS} - 0.5,
   ];
 }
 
