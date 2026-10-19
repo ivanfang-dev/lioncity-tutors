@@ -18,7 +18,7 @@
  */
 
 /** Human-readable review date, shown wherever the counts surface. */
-export const REVIEWS_REVIEWED = 'August 2026';
+export const REVIEWS_REVIEWED = 'October 2026';
 
 /** The rating shown as the headline figure. Google is the public, third-party
  *  verifiable one, so it is the star rating the site quotes. */
@@ -31,7 +31,7 @@ export const REVIEW_SOURCES = {
     // leave-a-review form — that one belongs in the parent review-ask flow, not
     // here, where a visitor expects to read reviews.
     url: 'https://maps.app.goo.gl/mTchEQQaKCCoaxTeA',
-    count: 27,
+    count: 29,
     rating: 4.8,
   },
   carousell: {
@@ -40,7 +40,7 @@ export const REVIEW_SOURCES = {
     // site quotes one star figure, Google's, so two competing averages never
     // appear side by side.
     url: 'https://www.carousell.sg/u/lioncity_tutors/?tab=reviews',
-    count: 37,
+    count: 38,
     rating: null,
   },
 };
@@ -59,10 +59,10 @@ export const GOOGLE_REVIEW_LINK = 'https://g.page/r/CXP-Cmt7Q8MmEAE/review';
 // review. Never pad a truncated quote with invented wording.
 export const REVIEWS = [
   {
-    quote: 'I would like to express my sincere appreciation for Ivan’s prompt and efficient assistance in sourcing a Biology tutor. His swift response made the entire process seamless and reassuring.',
-    author: 'Sha',
+    quote: 'I wanted to share that Ahil is really enjoying his new teacher. Madam Shireen is teaching very well and the children are learning a lot. Ahil looks forward to her class every day. Thank you Madam for your hard work and dedication! 🌻 Thank you 🙏',
+    author: 'Jharna',
     source: 'google',
-    truncated: true,
+    truncated: false,
   },
   {
     quote: 'The agency made alot of effort to ensure my expectations and preferred choice of tutoring style aligned to whom they chose for my daughter to do a trial lesson. Happy to say they made a right selection and my daughter learns while enjoying the lesson with the tutor.',

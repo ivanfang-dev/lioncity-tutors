@@ -739,8 +739,8 @@ export default function TutorMapHero({ stageClassName = '', onRequestArea }) {
       </div>
 
       <figcaption id="tutor-map-caption" className="mt-3 text-xs leading-relaxed text-gray-500 text-pretty sm:text-right">
-        Real requests from {REPLAYS_AS_OF}, replayed at speed; times are from our matching records. Each blue dot is one
-        of {IN_PERSON_TUTORS} active tutors, placed in an area they cover, never at an address.
+        Real requests from {REPLAYS_AS_OF}, sped up. Times are from our matching records. Each blue dot is one of
+        our {IN_PERSON_TUTORS} active tutors, placed in an area they cover.
       </figcaption>
     </figure>
   );
