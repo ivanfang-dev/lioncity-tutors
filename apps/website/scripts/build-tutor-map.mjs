@@ -29,7 +29,7 @@ const AREAS = {
   WOODLANDS: 'north', SEMBAWANG: 'north', YISHUN: 'north',
   MANDAI: 'north*', 'SUNGEI KADUT': 'north*', SIMPANG: 'north*', 'LIM CHU KANG': 'north*',
   SENGKANG: 'northeast', PUNGGOL: 'northeast', HOUGANG: 'northeast', SERANGOON: 'northeast',
-  SELETAR: 'northeast*', 'NORTH-EASTERN ISLANDS': 'northeast*',
+  SELETAR: 'northeast*',
   TAMPINES: 'east', 'PASIR RIS': 'east', BEDOK: 'east', 'MARINE PARADE': 'east',
   CHANGI: 'east*', 'CHANGI BAY': 'east*', 'PAYA LEBAR': 'east*',
   'JURONG EAST': 'west', 'JURONG WEST': 'west', CLEMENTI: 'west', 'BOON LAY': 'west', TENGAH: 'west',
@@ -43,9 +43,12 @@ const AREAS = {
   'SINGAPORE RIVER': 'south*', 'DOWNTOWN CORE': 'south*', 'MARINA SOUTH': 'south*',
   'MARINA EAST': 'south*', 'STRAITS VIEW': 'south*', 'SOUTHERN ISLANDS': 'south*',
 };
+// Ubin and Tekong read as another country at this scale, so they stay off the map.
+const OFF_MAP = new Set(['NORTH-EASTERN ISLANDS']);
 
 const geo = JSON.parse(fs.readFileSync(geojsonPath, 'utf8'));
-const areas = geo.features.map((f) => {
+const features = geo.features.filter((f) => !OFF_MAP.has(f.properties.PLN_AREA_N));
+const areas = features.map((f) => {
   const name = f.properties.PLN_AREA_N;
   const tag = AREAS[name];
   if (!tag) throw new Error(`Unmapped planning area: ${name}`);
