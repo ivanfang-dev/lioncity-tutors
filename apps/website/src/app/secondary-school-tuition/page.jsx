@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import GuideSchema from "@/components/seo/GuideSchema";
 import LevelRequestForm from '@/components/LevelRequestForm';
-import { MATCH_TIME } from '@/data/promises';
+import { MATCH_TIME, FIRST_LESSON } from '@/data/promises';
 import { RATE_CARD, RATES_REVIEWED } from '../tuition-rates/rates.mjs';
 import {
   PLACEMENT_SAMPLE, PLACEMENTS_REVIEWED, observedFor, observedSpan, sampleLabel,
@@ -68,7 +68,7 @@ const faqs = [
   },
   {
     q: 'Is there a trial lesson?',
-    a: 'Yes. A first lesson lets both sides check the fit before committing to a regular slot. Most mismatches are obvious within one session, and it is far cheaper to find out then.',
+    a: `Yes. ${FIRST_LESSON} Most mismatches are obvious within one session.`,
   },
   {
     q: 'How quickly can you find a tutor?',

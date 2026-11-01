@@ -27,6 +27,9 @@ export const TUTOR_COUNT = `${TUTOR_COUNT_NUM}+`;
 /** Full trust-marker phrase, e.g. "400+ vetted tutors". */
 export const TUTOR_COUNT_LABEL = `${TUTOR_COUNT} vetted tutors`;
 
+/** First-lesson policy. Parents call it a "trial", but it is paid; never imply it is free. */
+export const FIRST_LESSON = 'The first lesson is paid at the tutor’s usual rate, with no commitment after it. If the fit is not right, stop there and we will send other tutors at no charge.';
+
 /**
  * MEASURED match timings — not promises.
  *

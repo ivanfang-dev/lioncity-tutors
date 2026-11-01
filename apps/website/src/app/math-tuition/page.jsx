@@ -1,4 +1,4 @@
-import { MATCH_TIME } from '@/data/promises';
+import { MATCH_TIME, FIRST_LESSON } from '@/data/promises';
 import React from "react";
 import Link from 'next/link';
 import Image from 'next/image';
@@ -48,7 +48,7 @@ const mathFaqs = [
   },
   {
     q: 'Is there a trial lesson?',
-    a: 'Yes. A first lesson lets both sides check the fit. With maths in particular, whether a tutor can explain a method a second way — rather than louder — is usually obvious within one session.',
+    a: `Yes. ${FIRST_LESSON} With maths in particular, whether a tutor can explain a method a second way — rather than louder — is usually obvious within one session.`,
   },
   {
     q: 'How fast can you find a maths tutor?',

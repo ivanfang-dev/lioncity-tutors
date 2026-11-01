@@ -1,4 +1,4 @@
-import { MATCH_TIME } from '@/data/promises';
+import { MATCH_TIME, FIRST_LESSON } from '@/data/promises';
 import React, { useState } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { DURATION, EASE_STANDARD, enter } from "@/lib/motion";
@@ -20,7 +20,7 @@ const faqs = [
   },
   {
     question: "Can I try a lesson before committing?",
-    answer: "Yes! We offer trial lessons so you can ensure the tutor is the right fit for your child before making a long-term commitment."
+    answer: `Yes. ${FIRST_LESSON}`
   }
 ];
 

@@ -1,4 +1,4 @@
-import { MATCH_TIME } from '@/data/promises';
+import { MATCH_TIME, FIRST_LESSON } from '@/data/promises';
 import { rangeFor, bandFor, priceLabel, TUTOR_TYPES, RATES_REVIEWED } from '../tuition-rates/rates.mjs';
 import Reviews from "@/components/Reviews";
 import React from "react";
@@ -43,7 +43,7 @@ const faqData = [
   },
   {
     question: "Is there a trial lesson?",
-    answer: "While we don't offer free trial lessons, you are not locked into any long-term contract. You can decide whether to continue with the tutor after the first paid lesson. Our goal is to ensure a perfect match, and we can rematch you if you're not satisfied."
+    answer: `Yes. ${FIRST_LESSON}`
   }
 ];
 
