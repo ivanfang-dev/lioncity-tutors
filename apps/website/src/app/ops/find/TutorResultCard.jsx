@@ -25,7 +25,7 @@ const CONTACT_TAGS = {
   Sent: { label: 'Messaged, no reply', className: 'bg-[#F17720]/10 text-[#b8540f]' },
 };
 
-export default function TutorResultCard({ tutor, rank, contactStatus }) {
+export default function TutorResultCard({ tutor, rank, contactStatus, message }) {
   const tag = CONTACT_TAGS[contactStatus];
   const phone = normalizePhone(tutor.contactNumber);
   const { contacted, responded } = tutor.replies;
@@ -66,7 +66,7 @@ export default function TutorResultCard({ tutor, rank, contactStatus }) {
       {phone && (
         <div className="mt-3 grid grid-cols-2 gap-2">
           <a
-            href={`https://wa.me/65${phone}`}
+            href={`https://wa.me/65${phone}${message ? `?text=${encodeURIComponent(message)}` : ''}`}
             target="_blank"
             rel="noopener noreferrer"
             className="rounded-md bg-[#25D366] px-3 py-2 text-center text-sm font-semibold text-white hover:opacity-90"

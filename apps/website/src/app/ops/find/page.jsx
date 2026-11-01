@@ -12,6 +12,12 @@ const UNMAPPABLE_COPY = {
   subject: 'That subject isn’t one tutors can list for this level.',
 };
 
+// Opening message pre-filled into each WhatsApp chat.
+function outreachMessage({ level, subject, location }) {
+  const where = location === 'Online' ? 'online' : `at ${location}`;
+  return `Hi, Ivan from LionCity Tutors here. Would you be keen to tutor ${level} ${subject} ${where}?`;
+}
+
 async function search(criteria) {
   try {
     return { data: await findTutors(criteria) };
@@ -76,7 +82,13 @@ export default async function FindPage({ searchParams }) {
             ) : (
               <ul className="grid gap-3">
                 {results.map((tutor, i) => (
-                  <TutorResultCard key={tutor.id} tutor={tutor} rank={i + 1} contactStatus={contactStatus.get(tutor.id)} />
+                  <TutorResultCard
+                    key={tutor.id}
+                    tutor={tutor}
+                    rank={i + 1}
+                    contactStatus={contactStatus.get(tutor.id)}
+                    message={outreachMessage(criteria)}
+                  />
                 ))}
               </ul>
             )}
