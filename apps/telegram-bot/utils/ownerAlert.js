@@ -14,6 +14,21 @@ export function opsLink(assignmentId) {
   return `${base.replace(/\/$/, '')}/ops/assignment/${assignmentId}`;
 }
 
+// The console's tutor search pre-filled from an assignment (or a not-yet-posted draft).
+// Multi-subject requests search their first pick. null when OPS_CONSOLE_URL isn't configured.
+export function findTutorsLink(assignment) {
+  const base = process.env.OPS_CONSOLE_URL;
+  if (!base) return null;
+  const params = new URLSearchParams();
+  const subject = assignment.subjects?.[0] || assignment.subject;
+  for (const [key, value] of Object.entries({
+    level: assignment.level, subject, location: assignment.location, rate: assignment.rate,
+  })) {
+    if (value) params.set(key, value);
+  }
+  return `${base.replace(/\/$/, '')}/ops/find?${params}`;
+}
+
 // An inline "Open in console" button row, or null when there's no console URL configured.
 export function opsButtonRow(assignmentId, label = '🖥️ Open in console') {
   const url = opsLink(assignmentId);

@@ -26,7 +26,7 @@ import { recordParentPick, recordParentReject, resumeOutreach } from '../utils/p
 import { otherPickPrompt, parseOtherPickTag, tutorNameSearch, otherPickButton } from '../utils/otherPick.js';
 import { recordCheckInWell, recordCheckInEnded, recordCheckInEndReason, recordCheckInNoReply } from '../utils/checkInOutcome.js';
 import { checkInRatingRows } from '../utils/checkInButtons.js';
-import { notifyOwner, opsButtonRow } from '../utils/ownerAlert.js';
+import { notifyOwner, opsButtonRow, findTutorsLink } from '../utils/ownerAlert.js';
 import { checkLateApplication, nextShortlistRank } from '../utils/lateInterest.js';
 import { applyRecovery } from '../utils/recovery.js';
 import { waitUntil } from '@vercel/functions';
@@ -1614,6 +1614,11 @@ async function handleAssignmentStep(bot, chatId, text, userSessions, Assignment)
         // Surfaced, not enforced: a short title is legitimate, a contradicting one usually isn't.
         const mismatch = titleMismatchWarning(assignmentData.title, assignmentData.subjects || []);
         const header = mismatch ? `${mismatch}\n\n${heading}` : heading;
+        // Check who's available in the console before deciding to post (nothing is sent).
+        const findRows = savedDrafts
+          .map(d => ({ url: findTutorsLink(d), text: groupId ? `🔎 Find tutors · ${d.subject}` : '🔎 Find tutors' }))
+          .filter(b => b.url)
+          .map(b => [b]);
         await safeSend(bot, chatId, `${header}\n\n${confirmationMsg}\n\n✅ *Ready to post?*`, {
           parse_mode: 'Markdown',
           reply_markup: {
@@ -1621,6 +1626,7 @@ async function handleAssignmentStep(bot, chatId, text, userSessions, Assignment)
               [groupId
                 ? { text: `✅ Confirm & Post ${savedDrafts.length} Assignments`, callback_data: `confirm_post_group_${groupId}` }
                 : { text: '✅ Confirm & Post Assignment', callback_data: `confirm_post_assignment_${savedDraft._id}` }],
+              ...findRows,
               [groupId
                 ? { text: '❌ Cancel', callback_data: `cancel_group_${groupId}` }
                 : { text: '❌ Cancel', callback_data: `cancel_draft_${savedDraft._id}` }]
