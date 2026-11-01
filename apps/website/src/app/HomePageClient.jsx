@@ -145,8 +145,10 @@ Preferred days & timing: `;
                   transition={fadeUpTransition}
                   className="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start mb-8"
                 >
+                  {/* whileTap makes framer focusable; the button inside is the only Tab stop. */}
                   <motion.div
                     {...PRESS}
+                    tabIndex={-1}
                     className="w-full sm:w-auto"
                   >
                     <Button

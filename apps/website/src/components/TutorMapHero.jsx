@@ -16,7 +16,9 @@ import {
   project,
 } from '@/data/tutorMap';
 import { MATCH_REPLAYS, REPLAYS_AS_OF, formatClock } from '@/data/matchReplays';
+import { ESTATES, UNSEARCHED_AREAS } from '@/data/areaSearch';
 import { ICON_STROKE } from '@/components/guide';
+import AreaSearch from '@/components/AreaSearch';
 import styles from './TutorMapHero.module.css';
 
 const BLUE = '4, 116, 186';
@@ -103,6 +105,33 @@ function areaAt(x, y) {
     if (ch !== '.') return ch.charCodeAt(0) - 48;
   }
   return -1;
+}
+
+let places;
+
+// What the area search can find. A planning area pins at its most central cell; an estate at its own point.
+function searchPlaces() {
+  if (places) return places;
+  const cells = AREA_NAMES.map(() => []);
+  for (let i = 0; i < AREA_GRID.length; i++) {
+    if (AREA_GRID[i] !== '.') cells[AREA_GRID.charCodeAt(i) - 48].push([i % GRID.cols, Math.floor(i / GRID.cols)]);
+  }
+  const areas = AREA_NAMES.flatMap((name, area) => {
+    const own = cells[area];
+    if (UNSEARCHED_AREAS.includes(name) || !own.length) return [];
+    const mx = own.reduce((sum, c) => sum + c[0], 0) / own.length;
+    const my = own.reduce((sum, c) => sum + c[1], 0) / own.length;
+    const off = ([x, y]) => Math.hypot(x - mx, y - my);
+    const [x, y] = own.reduce((best, c) => (off(c) < off(best) ? c : best));
+    return [{ name, area, x, y }];
+  });
+  const estates = ESTATES.flatMap(([name, lon, lat]) => {
+    const [x, y] = project(lon, lat);
+    const area = areaAt(x, y);
+    return area < 0 ? [] : [{ name, area, x, y, within: AREA_NAMES[area] }];
+  });
+  places = [...areas, ...estates];
+  return places;
 }
 
 const clockAt = (replay, t) => {
@@ -277,7 +306,7 @@ function drawMine(ctx, s, u, mine, t, font) {
     ring(ctx, P[0], P[1], (7 + 14 * easeOut(beat)) * u, ORANGE, 0.3 * (1 - beat), 1.5 * u);
   }
   dot(ctx, P[0], P[1] - lift, 6.5 * u, `rgb(${ORANGE})`, 3 * u);
-  chip(ctx, u, P[0], P[1] - lift - 4 * u, AREA_NAMES[mine.area], clamp01((t - 300) / 300), [], font, INK);
+  chip(ctx, u, P[0], P[1] - lift - 4 * u, mine.name, clamp01((t - 300) / 300), [], font, INK);
 }
 
 // Under a fine pointer, nearby tutors swell toward the cursor and the area under it is named.
@@ -325,7 +354,12 @@ export default function TutorMapHero({ stageClassName = '', onRequestArea }) {
   const [mine, setMine] = useState(null);
   const [pointing, setPointing] = useState(false);
   const [exploring, setExploring] = useState(false);
+  const [search, setSearch] = useState({ focus: false, coarse: false });
   const canvasRef = useRef(null);
+  const hintRef = useRef(null);
+  const requestRef = useRef(null);
+  // Where focus goes once search closes: the pick's request button, or back to the hint.
+  const refocus = useRef(null);
   const countRef = useRef(null);
   const clockRef = useRef(null);
   const progressRef = useRef(null);
@@ -499,9 +533,40 @@ export default function TutorMapHero({ stageClassName = '', onRequestArea }) {
     };
   }, []);
 
+  useEffect(() => {
+    if (exploring || !refocus.current) return;
+    // No ring after a tap: it would read as a stray outline on a phone.
+    refocus.current.current?.focus({ focusVisible: !search.coarse });
+    refocus.current = null;
+  }, [exploring, mine, search.coarse]);
+
   const explore = (on) => {
     live.current.exploring = on;
     setExploring(on);
+  };
+
+  // Typing starts at once for a mouse or keyboard; touch waits for a tap on the field, keeping the map in view.
+  const openSearch = (event) => {
+    const fine = window.matchMedia('(pointer: fine)').matches;
+    setSearch({ focus: fine || event?.detail === 0, coarse: !fine });
+    explore(true);
+  };
+
+  const closeSearch = () => {
+    refocus.current = hintRef;
+    explore(false);
+  };
+
+  // A pick from the map or the search: the pin drops there and the area's tutors light up.
+  const pick = (place) => {
+    const state = live.current;
+    const next = { area: place.area, name: place.name, region: AREA_REGIONS[place.area], x: place.x, y: place.y, born: performance.now() };
+    state.mine = next;
+    state.intro = false;
+    setMine(next);
+    explore(false);
+    if (!reduced) setFlying(true);
+    state.start?.();
   };
 
   const choose = (i) => {
@@ -554,6 +619,7 @@ export default function TutorMapHero({ stageClassName = '', onRequestArea }) {
     const state = live.current;
     // On touch, the first tap on a zoomed map opens up the whole island; the next one picks.
     if (state.pointerType !== 'mouse' && zoomed) {
+      setSearch({ focus: false, coarse: true });
       explore(true);
       return;
     }
@@ -563,13 +629,7 @@ export default function TutorMapHero({ stageClassName = '', onRequestArea }) {
       state.ripples.push({ ...point, born: performance.now() });
       return;
     }
-    const next = { area, region: AREA_REGIONS[area], x: point.x, y: point.y, born: performance.now() };
-    state.mine = next;
-    state.intro = false;
-    setMine(next);
-    explore(false);
-    if (!reduced) setFlying(true);
-    state.start?.();
+    pick({ area, name: AREA_NAMES[area], ...point });
   };
 
   const togglePause = () => {
@@ -614,13 +674,23 @@ export default function TutorMapHero({ stageClassName = '', onRequestArea }) {
           </div>
         </div>
         {exploring ? (
-          <p className={`${styles.hint} ${pillClass} pointer-events-none`} aria-hidden="true">
-            <MapPin className="h-3.5 w-3.5 text-accent" strokeWidth={ICON_STROKE} />
-            <span className="pointer-coarse:hidden">Click your neighbourhood</span>
-            <span className="hidden pointer-coarse:inline">Tap your neighbourhood</span>
-          </p>
+          <AreaSearch
+            places={searchPlaces()}
+            focus={search.focus}
+            coarse={search.coarse}
+            onPick={(place) => {
+              refocus.current = requestRef;
+              pick(place);
+            }}
+            onCarry={(text) => {
+              explore(false);
+              onRequestArea?.(text);
+            }}
+            onClose={closeSearch}
+            className={`${styles.swap} absolute left-0 top-1 z-20 sm:top-3`}
+          />
         ) : (
-          <button type="button" onClick={() => explore(true)} className={`${styles.hint} ${pillClass} transition-colors duration-200 hover:border-primary/40 hover:text-primary-deep`}>
+          <button ref={hintRef} type="button" onClick={openSearch} className={`${styles.hint} ${pillClass} transition-colors duration-200 hover:border-primary/40 hover:text-primary-deep`}>
             <MapPin className="h-3.5 w-3.5 text-accent" strokeWidth={ICON_STROKE} aria-hidden="true" />
             {mine ? 'Pick another area' : 'Find your neighbourhood'}
           </button>
@@ -636,7 +706,7 @@ export default function TutorMapHero({ stageClassName = '', onRequestArea }) {
             <div className="flex items-start justify-between gap-4">
               <div className="min-w-0">
                 <p className="text-xs text-gray-500">Your area · {REGION_LABELS[REGIONS[mine.region]]}</p>
-                <p className="mt-1 font-semibold leading-snug text-gray-900">{AREA_NAMES[mine.area]}</p>
+                <p className="mt-1 font-semibold leading-snug text-gray-900">{mine.name}</p>
               </div>
               <p className="shrink-0 text-right leading-none">
                 <span ref={countRef} className="block text-3xl font-bold tracking-tight text-primary tabular-nums">
@@ -651,11 +721,12 @@ export default function TutorMapHero({ stageClassName = '', onRequestArea }) {
             </p>
             <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2">
               <button
+                ref={requestRef}
                 type="button"
-                onClick={() => onRequestArea?.(AREA_NAMES[mine.area])}
+                onClick={() => onRequestArea?.(mine.name)}
                 className="group inline-flex min-h-11 items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-[background-color,box-shadow] duration-200 hover:bg-primary-deep hover:shadow-md"
               >
-                Request tutors in {AREA_NAMES[mine.area]}
+                Request tutors in {mine.name}
                 <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5" strokeWidth={ICON_STROKE} aria-hidden="true" />
               </button>
               <button
