@@ -28,6 +28,7 @@ function findTutorsHref(assignment) {
   const subject = assignment.subjects?.[0] || assignment.subject;
   for (const [key, value] of Object.entries({
     level: assignment.level, subject, location: assignment.location, rate: assignment.rate,
+    assignmentId: String(assignment._id),
   })) {
     if (value) params.set(key, value);
   }

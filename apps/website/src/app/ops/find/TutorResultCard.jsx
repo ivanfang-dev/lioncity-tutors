@@ -18,7 +18,15 @@ function formatRate(rate) {
 
 // One ranked tutor: the numbers the parent filters on, the profile text, and buttons that open a
 // chat in the owner's own WhatsApp/Telegram (no API, nothing sent automatically).
-export default function TutorResultCard({ tutor, rank }) {
+// Auto-outreach's contact status on the assignment we came from → tag shown on the card.
+const CONTACT_TAGS = {
+  Interested: { label: 'Already said yes', className: 'bg-[#0474BA]/10 text-[#03649f]' },
+  Declined: { label: 'Already said no', className: 'bg-[var(--color-gray-100)] text-[var(--color-text-secondary)]' },
+  Sent: { label: 'Messaged, no reply', className: 'bg-[#F17720]/10 text-[#b8540f]' },
+};
+
+export default function TutorResultCard({ tutor, rank, contactStatus }) {
+  const tag = CONTACT_TAGS[contactStatus];
   const phone = normalizePhone(tutor.contactNumber);
   const { contacted, responded } = tutor.replies;
 
@@ -27,6 +35,9 @@ export default function TutorResultCard({ tutor, rank }) {
       <div className="flex flex-wrap items-center gap-1.5">
         <span className="text-xs font-semibold text-[var(--color-text-tertiary)]">#{rank}</span>
         <p className="text-sm font-semibold text-[var(--color-text-default)]">{tutor.fullName}</p>
+        {tag && (
+          <span className={`rounded px-1.5 py-0.5 text-xs font-semibold ${tag.className}`}>{tag.label}</span>
+        )}
         {tutor.placed > 0 && (
           <span className="rounded bg-[#0474BA]/10 px-1.5 py-0.5 text-xs font-semibold text-[#03649f]">
             Placed {tutor.placed}×

@@ -2,6 +2,7 @@ import OpsHeader from '../OpsHeader';
 import FindForm from './FindForm';
 import TutorResultCard from './TutorResultCard';
 import { findTutors } from '@/lib/ops/botApi';
+import { loadAssignment } from '@/lib/ops/data';
 
 // Hand-pick tutors for an assignment (posted or not) and message them directly.
 
@@ -28,16 +29,29 @@ export default async function FindPage({ searchParams }) {
     rate: searchParams?.rate || '',
     minExperience: searchParams?.minExperience || '',
   };
+  const assignmentId = searchParams?.assignmentId || '';
   const ready = criteria.level && criteria.subject && criteria.location;
-  const { data, error } = ready ? await search(criteria) : {};
+  const [{ data, error }, assignment] = await Promise.all([
+    ready ? search(criteria) : {},
+    assignmentId ? loadAssignment(assignmentId) : null,
+  ]);
   const results = data?.results || [];
+
+  // What auto-outreach already did with each tutor on this assignment, keyed by tutor id.
+  const contactStatus = new Map(
+    (assignment?.outreach?.contacts || []).map(c => [String(c.tutorId), c.status])
+  );
 
   return (
     <>
-      <OpsHeader title="Find tutors" subtitle="Best matches first · nothing is sent automatically" backHref="/ops" />
+      <OpsHeader
+        title="Find tutors"
+        subtitle={assignment ? `Contact history from ${assignment.title}` : 'Best matches first · nothing is sent automatically'}
+        backHref={assignment ? `/ops/assignment/${assignment._id}` : '/ops'}
+      />
 
       <div className="mx-auto max-w-3xl px-4 py-6">
-        <FindForm initial={criteria} />
+        <FindForm initial={{ ...criteria, assignmentId: assignment ? String(assignment._id) : '' }} />
 
         {ready && (
           <section aria-labelledby="results" className="mt-6">
@@ -61,7 +75,9 @@ export default async function FindPage({ searchParams }) {
               </p>
             ) : (
               <ul className="grid gap-3">
-                {results.map((tutor, i) => <TutorResultCard key={tutor.id} tutor={tutor} rank={i + 1} />)}
+                {results.map((tutor, i) => (
+                  <TutorResultCard key={tutor.id} tutor={tutor} rank={i + 1} contactStatus={contactStatus.get(tutor.id)} />
+                ))}
               </ul>
             )}
           </section>

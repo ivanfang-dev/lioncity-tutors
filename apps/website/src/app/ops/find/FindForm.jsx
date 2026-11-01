@@ -23,6 +23,8 @@ export default function FindForm({ initial }) {
 
   return (
     <form method="get" action="/ops/find" className="grid gap-3 rounded-lg border border-[var(--color-border)] bg-white p-4 sm:grid-cols-2">
+      {/* Keeps the assignment's contact tags when the criteria are tweaked. */}
+      {initial.assignmentId && <input type="hidden" name="assignmentId" value={initial.assignmentId} />}
       <label className={labelClass}>
         Level
         <select name="level" required value={level} onChange={e => setLevel(e.target.value)} className={fieldClass}>
