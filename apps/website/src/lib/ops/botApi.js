@@ -102,9 +102,9 @@ export async function fetchMatchStats({ assignmentId }) {
 }
 
 // Ranked tutors for hand-typed criteria — the matcher's pool, for the owner to message directly.
-export async function findTutors({ level, subject, location, rate, minExperience }) {
+export async function findTutors({ level, subject, location, rate, minExperience, nearby }) {
   const url = botUrl('/api/find-tutors');
-  for (const [key, value] of Object.entries({ level, subject, location, rate, minExperience })) {
+  for (const [key, value] of Object.entries({ level, subject, location, rate, minExperience, nearby })) {
     if (value) url.searchParams.set(key, value);
   }
   const response = await fetch(url, { headers: authHeaders(), cache: 'no-store' });

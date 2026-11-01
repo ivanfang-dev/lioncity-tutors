@@ -18,6 +18,11 @@ function formatRate(rate) {
 
 // One ranked tutor: the numbers the parent filters on, the profile text, and buttons that open a
 // chat in the owner's own WhatsApp/Telegram (no API, nothing sent automatically).
+const REGION_LABELS = {
+  north: 'North', south: 'South', east: 'East', west: 'West', central: 'Central',
+  northeast: 'Northeast', northwest: 'Northwest', online: 'Online',
+};
+
 // Auto-outreach's contact status on the assignment we came from → tag shown on the card.
 const CONTACT_TAGS = {
   Interested: { label: 'Already said yes', className: 'bg-[#0474BA]/10 text-[#03649f]' },
@@ -31,12 +36,18 @@ export default function TutorResultCard({ tutor, rank, contactStatus, message })
   const { contacted, responded } = tutor.replies;
 
   return (
-    <li className="rounded-lg border border-[var(--color-border)] bg-white p-4">
+    // min-w-0 + anywhere-wrap: a pasted URL in a profile must not widen every card in the grid.
+    <li className="min-w-0 rounded-lg border border-[var(--color-border)] bg-white p-4 [overflow-wrap:anywhere]">
       <div className="flex flex-wrap items-center gap-1.5">
         <span className="text-xs font-semibold text-[var(--color-text-tertiary)]">#{rank}</span>
         <p className="text-sm font-semibold text-[var(--color-text-default)]">{tutor.fullName}</p>
         {tag && (
           <span className={`rounded px-1.5 py-0.5 text-xs font-semibold ${tag.className}`}>{tag.label}</span>
+        )}
+        {tutor.nearbyRegion && (
+          <span className="rounded bg-[var(--color-gray-100)] px-1.5 py-0.5 text-xs font-semibold text-[var(--color-text-secondary)]">
+            Nearby · {REGION_LABELS[tutor.nearbyRegion] || tutor.nearbyRegion}
+          </span>
         )}
         {tutor.placed > 0 && (
           <span className="rounded bg-[#0474BA]/10 px-1.5 py-0.5 text-xs font-semibold text-[#03649f]">

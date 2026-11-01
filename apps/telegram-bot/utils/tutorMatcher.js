@@ -4,7 +4,7 @@ import { TIME_SLOT_KEYS } from '../../../packages/shared/utils/timeSlots.js';
 // Level → tutor-schema key. Lives in packages/shared because the ops console reads the same
 // per-level tutor fields; re-exported below so existing importers of tutorMatcher are unaffected.
 import { getLevelCategory, getLevelCategoryLoose } from '../../../packages/shared/utils/levelCategory.js';
-import { LOCATION_TO_REGION } from './locations.js';
+import { LOCATION_TO_REGION, adjacentRegions } from './locations.js';
 import { subjectMentions } from './subjectAliases.js';
 
 // Maps subject display name to tutor schema camelCase field name
@@ -621,7 +621,8 @@ const CANDIDATE_FIELDS =
   'introduction teachingExperience trackRecord hourlyRate availableTimeSlots responseStats teachingLevels createdAt ' +
   'gender currentSchool previousSchools ' + // soft-preference matching, education and prestige scoring
   'profileFeatures ' +                      // qualityGrade feeds the quality signal in scoring
-  'stats';                                  // stats.placed drives the newcomer boost + track record
+  'stats ' +                                // stats.placed drives the newcomer boost + track record
+  'locations';                              // console search tags tutors from a nearby region
 
 // Find the best `poolSize` tutors matching the assignment's level+subject, location, and tutor
 // type, quality-ranked.
@@ -767,21 +768,32 @@ async function findMatchingTutorsWithStats(assignment, poolSize = 40, options = 
 // Same filters and ranking as outreach, for the owner to hand-pick tutors to message directly.
 // Read-only: nothing is sent and no assignment is needed.
 async function searchTutors(
-  { level, subject, location, rate, minExperience } = {},
+  { level, subject, location, rate, minExperience, includeNearby = false } = {},
   { model = Tutor, limit = 15 } = {}
 ) {
   const assignment = { level, subject, location, rate, title: subject };
-  const { unmappable, levelCategory } = buildFilterStages(assignment);
+  const { unmappable, levelCategory, region } = buildFilterStages(assignment);
   if (unmappable) return { results: [], unmappable };
+  // Same widening as the "adjacent regions" recovery: matchRegions is OR'd into the region filter.
+  if (includeNearby) assignment.matchRegions = adjacentRegions(region);
 
   const { scored } = await runMatch(assignment, MAX_CANDIDATE_FETCH, { model });
 
   const minRank = EXPERIENCE_RANK[minExperience] || 0;
   const budget = resolveBudget(assignment);
+  // The neighbouring region a tutor was pulled in from; null when they cover the exact region.
+  const nearbyRegionOf = t => (t.locations?.[region] ? null
+    : (assignment.matchRegions || []).find(r => t.locations?.[r]) || null);
 
-  const results = scored
+  const eligible = scored
     .map(s => s.tutor)
-    .filter(t => (EXPERIENCE_RANK[t.yearsOfExperience] || 0) >= minRank)
+    .filter(t => (EXPERIENCE_RANK[t.yearsOfExperience] || 0) >= minRank);
+  // Exact-region tutors first, each group still in score order.
+  const ordered = includeNearby
+    ? [...eligible.filter(t => !nearbyRegionOf(t)), ...eligible.filter(t => nearbyRegionOf(t))]
+    : eligible;
+
+  const results = ordered
     .slice(0, limit)
     .map(t => {
       const floorRate = tutorFloorRate(t, levelCategory);
@@ -798,6 +810,7 @@ async function searchTutors(
         floorRate,
         ceiling,
         overBudget: floorRate != null && ceiling != null && floorRate > ceiling,
+        nearbyRegion: includeNearby ? nearbyRegionOf(t) : null,
         introduction: t.introduction || '',
         teachingExperience: t.teachingExperience || '',
         trackRecord: t.trackRecord || '',

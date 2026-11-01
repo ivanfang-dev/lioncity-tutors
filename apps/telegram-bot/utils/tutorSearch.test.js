@@ -83,6 +83,26 @@ describe('searchTutors', () => {
     expect(results).toHaveLength(5);
   });
 
+  test('includeNearby widens the region filter to adjacent regions', async () => {
+    const queries = [];
+    const model = fakeModel([]);
+    const find = model.find;
+    model.find = (q) => { queries.push(q); return find(q); };
+    await searchTutors({ ...criteria, includeNearby: true }, { model });
+    expect(JSON.stringify(queries[0])).toEqual(expect.stringContaining('locations.central'));
+  });
+
+  test('lists exact-region tutors before nearby ones and tags the nearby region', async () => {
+    const model = fakeModel([
+      tutor('nearbyStar', { locations: { central: true }, yearsOfExperience: '10+ years' }),
+      tutor('local', { locations: { east: true } }),
+    ]);
+    const { results } = await searchTutors({ ...criteria, includeNearby: true }, { model });
+    expect(results.map(r => r.id)).toEqual(['local', 'nearbyStar']);
+    expect(results[0].nearbyRegion).toBeNull();
+    expect(results[1].nearbyRegion).toBe('central');
+  });
+
   test('reports which field could not be mapped', async () => {
     const { results, unmappable } = await searchTutors({ ...criteria, location: 'Atlantis' }, { model: fakeModel([]) });
     expect(results).toEqual([]);

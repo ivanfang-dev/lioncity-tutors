@@ -68,6 +68,17 @@ export default function FindForm({ initial }) {
         </select>
       </label>
 
+      <label className="flex items-center gap-2 text-sm text-[var(--color-text-default)] sm:col-span-2">
+        <input
+          type="checkbox"
+          name="nearby"
+          value="1"
+          defaultChecked={initial.nearby === '1'}
+          className="h-4 w-4 accent-[var(--color-primary)]"
+        />
+        Include nearby regions
+      </label>
+
       <div className="flex items-end">
         <button
           type="submit"
