@@ -72,6 +72,7 @@ export default function TutorResultCard({ tutor, rank, contactStatus, message })
       <div className="mt-3 grid gap-2">
         <ExpandableText label="Introduction" text={tutor.introduction} />
         <ExpandableText label="Teaching experience" text={tutor.teachingExperience} />
+        <ExpandableText label="Track record & achievements" text={tutor.trackRecord} />
       </div>
 
       {phone && (
