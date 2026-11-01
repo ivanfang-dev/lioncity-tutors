@@ -22,6 +22,18 @@ function Section({ title, children }) {
   );
 }
 
+// The search page pre-filled from this assignment. Multi-subject requests search their first pick.
+function findTutorsHref(assignment) {
+  const params = new URLSearchParams();
+  const subject = assignment.subjects?.[0] || assignment.subject;
+  for (const [key, value] of Object.entries({
+    level: assignment.level, subject, location: assignment.location, rate: assignment.rate,
+  })) {
+    if (value) params.set(key, value);
+  }
+  return `/ops/find?${params}`;
+}
+
 export default async function AssignmentPage({ params }) {
   const raw = await loadAssignment(params.assignmentId);
   if (!raw) notFound();
@@ -67,6 +79,13 @@ export default async function AssignmentPage({ params }) {
             <p className="mt-2 text-xs text-[var(--color-error)]">No parent contact — relay unavailable.</p>
           )}
         </div>
+
+        <Link
+          href={findTutorsHref(assignment)}
+          className="mt-3 block rounded-lg border border-[var(--color-border)] bg-white px-4 py-3 text-sm font-semibold text-[var(--color-primary)] transition-colors hover:bg-[var(--color-gray-100)]"
+        >
+          🔎 Find tutors to message directly →
+        </Link>
 
         {awaitingParent && assignment.parentContact && (
           <Section title="Record the parent’s answer">
