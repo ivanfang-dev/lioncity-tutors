@@ -100,3 +100,14 @@ export async function fetchMatchStats({ assignmentId }) {
   if (!response.ok) throw new Error(`match-stats failed (${response.status}): ${await readError(response)}`);
   return response.json();
 }
+
+// Ranked tutors for hand-typed criteria — the matcher's pool, for the owner to message directly.
+export async function findTutors({ level, subject, location, rate, minExperience }) {
+  const url = botUrl('/api/find-tutors');
+  for (const [key, value] of Object.entries({ level, subject, location, rate, minExperience })) {
+    if (value) url.searchParams.set(key, value);
+  }
+  const response = await fetch(url, { headers: authHeaders(), cache: 'no-store' });
+  if (!response.ok) throw new Error(`find-tutors failed (${response.status}): ${await readError(response)}`);
+  return response.json();
+}

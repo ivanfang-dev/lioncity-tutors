@@ -763,6 +763,52 @@ async function findMatchingTutorsWithStats(assignment, poolSize = 40, options = 
   return runMatch(assignment, poolSize, { ...options, withStats: true });
 }
 
+// --- Manual search (ops console "Find tutors") ------------------------------
+// Same filters and ranking as outreach, for the owner to hand-pick tutors to message directly.
+// Read-only: nothing is sent and no assignment is needed.
+async function searchTutors(
+  { level, subject, location, rate, minExperience } = {},
+  { model = Tutor, limit = 15 } = {}
+) {
+  const assignment = { level, subject, location, rate, title: subject };
+  const { unmappable, levelCategory } = buildFilterStages(assignment);
+  if (unmappable) return { results: [], unmappable };
+
+  const { scored } = await runMatch(assignment, MAX_CANDIDATE_FETCH, { model });
+
+  const minRank = EXPERIENCE_RANK[minExperience] || 0;
+  const budget = resolveBudget(assignment);
+
+  const results = scored
+    .map(s => s.tutor)
+    .filter(t => (EXPERIENCE_RANK[t.yearsOfExperience] || 0) >= minRank)
+    .slice(0, limit)
+    .map(t => {
+      const floorRate = tutorFloorRate(t, levelCategory);
+      const ceiling = ceilingForTutor(t, budget);
+      return {
+        id: String(t._id),
+        fullName: t.fullName,
+        contactNumber: t.contactNumber,
+        telegramLinked: Boolean(t.telegramId) && !t.telegramStale,
+        tutorType: t.tutorType || null,
+        yearsOfExperience: t.yearsOfExperience || null,
+        highestEducation: t.highestEducation || null,
+        askingRate: t.hourlyRate?.[levelCategory] || null,
+        floorRate,
+        ceiling,
+        overBudget: floorRate != null && ceiling != null && floorRate > ceiling,
+        introduction: t.introduction || '',
+        teachingExperience: t.teachingExperience || '',
+        trackRecord: t.trackRecord || '',
+        placed: t.stats?.placed || 0,
+        replies: { contacted: t.responseStats?.contacted || 0, responded: t.responseStats?.responded || 0 },
+      };
+    });
+
+  return { results, unmappable: null };
+}
+
 // --- Intake budget calibration ---------------------------------------------
 // Before outreach starts, tell the owner whether an assignment is postable at its rate: how many
 // tutors it can afford now, the typical rate for this level/region, and what raising the budget
@@ -934,6 +980,7 @@ export {
   findMatchingTutorsScored,
   findMatchingTutorsForWave,
   findMatchingTutorsWithStats,
+  searchTutors,
   budgetCalibration,
   rateGuide,
   summarizeBudget,

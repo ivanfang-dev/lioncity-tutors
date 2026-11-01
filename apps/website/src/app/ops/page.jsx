@@ -26,6 +26,13 @@ export default async function OpsPage({ searchParams }) {
           </p>
         )}
 
+        <Link
+          href="/ops/find"
+          className="mb-6 block rounded-lg border border-[var(--color-border)] bg-white px-4 py-3 text-sm font-semibold text-[var(--color-primary)] transition-colors hover:bg-[var(--color-gray-100)]"
+        >
+          🔎 Find tutors to message directly →
+        </Link>
+
         <section aria-labelledby="needs-you">
           <h2 id="needs-you" className="mb-3 text-sm font-semibold text-[var(--color-text-default)]">
             Needs you
