@@ -25,7 +25,7 @@ jest.unstable_mockModule('../utils/rateCapture.js', () => ({
   ...actualRateCapture, recordQuotedRate: jest.fn(async () => ({ matched: false })),
 }));
 
-const { default: handler } = await import('./whatsapp-webhook.js');
+const { default: handler } = await import('../api/whatsapp-webhook.js');
 
 const res = () => ({ status: jest.fn().mockReturnThis(), json: jest.fn(), send: jest.fn(), end: jest.fn() });
 // A request signed the way Meta signs it, as a readable stream like Vercel hands the handler.

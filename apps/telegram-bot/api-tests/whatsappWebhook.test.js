@@ -1,7 +1,7 @@
 import { describe, test, expect, jest, afterEach } from '@jest/globals';
 import crypto from 'crypto';
 import { Readable } from 'stream';
-import handler, { classifyInbound, isValidSignature } from './whatsapp-webhook.js';
+import handler, { classifyInbound, isValidSignature } from '../api/whatsapp-webhook.js';
 import { parseRateReply } from '../utils/rateCapture.js';
 
 const text = (body) => ({ type: 'text', text: { body } });

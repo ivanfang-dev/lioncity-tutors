@@ -1,5 +1,5 @@
 import { describe, test, expect } from '@jest/globals';
-import { parentSilenceAction, interestSummary } from './escalation-tick.js';
+import { parentSilenceAction, interestSummary } from '../api/escalation-tick.js';
 
 const H = 60 * 60 * 1000;
 const base = new Date('2026-07-16T00:00:00Z');
