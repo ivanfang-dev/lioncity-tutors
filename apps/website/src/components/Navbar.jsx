@@ -166,9 +166,9 @@ export default function Navbar() {
 
         <Link
           href="/request-tutor"
-          className="bg-accent-fill text-white px-5 py-2.5 rounded-full hover:bg-accent-fill-hover shadow-sm hover:shadow-md transition-all font-semibold whitespace-nowrap ml-3 text-sm"
+          className="bg-accent-fill text-white px-5 py-1.5 rounded-full hover:bg-accent-fill-hover shadow-sm hover:shadow-md transition-all font-bold whitespace-nowrap ml-3 text-[18.7px]"
         >
-          Get Free Tutor Matching
+          Request tutors
         </Link>
       </div>
 
@@ -206,9 +206,9 @@ export default function Navbar() {
             href="/request-tutor"
             onClick={() => setMenuOpen(false)}
             tabIndex={menuOpen ? 0 : -1}
-            className="bg-accent-fill text-white text-sm px-6 py-3 rounded-full hover:bg-accent-fill-hover shadow-sm font-semibold block text-center transition-all"
+            className="bg-accent-fill text-white text-[18.7px] px-6 py-3 rounded-full hover:bg-accent-fill-hover shadow-sm font-bold block text-center transition-all"
           >
-            Get Free Tutor Matching
+            Request tutors
           </Link>
 
           {/* Free Test Papers is the single most-clicked page on the site and sat

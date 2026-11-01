@@ -92,7 +92,7 @@ export const HUBS = {
     // This hub is a conversion page, not an editorial guide, so it carries
     // Service schema rather than the Article every other hub gets — see
     // scripts/verify-seo-cluster.mjs. It also legitimately links to itself:
-    // the site-wide "Get Free Tutor Matching" nav CTA points here from every
+    // the site-wide "Request tutors" nav CTA points here from every
     // page, including this one, so the usual hub-self-link check is skipped.
     schemaType: 'Service',
     allowSelfLink: true,

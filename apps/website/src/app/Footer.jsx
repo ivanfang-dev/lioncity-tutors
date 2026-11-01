@@ -24,7 +24,7 @@ export default function Footer() {
           <div>
             <h3 className="text-sm font-semibold text-primary uppercase tracking-wider mb-4">For Students & Parents</h3>
             <ul className="text-sm">
-              <li><Link href="/request-tutor" className="text-gray-600 hover:text-primary transition-colors min-h-11 flex items-center">Request A Tutor</Link></li>
+              <li><Link href="/request-tutor" className="text-gray-600 hover:text-primary transition-colors min-h-11 flex items-center">Request Tutors</Link></li>
               <li><Link href="/tuition-rates" className="text-gray-600 hover:text-primary transition-colors min-h-11 flex items-center">Tuition Rates</Link></li>
               <li><Link href="/blog" className="text-gray-600 hover:text-primary transition-colors min-h-11 flex items-center">Our Blog</Link></li>
               <li><Link href="/free-test-papers" className="text-gray-600 hover:text-primary transition-colors min-h-11 flex items-center">Free Test Papers</Link></li>
