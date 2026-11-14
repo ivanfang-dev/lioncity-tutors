@@ -1,10 +1,12 @@
 import './globals.css';
-import { Inter } from 'next/font/google';
+import localFont from 'next/font/local';
 import Script from 'next/script'; // 1. Make sure this import is here
 
-const inter = Inter({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
+// Inter (latin, variable) is self-hosted so the build never fetches Google Fonts.
+const inter = localFont({
+  src: './fonts/inter-latin.woff2',
+  weight: '100 900',
+  style: 'normal',
   variable: '--font-sans',
   display: 'swap',
 });
