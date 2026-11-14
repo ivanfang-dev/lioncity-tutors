@@ -11,6 +11,8 @@ import { toast } from "sonner";
 import LeadRoleField, { ROLE_REQUIRED, downloadToast } from "@/components/LeadRoleField";
 import { Download, FileText, Loader2 } from "lucide-react";
 import { gaEvent } from "@/utils/analytics";
+import TutorOffer from "@/components/TutorOffer";
+import { shouldOfferTutor } from "@/lib/quickRequest.mjs";
 import { normalizeLeadPhone } from "@/lib/phone.mjs";
 
 // A group page holds up to 19 papers, so the gate cannot be an inline form per
@@ -21,6 +23,12 @@ export default function GroupDownload({ group }) {
   const [formData, setFormData] = useState({ email: "", phone: "", role: "" });
   const [formErrors, setFormErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  // Set once a parent's download starts; swaps the dialog to the tutor offer.
+  const [offer, setOffer] = useState(null);
+  const closeDialog = () => {
+    setSelected(null);
+    setOffer(null);
+  };
 
   useEffect(() => {
     const email = localStorage.getItem("email");
@@ -84,9 +92,19 @@ export default function GroupDownload({ group }) {
         level: group.levelLabel,
       });
 
-      downloadToast(formData.role);
-
-      setSelected(null);
+      const subjectInfo = { role: formData.role, level: group.levelLabel, subject: group.subject };
+      if (shouldOfferTutor(subjectInfo)) {
+        setOffer({
+          ...subjectInfo,
+          paperTitle: selected.title,
+          email: formData.email.trim().toLowerCase(),
+          phone: formData.phone,
+          source: "test papers",
+        });
+      } else {
+        downloadToast(formData.role);
+        setSelected(null);
+      }
       setFormErrors({});
 
       const url = result.downloadUrl || selected.downloadUrl;
@@ -140,8 +158,9 @@ export default function GroupDownload({ group }) {
         ))}
       </ul>
 
-      <Dialog open={Boolean(selected)} onOpenChange={(open) => !open && setSelected(null)}>
+      <Dialog open={Boolean(selected)} onOpenChange={(open) => !open && closeDialog()}>
         <DialogContent className="rounded-2xl sm:max-w-[500px]">
+          {offer ? <TutorOffer offer={offer} onClose={closeDialog} /> : (<>
           <DialogHeader className="space-y-2">
             <DialogTitle className="text-xl font-bold text-gray-900">
               Download: {selected?.school} {group.shortSubject} {group.year} {group.examLabel}
@@ -200,6 +219,7 @@ export default function GroupDownload({ group }) {
               {isSubmitting ? "Preparing your paper…" : "Download the paper"}
             </Button>
           </form>
+          </>)}
         </DialogContent>
       </Dialog>
     </>

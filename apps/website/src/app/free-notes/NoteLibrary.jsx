@@ -19,6 +19,8 @@ import { Download, BookOpen, GraduationCap, Atom, FileText, Search, Clock } from
 import { notesData } from "../../data/notesData.mjs";
 import { LEVEL_TINTS } from "@/lib/levelTints";
 import { normalizeLeadPhone } from "@/lib/phone.mjs";
+import TutorOffer from "@/components/TutorOffer";
+import { shouldOfferTutor } from "@/lib/quickRequest.mjs";
 
 // Counted from the data rather than typed into the copy, so the page can never
 // claim more notes than it hosts.
@@ -197,6 +199,8 @@ export default function NoteLibrary() {
   const [selectedNote, setSelectedNote] = useState(null);
   const [noteInfo, setNoteInfo] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  // Set once a parent's download starts; swaps the dialog to the tutor offer.
+  const [offer, setOffer] = useState(null);
   const [selectedLevel, setSelectedLevel] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -220,6 +224,7 @@ export default function NoteLibrary() {
   const handleDownloadClick = (note, info) => {
     setSelectedNote(note);
     setNoteInfo(info);
+    setOffer(null);
     setShowModal(true);
   };
 
@@ -276,9 +281,19 @@ export default function NoteLibrary() {
       }
       const result = await response.json().catch(() => ({}));
 
-      downloadToast(formData.role);
-
-      setShowModal(false);
+      const subjectInfo = { role: formData.role, level: noteInfo.level, subject: noteInfo.subject };
+      if (shouldOfferTutor(subjectInfo)) {
+        setOffer({
+          ...subjectInfo,
+          paperTitle: selectedNote.title,
+          email: formData.email.trim().toLowerCase(),
+          phone: formData.phone,
+          source: "free notes",
+        });
+      } else {
+        downloadToast(formData.role);
+        setShowModal(false);
+      }
       setFormErrors({});
 
       // Trigger the actual file download
@@ -391,6 +406,7 @@ export default function NoteLibrary() {
       {/* Enhanced Modal */}
       <Dialog open={showModal} onOpenChange={setShowModal}>
         <DialogContent className="sm:max-w-[500px] rounded-2xl">
+          {offer ? <TutorOffer offer={offer} onClose={() => setShowModal(false)} /> : (<>
           <DialogHeader className="space-y-3">
             <DialogTitle className="text-xl font-bold text-gray-900">
               Download: {selectedNote?.title}
@@ -471,6 +487,7 @@ export default function NoteLibrary() {
               Your information is secure and won't be shared with third parties.
             </p>
           </form>
+          </>)}
         </DialogContent>
       </Dialog>
     </>

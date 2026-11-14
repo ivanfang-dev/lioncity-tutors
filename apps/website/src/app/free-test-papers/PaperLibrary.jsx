@@ -16,6 +16,8 @@ import { LEVEL_TINTS } from "@/lib/levelTints";
 import { paperKeyOf } from "@/lib/downloadKeys.mjs";
 import { getGroupUrlByPaperKey } from "@/lib/papers/registry.mjs";
 import { gaEvent } from "@/utils/analytics";
+import TutorOffer from "@/components/TutorOffer";
+import { shouldOfferTutor } from "@/lib/quickRequest.mjs";
 import { paperStats } from "./stats";
 import { normalizeLeadPhone } from "@/lib/phone.mjs";
 
@@ -346,6 +348,8 @@ export default function PaperLibrary({ counts = { perPaper: {}, perSubject: {}, 
   const [selectedPaper, setSelectedPaper] = useState(null);
   const [paperInfo, setPaperInfo] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  // Set once a parent's download starts; swaps the dialog to the tutor offer.
+  const [offer, setOffer] = useState(null);
   const [selectedLevel, setSelectedLevel] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
   // Downloads taken in this session, so a reader sees their own click land on
@@ -395,6 +399,7 @@ export default function PaperLibrary({ counts = { perPaper: {}, perSubject: {}, 
   const handleDownloadClick = (paper, info) => {
     setSelectedPaper(paper);
     setPaperInfo(info);
+    setOffer(null);
     setShowModal(true);
   };
 
@@ -456,9 +461,19 @@ export default function PaperLibrary({ counts = { perPaper: {}, perSubject: {}, 
         level: paperInfo.level,
       });
 
-      downloadToast(formData.role);
-
-      setShowModal(false);
+      const subjectInfo = { role: formData.role, level: paperInfo.level, subject: paperInfo.subject };
+      if (shouldOfferTutor(subjectInfo)) {
+        setOffer({
+          ...subjectInfo,
+          paperTitle: selectedPaper.title,
+          email: formData.email.trim().toLowerCase(),
+          phone: formData.phone,
+          source: "test papers",
+        });
+      } else {
+        downloadToast(formData.role);
+        setShowModal(false);
+      }
       setFormErrors({});
 
       const url = result.downloadUrl || selectedPaper?.downloadUrl;
@@ -581,6 +596,7 @@ export default function PaperLibrary({ counts = { perPaper: {}, perSubject: {}, 
       {/* Enhanced Modal */}
       <Dialog open={showModal} onOpenChange={setShowModal}>
         <DialogContent className="sm:max-w-[500px] rounded-2xl">
+          {offer ? <TutorOffer offer={offer} onClose={() => setShowModal(false)} /> : (<>
           <DialogHeader className="space-y-3">
             <DialogTitle className="text-xl font-bold text-gray-900">
               Download: {selectedPaper?.title}
@@ -667,6 +683,7 @@ export default function PaperLibrary({ counts = { perPaper: {}, perSubject: {}, 
               Your information is secure and won't be shared with third parties.
             </p>
           </form>
+          </>)}
         </DialogContent>
       </Dialog>
     </DownloadCounts.Provider>
