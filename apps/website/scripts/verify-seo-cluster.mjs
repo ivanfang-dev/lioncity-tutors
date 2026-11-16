@@ -12,6 +12,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { HUBS, SPOKES } from '../src/lib/seo/clusters.mjs';
 import { getBreadcrumbs } from '../src/lib/seo/links.mjs';
+import { getPaperGroups } from '../src/lib/papers/registry.mjs';
 
 const SITE_URL = 'https://www.lioncitytutors.com';
 
@@ -36,7 +37,12 @@ function discoverRoutes(dir, base = '') {
   return routes;
 }
 const APP_DIR = path.join(path.dirname(fileURLToPath(import.meta.url)), '../src/app');
-const allRoutes = discoverRoutes(APP_DIR).sort();
+// discoverRoutes skips [dynamic] segments, so the paper pages come from their registry.
+const paperRoutes = [
+  ...['primary', 'secondary', 'jc'].map((level) => `/free-test-papers/${level}`),
+  ...getPaperGroups().map((g) => g.url),
+];
+const allRoutes = [...discoverRoutes(APP_DIR), ...paperRoutes].sort();
 
 const get = (url) =>
   status(url) === '200'
