@@ -71,6 +71,7 @@ describe('isAssignmentWizardCallback', () => {
     for (const data of [
       'admin_panel', 'view_assignments', 'edit_primary_subjects', 'toggle_primary_mathematics',
       'confirm_post_assignment_abc', 'confirm_post_group_abc', 'cancel_group_abc', 'cancel_draft_abc',
+      'postonly_assignment_abc', 'postonly_group_abc',
     ]) {
       expect(isAssignmentWizardCallback(data)).toBe(false);
     }

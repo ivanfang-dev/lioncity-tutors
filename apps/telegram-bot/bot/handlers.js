@@ -1626,6 +1626,10 @@ async function handleAssignmentStep(bot, chatId, text, userSessions, Assignment)
               [groupId
                 ? { text: `✅ Confirm & Post ${savedDrafts.length} Assignments`, callback_data: `confirm_post_group_${groupId}` }
                 : { text: '✅ Confirm & Post Assignment', callback_data: `confirm_post_assignment_${savedDraft._id}` }],
+              // Channel post only: no Telegram DMs or WhatsApp sends to tutors.
+              [groupId
+                ? { text: "📢 Post only — don't contact tutors", callback_data: `postonly_group_${groupId}` }
+                : { text: "📢 Post only — don't contact tutors", callback_data: `postonly_assignment_${savedDraft._id}` }],
               ...findRows,
               [groupId
                 ? { text: '❌ Cancel', callback_data: `cancel_group_${groupId}` }
@@ -1895,10 +1899,12 @@ function formatBudgetCalibration(calib, assignment) {
 // `withGuidance` false suppresses the owner/parent extras (budget calibration, the paste-ready
 // parent blurbs) — for a split request those are about the one parent, not the one subject, so the
 // group path runs them on the first sibling only. `notify` false hands outreach back to the caller,
-// which the group path uses to run the siblings' waves in sequence. Returns the posted assignment.
+// which the group path uses to run the siblings' waves in sequence. `outreach` false posts to the
+// channel only: outreach stays Pending, so the escalation tick never messages anyone either.
+// Returns the posted assignment.
 async function confirmPostAssignment(
   bot, chatId, userSessions, Assignment, channelId, botUsername, draftId,
-  { withGuidance = true, notify = true } = {}
+  { withGuidance = true, notify = true, outreach = true } = {}
 ) {
   try {
     console.log('Channel ID being used:', channelId);
@@ -1947,7 +1953,7 @@ async function confirmPostAssignment(
     const opsRow = opsButtonRow(savedAssignment._id, '🖥️ Track in console');
     if (opsRow) confirmRows.push(opsRow);
     confirmRows.push([{ text: '🔙 Back to Admin Panel', callback_data: 'admin_panel' }]);
-    await safeSend(bot, chatId, `✅ *Assignment Posted Successfully!*\n\n📋 Assignment ID: ${savedAssignment._id}\n📢 Posted to channel\n📨 Notifying matching tutors via Telegram/WhatsApp...\n📊 Status: Open for applications`, {
+    await safeSend(bot, chatId, `✅ *Assignment Posted Successfully!*\n\n📋 Assignment ID: ${savedAssignment._id}\n📢 Posted to channel\n${outreach ? '📨 Notifying matching tutors via Telegram/WhatsApp...' : '🔕 Tutors not contacted (channel post only)'}\n📊 Status: Open for applications`, {
       parse_mode: 'Markdown',
       reply_markup: { inline_keyboard: confirmRows }
     });
@@ -1995,7 +2001,7 @@ async function confirmPostAssignment(
 
     // Register the notification work with Vercel directly so the function stays alive
     // after the webhook response is sent, without blocking on it.
-    if (notify) {
+    if (notify && outreach) {
       waitUntil(
         notifyMatchedTutors(savedAssignment, botUsername).then(result => {
           console.log(`WhatsApp notifications done: ${result.sent} sent, ${result.failed} failed`);
@@ -3197,22 +3203,25 @@ async function handleCallbackQuery(
       return await showAdminPanel(chatId, bot);
     }
 
-    if (data.startsWith('confirm_post_assignment_')) {
+    // postonly_* = same post, but no tutor outreach.
+    if (data.startsWith('confirm_post_assignment_') || data.startsWith('postonly_assignment_')) {
       if (!isAdmin(userId, ADMIN_USERS)) {
         return await safeSend(bot, chatId, 'You are not authorized to post assignments.');
       }
-      const draftId = data.replace('confirm_post_assignment_', '');
+      const outreach = data.startsWith('confirm_post_');
+      const draftId = data.replace(/^(confirm_post|postonly)_assignment_/, '');
       // Answer up front: posting does a channel send plus an LLM-drafted parent blurb, which is
       // long enough that the button would otherwise spin until the finally-block below.
       await ack();
-      return await confirmPostAssignment(bot, chatId, userSessions, Assignment, CHANNEL_ID, BOT_USERNAME, draftId);
+      return await confirmPostAssignment(bot, chatId, userSessions, Assignment, CHANNEL_ID, BOT_USERNAME, draftId, { outreach });
     }
 
-    if (data.startsWith('confirm_post_group_')) {
+    if (data.startsWith('confirm_post_group_') || data.startsWith('postonly_group_')) {
       if (!isAdmin(userId, ADMIN_USERS)) {
         return await safeSend(bot, chatId, 'You are not authorized to post assignments.');
       }
-      const groupId = data.replace('confirm_post_group_', '');
+      const outreach = data.startsWith('confirm_post_');
+      const groupId = data.replace(/^(confirm_post|postonly)_group_/, '');
       await ack();
 
       const drafts = await Assignment.find({ siblingGroupId: groupId, status: 'Draft' })
@@ -3223,10 +3232,11 @@ async function handleCallbackQuery(
       for (const [i, draft] of drafts.entries()) {
         const assignment = await confirmPostAssignment(
           bot, chatId, userSessions, Assignment, CHANNEL_ID, BOT_USERNAME, draft._id,
-          { withGuidance: i === 0, notify: false }
+          { withGuidance: i === 0, notify: false, outreach }
         );
         if (assignment) posted.push(assignment);
       }
+      if (!outreach) return;
 
       // Outreach runs in sequence, not in parallel: each sibling's wave excludes tutors already
       // contacted on the earlier ones (siblingContactedTutorIds), which only works if their
