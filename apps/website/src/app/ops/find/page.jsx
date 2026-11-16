@@ -1,6 +1,7 @@
 import OpsHeader from '../OpsHeader';
 import FindForm from './FindForm';
 import TutorResultCard from './TutorResultCard';
+import PostPanel from './PostPanel';
 import { findTutors } from '@/lib/ops/botApi';
 import { loadAssignment } from '@/lib/ops/data';
 
@@ -43,6 +44,7 @@ export default async function FindPage({ searchParams }) {
     assignmentId ? loadAssignment(assignmentId) : null,
   ]);
   const results = data?.results || [];
+  const canPost = ready && !assignment && !error && !data?.unmappable;
 
   // What auto-outreach already did with each tutor on this assignment, keyed by tutor id.
   const contactStatus = new Map(
@@ -62,11 +64,19 @@ export default async function FindPage({ searchParams }) {
 
         {ready && (
           <section aria-labelledby="results" className="mt-6">
-            <h2 id="results" className="mb-3 text-sm font-semibold text-[var(--color-text-default)]">
-              {error
-                ? 'Search failed'
-                : `${results.length} match${results.length === 1 ? '' : 'es'}`}
-            </h2>
+            <div className="mb-3 flex items-baseline justify-between gap-3">
+              <h2 id="results" className="text-sm font-semibold text-[var(--color-text-default)]">
+                {error
+                  ? 'Search failed'
+                  : `${results.length} match${results.length === 1 ? '' : 'es'}`}
+              </h2>
+              {/* The panel sits below a long list; this jumps to it. */}
+              {canPost && (
+                <a href="#post-heading" className="text-sm font-medium text-[var(--color-primary)] hover:underline">
+                  📢 Post to channel ↓
+                </a>
+              )}
+            </div>
 
             {error ? (
               <p role="alert" className="rounded-lg border border-[var(--color-error)]/30 bg-[var(--color-error)]/5 p-3 text-sm text-[var(--color-error)]">
@@ -96,6 +106,14 @@ export default async function FindPage({ searchParams }) {
               </ul>
             )}
           </section>
+        )}
+
+        {/* Channel post for a fresh search; once posted, the assignmentId in the URL hides it. */}
+        {canPost && (
+          <PostPanel key={`${criteria.level}|${criteria.subject}|${criteria.location}|${criteria.rate}`} criteria={criteria} />
+        )}
+        {assignment?.channelMessageId && (
+          <p className="mt-6 text-sm text-[var(--color-text-secondary)]">📢 Posted to the channel</p>
         )}
       </div>
     </>
