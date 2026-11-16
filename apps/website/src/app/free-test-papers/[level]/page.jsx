@@ -5,6 +5,7 @@ import GuideSchema from '@/components/seo/GuideSchema';
 import { GuideCTA, ICON_STROKE } from '@/components/guide';
 import { MATCH_TIME } from '@/data/promises';
 import { getAllPapers, getPaperGroups } from '@/lib/papers/registry.mjs';
+import { DEFAULT_OG_IMAGE } from '@/lib/seo/openGraph';
 
 const SITE_URL = 'https://www.lioncitytutors.com';
 
@@ -48,7 +49,7 @@ export async function generateMetadata({ params }) {
   return {
     title: meta.title,
     description,
-    openGraph: { title: meta.title, description, url, type: 'website' },
+    openGraph: { title: meta.title, description, url, type: 'website', images: [DEFAULT_OG_IMAGE] },
     alternates: { canonical: url },
   };
 }

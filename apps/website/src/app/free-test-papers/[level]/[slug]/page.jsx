@@ -5,6 +5,7 @@ import GuideSchema from '@/components/seo/GuideSchema';
 import { GuideCTA, ICON_STROKE } from '@/components/guide';
 import { MATCH_TIME } from '@/data/promises';
 import { getPaperGroups, getGroupBySlug } from '@/lib/papers/registry.mjs';
+import { DEFAULT_OG_IMAGE } from '@/lib/seo/openGraph';
 import GroupDownload from './GroupDownload';
 
 const SITE_URL = 'https://www.lioncitytutors.com';
@@ -51,13 +52,15 @@ export async function generateMetadata({ params }) {
   const group = getGroupBySlug(level, slug);
   if (!group) return {};
 
-  const title = `${group.shortSubject} ${group.year} ${group.examLabel} Papers — Free Download`;
+  // Long subject names drop "Download" to stay under 60 characters.
+  const base = `${group.shortSubject} ${group.year} ${group.examLabel} Papers`;
+  const title = `${base} — Free Download`.length < 60 ? `${base} — Free Download` : `${base} — Free`;
   const url = `${SITE_URL}${group.url}`;
 
   return {
     title,
     description: group.description,
-    openGraph: { title, description: group.description, url, type: 'website' },
+    openGraph: { title, description: group.description, url, type: 'website', images: [DEFAULT_OG_IMAGE] },
     alternates: { canonical: url },
   };
 }
