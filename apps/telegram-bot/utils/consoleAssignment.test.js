@@ -28,4 +28,30 @@ describe('validateConsoleAssignment', () => {
   test('an empty body reports the first missing field', () => {
     expect(validateConsoleAssignment(undefined)).toEqual({ ok: false, error: 'missing_title' });
   });
+  test('a subject list of two posts as Multiple Subjects', () => {
+    const r = validateConsoleAssignment({ ...good, subject: undefined, subjects: ['Mathematics', 'Science'] });
+    expect(r.data.subject).toBe('Multiple Subjects');
+    expect(r.data.subjects).toEqual(['Mathematics', 'Science']);
+  });
+
+  test('a one-element list is a plain subject', () => {
+    const r = validateConsoleAssignment({ ...good, subject: undefined, subjects: ['Mathematics'] });
+    expect(r.data.subject).toBe('Mathematics');
+    expect(r.data).not.toHaveProperty('subjects');
+  });
+
+  test('any subject the level lacks is rejected', () => {
+    expect(validateConsoleAssignment({ ...good, subject: undefined, subjects: ['Mathematics', 'Economics'] }))
+      .toEqual({ ok: false, error: 'invalid_subject' });
+  });
+
+  test('an empty list is a missing subject', () => {
+    expect(validateConsoleAssignment({ ...good, subject: undefined, subjects: [] }))
+      .toEqual({ ok: false, error: 'missing_subject' });
+  });
+
+  test('duplicate subjects in the list collapse', () => {
+    const r = validateConsoleAssignment({ ...good, subject: undefined, subjects: ['Science', ' Science '] });
+    expect(r.data.subject).toBe('Science');
+  });
 });

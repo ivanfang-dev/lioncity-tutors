@@ -4,15 +4,32 @@ import { formatAssignmentForChannel } from './channelFormat.js';
 // Assignments posted from the ops console: every field the channel post needs, trimmed.
 const REQUIRED = ['title', 'level', 'subject', 'location', 'rate', 'frequency'];
 
+// `subjects` (a list) or `subject` (one); 2+ distinct subjects post as Multiple Subjects.
+function pickSubjects(body) {
+  const raw = Array.isArray(body?.subjects) ? body.subjects : [body?.subject];
+  return [...new Set(raw.map(s => String(s ?? '').trim()).filter(Boolean))];
+}
+
 export function validateConsoleAssignment(body) {
   const data = {};
+  const subjects = pickSubjects(body);
   for (const field of REQUIRED) {
+    if (field === 'subject') {
+      if (!subjects.length) return { ok: false, error: 'missing_subject' };
+      continue;
+    }
     const value = String(body?.[field] ?? '').trim();
     if (!value) return { ok: false, error: `missing_${field}` };
     data[field] = value;
   }
-  if (!isValidLevelSubjectCombination(data.level, data.subject)) {
+  if (!subjects.every(s => isValidLevelSubjectCombination(data.level, s))) {
     return { ok: false, error: 'invalid_subject' };
+  }
+  if (subjects.length > 1) {
+    data.subject = 'Multiple Subjects';
+    data.subjects = subjects;
+  } else {
+    data.subject = subjects[0];
   }
   const description = String(body?.description ?? '').trim();
   if (description) data.description = description;

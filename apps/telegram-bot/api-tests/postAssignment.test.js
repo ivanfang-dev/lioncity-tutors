@@ -62,6 +62,13 @@ test('the channel post reads as Open, not Draft', async () => {
   expect(text).not.toContain('no longer open');
 });
 
+test('multi-subject post shows every subject on the channel', async () => {
+  const r = res();
+  await handler(req({ ...good, subject: undefined, subjects: ['Mathematics', 'Science'] }), r);
+  expect(r.status).toHaveBeenCalledWith(200);
+  expect(JSON.parse(global.fetch.mock.calls[0][1].body).text).toContain('Mathematics + Science');
+});
+
 test('markdown characters in fields still post, escaped', async () => {
   const r = res();
   await handler(req({ ...good, title: 'P4_Maths *urgent*' }), r);
