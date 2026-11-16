@@ -108,4 +108,42 @@ describe('searchTutors', () => {
     expect(results).toEqual([]);
     expect(unmappable).toBe('location');
   });
+  test('multi-subject: cards list taught and missing subjects', async () => {
+    const model = fakeModel([tutor('a', { teachingLevels: { secondary: { science: true } } })]);
+    const { results } = await searchTutors({ ...criteria, subject: ['Science', 'Physics'] }, { model });
+    expect(results[0].teaches).toEqual(['Science']);
+    expect(results[0].missing).toEqual(['Physics']);
+  });
+
+  test('multi-subject: full coverage ranks first', async () => {
+    const model = fakeModel([
+      tutor('partial', { teachingLevels: { secondary: { science: true } } }),
+      tutor('full', { teachingLevels: { secondary: { science: true, physics: true } } }),
+    ]);
+    const { results } = await searchTutors({ ...criteria, subject: ['Science', 'Physics'] }, { model });
+    expect(results.map(r => r.id)).toEqual(['full', 'partial']);
+  });
+
+  test('multi-subject: the query asks for any subject, never all of them', async () => {
+    const queries = [];
+    const base = fakeModel([tutor('a')]);
+    const model = { ...base, find: (q) => { queries.push(q); return base.find(q); } };
+    await searchTutors({ ...criteria, subject: ['Science', 'Physics'] }, { model });
+    expect(queries[0]['teachingLevels.secondary.physics']).toBeUndefined();
+    expect(JSON.stringify(queries[0])).toContain('"$or"');
+  });
+
+  test('single subject as a one-element list matches the string form', async () => {
+    const model = fakeModel([tutor('a')]);
+    const asString = await searchTutors(criteria, { model });
+    const asList = await searchTutors({ ...criteria, subject: ['Science'] }, { model });
+    expect(asList).toEqual(asString);
+    expect(asList.results[0].teaches).toBeUndefined();
+  });
+
+  test('duplicate subjects collapse to one', async () => {
+    const model = fakeModel([tutor('a')]);
+    const { results } = await searchTutors({ ...criteria, subject: ['Science', 'Science'] }, { model });
+    expect(results[0].teaches).toBeUndefined();
+  });
 });

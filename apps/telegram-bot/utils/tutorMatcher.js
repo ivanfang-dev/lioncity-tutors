@@ -630,7 +630,7 @@ const CANDIDATE_FIELDS =
 // `withStats` turns on the attrition funnel (see findMatchingTutorsWithStats) at the cost of one
 // countDocuments per DB-side filter, so it stays OFF for outreach and is opted into by the ops
 // console's diagnosis. `model` is injectable for tests.
-async function runMatch(assignment, poolSize, { withStats = false, model = Tutor, excludeTutorIds = null } = {}) {
+async function runMatch(assignment, poolSize, { withStats = false, model = Tutor, excludeTutorIds = null, dropFilters = [] } = {}) {
   const { unmappable, stages, requestedFields, levelCategory } = buildFilterStages(assignment);
 
   if (unmappable) {
@@ -640,7 +640,8 @@ async function runMatch(assignment, poolSize, { withStats = false, model = Tutor
     return { tutors: [], scored: [], stats: withStats ? { unmappable, stages: [], matched: 0, dominantFilter: null } : null };
   }
 
-  const query = stages[stages.length - 1].query;
+  // `dropFilters` leaves named stages out entirely (the console search never wants "all subjects").
+  const query = dropFilters.length ? queryWithout(stages, dropFilters) : stages[stages.length - 1].query;
 
   // Exposure caps: hold tutors already sitting on ≥2 unresolved offers out of new
   // waves. Applied to the FETCH only, not the attrition funnel — the funnel describes the matching
@@ -771,13 +772,19 @@ async function searchTutors(
   { level, subject, location, rate, minExperience, includeNearby = false } = {},
   { model = Tutor, limit = 15 } = {}
 ) {
-  const assignment = { level, subject, location, rate, title: subject };
+  // One subject or several; 2+ go through the matcher's Multiple Subjects path (ranked by coverage).
+  const picked = [...new Set([].concat(subject || []).map(x => String(x).trim()).filter(Boolean))];
+  const multi = picked.length > 1;
+  const assignment = multi
+    ? { level, subject: 'Multiple Subjects', subjects: picked, location, rate, title: picked.join(' & ') }
+    : { level, subject: picked[0], location, rate, title: picked[0] };
   const { unmappable, levelCategory, region } = buildFilterStages(assignment);
   if (unmappable) return { results: [], unmappable };
   // Same widening as the "adjacent regions" recovery: matchRegions is OR'd into the region filter.
   if (includeNearby) assignment.matchRegions = adjacentRegions(region);
 
-  const { scored } = await runMatch(assignment, MAX_CANDIDATE_FETCH, { model });
+  const { scored } = await runMatch(assignment, MAX_CANDIDATE_FETCH, { model, dropFilters: ['allSubjects'] });
+  const teachesOf = t => picked.filter(x => t.teachingLevels?.[levelCategory]?.[subjectToFieldName(x)] === true);
 
   const minRank = EXPERIENCE_RANK[minExperience] || 0;
   const budget = resolveBudget(assignment);
@@ -816,6 +823,7 @@ async function searchTutors(
         trackRecord: t.trackRecord || '',
         placed: t.stats?.placed || 0,
         replies: { contacted: t.responseStats?.contacted || 0, responded: t.responseStats?.responded || 0 },
+        ...(multi && { teaches: teachesOf(t), missing: picked.filter(x => !teachesOf(t).includes(x)) }),
       };
     });
 
