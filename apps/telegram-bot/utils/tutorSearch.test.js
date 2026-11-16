@@ -124,6 +124,17 @@ describe('searchTutors', () => {
     expect(results.map(r => r.id)).toEqual(['full', 'partial']);
   });
 
+  test('multi-subject: more subjects covered beats a stronger profile', async () => {
+    const strong = { yearsOfExperience: '10+ years', stats: { placed: 9 }, responseStats: { contacted: 10, responded: 10 } };
+    const model = fakeModel([
+      tutor('one', { ...strong, teachingLevels: { secondary: { science: true } } }),
+      tutor('two', { teachingLevels: { secondary: { science: true, physics: true } } }),
+      tutor('three', { teachingLevels: { secondary: { science: true, physics: true, chemistry: true } } }),
+    ]);
+    const { results } = await searchTutors({ ...criteria, subject: ['Science', 'Physics', 'Chemistry'] }, { model });
+    expect(results.map(r => r.id)).toEqual(['three', 'two', 'one']);
+  });
+
   test('multi-subject: the query asks for any subject, never all of them', async () => {
     const queries = [];
     const base = fakeModel([tutor('a')]);

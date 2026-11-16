@@ -795,10 +795,12 @@ async function searchTutors(
   const eligible = scored
     .map(s => s.tutor)
     .filter(t => (EXPERIENCE_RANK[t.yearsOfExperience] || 0) >= minRank);
-  // Exact-region tutors first, each group still in score order.
+  // Multi-subject: more picked subjects covered first; score breaks ties (sort is stable).
+  const byCoverage = list => (multi ? [...list].sort((a, b) => teachesOf(b).length - teachesOf(a).length) : list);
+  // Exact-region tutors first, each group still in coverage then score order.
   const ordered = includeNearby
-    ? [...eligible.filter(t => !nearbyRegionOf(t)), ...eligible.filter(t => nearbyRegionOf(t))]
-    : eligible;
+    ? [...byCoverage(eligible.filter(t => !nearbyRegionOf(t))), ...byCoverage(eligible.filter(t => nearbyRegionOf(t)))]
+    : byCoverage(eligible);
 
   const results = ordered
     .slice(0, limit)
