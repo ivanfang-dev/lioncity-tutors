@@ -4,6 +4,7 @@ import TutorResultCard from './TutorResultCard';
 import PostPanel from './PostPanel';
 import { findTutors } from '@/lib/ops/botApi';
 import { loadAssignment } from '@/lib/ops/data';
+import { assignmentMatchesSearch } from '@/lib/ops/postAssignment.mjs';
 
 // Hand-pick tutors for an assignment (posted or not) and message them directly.
 
@@ -39,11 +40,13 @@ export default async function FindPage({ searchParams }) {
   };
   const assignmentId = searchParams?.assignmentId || '';
   const ready = criteria.level && criteria.subject && criteria.location;
-  const [{ data, error }, assignment] = await Promise.all([
+  const [{ data, error }, loaded] = await Promise.all([
     ready ? search(criteria) : {},
     assignmentId ? loadAssignment(assignmentId) : null,
   ]);
   const results = data?.results || [];
+  // A stale assignmentId (carried by the form into a new search) is ignored once the criteria change.
+  const assignment = loaded && (!ready || assignmentMatchesSearch(loaded, criteria)) ? loaded : null;
   const canPost = ready && !assignment && !error && !data?.unmappable;
 
   // What auto-outreach already did with each tutor on this assignment, keyed by tutor id.

@@ -8,3 +8,9 @@ export function defaultTitle({ level, subject, location }) {
 export function missingPostFields(fields) {
   return REQUIRED_POST_FIELDS.filter((f) => !String(fields?.[f] ?? "").trim());
 }
+
+// Whether a loaded assignment is the request being searched; a new request must not inherit it.
+export function assignmentMatchesSearch(assignment, { level, subject, location }) {
+  const subjects = [assignment.subject, ...(assignment.subjects || [])];
+  return assignment.level === level && assignment.location === location && subjects.includes(subject);
+}
