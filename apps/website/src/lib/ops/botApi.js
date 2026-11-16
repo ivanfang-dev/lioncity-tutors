@@ -111,3 +111,15 @@ export async function findTutors({ level, subject, location, rate, minExperience
   if (!response.ok) throw new Error(`find-tutors failed (${response.status}): ${await readError(response)}`);
   return response.json();
 }
+
+// Post an assignment to the channel only; the bot never starts tutor outreach for it.
+export async function postAssignment({ title, level, subject, location, rate, frequency, description }) {
+  const response = await fetch(botUrl('/api/post-assignment'), {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...authHeaders() },
+    body: JSON.stringify({ title, level, subject, location, rate, frequency, description }),
+    cache: 'no-store',
+  });
+  if (!response.ok) throw new Error(`post-assignment failed (${response.status}): ${await readError(response)}`);
+  return response.json();
+}
