@@ -3,7 +3,7 @@ import { cookies } from 'next/headers';
 import { revalidatePath } from 'next/cache';
 import { OPS_COOKIE, verifySessionToken } from '@/lib/opsAuth';
 import { postAssignment } from '@/lib/ops/botApi';
-import { missingPostFields } from '@/lib/ops/postAssignment.mjs';
+import { missingPostFields, subjectList } from '@/lib/ops/postAssignment.mjs';
 
 // The Find page's "Post to channel" panel posts here; forwards to the bot so the shared key stays
 // server-side. Session-checked (middleware doesn't cover /api).
@@ -20,7 +20,7 @@ export async function POST(request) {
 
   try {
     const { title, level, subject, location, rate, frequency, description } = body;
-    const result = await postAssignment({ title, level, subject, location, rate, frequency, description });
+    const result = await postAssignment({ title, level, subjects: subjectList(subject), location, rate, frequency, description });
     revalidatePath('/ops');
     return NextResponse.json(result);
   } catch (err) {

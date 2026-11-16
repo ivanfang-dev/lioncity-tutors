@@ -104,20 +104,22 @@ export async function fetchMatchStats({ assignmentId }) {
 // Ranked tutors for hand-typed criteria — the matcher's pool, for the owner to message directly.
 export async function findTutors({ level, subject, location, rate, minExperience, nearby }) {
   const url = botUrl('/api/find-tutors');
-  for (const [key, value] of Object.entries({ level, subject, location, rate, minExperience, nearby })) {
+  for (const [key, value] of Object.entries({ level, location, rate, minExperience, nearby })) {
     if (value) url.searchParams.set(key, value);
   }
+  // One or several subjects, each as its own `subject` param.
+  for (const s of [].concat(subject || [])) url.searchParams.append('subject', s);
   const response = await fetch(url, { headers: authHeaders(), cache: 'no-store' });
   if (!response.ok) throw new Error(`find-tutors failed (${response.status}): ${await readError(response)}`);
   return response.json();
 }
 
 // Post an assignment to the channel only; the bot never starts tutor outreach for it.
-export async function postAssignment({ title, level, subject, location, rate, frequency, description }) {
+export async function postAssignment({ title, level, subjects, location, rate, frequency, description }) {
   const response = await fetch(botUrl('/api/post-assignment'), {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', ...authHeaders() },
-    body: JSON.stringify({ title, level, subject, location, rate, frequency, description }),
+    body: JSON.stringify({ title, level, subjects, location, rate, frequency, description }),
     cache: 'no-store',
   });
   if (!response.ok) throw new Error(`post-assignment failed (${response.status}): ${await readError(response)}`);

@@ -20,6 +20,8 @@ const labelClass = 'block text-xs font-medium text-[var(--color-text-secondary)]
 export default function FindForm({ initial }) {
   const [level, setLevel] = useState(initial.level || '');
   const subjects = LEVEL_SUBJECT_MAPPINGS[level] || [];
+  const [picked, setPicked] = useState(() => (initial.subject || []).filter(s => subjects.includes(s)));
+  const toggle = s => setPicked(p => (p.includes(s) ? p.filter(x => x !== s) : [...p, s]));
 
   return (
     <form method="get" action="/ops/find" className="grid gap-3 rounded-lg border border-[var(--color-border)] bg-white p-4 sm:grid-cols-2">
@@ -27,20 +29,35 @@ export default function FindForm({ initial }) {
       {initial.assignmentId && <input type="hidden" name="assignmentId" value={initial.assignmentId} />}
       <label className={labelClass}>
         Level
-        <select name="level" required value={level} onChange={e => setLevel(e.target.value)} className={fieldClass}>
+        <select name="level" required value={level} onChange={e => { setLevel(e.target.value); setPicked([]); }} className={fieldClass}>
           <option value="" disabled>Choose level</option>
           {EDUCATION_LEVELS.map(l => <option key={l} value={l}>{l}</option>)}
         </select>
       </label>
 
-      <label className={labelClass}>
-        Subject
-        {/* Keyed on level so the selection resets when the subject list changes. */}
-        <select key={level} name="subject" required defaultValue={subjects.includes(initial.subject) ? initial.subject : ''} disabled={!level} className={fieldClass}>
-          <option value="" disabled>{level ? 'Choose subject' : 'Pick a level first'}</option>
-          {subjects.map(s => <option key={s} value={s}>{s}</option>)}
-        </select>
-      </label>
+      {/* Several subjects: tutors teaching any of them, full matches ranked first. */}
+      <fieldset className="sm:col-span-2">
+        <legend className={labelClass}>Subjects</legend>
+        {level ? (
+          <div className="mt-1.5 grid grid-cols-2 gap-x-3 gap-y-2 sm:grid-cols-3">
+            {subjects.map(s => (
+              <label key={s} className="flex items-center gap-2 text-sm text-[var(--color-text-default)]">
+                <input
+                  type="checkbox"
+                  name="subject"
+                  value={s}
+                  checked={picked.includes(s)}
+                  onChange={() => toggle(s)}
+                  className="h-4 w-4 shrink-0 accent-[var(--color-primary)]"
+                />
+                {s}
+              </label>
+            ))}
+          </div>
+        ) : (
+          <p className="mt-1 text-sm text-[var(--color-text-tertiary)]">Pick a level first</p>
+        )}
+      </fieldset>
 
       <label className={labelClass}>
         Location
@@ -82,7 +99,8 @@ export default function FindForm({ initial }) {
       <div className="flex items-end">
         <button
           type="submit"
-          className="w-full rounded-md bg-[var(--color-primary)] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#03649f]"
+          disabled={!picked.length}
+          className="w-full rounded-md bg-[var(--color-primary)] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#03649f] disabled:cursor-not-allowed disabled:opacity-50"
         >
           Find tutors
         </button>

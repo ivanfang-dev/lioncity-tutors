@@ -69,6 +69,15 @@ export default function TutorResultCard({ tutor, rank, contactStatus, message })
         {tutor.highestEducation && <Meta label="Education">{tutor.highestEducation}</Meta>}
       </dl>
 
+      {tutor.teaches && (
+        <p className="mt-2 text-xs text-[var(--color-text-default)]">
+          <span className="text-[var(--color-text-tertiary)]">Teaches</span> {tutor.teaches.join(', ')}
+          {tutor.missing?.length > 0 && (
+            <span className="text-[var(--color-text-tertiary)]"> · not {tutor.missing.join(', ')}</span>
+          )}
+        </p>
+      )}
+
       <div className="mt-3 grid gap-2">
         <ExpandableText label="Introduction" text={tutor.introduction} />
         <ExpandableText label="Teaching experience" text={tutor.teachingExperience} />

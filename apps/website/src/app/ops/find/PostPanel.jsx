@@ -55,7 +55,7 @@ export default function PostPanel({ criteria }) {
   return (
     <section aria-labelledby="post-heading" className="mt-6 rounded-lg border border-[var(--color-border)] bg-white p-4">
       <h2 id="post-heading" className="text-sm font-semibold text-[var(--color-text-default)]">Post this to the channel</h2>
-      <p className="mt-1 text-xs text-[var(--color-text-tertiary)]">{level} · {subject} · {location}</p>
+      <p className="mt-1 text-xs text-[var(--color-text-tertiary)]">{level} · {subject.join(' & ')} · {location}</p>
 
       <form onSubmit={post} className="mt-3 grid gap-3 sm:grid-cols-2">
         <label className={`${labelClass} sm:col-span-2`}>

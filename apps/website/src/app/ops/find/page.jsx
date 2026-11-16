@@ -4,7 +4,7 @@ import TutorResultCard from './TutorResultCard';
 import PostPanel from './PostPanel';
 import { findTutors } from '@/lib/ops/botApi';
 import { loadAssignment } from '@/lib/ops/data';
-import { assignmentMatchesSearch } from '@/lib/ops/postAssignment.mjs';
+import { assignmentMatchesSearch, subjectList } from '@/lib/ops/postAssignment.mjs';
 
 // Hand-pick tutors for an assignment (posted or not) and message them directly.
 
@@ -17,7 +17,7 @@ const UNMAPPABLE_COPY = {
 // Opening message pre-filled into each WhatsApp chat.
 function outreachMessage({ level, subject, location }) {
   const where = location === 'Online' ? 'online' : `at ${location}`;
-  return `Hi, Ivan from LionCity Tutors here. Would you be keen to tutor ${level} ${subject} ${where}?`;
+  return `Hi, Ivan from LionCity Tutors here. Would you be keen to tutor ${level} ${subject.join(' & ')} ${where}?`;
 }
 
 async function search(criteria) {
@@ -32,14 +32,14 @@ async function search(criteria) {
 export default async function FindPage({ searchParams }) {
   const criteria = {
     level: searchParams?.level || '',
-    subject: searchParams?.subject || '',
+    subject: subjectList(searchParams?.subject),
     location: searchParams?.location || '',
     rate: searchParams?.rate || '',
     minExperience: searchParams?.minExperience || '',
     nearby: searchParams?.nearby === '1' ? '1' : '',
   };
   const assignmentId = searchParams?.assignmentId || '';
-  const ready = criteria.level && criteria.subject && criteria.location;
+  const ready = criteria.level && criteria.subject.length > 0 && criteria.location;
   const [{ data, error }, loaded] = await Promise.all([
     ready ? search(criteria) : {},
     assignmentId ? loadAssignment(assignmentId) : null,
@@ -113,7 +113,7 @@ export default async function FindPage({ searchParams }) {
 
         {/* Channel post for a fresh search; once posted, the assignmentId in the URL hides it. */}
         {canPost && (
-          <PostPanel key={`${criteria.level}|${criteria.subject}|${criteria.location}|${criteria.rate}`} criteria={criteria} />
+          <PostPanel key={`${criteria.level}|${criteria.subject.join(',')}|${criteria.location}|${criteria.rate}`} criteria={criteria} />
         )}
         {assignment?.channelMessageId && (
           <p className="mt-6 text-sm text-[var(--color-text-secondary)]">📢 Posted to the channel</p>
