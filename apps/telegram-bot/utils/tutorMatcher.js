@@ -630,7 +630,7 @@ const CANDIDATE_FIELDS =
 // `withStats` turns on the attrition funnel (see findMatchingTutorsWithStats) at the cost of one
 // countDocuments per DB-side filter, so it stays OFF for outreach and is opted into by the ops
 // console's diagnosis. `model` is injectable for tests.
-async function runMatch(assignment, poolSize, { withStats = false, model = Tutor, excludeTutorIds = null, dropFilters = [] } = {}) {
+async function runMatch(assignment, poolSize, { withStats = false, model = Tutor, excludeTutorIds = null, dropFilters = [], requireQuery = {} } = {}) {
   const { unmappable, stages, requestedFields, levelCategory } = buildFilterStages(assignment);
 
   if (unmappable) {
@@ -647,7 +647,9 @@ async function runMatch(assignment, poolSize, { withStats = false, model = Tutor
   // waves. Applied to the FETCH only, not the attrition funnel — the funnel describes the matching
   // pool, while this is a wave-time throttle. Empty/absent set → no change to the query.
   const excludeIds = excludeTutorIds ? [...excludeTutorIds] : [];
-  const fetchQuery = excludeIds.length ? { ...query, _id: { $nin: excludeIds } } : query;
+  // `requireQuery` is never relaxed (the console's hard gender filter).
+  const narrow = q => ({ ...q, ...requireQuery, ...(excludeIds.length && { _id: { $nin: excludeIds } }) });
+  const fetchQuery = narrow(query);
 
   // Count the DB-side funnel BEFORE fetching, so the numbers describe the whole matching set
   // rather than the (bounded) fetch. Sequential, not parallel: this path is off the hot path and
@@ -685,7 +687,7 @@ async function runMatch(assignment, poolSize, { withStats = false, model = Tutor
   for (let i = softFilters.length - 1; i >= 0 && kept.length < RELAX_POOL_MIN; i--) {
     const dropping = softFilters.slice(i);
     const base = queryWithout(stages, dropping);
-    const wider = await fetchPool(excludeIds.length ? { ...base, _id: { $nin: excludeIds } } : base);
+    const wider = await fetchPool(narrow(base));
     if (wider.kept.length > kept.length) {
       ({ docs: candidates, kept, stages: jsStages } = wider);
       relaxed = dropping;
@@ -769,7 +771,7 @@ async function findMatchingTutorsWithStats(assignment, poolSize = 40, options = 
 // Same filters and ranking as outreach, for the owner to hand-pick tutors to message directly.
 // Read-only: nothing is sent and no assignment is needed.
 async function searchTutors(
-  { level, subject, location, rate, minExperience, includeNearby = false } = {},
+  { level, subject, location, rate, minExperience, gender, includeNearby = false } = {},
   { model = Tutor, limit = 15 } = {}
 ) {
   // One subject or several; 2+ go through the matcher's Multiple Subjects path (ranked by coverage).
@@ -783,7 +785,9 @@ async function searchTutors(
   // Same widening as the "adjacent regions" recovery: matchRegions is OR'd into the region filter.
   if (includeNearby) assignment.matchRegions = adjacentRegions(region);
 
-  const { scored } = await runMatch(assignment, MAX_CANDIDATE_FETCH, { model, dropFilters: ['allSubjects'] });
+  // Female/Male is a hard filter here; anything else means no preference.
+  const requireQuery = ['Female', 'Male'].includes(gender) ? { gender } : {};
+  const { scored } = await runMatch(assignment, MAX_CANDIDATE_FETCH, { model, dropFilters: ['allSubjects'], requireQuery });
   const teachesOf = t => picked.filter(x => t.teachingLevels?.[levelCategory]?.[subjectToFieldName(x)] === true);
 
   const minRank = EXPERIENCE_RANK[minExperience] || 0;

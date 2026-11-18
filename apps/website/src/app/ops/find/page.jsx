@@ -50,6 +50,7 @@ export default async function FindPage({ searchParams }) {
     location: searchParams?.location || '',
     rate: searchParams?.rate || '',
     minExperience: searchParams?.minExperience || '',
+    gender: ['Female', 'Male'].includes(searchParams?.gender) ? searchParams.gender : '',
     nearby: searchParams?.nearby === '1' ? '1' : '',
   };
   const assignmentId = searchParams?.assignmentId || '';
@@ -110,8 +111,8 @@ export default async function FindPage({ searchParams }) {
             ) : results.length === 0 ? (
               <p className="rounded-lg border border-dashed border-[var(--color-border)] bg-white p-6 text-center text-sm text-[var(--color-text-tertiary)]">
                 {criteria.nearby
-                  ? 'No tutors match, even in nearby regions. Try a higher rate or less experience.'
-                  : 'No tutors match. Tick “Include nearby regions”, or try a higher rate or less experience.'}
+                  ? 'No tutors match, even in nearby regions. Try a higher rate, less experience or any gender.'
+                  : 'No tutors match. Tick “Include nearby regions”, or try a higher rate, less experience or any gender.'}
               </p>
             ) : (
               <ul className="grid gap-3">

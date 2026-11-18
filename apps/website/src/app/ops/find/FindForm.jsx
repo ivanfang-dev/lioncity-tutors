@@ -85,6 +85,15 @@ export default function FindForm({ initial }) {
         </select>
       </label>
 
+      <label className={labelClass}>
+        Tutor gender
+        <select name="gender" defaultValue={initial.gender || ''} className={fieldClass}>
+          <option value="">Any</option>
+          <option value="Female">Female</option>
+          <option value="Male">Male</option>
+        </select>
+      </label>
+
       <label className="flex items-center gap-2 text-sm text-[var(--color-text-default)] sm:col-span-2">
         <input
           type="checkbox"

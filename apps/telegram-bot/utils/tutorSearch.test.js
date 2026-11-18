@@ -99,6 +99,25 @@ describe('searchTutors', () => {
     expect(JSON.stringify(queries[0])).toEqual(expect.stringContaining('locations.central'));
   });
 
+  test('gender is a hard filter on every fetch, even when the pool is thin', async () => {
+    const queries = [];
+    const model = fakeModel([]);
+    const find = model.find;
+    model.find = (q) => { queries.push(q); return find(q); };
+    await searchTutors({ ...criteria, gender: 'Female' }, { model });
+    expect(queries.length).toBeGreaterThan(0);
+    for (const q of queries) expect(q.gender).toBe('Female');
+  });
+
+  test('ignores a gender other than Female or Male', async () => {
+    const queries = [];
+    const model = fakeModel([]);
+    const find = model.find;
+    model.find = (q) => { queries.push(q); return find(q); };
+    await searchTutors({ ...criteria, gender: 'Any' }, { model });
+    for (const q of queries) expect(q).not.toHaveProperty('gender');
+  });
+
   test('lists exact-region tutors before nearby ones and tags the nearby region', async () => {
     const model = fakeModel([
       tutor('nearbyStar', { locations: { central: true }, yearsOfExperience: '10+ years' }),
