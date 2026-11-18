@@ -83,6 +83,13 @@ describe('searchTutors', () => {
     expect(results).toHaveLength(5);
   });
 
+  test('reports the total match count beyond the limit', async () => {
+    const model = fakeModel(Array.from({ length: 30 }, (_, i) => tutor(`t${i}`)));
+    const { results, total } = await searchTutors(criteria, { model, limit: 5 });
+    expect(results).toHaveLength(5);
+    expect(total).toBe(30);
+  });
+
   test('includeNearby widens the region filter to adjacent regions', async () => {
     const queries = [];
     const model = fakeModel([]);

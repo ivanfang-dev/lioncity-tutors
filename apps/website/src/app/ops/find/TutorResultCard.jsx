@@ -38,7 +38,7 @@ export default function TutorResultCard({ tutor, rank, contactStatus, message })
 
   return (
     // min-w-0 + anywhere-wrap: a pasted URL in a profile must not widen every card in the grid.
-    <li className="min-w-0 rounded-lg border border-[var(--color-border)] bg-white p-4 [overflow-wrap:anywhere]">
+    <li id={`tutor-${rank}`} className="min-w-0 scroll-mt-20 rounded-lg border border-[var(--color-border)] bg-white p-4 [overflow-wrap:anywhere]">
       <div className="flex flex-wrap items-center gap-1.5">
         <span className="text-xs font-semibold text-[var(--color-text-tertiary)]">#{rank}</span>
         <p className="text-sm font-semibold text-[var(--color-text-default)]">{tutor.fullName}</p>

@@ -4,7 +4,7 @@ import { connectToDatabase } from '../utils/db.js';
 // Ops console "Find tutors": the outreach matcher's ranked pool for hand-typed criteria, so the
 // owner can message tutors directly. Read-only — nothing is sent, no assignment needed.
 //
-// GET /api/find-tutors?level=&subject=&location=&rate=&minExperience=&nearby=1  →  { results, unmappable }
+// GET /api/find-tutors?level=&subject=&location=&rate=&minExperience=&nearby=1&limit=  →  { results, total, unmappable }
 
 export default async function handler(req, res) {
   try {
@@ -16,14 +16,15 @@ export default async function handler(req, res) {
     }
 
     const { level, subject, location, rate, minExperience, nearby } = req.query;
+    const limit = Math.min(Math.max(parseInt(req.query.limit, 10) || 15, 1), 300);
     if (!level || !subject || !location) return res.status(400).json({ error: 'level_subject_location_required' });
 
     await connectToDatabase();
 
-    const { results, unmappable } = await searchTutors({
+    const { results, total, unmappable } = await searchTutors({
       level, subject, location, rate, minExperience, includeNearby: nearby === '1',
-    });
-    return res.status(200).json({ results, unmappable });
+    }, { limit });
+    return res.status(200).json({ results, total, unmappable });
   } catch (err) {
     console.error('find-tutors error:', err);
     return res.status(500).json({ error: 'Internal Server Error', message: err.message });

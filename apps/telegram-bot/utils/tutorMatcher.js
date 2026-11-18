@@ -779,7 +779,7 @@ async function searchTutors(
     ? { level, subject: 'Multiple Subjects', subjects: picked, location, rate, title: picked.join(' & ') }
     : { level, subject: picked[0], location, rate, title: picked[0] };
   const { unmappable, levelCategory, region } = buildFilterStages(assignment);
-  if (unmappable) return { results: [], unmappable };
+  if (unmappable) return { results: [], total: 0, unmappable };
   // Same widening as the "adjacent regions" recovery: matchRegions is OR'd into the region filter.
   if (includeNearby) assignment.matchRegions = adjacentRegions(region);
 
@@ -829,7 +829,7 @@ async function searchTutors(
       };
     });
 
-  return { results, unmappable: null };
+  return { results, total: ordered.length, unmappable: null };
 }
 
 // --- Intake budget calibration ---------------------------------------------

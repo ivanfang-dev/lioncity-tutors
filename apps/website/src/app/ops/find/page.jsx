@@ -14,15 +14,29 @@ const UNMAPPABLE_COPY = {
   subject: 'That subject isn’t one tutors can list for this level.',
 };
 
+// Results load 15 first, then 50 more per "Show more" tap.
+const FIRST_PAGE = 15;
+const PAGE_STEP = 50;
+
 // Opening message pre-filled into each WhatsApp chat.
 function outreachMessage({ level, subject, location }) {
   const where = location === 'Online' ? 'online' : `at ${location}`;
   return `Hi, Ivan from LionCity Tutors here. Would you be keen to tutor ${level} ${subject.join(' & ')} ${where}?`;
 }
 
-async function search(criteria) {
+// The current search's URL params with a bigger `show`.
+function showMoreQuery(searchParams, show) {
+  const params = new URLSearchParams();
+  for (const [key, value] of Object.entries(searchParams || {})) {
+    for (const v of [].concat(value)) if (key !== 'show') params.append(key, v);
+  }
+  params.set('show', String(show));
+  return params.toString();
+}
+
+async function search(criteria, limit) {
   try {
-    return { data: await findTutors(criteria) };
+    return { data: await findTutors({ ...criteria, limit }) };
   } catch (err) {
     console.error('ops find-tutors failed:', err);
     return { error: true };
@@ -39,12 +53,14 @@ export default async function FindPage({ searchParams }) {
     nearby: searchParams?.nearby === '1' ? '1' : '',
   };
   const assignmentId = searchParams?.assignmentId || '';
+  const show = Math.max(parseInt(searchParams?.show, 10) || FIRST_PAGE, FIRST_PAGE);
   const ready = criteria.level && criteria.subject.length > 0 && criteria.location;
   const [{ data, error }, loaded] = await Promise.all([
-    ready ? search(criteria) : {},
+    ready ? search(criteria, show) : {},
     assignmentId ? loadAssignment(assignmentId) : null,
   ]);
   const results = data?.results || [];
+  const total = data?.total ?? results.length;
   // A stale assignmentId (carried by the form into a new search) is ignored once the criteria change.
   const assignment = loaded && (!ready || assignmentMatchesSearch(loaded, criteria)) ? loaded : null;
   const canPost = ready && !assignment && !error && !data?.unmappable;
@@ -71,7 +87,9 @@ export default async function FindPage({ searchParams }) {
               <h2 id="results" className="text-sm font-semibold text-[var(--color-text-default)]">
                 {error
                   ? 'Search failed'
-                  : `${results.length} match${results.length === 1 ? '' : 'es'}`}
+                  : results.length < total
+                    ? `Showing ${results.length} of ${total} matches`
+                    : `${total} match${total === 1 ? '' : 'es'}`}
               </h2>
               {/* The panel sits below a long list; this jumps to it. */}
               {canPost && (
@@ -107,6 +125,15 @@ export default async function FindPage({ searchParams }) {
                   />
                 ))}
               </ul>
+            )}
+
+            {!error && results.length < total && (
+              <a
+                href={`?${showMoreQuery(searchParams, results.length + PAGE_STEP)}#tutor-${results.length + 1}`}
+                className="mt-3 block rounded-md border border-[var(--color-border)] bg-white px-3 py-2 text-center text-sm font-semibold text-[var(--color-primary)] hover:bg-[var(--color-gray-100)]"
+              >
+                Show {Math.min(PAGE_STEP, total - results.length)} more
+              </a>
             )}
           </section>
         )}
