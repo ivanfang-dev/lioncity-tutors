@@ -1,5 +1,7 @@
 import { normalizePhone } from '@lioncity/shared/utils/phoneUtils.js';
 import ExpandableText from './ExpandableText';
+import ChatButtons from './ChatButtons';
+import ManualContactLog from './ManualContactLog';
 import { formatPhone } from '@/lib/ops/formatPhone';
 
 function Meta({ label, children }) {
@@ -31,7 +33,7 @@ const CONTACT_TAGS = {
   Sent: { label: 'Messaged, no reply', className: 'bg-[#F17720]/10 text-[#b8540f]' },
 };
 
-export default function TutorResultCard({ tutor, rank, contactStatus, message }) {
+export default function TutorResultCard({ tutor, rank, contactStatus, message, label, manualContacts }) {
   const tag = CONTACT_TAGS[contactStatus];
   const phone = normalizePhone(tutor.contactNumber);
   const { contacted, responded } = tutor.replies;
@@ -73,6 +75,8 @@ export default function TutorResultCard({ tutor, rank, contactStatus, message })
         {tutor.highestEducation && <Meta label="Education">{tutor.highestEducation}</Meta>}
       </dl>
 
+      <ManualContactLog tutorId={tutor.id} entries={manualContacts} />
+
       {tutor.teaches && (
         <p className="mt-2 text-xs text-[var(--color-text-default)]">
           <span className="text-[var(--color-text-tertiary)]">Teaches</span> {tutor.teaches.join(', ')}
@@ -88,26 +92,7 @@ export default function TutorResultCard({ tutor, rank, contactStatus, message })
         <ExpandableText label="Track record & achievements" text={tutor.trackRecord} />
       </div>
 
-      {phone && (
-        <div className="mt-3 grid grid-cols-2 gap-2">
-          <a
-            href={`https://wa.me/65${phone}${message ? `?text=${encodeURIComponent(message)}` : ''}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="rounded-md bg-[#25D366] px-3 py-2 text-center text-sm font-semibold text-white hover:opacity-90"
-          >
-            WhatsApp
-          </a>
-          <a
-            href={`https://t.me/+65${phone}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="rounded-md bg-[#229ED9] px-3 py-2 text-center text-sm font-semibold text-white hover:opacity-90"
-          >
-            Telegram
-          </a>
-        </div>
-      )}
+      {phone && <ChatButtons tutorId={tutor.id} phone={phone} message={message} label={label} />}
     </li>
   );
 }

@@ -4,6 +4,8 @@ import TutorResultCard from './TutorResultCard';
 import PostPanel from './PostPanel';
 import { findTutors } from '@/lib/ops/botApi';
 import { loadAssignment } from '@/lib/ops/data';
+import { loadManualContacts } from '@/lib/ops/manualContactStore';
+import { searchLabel } from '@/lib/ops/manualContacts.mjs';
 import { assignmentMatchesSearch, subjectList } from '@/lib/ops/postAssignment.mjs';
 
 // Hand-pick tutors for an assignment (posted or not) and message them directly.
@@ -61,6 +63,7 @@ export default async function FindPage({ searchParams }) {
     assignmentId ? loadAssignment(assignmentId) : null,
   ]);
   const results = data?.results || [];
+  const manualById = results.length ? await loadManualContacts(results.map(t => t.id)) : new Map();
   const total = data?.total ?? results.length;
   // A stale assignmentId (carried by the form into a new search) is ignored once the criteria change.
   const assignment = loaded && (!ready || assignmentMatchesSearch(loaded, criteria)) ? loaded : null;
@@ -123,6 +126,8 @@ export default async function FindPage({ searchParams }) {
                     rank={i + 1}
                     contactStatus={contactStatus.get(tutor.id)}
                     message={outreachMessage(criteria)}
+                    label={searchLabel(criteria)}
+                    manualContacts={manualById.get(tutor.id)}
                   />
                 ))}
               </ul>

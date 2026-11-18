@@ -355,6 +355,15 @@ const tutorSchema = new mongoose.Schema({
     responded: { type: Number, default: 0 }
   },
 
+  // Chats the owner opened from the ops Find page, one per search (e.g. "Primary 2 Mathematics, Canberra").
+  // Separate from outreach; entries expire after 14 days (apps/website/src/lib/ops/manualContacts.mjs).
+  manualContacts: [{
+    at: Date,
+    label: String,
+    reply: { type: String, enum: ['yes', 'no'] },
+    repliedAt: Date,
+  }],
+
   // Materialized performance stats, recomputed daily from the event sources
   // (outreach.contacts + placements) inside the escalation tick. A CACHE for ranking and the ops
   // console — events remain the source of truth; nothing here is incremented live. Absent until the
