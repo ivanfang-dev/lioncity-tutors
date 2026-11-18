@@ -1,4 +1,6 @@
 import { getLevelCategory } from '@lioncity/shared/utils/levelCategory.js';
+import { normalizePhone } from '@lioncity/shared/utils/phoneUtils.js';
+import { formatPhone } from '@/lib/ops/formatPhone';
 
 // The inputs behind each interested tutor's score, shown raw.
 
@@ -23,6 +25,7 @@ export default function CandidateBreakdown({ contacts, tutorsById, level }) {
         const tutor = tutorsById[contact.tutorId?.toString()];
         const rate = tutor?.hourlyRate?.[levelCategory] || tutor?.hourlyRate?.secondary;
         const stats = tutor?.responseStats;
+        const phone = normalizePhone(tutor?.contactNumber);
 
         return (
           <li key={contact.tutorId} className="rounded-lg border border-[var(--color-border)] bg-white p-3">
@@ -56,6 +59,12 @@ export default function CandidateBreakdown({ contacts, tutorsById, level }) {
                   <dt className="text-[var(--color-text-tertiary)]">Replies</dt>
                   <dd className="tabular-nums text-[var(--color-text-default)]">
                     {stats?.contacted ? `${stats.responded || 0}/${stats.contacted}` : 'new'}
+                  </dd>
+                </div>
+                <div className="flex gap-1.5">
+                  <dt className="text-[var(--color-text-tertiary)]">Contact</dt>
+                  <dd className="tabular-nums">
+                    {phone ? <a href={`tel:+65${phone}`} className="text-[#03649f] underline">{formatPhone(phone)}</a> : '—'}
                   </dd>
                 </div>
               </dl>

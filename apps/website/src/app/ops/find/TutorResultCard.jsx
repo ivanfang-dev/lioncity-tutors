@@ -1,5 +1,6 @@
 import { normalizePhone } from '@lioncity/shared/utils/phoneUtils.js';
 import ExpandableText from './ExpandableText';
+import { formatPhone } from '@/lib/ops/formatPhone';
 
 function Meta({ label, children }) {
   return (
@@ -66,6 +67,9 @@ export default function TutorResultCard({ tutor, rank, contactStatus, message })
         <Meta label="Type">{tutor.tutorType || '—'}</Meta>
         <Meta label="Asks">{formatRate(tutor.askingRate)}</Meta>
         <Meta label="Replies">{contacted ? `${responded}/${contacted}` : 'new'}</Meta>
+        <Meta label="Contact">
+          {phone ? <a href={`tel:+65${phone}`} className="text-[#03649f] underline">{formatPhone(phone)}</a> : '—'}
+        </Meta>
         {tutor.highestEducation && <Meta label="Education">{tutor.highestEducation}</Meta>}
       </dl>
 
