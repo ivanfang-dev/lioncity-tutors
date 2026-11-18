@@ -5,7 +5,7 @@ import { formatPhone } from '@/lib/ops/formatPhone';
 function Meta({ label, children }) {
   return (
     <div className="flex gap-1.5">
-      <dt className="text-[var(--color-text-tertiary)]">{label}</dt>
+      <dt className="shrink-0 text-[var(--color-text-tertiary)]">{label}</dt>
       <dd className="tabular-nums text-[var(--color-text-default)]">{children}</dd>
     </div>
   );
