@@ -40,10 +40,15 @@ export default function TutorResultCard({ tutor, rank, contactStatus, message, l
 
   return (
     // min-w-0 + anywhere-wrap: a pasted URL in a profile must not widen every card in the grid.
-    <li id={`tutor-${rank}`} className="min-w-0 scroll-mt-20 rounded-lg border border-[var(--color-border)] bg-white p-4 [overflow-wrap:anywhere]">
+    <li id={rank ? `tutor-${rank}` : undefined} className="min-w-0 scroll-mt-20 rounded-lg border border-[var(--color-border)] bg-white p-4 [overflow-wrap:anywhere]">
       <div className="flex flex-wrap items-center gap-1.5">
-        <span className="text-xs font-semibold text-[var(--color-text-tertiary)]">#{rank}</span>
+        {rank && <span className="text-xs font-semibold text-[var(--color-text-tertiary)]">#{rank}</span>}
         <p className="text-sm font-semibold text-[var(--color-text-default)]">{tutor.fullName}</p>
+        {tutor.paused && (
+          <span className="rounded bg-[var(--color-gray-100)] px-1.5 py-0.5 text-xs font-semibold text-[var(--color-text-secondary)]">
+            Stopped tutoring
+          </span>
+        )}
         {tag && (
           <span className={`rounded px-1.5 py-0.5 text-xs font-semibold ${tag.className}`}>{tag.label}</span>
         )}
@@ -67,13 +72,22 @@ export default function TutorResultCard({ tutor, rank, contactStatus, message, l
       <dl className="mt-2 grid grid-cols-2 gap-x-3 gap-y-1 text-xs">
         <Meta label="Experience">{tutor.yearsOfExperience || '—'}</Meta>
         <Meta label="Type">{tutor.tutorType || '—'}</Meta>
-        <Meta label="Asks">{formatRate(tutor.askingRate)}</Meta>
+        {!tutor.rates && <Meta label="Asks">{formatRate(tutor.askingRate)}</Meta>}
         <Meta label="Replies">{contacted ? `${responded}/${contacted}` : 'new'}</Meta>
         <Meta label="Contact">
           {phone ? <a href={`tel:+65${phone}`} className="text-[#03649f] underline">{formatPhone(phone)}</a> : '—'}
         </Meta>
         {tutor.highestEducation && <Meta label="Education">{tutor.highestEducation}</Meta>}
       </dl>
+
+      {/* Lookup cards have no search level, so they list every rate, level and area. */}
+      {tutor.rates && (
+        <dl className="mt-1 grid gap-y-1 text-xs">
+          <Meta label="Asks">{tutor.rates.map(r => `${r.label} ${formatRate(r.rate)}`).join(' · ') || '—'}</Meta>
+          <Meta label="Levels">{tutor.levels.join(', ') || '—'}</Meta>
+          <Meta label="Areas">{tutor.regions.map(r => REGION_LABELS[r] || r).join(', ') || '—'}</Meta>
+        </dl>
+      )}
 
       <ManualContactLog tutorId={tutor.id} entries={manualContacts} />
 

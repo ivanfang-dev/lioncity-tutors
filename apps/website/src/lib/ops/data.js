@@ -1,5 +1,6 @@
 import { dbConnect } from '@/lib/mongoose';
 import { Assignment, Tutor, Placement } from '@lioncity/shared/server-exports.js';
+import { lookupQuery, lookupCard, LOOKUP_FIELDS } from './tutorLookup.mjs';
 
 // Reads for the console. Straight to Mongo (via the shared models) rather than through the bot:
 // these are pure reads with no state transitions, so there's nothing to keep in sync — unlike the
@@ -124,4 +125,15 @@ export async function loadHealthMetricsData() {
 // handed to client components (the outcome buttons). Flatten to strings/numbers at the edge.
 export function serializeAssignment(assignment) {
   return JSON.parse(JSON.stringify(assignment));
+}
+
+// The Find page's lookup by name or phone number; first 20 by name, `more` if there are others.
+const LOOKUP_LIMIT = 20;
+
+export async function lookupTutors(text) {
+  const query = lookupQuery(text);
+  if (!query) return { results: [], more: false, tooShort: true };
+  await dbConnect();
+  const docs = await Tutor.find(query).select(LOOKUP_FIELDS).sort({ fullName: 1 }).limit(LOOKUP_LIMIT + 1).lean();
+  return { results: docs.slice(0, LOOKUP_LIMIT).map(lookupCard), more: docs.length > LOOKUP_LIMIT, tooShort: false };
 }

@@ -1,10 +1,11 @@
 import OpsHeader from '../OpsHeader';
 import FindForm from './FindForm';
+import LookupForm from './LookupForm';
 import { TUTOR_TYPES } from '@/lib/ops/tutorTypes.mjs';
 import TutorResultCard from './TutorResultCard';
 import PostPanel from './PostPanel';
 import { findTutors } from '@/lib/ops/botApi';
-import { loadAssignment } from '@/lib/ops/data';
+import { loadAssignment, lookupTutors } from '@/lib/ops/data';
 import { loadManualContacts } from '@/lib/ops/manualContactStore';
 import { searchLabel } from '@/lib/ops/manualContacts.mjs';
 import { assignmentMatchesSearch, subjectList } from '@/lib/ops/postAssignment.mjs';
@@ -58,14 +59,17 @@ export default async function FindPage({ searchParams }) {
     nearby: searchParams?.nearby === '1' ? '1' : '',
   };
   const assignmentId = searchParams?.assignmentId || '';
+  const q = (searchParams?.q || '').trim();
   const show = Math.max(parseInt(searchParams?.show, 10) || FIRST_PAGE, FIRST_PAGE);
   const ready = criteria.level && criteria.subject.length > 0 && criteria.location;
-  const [{ data, error }, loaded] = await Promise.all([
+  const [{ data, error }, loaded, lookup] = await Promise.all([
     ready ? search(criteria, show) : {},
     assignmentId ? loadAssignment(assignmentId) : null,
+    q ? lookupTutors(q) : null,
   ]);
   const results = data?.results || [];
-  const manualById = results.length ? await loadManualContacts(results.map(t => t.id)) : new Map();
+  const shownIds = [...results, ...(lookup?.results || [])].map(t => t.id);
+  const manualById = shownIds.length ? await loadManualContacts(shownIds) : new Map();
   const total = data?.total ?? results.length;
   // A stale assignmentId (carried by the form into a new search) is ignored once the criteria change.
   const assignment = loaded && (!ready || assignmentMatchesSearch(loaded, criteria)) ? loaded : null;
@@ -85,6 +89,29 @@ export default async function FindPage({ searchParams }) {
       />
 
       <div className="mx-auto max-w-3xl px-4 py-6">
+        <LookupForm q={q} />
+
+        {lookup && (
+          <section aria-labelledby="lookup-results" className="mb-6">
+            <h2 id="lookup-results" className="mb-3 text-sm font-semibold text-[var(--color-text-default)]">
+              {lookup.tooShort
+                ? 'Type at least 2 letters or 3 digits'
+                : lookup.results.length === 0
+                  ? `No tutor found for “${q}”`
+                  : lookup.more
+                    ? `First ${lookup.results.length} tutors for “${q}” · type more to narrow`
+                    : `${lookup.results.length} tutor${lookup.results.length === 1 ? '' : 's'} for “${q}”`}
+            </h2>
+            {lookup.results.length > 0 && (
+              <ul className="grid gap-3">
+                {lookup.results.map(tutor => (
+                  <TutorResultCard key={tutor.id} tutor={tutor} manualContacts={manualById.get(tutor.id)} />
+                ))}
+              </ul>
+            )}
+          </section>
+        )}
+
         <FindForm initial={{ ...criteria, assignmentId: assignment ? String(assignment._id) : '' }} />
 
         {ready && (

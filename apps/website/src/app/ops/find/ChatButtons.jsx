@@ -3,12 +3,12 @@
 import { useRouter } from 'next/navigation';
 import { postManualContact } from './manualContactApi';
 
-// Opens a chat in the owner's own WhatsApp/Telegram and logs it as messaged for this search.
+// Opens a chat in the owner's own WhatsApp/Telegram; logs it as messaged when there's a search label.
 export default function ChatButtons({ tutorId, phone, message, label }) {
   const router = useRouter();
-  const logMessaged = () => {
-    postManualContact({ tutorId, label }).then(() => router.refresh()).catch(() => {});
-  };
+  const logMessaged = label
+    ? () => { postManualContact({ tutorId, label }).then(() => router.refresh()).catch(() => {}); }
+    : undefined;
 
   return (
     <div className="mt-3 grid grid-cols-2 gap-2">
