@@ -65,7 +65,7 @@ function subjectFilter(fields, levelCategory) {
 const TUTOR_TYPE_MAP = {
   'Part-time': ['Part-time Tutor', 'Parttime', 'Undergraduate'],
   'Full-time': ['Full-time Tutor', 'Fulltime'],
-  'MOE/Ex-MOE': ['MOE Teacher', 'Ex-MOE Teacher', 'Moe', 'Exmoe', 'Nie'],
+  'MOE/Ex-MOE': ['MOE Teacher', 'Ex-MOE Teacher', 'Moe', 'Exmoe', 'Nie', 'NIE Trainee'],
 };
 
 // The ops Find page's tutor-type checkboxes → stored tutorType values (finer than TUTOR_TYPE_MAP).

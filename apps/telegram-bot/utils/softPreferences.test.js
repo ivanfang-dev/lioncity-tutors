@@ -26,6 +26,11 @@ describe('preferenceFactor', () => {
     expect(preferenceFactor({ gender: 'Female', tutorType: 'Part-time Tutor' }, assignment)).toBeLessThan(1);
   });
 
+  test('an NIE trainee counts as MOE/Ex-MOE', () => {
+    const moe = { ...assignment, preferredGender: 'No preference', preferredTutorTypes: ['MOE/Ex-MOE'] };
+    expect(preferenceFactor({ tutorType: 'NIE Trainee' }, moe)).toBe(1);
+  });
+
   test('missing tutor data is not penalised — we only penalise a known mismatch', () => {
     expect(preferenceFactor({}, assignment)).toBe(1);
   });
