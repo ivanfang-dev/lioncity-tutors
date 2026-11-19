@@ -109,6 +109,37 @@ describe('searchTutors', () => {
     for (const q of queries) expect(q.gender).toBe('Female');
   });
 
+  test('tutor types are a hard filter mapped to the stored values', async () => {
+    const queries = [];
+    const model = fakeModel([]);
+    const find = model.find;
+    model.find = (q) => { queries.push(q); return find(q); };
+    await searchTutors({ ...criteria, tutorTypes: ['Full-time', 'Ex-MOE'] }, { model });
+    expect(queries.length).toBeGreaterThan(0);
+    for (const q of queries) {
+      expect(q.tutorType.$in.sort()).toEqual(['Ex-MOE Teacher', 'Exmoe', 'Full-time Tutor', 'Fulltime']);
+    }
+  });
+
+  test('part-time covers undergraduates and MOE covers NIE trainees', async () => {
+    const queries = [];
+    const model = fakeModel([]);
+    const find = model.find;
+    model.find = (q) => { queries.push(q); return find(q); };
+    await searchTutors({ ...criteria, tutorTypes: ['Part-time', 'MOE'] }, { model });
+    expect(queries[0].tutorType.$in).toEqual(expect.arrayContaining(['Undergraduate', 'NIE Trainee', 'MOE Teacher']));
+  });
+
+  test('unknown or empty tutor types mean any type', async () => {
+    const queries = [];
+    const model = fakeModel([]);
+    const find = model.find;
+    model.find = (q) => { queries.push(q); return find(q); };
+    await searchTutors({ ...criteria, tutorTypes: ['Wizard'] }, { model });
+    await searchTutors({ ...criteria, tutorTypes: [] }, { model });
+    for (const q of queries) expect(q).not.toHaveProperty('tutorType');
+  });
+
   test('ignores a gender other than Female or Male', async () => {
     const queries = [];
     const model = fakeModel([]);

@@ -68,6 +68,14 @@ const TUTOR_TYPE_MAP = {
   'MOE/Ex-MOE': ['MOE Teacher', 'Ex-MOE Teacher', 'Moe', 'Exmoe', 'Nie'],
 };
 
+// The ops Find page's tutor-type checkboxes → stored tutorType values (finer than TUTOR_TYPE_MAP).
+const SEARCH_TUTOR_TYPES = {
+  'Part-time': ['Part-time Tutor', 'Parttime', 'Undergraduate'],
+  'Full-time': ['Full-time Tutor', 'Fulltime'],
+  'Ex-MOE': ['Ex-MOE Teacher', 'Exmoe'],
+  'MOE': ['MOE Teacher', 'Moe', 'Nie', 'NIE Trainee'],
+};
+
 // Subject values that don't map to a single tutor field — require title parsing
 const SPECIAL_SUBJECTS = new Set([
   'Multiple Subjects', 'All Subjects', 'Exam Preparation', 'Homework Support', 'Other'
@@ -771,7 +779,7 @@ async function findMatchingTutorsWithStats(assignment, poolSize = 40, options = 
 // Same filters and ranking as outreach, for the owner to hand-pick tutors to message directly.
 // Read-only: nothing is sent and no assignment is needed.
 async function searchTutors(
-  { level, subject, location, rate, minExperience, gender, includeNearby = false } = {},
+  { level, subject, location, rate, minExperience, gender, tutorTypes, includeNearby = false } = {},
   { model = Tutor, limit = 15 } = {}
 ) {
   // One subject or several; 2+ go through the matcher's Multiple Subjects path (ranked by coverage).
@@ -785,8 +793,10 @@ async function searchTutors(
   // Same widening as the "adjacent regions" recovery: matchRegions is OR'd into the region filter.
   if (includeNearby) assignment.matchRegions = adjacentRegions(region);
 
-  // Female/Male is a hard filter here; anything else means no preference.
+  // Gender and tutor type are hard filters here; blank or unknown values mean any.
   const requireQuery = ['Female', 'Male'].includes(gender) ? { gender } : {};
+  const types = [].concat(tutorTypes || []).flatMap(t => SEARCH_TUTOR_TYPES[t] || []);
+  if (types.length) requireQuery.tutorType = { $in: types };
   const { scored } = await runMatch(assignment, MAX_CANDIDATE_FETCH, { model, dropFilters: ['allSubjects'], requireQuery });
   const teachesOf = t => picked.filter(x => t.teachingLevels?.[levelCategory]?.[subjectToFieldName(x)] === true);
 

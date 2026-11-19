@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { EDUCATION_LEVELS, LEVEL_SUBJECT_MAPPINGS } from '@lioncity/shared';
 import { SINGAPORE_LOCATIONS } from '@lioncity/shared/utils/locations.js';
+import { TUTOR_TYPES } from '@/lib/ops/tutorTypes.mjs';
 
 // Value = the tutor's dropdown band; label = the parent's "at least N years".
 const EXPERIENCE_OPTIONS = [
@@ -93,6 +94,24 @@ export default function FindForm({ initial }) {
           <option value="Male">Male</option>
         </select>
       </label>
+
+      <fieldset className="sm:col-span-2">
+        <legend className={labelClass}>Tutor type <span className="font-normal text-[var(--color-text-tertiary)]">· any if none ticked</span></legend>
+        <div className="mt-1.5 grid grid-cols-2 gap-x-3 gap-y-2 sm:grid-cols-4">
+          {TUTOR_TYPES.map(t => (
+            <label key={t} className="flex items-center gap-2 text-sm text-[var(--color-text-default)]">
+              <input
+                type="checkbox"
+                name="type"
+                value={t}
+                defaultChecked={initial.tutorTypes?.includes(t)}
+                className="h-4 w-4 shrink-0 accent-[var(--color-primary)]"
+              />
+              {t}
+            </label>
+          ))}
+        </div>
+      </fieldset>
 
       <label className="flex items-center gap-2 text-sm text-[var(--color-text-default)] sm:col-span-2">
         <input

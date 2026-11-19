@@ -1,5 +1,6 @@
 import OpsHeader from '../OpsHeader';
 import FindForm from './FindForm';
+import { TUTOR_TYPES } from '@/lib/ops/tutorTypes.mjs';
 import TutorResultCard from './TutorResultCard';
 import PostPanel from './PostPanel';
 import { findTutors } from '@/lib/ops/botApi';
@@ -53,6 +54,7 @@ export default async function FindPage({ searchParams }) {
     rate: searchParams?.rate || '',
     minExperience: searchParams?.minExperience || '',
     gender: ['Female', 'Male'].includes(searchParams?.gender) ? searchParams.gender : '',
+    tutorTypes: [].concat(searchParams?.type || []).filter(t => TUTOR_TYPES.includes(t)),
     nearby: searchParams?.nearby === '1' ? '1' : '',
   };
   const assignmentId = searchParams?.assignmentId || '';
@@ -114,8 +116,8 @@ export default async function FindPage({ searchParams }) {
             ) : results.length === 0 ? (
               <p className="rounded-lg border border-dashed border-[var(--color-border)] bg-white p-6 text-center text-sm text-[var(--color-text-tertiary)]">
                 {criteria.nearby
-                  ? 'No tutors match, even in nearby regions. Try a higher rate, less experience or any gender.'
-                  : 'No tutors match. Tick “Include nearby regions”, or try a higher rate, less experience or any gender.'}
+                  ? 'No tutors match, even in nearby regions. Try a higher rate, less experience, or any gender or type.'
+                  : 'No tutors match. Tick “Include nearby regions”, or try a higher rate, less experience, or any gender or type.'}
               </p>
             ) : (
               <ul className="grid gap-3">

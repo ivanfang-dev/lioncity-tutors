@@ -4,7 +4,7 @@ import { connectToDatabase } from '../utils/db.js';
 // Ops console "Find tutors": the outreach matcher's ranked pool for hand-typed criteria, so the
 // owner can message tutors directly. Read-only — nothing is sent, no assignment needed.
 //
-// GET /api/find-tutors?level=&subject=&location=&rate=&minExperience=&nearby=1&gender=&limit=  →  { results, total, unmappable }
+// GET /api/find-tutors?level=&subject=&location=&rate=&minExperience=&nearby=1&gender=&type=&limit=  →  { results, total, unmappable }
 
 export default async function handler(req, res) {
   try {
@@ -22,7 +22,7 @@ export default async function handler(req, res) {
     await connectToDatabase();
 
     const { results, total, unmappable } = await searchTutors({
-      level, subject, location, rate, minExperience, gender, includeNearby: nearby === '1',
+      level, subject, location, rate, minExperience, gender, tutorTypes: req.query.type, includeNearby: nearby === '1',
     }, { limit });
     return res.status(200).json({ results, total, unmappable });
   } catch (err) {
